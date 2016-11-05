@@ -240,3 +240,16 @@ function uc_order_schema() {
 
   return $schema;
 }
+
+/**
+ * Implements hook_uninstall().
+ */
+function uc_order_uninstall() {
+  $statuses = \Drupal\uc_order\Entity\OrderStatus::loadMultiple(NULL);
+  if (!empty($statuses)) {
+    foreach ($statuses as $status) {
+      // Unlock OrderStatus configuration entity so it can be deleted.
+      $status->setLocked(FALSE)->save();
+    }
+  }
+}
