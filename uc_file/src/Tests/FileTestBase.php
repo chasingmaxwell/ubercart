@@ -72,7 +72,7 @@ abstract class FileTestBase extends UbercartTestBase {
     // live site.  On a live site, it should be outside the web root.
 
     $this->drupalPostForm(
-      'admin/store/config/products',
+      'admin/store/config/file',
       array(
         'base_dir' => $this->getTempFilesDirectory(),
       ),

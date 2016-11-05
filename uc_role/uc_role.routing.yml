@@ -27,3 +27,11 @@ uc_role.delete:
     _permission: 'administer users'
   options:
     user: \d+
+
+uc_role.settings:
+  path: '/admin/store/config/role'
+  defaults:
+    _form: '\Drupal\uc_role\Form\FeatureSettingsForm'
+    _title: 'Role assignment settings'
+  requirements:
+    _permission: 'administer products'

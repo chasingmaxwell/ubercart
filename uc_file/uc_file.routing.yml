@@ -38,6 +38,14 @@ uc_file.upload:
   requirements:
     _permission: 'administer products'
 
+uc_file.settings:
+  path: '/admin/store/config/file'
+  defaults:
+    _form: '\Drupal\uc_file\Form\FeatureSettingsForm'
+    _title: 'File download settings'
+  requirements:
+    _permission: 'administer products'
+
 uc_file.download_file:
   path: '/download/{file}'
   defaults:
