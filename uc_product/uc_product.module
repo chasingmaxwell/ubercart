@@ -91,7 +91,7 @@ function uc_product_node_update($node) {
       'length_units' => $node->dimensions->units,
       'pkg_qty' => $node->pkg_qty->value,
       'default_qty' => $node->default_qty->value,
-      'shippable' => $node->shippable->value,
+      'shippable' => (int) $node->shippable->value,
     ))
     ->execute();
 }
