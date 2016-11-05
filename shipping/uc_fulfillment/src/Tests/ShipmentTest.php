@@ -45,7 +45,7 @@ class ShipmentTest extends UbercartTestBase {
     }
     $order->save();
     $order = Order::load($order->id());
-    uc_payment_enter($order->id(), $method['id'], $order->getTotal());
+    uc_payment_enter($order->id(), 'other', $order->getTotal());
 
     // Now quickly package all the products in this order.
     $this->drupalGet('admin/store/orders/' . $order->id() . '/packages');

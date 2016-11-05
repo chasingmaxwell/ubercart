@@ -125,7 +125,7 @@ function uc_payment_uc_payment_method_checkout_alter(array &$methods, OrderInter
  * @param int $order_id
  *   The order ID to apply the payment to.
  * @param string $method
- *   The payment method ID.
+ *   The payment method plugin ID.
  * @param float $amount
  *   The amount of the payment.
  * @param int $uid
@@ -165,7 +165,7 @@ function uc_payment_uc_payment_receipt_insert(PaymentReceiptInterface $payment) 
   $order = $payment->getOrder();
 
   // Log a message against the order.
-  $method_name = $payment->getMethod() ? $payment->getMethod()->getPlugin()->cartReviewTitle() : t('Other');
+  $method_name = $payment->getMethod() ? $payment->getMethod()->cartReviewTitle() : t('Other');
   $log_message = t('@method payment for @amount entered.', array('@method' => $method_name, '@amount' => uc_currency_format($payment->getAmount())));
   $order->logChanges(array($log_message));
 
@@ -186,7 +186,7 @@ function uc_payment_uc_payment_receipt_delete(PaymentReceiptInterface $payment) 
   $order = $payment->getOrder();
 
   // Log a message against the order.
-  $method_name = $payment->getMethod() ? $payment->getMethod()->getPlugin()->cartReviewTitle() : t('Other');
+  $method_name = $payment->getMethod() ? $payment->getMethod()->cartReviewTitle() : t('Other');
   $log_message = t('@method payment for @amount deleted.', array('@method' => $method_name, '@amount' => uc_currency_format($payment->getAmount())));
   $order->logChanges(array($log_message));
 }

@@ -104,7 +104,7 @@ class TwoCheckoutController extends ControllerBase {
 
     if ($request->request->get('credit_card_processes') == 'Y' && is_numeric($request->request->get('total'))) {
       $comment = $this->t('Paid by @type, 2Checkout.com order #@order.', ['@type' => $request->request->get('pay_method') == 'CC' ? $this->t('credit card') : $this->t('echeck'), '@order' => SafeMarkup::checkPlain($request->request->get('order_number'))]);
-      uc_payment_enter($order->id(), '2Checkout', $request->request->get('total'), 0, NULL, $comment);
+      uc_payment_enter($order->id(), '2checkout', $request->request->get('total'), 0, NULL, $comment);
     }
     else {
       drupal_set_message($this->t('Your order will be processed as soon as your payment clears at 2Checkout.com.'));

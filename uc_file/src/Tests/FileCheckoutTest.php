@@ -46,7 +46,7 @@ class FileCheckoutTest extends FileTestBase {
     ]);
     $order->products[1]->data->shippable = 1;
     $order->save();
-    uc_payment_enter($order->id(), $method['id'], $order->getTotal());
+    uc_payment_enter($order->id(), 'other', $order->getTotal());
 
     // Find the order uid.
     $uid = db_query('SELECT uid FROM {uc_orders} ORDER BY order_id DESC')->fetchField();
@@ -78,7 +78,7 @@ class FileCheckoutTest extends FileTestBase {
     ));
     $order->products[2]->data->shippable = 0;
     $order->save();
-    uc_payment_enter($order->id(), $method['id'], $order->getTotal());
+    uc_payment_enter($order->id(), 'other', $order->getTotal());
     $account = User::load($this->customer->id());
     // @todo Re-enable when Rules is available.
     // $this->assertTrue($account->hasFile($fid), 'Existing user was granted file.');

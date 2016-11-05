@@ -34,7 +34,7 @@ class FulfillmentTest extends UbercartTestBase {
     $order->save();
 
     // Check out with the test product.
-    uc_payment_enter($order->id(), $method['id'], $order->getTotal());
+    uc_payment_enter($order->id(), 'other', $order->getTotal());
 
     // Check for Packages tab and Shipments tab. BOTH should
     // redirect us to $order->id()/packages/new at this point,

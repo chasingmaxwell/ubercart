@@ -45,7 +45,7 @@ class PackageTest extends UbercartTestBase {
     }
     $order->save();
     $order = Order::load($order->id());
-    uc_payment_enter($order->id(), $method['id'], $order->getTotal());
+    uc_payment_enter($order->id(), 'other', $order->getTotal());
 
 // Order with 4 products shippable products. (where do we test not-shippable?)
 // Check all, make one package, verify we're on packages page with only one packge.

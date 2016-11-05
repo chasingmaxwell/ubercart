@@ -39,11 +39,11 @@ class OrderPaymentsFormTest extends UbercartTestBase {
    */
   public function testOrderPayments() {
     // Check out with the test product.
-    $method = $this->createPaymentMethod('check', ['id' => 'check']);
+    $method = $this->createPaymentMethod('check');
     $this->addToCart($this->product);
     $order = $this->checkout();
     // Add a payment of $1 so that the order total and current balance are different.
-    uc_payment_enter($order->id(), $method['id'], 1.0);
+    uc_payment_enter($order->id(), 'check', 1.0);
 
     // Log in as admin user to test order payments form.
     $this->drupalLogin($this->adminUser);

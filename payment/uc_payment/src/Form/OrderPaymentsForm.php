@@ -7,7 +7,6 @@ use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\uc_order\OrderInterface;
-use Drupal\uc_payment\Entity\PaymentMethod;
 use Drupal\uc_payment\Plugin\PaymentMethodManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -89,7 +88,7 @@ class OrderPaymentsForm extends FormBase {
         '#account' => $payment->getUser(),
       );
       $form['payments'][$id]['method'] = array(
-        '#markup' => $payment->getMethod()->label(),
+        '#markup' => $payment->getMethod()->getPluginDefinition()['name'],
       );
       $form['payments'][$id]['amount'] = array(
         '#theme' => 'uc_price',
@@ -135,15 +134,15 @@ class OrderPaymentsForm extends FormBase {
         '#required' => TRUE,
         '#size' => 6,
       );
-      $options = array();
-      foreach (PaymentMethod::loadMultiple() as $method) {
-        $options[$method->id()] = $method->label();
-      }
+      $options = array_map(function ($definition) {
+        return $definition['name'];
+      }, array_filter($this->paymentMethodManager->getDefinitions(), function ($definition) {
+        return !$definition['no_ui'];
+      }));
       $form['new']['method'] = array(
         '#type' => 'select',
         '#title' => $this->t('Payment method'),
         '#options' => $options,
-        '#default_value' => $this->order->getPaymentMethodId(),
       );
       $form['new']['comment'] = array(
         '#type' => 'textfield',

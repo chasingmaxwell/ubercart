@@ -24,7 +24,7 @@ class FileTest extends FileTestBase {
     $method = $this->createPaymentMethod('other');
     $this->addToCart($this->product);
     $order = $this->checkout();
-    uc_payment_enter($order->id(), $method['id'], $order->getTotal());
+    uc_payment_enter($order->id(), 'other', $order->getTotal());
 
     // Test that the file was granted.
     // @todo Re-enable when Rules is available.

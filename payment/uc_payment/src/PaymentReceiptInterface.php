@@ -28,8 +28,8 @@ interface PaymentReceiptInterface extends ContentEntityInterface {
   /**
    * Returns the payment method that was used for this payment.
    *
-   * @return \Drupal\uc_payment\PaymentMethodInterface
-   *   The payment method entity.
+   * @return \Drupal\uc_payment\PaymentMethodPluginInterface
+   *   The payment method plugin.
    */
   public function getMethod();
 

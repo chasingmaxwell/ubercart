@@ -608,7 +608,7 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
     if ($result['success'] === TRUE) {
       // Log the payment to the order if not disabled.
       if (!isset($result['log_payment']) || $result['log_payment'] !== FALSE) {
-        uc_payment_enter($order->id(), $this->getPluginDefinition()['id'], $amount, empty($result['uid']) ? 0 : $result['uid'], empty($result['data']) ? '' : $result['data'], empty($result['comment']) ? '' : $result['comment']);
+        uc_payment_enter($order->id(), $this->getPluginId(), $amount, empty($result['uid']) ? 0 : $result['uid'], empty($result['data']) ? '' : $result['data'], empty($result['comment']) ? '' : $result['comment']);
       }
     }
     else {
