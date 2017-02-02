@@ -87,10 +87,11 @@ class CartBlock extends BlockBase {
   public function build() {
     $cart = \Drupal::service('uc_cart.manager')->get();
     $product_count = count($cart->getContents());
+    $build = array();
 
-    // Display nothing if the block is set to hide on empty and there are no
-    // items in the cart.
-    if (!$this->configuration['hide_empty'] || $product_count) {
+    // Fill build array with block contents if there are items in the cart or
+    // if the block is configured to display when empty.
+    if ($product_count || !$this->configuration['hide_empty']) {
       $items = array();
       $item_count = 0;
       $total = 0;
@@ -148,8 +149,13 @@ class CartBlock extends BlockBase {
         $build['#attached']['library'][] = 'uc_cart/uc_cart.block.scripts';
       }
 
-      return $build;
     }
+    else {
+      // Build array remains empty - display nothing if the block is set to hide
+      // on empty and there are no items in the cart.
+    }
+
+    return $build;
   }
 
 }
