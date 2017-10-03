@@ -62,7 +62,7 @@ class AdminComments extends EditableOrderPanePluginBase {
         ],
         'message' => [
           '#markup' => $comment->message,
-        ]
+        ],
       ];
     }
     $form['comments'] = array(

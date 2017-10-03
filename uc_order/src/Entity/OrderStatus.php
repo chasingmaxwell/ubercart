@@ -64,7 +64,6 @@ class OrderStatus extends ConfigEntityBase implements OrderStatusInterface {
    */
   protected $locked = FALSE;
 
-
   /**
    * {@inheritdoc}
    */

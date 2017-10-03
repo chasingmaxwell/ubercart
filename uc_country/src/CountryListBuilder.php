@@ -81,4 +81,5 @@ class CountryListBuilder extends ConfigEntityListBuilder {
     $build['table']['#empty'] = $this->t('No countries have been configured yet.');
     return $build;
   }
+
 }

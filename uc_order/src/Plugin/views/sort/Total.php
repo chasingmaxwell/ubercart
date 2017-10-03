@@ -25,4 +25,5 @@ class Total extends SortPluginBase {
     // Add the field.
     $this->query->add_orderby(NULL, NULL, $this->options['order'], $this->table . '_' . $this->field);
   }
+
 }

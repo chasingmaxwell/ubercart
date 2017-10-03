@@ -38,4 +38,5 @@ class YearlySalesReport extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $form_state->setRedirect('uc_report.yearly.sales', ['year' => $form_state->getValue('year')]);
   }
+
 }

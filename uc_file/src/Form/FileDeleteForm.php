@@ -189,4 +189,5 @@ class FileDeleteForm extends ConfirmFormBase {
 
     return $result;
   }
+
 }

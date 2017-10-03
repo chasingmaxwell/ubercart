@@ -34,7 +34,7 @@ class USPSSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $usps_config = $this->config('uc_usps.settings');
 
-    // Put fieldsets into vertical tabs
+    // Put fieldsets into vertical tabs.
     $form['usps-settings'] = array(
       '#type' => 'vertical_tabs',
       '#attached' => array(
@@ -44,7 +44,7 @@ class USPSSettingsForm extends ConfigFormBase {
       ),
     );
 
-    // Container for credential forms
+    // Container for credential forms.
     $form['credentials'] = array(
       '#type'          => 'details',
       '#title'         => $this->t('Credentials'),
@@ -112,7 +112,7 @@ class USPSSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Select the USPS services that are available to customers. Be sure to include the services that the Postal Service agrees are available to you.'),
     );
 
-    // Container for quote options
+    // Container for quote options.
     $form['quote_options'] = array(
       '#type'          => 'details',
       '#title'         => $this->t('Quote options'),
@@ -131,7 +131,7 @@ class USPSSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Indicate whether each product is quoted as shipping separately or all in one package. Orders with one kind of product will still use the package quantity to determine the number of packages needed, however.'),
     );
 
-    // Insurance
+    // Insurance.
     $form['quote_options']['insurance'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Package insurance'),
@@ -140,7 +140,7 @@ class USPSSettingsForm extends ConfigFormBase {
       '#disabled' => TRUE,
     );
 
-    // Delivery Confirmation
+    // Delivery Confirmation.
     $form['quote_options']['delivery_confirmation'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Delivery confirmation'),
@@ -149,7 +149,7 @@ class USPSSettingsForm extends ConfigFormBase {
       '#disabled' => TRUE,
     );
 
-    // Signature Confirmation
+    // Signature Confirmation.
     $form['quote_options']['signature_confirmation'] = array(
       '#type' => 'checkbox',
       '#title' => $this->t('Signature confirmation'),
@@ -158,7 +158,7 @@ class USPSSettingsForm extends ConfigFormBase {
       '#disabled' => TRUE,
     );
 
-    // Container for markup forms
+    // Container for markup forms.
     $form['markups'] = array(
       '#type'          => 'details',
       '#title'         => $this->t('Markups'),
@@ -183,7 +183,7 @@ class USPSSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Markup shipping rate quote by dollar amount, percentage, or multiplier.'),
     );
 
-    // Form to select type of weight markup
+    // Form to select type of weight markup.
     $form['markups']['weight_markup_type'] = array(
       '#type'          => 'select',
       '#title'         => $this->t('Weight markup type'),
@@ -196,7 +196,7 @@ class USPSSettingsForm extends ConfigFormBase {
       '#disabled' => TRUE,
     );
 
-    // Form to select weight markup amount
+    // Form to select weight markup amount.
     $form['markups']['weight_markup'] = array(
       '#type'          => 'textfield',
       '#title'         => $this->t('Shipping weight markup'),

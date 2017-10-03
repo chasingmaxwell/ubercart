@@ -50,7 +50,7 @@ class FullName extends FieldPluginBase {
       '#default_value' => $this->options['link_to_user'],
     );
 
-    $form['format'] =  array(
+    $form['format'] = array(
       '#type' => 'select',
       '#title' => $this->t('Format'),
       '#options' => array(
@@ -96,4 +96,5 @@ class FullName extends FieldPluginBase {
       return $this->render_link($this->sanitizeValue($output), $values);
     }
   }
+
 }

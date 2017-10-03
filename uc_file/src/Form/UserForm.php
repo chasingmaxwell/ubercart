@@ -159,7 +159,6 @@ class UserForm extends FormBase {
     return $form;
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -169,7 +168,7 @@ class UserForm extends FormBase {
     // Determine if any downloads were modified.
     if (isset($edit['file_download'])) {
 
-      foreach ((array)$edit['file_download'] as $key => $download_modification) {
+      foreach ((array) $edit['file_download'] as $key => $download_modification) {
         // We don't care... it's about to be deleted.
         if ($download_modification['remove']) {
           continue;
@@ -211,7 +210,7 @@ class UserForm extends FormBase {
 
     // Check out if any downloads were modified.
     if (isset($edit['file_download'])) {
-      foreach ((array)$edit['file_download'] as $fid => $download_modification) {
+      foreach ((array) $edit['file_download'] as $fid => $download_modification) {
         // Remove this user download?
         if ($download_modification['remove']) {
           uc_file_remove_user_file_by_id($this->account, $fid);
@@ -256,4 +255,3 @@ class UserForm extends FormBase {
   }
 
 }
-

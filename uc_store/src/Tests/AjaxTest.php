@@ -110,4 +110,5 @@ class AjaxTest extends UbercartTestBase {
     // @todo Re-enable when shipping quote conditions are available.
     // $this->assertNoEscaped($other['label']);
   }
+
 }

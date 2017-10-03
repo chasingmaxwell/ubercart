@@ -83,7 +83,6 @@ class Country extends ConfigEntityBase implements CountryInterface {
    */
   protected $address_format;
 
-
   /**
    * {@inheritdoc}
    */

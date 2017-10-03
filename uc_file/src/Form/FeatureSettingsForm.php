@@ -92,7 +92,7 @@ class FeatureSettingsForm extends ConfigFormBase {
         'day' => $this->t('day(s)'),
         'week' => $this->t('week(s)'),
         'month' => $this->t('month(s)'),
-        'year' => $this->t('year(s)')
+        'year' => $this->t('year(s)'),
       ),
       '#default_value' => $file_config->get('duration_granularity'),
       '#description' => $this->t('How long after a product has been purchased until its file download expires.'),

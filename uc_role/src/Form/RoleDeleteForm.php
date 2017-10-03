@@ -99,4 +99,5 @@ class RoleDeleteForm extends ConfirmFormBase {
 
     $form_state->setRedirect('uc_role.expiration');
   }
+
 }

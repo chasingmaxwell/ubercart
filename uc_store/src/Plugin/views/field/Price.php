@@ -32,7 +32,7 @@ class Price extends NumericField {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
-    $form['format'] =  array(
+    $form['format'] = array(
       '#title' => $this->t('Format'),
       '#type' => 'radios',
       '#options' => array(
@@ -65,4 +65,5 @@ class Price extends NumericField {
       return parent::render($values);
     }
   }
+
 }

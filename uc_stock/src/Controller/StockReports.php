@@ -128,4 +128,5 @@ class StockReports extends ControllerBase {
 
     return $build;
   }
+
 }

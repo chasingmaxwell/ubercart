@@ -34,7 +34,7 @@ class PackageController extends ControllerBase {
       $this->t('Shipment ID'),
       $this->t('Tracking number'),
       $this->t('Labels'),
-      $this->t('Actions')
+      $this->t('Actions'),
     );
     $rows = array();
     $packages = Package::loadByOrder($uc_order->id());

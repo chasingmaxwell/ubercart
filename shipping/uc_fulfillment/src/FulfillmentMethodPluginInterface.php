@@ -28,7 +28,7 @@ interface FulfillmentMethodPluginInterface extends PluginInspectionInterface, Co
    * @param array $package_ids
    *   An array of package ids to shipped.
    *
-   * @return \Drupal\Core\Form\FormInterface;
+   * @return \Drupal\Core\Form\FormInterface
    *   A form to process the order fulfillment.
    */
   public function fulfillOrder(OrderInterface $order, array $package_ids);

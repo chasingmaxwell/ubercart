@@ -4,7 +4,6 @@ namespace Drupal\uc_stock\Plugin\views\filter;
 
 use Drupal\views\Plugin\views\filter\BooleanOperator;
 
-
 /**
  * Filters nodes based on comparison of stock value to stock threshold.
  *
@@ -21,4 +20,5 @@ class BelowThreshold extends BooleanOperator {
     $this->ensure_my_table();
     $this->query->add_where_expression($this->options['group'], "$this->table_alias.stock " . (empty($this->value) ? '>=' : '<') . " $this->table_alias.threshold");
   }
+
 }

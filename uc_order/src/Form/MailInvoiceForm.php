@@ -36,7 +36,7 @@ class MailInvoiceForm extends FormBase {
       '#required' => TRUE,
     );
     $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit' ] = array(
+    $form['actions']['submit'] = array(
       '#type' => 'submit',
       '#value' => $this->t('Mail invoice'),
     );

@@ -35,7 +35,7 @@ class CartLinksSettingsForm extends ConfigFormBase {
 
     $form['uc_cart_links_add_show'] = array(
       '#type' => 'checkbox',
-      '#title' => $this->t('Display the cart link product action when you add a product to your cart.'),
+      '#title' => $this->t('Display the Cart Link product action when you add a product to your cart.'),
       '#default_value' => $cart_links_config->get('add_show'),
     );
     $form['uc_cart_links_track'] = array(
@@ -57,13 +57,13 @@ class CartLinksSettingsForm extends ConfigFormBase {
     $form['uc_cart_links_restrictions'] = array(
       '#type' => 'textarea',
       '#title' => $this->t('Cart Links restrictions'),
-      '#description' => $this->t('To restrict what Cart Links may be used on your site, enter all valid Cart Links in this textbox.  Separate links with a line break. Leave blank to permit any cart link.'),
+      '#description' => $this->t('To restrict what Cart Links may be used on your site, enter all valid Cart Links in this textbox.  Separate links with a line break. Leave blank to permit any Cart Link.'),
       '#default_value' => $cart_links_config->get('restrictions'),
     );
     $form['uc_cart_links_invalid_page'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Invalid link redirect page'),
-      '#description' => $this->t('Enter the URL to redirect to when an invalid cart link is used.'),
+      '#description' => $this->t('Enter the URL to redirect to when an invalid Cart Link is used.'),
       '#default_value' => $cart_links_config->get('invalid_page'),
       '#size' => 32,
       '#field_prefix' => Url::fromRoute('<front>', [], ['absolute' => TRUE])->toString(),
@@ -76,21 +76,36 @@ class CartLinksSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
+    // Check for properly formattted Cart Links in the restrictions textarea.
+    $restrictions = (string) $form_state->getValue('uc_cart_links_restrictions');
+    if (!empty($restrictions)) {
+      $data = explode("\n", $restrictions);
+      foreach ($data as $restriction) {
+        // Ignore blank lines.
+        if (preg_match('/^\s*$/', $restriction)) {
+          continue;
+        }
+        elseif (!uc_cart_links_is_valid_syntax('/cart/add/' . $restriction)) {
+          $form_state->setErrorByName('uc_cart_links_restrictions', $this->t('Invalid syntax in Cart Links restriction "%restriction".', ['%restriction' => $restriction]));
+        }
+      }
+    }
+
+    // Check for properly formattted messages.
     $messages = (string) $form_state->getValue('uc_cart_links_messages');
     if (!empty($messages)) {
       $data = explode("\n", $messages);
       foreach ($data as $message) {
         // Ignore blank lines.
         if (preg_match('/^\s*$/', $message)) {
-           continue;
+          continue;
         }
-        // Check for properly formattted messages.
         // Each line must be one or more numeric characters for the key followed
         // by "|" followed by one or more characters for the value. Both the key
         // and the value may have leading and/or trailing whitespace.
         elseif (!preg_match('/^\s*[1-9][0-9]*\s*\|\s*\S+.*$/', $message)) {
-           $form_state->setErrorByName('uc_cart_links_messages', $this->t('Invalid Cart Links message "%message". Messages must be a numeric key followed by "|" followed by a value.', ['%message' => $message]));
-           break;
+          $form_state->setErrorByName('uc_cart_links_messages', $this->t('Invalid Cart Links message "%message". Messages must be a numeric key followed by "|" followed by a value.', ['%message' => $message]));
+          break;
         }
       }
     }

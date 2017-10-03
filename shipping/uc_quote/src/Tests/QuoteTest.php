@@ -246,4 +246,5 @@ class QuoteTest extends UbercartTestBase {
     }
 
   }
+
 }

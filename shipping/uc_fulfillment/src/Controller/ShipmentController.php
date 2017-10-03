@@ -130,7 +130,7 @@ class ShipmentController extends ControllerBase {
       $this->t('Ship date'),
       $this->t('Estimated delivery'),
       $this->t('Tracking number'),
-      $this->t('Actions')
+      $this->t('Actions'),
     );
 
     $shipments = Shipment::loadByOrder($uc_order->id());
@@ -211,7 +211,6 @@ class ShipmentController extends ControllerBase {
     return $build;
   }
 
-
   /**
    * Displays shipment details.
    *
@@ -259,11 +258,11 @@ class ShipmentController extends ControllerBase {
     $rows = array();
     $rows[] = array(
       $this->t('Ship date:'),
-      \Drupal::service('date.formatter')->format($uc_shipment->getShipDate(), 'uc_store')
+      \Drupal::service('date.formatter')->format($uc_shipment->getShipDate(), 'uc_store'),
     );
     $rows[] = array(
       $this->t('Expected delivery:'),
-      \Drupal::service('date.formatter')->format($uc_shipment->getExpectedDelivery(), 'uc_store')
+      \Drupal::service('date.formatter')->format($uc_shipment->getExpectedDelivery(), 'uc_store'),
     );
     $build['schedule'] = array(
       '#type' => 'container',

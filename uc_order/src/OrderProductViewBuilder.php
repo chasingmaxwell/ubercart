@@ -52,4 +52,5 @@ class OrderProductViewBuilder extends EntityViewBuilder {
       );
     }
   }
+
 }

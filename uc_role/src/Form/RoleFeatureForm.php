@@ -150,7 +150,7 @@ class RoleFeatureForm extends FormBase {
         'day' => $this->t('day(s)'),
         'week' => $this->t('week(s)'),
         'month' => $this->t('month(s)'),
-        'year' => $this->t('year(s)')
+        'year' => $this->t('year(s)'),
       ),
       '#default_value' => $default_granularity,
       '#description' => $this->t('From the time the role was purchased.'),
@@ -241,7 +241,7 @@ class RoleFeatureForm extends FormBase {
     );
 
     $description = empty($product_role['model']) ? $this->t('<strong>SKU:</strong> Any<br />') : $this->t('<strong>SKU:</strong> @sku<br />', ['@sku' => $product_role['model']]);
-    $description .=  $this->t('<strong>Role:</strong> @role_name<br />', ['@role_name' => _uc_role_get_name($product_role['rid'])]);
+    $description .= $this->t('<strong>Role:</strong> @role_name<br />', ['@role_name' => _uc_role_get_name($product_role['rid'])]);
 
     if ($product_role['end_override']) {
       if ($product_role['end_time']) {

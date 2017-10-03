@@ -140,16 +140,17 @@ class OrderPaymentsFormTest extends UbercartTestBase {
     // Go to order log and ensure two payments and one payment deletion were logged.
     $this->drupalGet('admin/store/orders/' . $order->id() . '/log');
     $this->assertText(
-      'Check payment for ' . uc_currency_format($first_payment) .' entered.',
+      'Check payment for ' . uc_currency_format($first_payment) . ' entered.',
       'First payment was logged'
     );
     $this->assertText(
-      'Check payment for ' . uc_currency_format($second_payment) .' entered.',
+      'Check payment for ' . uc_currency_format($second_payment) . ' entered.',
       'Second payment was logged'
     );
     $this->assertText(
-      'Check payment for ' . uc_currency_format($first_payment) .' deleted.',
+      'Check payment for ' . uc_currency_format($first_payment) . ' deleted.',
       'Payment deletion was logged'
     );
   }
+
 }

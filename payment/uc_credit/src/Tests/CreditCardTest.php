@@ -298,4 +298,5 @@ class CreditCardTest extends UbercartTestBase {
       }
     }
   }
+
 }

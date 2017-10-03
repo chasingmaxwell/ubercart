@@ -120,7 +120,7 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
   public function cartDetails(OrderInterface $order, array $form, FormStateInterface $form_state) {
     $build = array(
       '#type' => 'container',
-      '#attributes' => array('class' => 'uc-credit-form')
+      '#attributes' => array('class' => 'uc-credit-form'),
     );
     $build['#attached']['library'][] = 'uc_credit/uc_credit.styles';
     $build['cc_policy'] = array(
@@ -175,7 +175,8 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
       $default_num = NULL;
     }
     elseif (!$this->validateCardNumber($order->payment_details['cc_number'])) {
-      // Display the number as is if it does not validate so it can be corrected.
+      // Display the number as-is if it does not validate,
+      // so it can be corrected.
       $default_num = $order->payment_details['cc_number'];
     }
     else {

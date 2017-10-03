@@ -87,7 +87,7 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
       '#theme' => 'image',
       '#uri' => drupal_get_path('module', 'uc_usps') . '/images/uc_usps_logo.jpg',
       '#alt' => $this->t('U.S.P.S. logo'),
-      '#attributes' => array('class' => array('usps-logo')),
+      '#attributes' => array('class' => ['usps-logo']),
     );
     // Add USPS service name, removing any 'U.S.P.S.' prefix.
     $build['label'] = array(
@@ -512,28 +512,28 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
       if (isset($response->Package)) {
         foreach ($response->Package as $package) {
           if (isset($package->Error)) {
-            $debug_data['error'][] = (string)$package->Error[0]->Description . '<br />';
+            $debug_data['error'][] = (string) $package->Error[0]->Description . '<br />';
           }
           else {
             if (strpos($method['id'], 'intl')) {
               foreach ($package->Service as $service) {
-                $id = (string)$service['ID'];
-                $services[$id]['label'] = t('U.S.P.S. @service', array('@service' => (string)$service->SvcDescription));
+                $id = (string) $service['ID'];
+                $services[$id]['label'] = t('U.S.P.S. @service', ['@service' => (string) $service->SvcDescription]);
                 // Markup rate before customer sees it.
                 if (!isset($services[$id]['rate'])) {
                   $services[$id]['rate'] = 0;
                 }
-                $services[$id]['rate'] += $this->rateMarkup((string)$service->Postage);
+                $services[$id]['rate'] += $this->rateMarkup((string) $service->Postage);
               }
             }
             else {
               foreach ($package->Postage as $postage) {
-                $classid = (string)$postage['CLASSID'];
+                $classid = (string) $postage['CLASSID'];
                 if ($classid === '0') {
-                  if ((string)$postage->MailService == "First-Class Mail® Parcel") {
+                  if ((string) $postage->MailService == "First-Class Mail® Parcel") {
                     $classid = 'zeroParcel';
                   }
-                  elseif ((string)$postage->MailService == "First-Class Mail® Letter") {
+                  elseif ((string) $postage->MailService == "First-Class Mail® Letter") {
                     $classid = 'zeroFlat';
                   }
                   else {
@@ -543,16 +543,16 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
                 if (!isset($services[$classid]['rate'])) {
                   $services[$classid]['rate'] = 0;
                 }
-                $services[$classid]['label'] = t('U.S.P.S. @service', array('@service' => (string)$postage->MailService));
+                $services[$classid]['label'] = t('U.S.P.S. @service', ['@service' => (string) $postage->MailService]);
                 // Markup rate before customer sees it.
                 // Rates are stored differently if ONLINE $rate_type is requested.
                 // First Class doesn't have online rates, so if CommercialRate
                 // is missing use Rate instead.
                 if ($rate_type && !empty($postage->CommercialRate)) {
-                  $services[$classid]['rate'] += $this->rateMarkup((string)$postage->CommercialRate);
+                  $services[$classid]['rate'] += $this->rateMarkup((string) $postage->CommercialRate);
                 }
                 else {
-                  $services[$classid]['rate'] += $this->rateMarkup((string)$postage->Rate);
+                  $services[$classid]['rate'] += $this->rateMarkup((string) $postage->Rate);
                 }
               }
             }

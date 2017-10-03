@@ -104,4 +104,5 @@ class CustomSalesReport extends FormBase {
 
     $form_state->setRedirect('uc_report.custom.sales', $args);
   }
+
 }

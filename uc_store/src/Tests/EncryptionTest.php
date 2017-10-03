@@ -15,7 +15,7 @@ class EncryptionTest extends WebTestBase {
   public static $modules = array('uc_store');
 
   /**
-   * Encryption object
+   * Encryption object.
    *
    * @var \Drupal\uc_store\EncryptionInterface
    */

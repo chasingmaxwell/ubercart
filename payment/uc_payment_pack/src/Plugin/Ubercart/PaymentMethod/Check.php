@@ -19,6 +19,9 @@ use Drupal\uc_store\Address;
  */
 class Check extends PaymentMethodPluginBase {
 
+  /**
+   * {@inheritdoc}
+   */
   public function defaultConfiguration() {
     $config = \Drupal::config('uc_store.settings');
     return [
@@ -69,7 +72,7 @@ class Check extends PaymentMethodPluginBase {
    */
   public function cartDetails(OrderInterface $order, array $form, FormStateInterface $form_state) {
     $build['instructions'] = array(
-      '#markup' => $this->t('Checks should be made out to:')
+      '#markup' => $this->t('Checks should be made out to:'),
     );
 
     $address = Address::create($this->configuration['address']);

@@ -5,7 +5,6 @@ namespace Drupal\uc_country\Form;
 use Drupal\Core\Entity\EntityForm;
 use Drupal\Core\Form\FormStateInterface;
 
-
 /**
  * Form controller for country forms.
  */
@@ -83,4 +82,5 @@ class CountryForm extends EntityForm {
     drupal_set_message($this->t('Country settings saved.'));
     $form_state->setRedirect('entity.uc_country.collection');
   }
+
 }

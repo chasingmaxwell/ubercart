@@ -97,7 +97,7 @@ class WeightQuote extends ShippingQuotePluginBase {
         $product_rate = $this->configuration['product_rate'] * $product->qty->value;
       }
 
-      $rate += $product_rate  * $product->weight->value * uc_weight_conversion($product->weight->units);
+      $rate += $product_rate * $product->weight->value * uc_weight_conversion($product->weight->units);
     }
 
     return [$rate];

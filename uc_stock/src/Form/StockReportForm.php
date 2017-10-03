@@ -50,4 +50,5 @@ class StockReportForm extends FormBase {
       $form_state->setRedirect('uc_stock.settings');
     }
   }
+
 }

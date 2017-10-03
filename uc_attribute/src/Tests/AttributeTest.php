@@ -873,4 +873,5 @@ class AttributeTest extends UbercartTestBase {
   protected function showVar($var) {
     $this->pass('<pre>' . print_r($var, TRUE) . '</pre>');
   }
+
 }

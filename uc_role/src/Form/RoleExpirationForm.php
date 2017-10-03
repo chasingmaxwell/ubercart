@@ -57,7 +57,7 @@ class RoleExpirationForm extends FormBase {
     foreach ($results as $result) {
       $account = User::load($result->id());
 
-      // Each row has user name, role , expiration date, and edit/delete operations.
+      // Each row has username, role, expiration, and edit/delete operations.
       $row = array(
         'username' => SafeMarkup::checkPlain($account->getUsername()),
         'role' => SafeMarkup::checkPlain(_uc_role_get_name($result->rid)),

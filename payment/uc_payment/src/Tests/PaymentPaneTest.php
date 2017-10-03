@@ -100,4 +100,5 @@ class PaymentPaneTest extends UbercartTestBase {
     $this->assertNoText('Select a payment method from the following options.');
     $this->assertFieldByXPath("//input[@name='panes[payment][payment_method]' and @disabled='disabled']");
   }
+
 }

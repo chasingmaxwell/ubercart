@@ -36,7 +36,7 @@ function uc_ups_fulfill_order($form, FormStateInterface $form_state, $order, $pa
   $form['packages'] = array(
     '#type' => 'fieldset',
     '#title' => t('Packages'),
-    '#tree' => TRUE
+    '#tree' => TRUE,
   );
   foreach ($package_ids as $id) {
     $package = uc_shipping_package_load($id);
@@ -200,7 +200,7 @@ function uc_ups_fulfill_order($form, FormStateInterface $form_state, $order, $pa
     '#default_value' => array(
       'year'  => $today['year'],
       'month' => $today['mon'],
-      'day'   => $today['mday']
+      'day'   => $today['mday'],
     ),
   );
   $form['shipment']['expected_delivery'] = array(
@@ -209,13 +209,13 @@ function uc_ups_fulfill_order($form, FormStateInterface $form_state, $order, $pa
     '#default_value' => array(
       'year'  => $today['year'],
       'month' => $today['mon'],
-      'day'   => $today['mday']
+      'day'   => $today['mday'],
     ),
   );
   $form['actions'] = array('#type' => 'actions');
   $form['actions']['submit'] = array(
     '#type'  => 'submit',
-    '#value' => t('Review shipment')
+    '#value' => t('Review shipment'),
   );
 
   return $form;
@@ -708,7 +708,7 @@ function uc_ups_confirm_shipment_submit($form, FormStateInterface $form_state) {
  *   ShipmentAcceptRequest XML document to send to UPS.
  */
 function uc_ups_request_pickup($digest, $order_id = 0, $packages = array()) {
-  $packages = (array)$packages;
+  $packages = (array) $packages;
 
   $schema = uc_ups_access_request();
   $schema .= "<?xml version=\"1.0\" encoding=\"UTF-8\"?>

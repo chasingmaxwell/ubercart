@@ -8,8 +8,8 @@ use Drupal\uc_store\Plugin\views\field\Weight;
 /**
  * Field handler to provide the weight of the package.
  *
- * We cannot use a subquery because there is no way to make sure that all products
- * in packages have the same weight unit.
+ * We cannot use a subquery because there is no way to make sure that all
+ * products in packages have the same weight unit.
  *
  * @ingroup views_field_handlers
  *
@@ -48,4 +48,5 @@ class PackageWeight extends Weight {
       return uc_weight_format($package->getWeight(), $package->getWeightUnits());
     }
   }
+
 }

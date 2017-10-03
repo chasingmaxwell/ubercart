@@ -32,4 +32,5 @@ class Total extends GroupByNumeric {
       $this->{$info[$this->operator]['method']}($field);
     }
   }
+
 }

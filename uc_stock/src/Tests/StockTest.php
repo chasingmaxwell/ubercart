@@ -107,4 +107,5 @@ class StockTest extends UbercartTestBase {
     $this->assertTrue(strpos($mail['body'], $this->product->model->value) !== FALSE, 'Mail body contains SKU.');
     $this->assertTrue(strpos($mail['body'], 'has reached ' . $qty) !== FALSE, 'Mail body contains quantity.');
   }
+
 }

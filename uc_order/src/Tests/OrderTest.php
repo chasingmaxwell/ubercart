@@ -327,4 +327,5 @@ class OrderTest extends UbercartTestBase {
     }
     return $this->assertTrue(array_search($text, $GLOBALS['entity_crud_hook_test']) !== FALSE, $message, $group);
   }
+
 }

@@ -215,4 +215,5 @@ class CartSettingsTest extends UbercartTestBase {
       'The breadcrumb link is set correctly.'
     );
   }
+
 }

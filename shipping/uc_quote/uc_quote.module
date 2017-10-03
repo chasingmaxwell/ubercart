@@ -322,7 +322,7 @@ function uc_quote_get_shipping_type($id_type, $id) {
   }
   // @todo: shouldn't have to test here and add the small_package default -
   // there should always be a value like there was in D7.
-  return isset($types[$id_type][$id])  ?  $types[$id_type][$id] : 'small_package';
+  return isset($types[$id_type][$id]) ? $types[$id_type][$id] : 'small_package';
 }
 
 /**

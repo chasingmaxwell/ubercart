@@ -78,4 +78,5 @@ class CustomProductReport extends FormBase {
 
     $form_state->setRedirect('uc_report.custom.products', $args);
   }
+
 }

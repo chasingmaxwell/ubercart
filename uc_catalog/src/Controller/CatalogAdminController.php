@@ -75,4 +75,5 @@ class CatalogAdminController extends ControllerBase {
 
     return $build;
   }
+
 }

@@ -8,7 +8,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\user\RoleInterface;
 
-
 /**
  * Grants roles upon accepted payment of products.
  *
@@ -103,7 +102,7 @@ class FeatureSettingsForm extends ConfigFormBase {
         'day' => $this->t('day(s)'),
         'week' => $this->t('week(s)'),
         'month' => $this->t('month(s)'),
-        'year' => $this->t('year(s)')
+        'year' => $this->t('year(s)'),
       ),
       '#description' => $this->t('From the time the role was purchased.'),
       '#prefix' => '<div class="expiration">',
@@ -154,7 +153,7 @@ class FeatureSettingsForm extends ConfigFormBase {
         'day' => $this->t('day(s)'),
         'week' => $this->t('week(s)'),
         'month' => $this->t('month(s)'),
-        'year' => $this->t('year(s)')
+        'year' => $this->t('year(s)'),
       ),
       '#description' => $this->t('The amount of time before a role expiration takes place that a customer is notified of its expiration.'),
       '#prefix' => '<div class="expiration">',
@@ -207,4 +206,5 @@ class FeatureSettingsForm extends ConfigFormBase {
 
     parent::submitForm($form, $form_state);
   }
+
 }

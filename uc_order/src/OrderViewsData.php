@@ -442,4 +442,5 @@ class OrderViewsData extends EntityViewsData {
 
     return $data;
   }
+
 }
