@@ -142,7 +142,7 @@ class QuoteTest extends UbercartTestBase {
     $quote = $this->createQuote();
     $this->addToCart($product);
     $this->drupalPostForm('cart', array('items[0][qty]' => 1), t('Checkout'));
-    $this->assertNoText('Calculate shipping cost', 'Shipping pane is not present with no shippable item.');
+    $this->assertNoText(t('Calculate shipping cost'), 'Shipping pane is not present with no shippable item.');
   }
 
   /**

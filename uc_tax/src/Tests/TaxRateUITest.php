@@ -15,10 +15,10 @@ class TaxRateUITest extends TaxTestBase {
     // Verify tax rate configuration item is listed on store configuration menu.
     $this->drupalGet('admin/store/config');
     $this->assertLinkByHref('admin/store/config/tax');
-    $this->assertText('Configure tax rates and rules.', 'Tax rate menu item found.');
+    $this->assertText(t('Configure tax rates and rules.'), 'Tax rate menu item found.');
     $this->clickLink(t('Tax rates'));
     $this->assertUrl('admin/store/config/tax');
-    $this->assertText('No tax rates have been configured yet.', 'No tax rates configured.');
+    $this->assertText(t('No tax rates have been configured yet.'), 'No tax rates configured.');
 
     // Create a 20% inclusive tax rate.
     $rate = array(
@@ -40,7 +40,7 @@ class TaxRateUITest extends TaxTestBase {
     $this->drupalGet('admin/store/config/tax');
     $this->assertText($tax_rate->label(), 'Tax was saved successfully.');
     $this->assertText($tax_rate->getRate() . '%', 'Tax rate is correct.');
-    $this->assertText('Any product', 'Shipping types correct.');
+    $this->assertText(t('Any product'), 'Shipping types correct.');
     $this->assertText('product, blank-line', 'Product types correct.');
     $this->assertText('generic, tax', 'Line item types correct.');
 
@@ -49,7 +49,7 @@ class TaxRateUITest extends TaxTestBase {
     $this->clickLink(t('Clone'));
     $this->assertUrl('admin/store/config/tax');
     $this->assertText(
-      'Tax rate ' . $tax_rate->label() . ' was cloned.',
+      t('Tax rate @rate was cloned.', ['@rate' => $tax_rate->label()]),
       'Tax was cloned successfully.'
     );
 
@@ -66,22 +66,22 @@ class TaxRateUITest extends TaxTestBase {
     $this->clickLink(t('Delete'));
     $this->assertUrl('admin/store/config/tax/' . $tax_rate->id() . '_clone/delete');
     $this->assertText(
-      'Are you sure you want to delete Copy of ' . $tax_rate->label() . '?',
+      t('Are you sure you want to delete Copy of @label?', ['@label' => $tax_rate->label()]),
       'Delete confirmation form found.'
     );
     // Verify the 'Cancel' button works.
     $this->clickLink(t('Cancel'));
     $this->assertUrl('admin/store/config/tax');
-    $this->assertText('Copy of ' . $tax_rate->label(), 'Tax rate not deleted.');
+    $this->assertText(t('Copy of @label', ['@label' => $tax_rate->label()]), 'Tax rate not deleted.');
     // Now, actually delete the rate.
     $this->clickLink(t('Delete'));
     $this->assertUrl('admin/store/config/tax/' . $tax_rate->id() . '_clone/delete');
     $this->drupalPostForm(NULL, array(), t('Delete tax rate'));
     $this->assertUrl('admin/store/config/tax');
-    $this->assertText('Tax rate Copy of ' . $tax_rate->label() . ' has been deleted.', 'Delete message found.');
+    $this->assertText(t('Tax rate Copy of @label has been deleted.', ['@label' => $tax_rate->label()]), 'Delete message found.');
     // Go to next page to clear the drupal_set_message.
     $this->drupalGet('admin/store/config/tax');
-    $this->assertNoText('Copy of ' . $tax_rate->label(), 'Tax rate deleted successfully.');
+    $this->assertNoText(t('Copy of @label', ['@label' => $tax_rate->label()]), 'Tax rate deleted successfully.');
 
     // Test 'Disable' operation.
     $this->drupalGet('admin/store/config/tax');
@@ -98,13 +98,13 @@ class TaxRateUITest extends TaxTestBase {
     $this->clickLink(t('Edit'));
     $this->assertUrl('admin/store/config/tax/' . $tax_rate->id());
     // Test for known fields.
-    $this->assertText('Default tax rate');
-    $this->assertText('Tax rate override field');
-    $this->assertText('Jurisdiction');
-    $this->assertText('Taxed products');
-    $this->assertText('Taxed product types');
-    $this->assertText('Taxed line items');
-    $this->assertText('Tax inclusion text');
+    $this->assertText(t('Default tax rate'));
+    $this->assertText(t('Tax rate override field'));
+    $this->assertText(t('Jurisdiction'));
+    $this->assertText(t('Taxed products'));
+    $this->assertText(t('Taxed product types'));
+    $this->assertText(t('Taxed line items'));
+    $this->assertText(t('Tax inclusion text'));
     // Test for Save tax rate button, Cancel link, delete link.
     $this->assertLink(t('Cancel'));
     // We have already tested delete.
@@ -117,13 +117,13 @@ class TaxRateUITest extends TaxTestBase {
     $this->drupalPostForm(NULL, array('plugin' => 'percentage_rate'), t('Add tax rate'));
     $this->assertUrl('admin/store/config/tax/add/percentage_rate');
     // Test for same known fields as above.
-    $this->assertText('Default tax rate');
-    $this->assertText('Tax rate override field');
-    $this->assertText('Jurisdiction');
-    $this->assertText('Taxed products');
-    $this->assertText('Taxed product types');
-    $this->assertText('Taxed line items');
-    $this->assertText('Tax inclusion text');
+    $this->assertText(t('Default tax rate'));
+    $this->assertText(t('Tax rate override field'));
+    $this->assertText(t('Jurisdiction'));
+    $this->assertText(t('Taxed products'));
+    $this->assertText(t('Taxed product types'));
+    $this->assertText(t('Taxed line items'));
+    $this->assertText(t('Tax inclusion text'));
     // Test for Save tax rate button, Cancel link, no delete link.
     $this->assertLink(t('Cancel'));
     $this->assertNoLink(t('Delete'));

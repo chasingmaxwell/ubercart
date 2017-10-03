@@ -103,12 +103,12 @@ class CountryTest extends WebTestBase {
 
     // Verify that an error is shown.
     $this->drupalGet('admin/store');
-    $this->assertText('No countries are enabled.');
+    $this->assertText(t('No countries are enabled.'));
 
     // Verify that the country fields are hidden.
     $this->drupalGet('admin/store/config/store');
-    $this->assertNoText('State/Province');
-    $this->assertNoText('Country');
+    $this->assertNoText(t('State/Province'));
+    $this->assertNoText(t('Country'));
   }
 
   /**

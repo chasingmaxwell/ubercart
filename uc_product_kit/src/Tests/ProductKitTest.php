@@ -192,7 +192,7 @@ class ProductKitTest extends UbercartTestBase {
     $this->assertTextPattern('/Subtotal:\s*' . preg_quote(uc_currency_format($total * $qty)) . '/', 'Updated product kit total found.');
 
     $this->drupalPostForm(NULL, array(), 'Remove');
-    $this->assertText('There are no products in your shopping cart.');
+    $this->assertText(t('There are no products in your shopping cart.'));
 
     // Test kits with listing.
     $kit_data['mutable'] = UC_PRODUCT_KIT_UNMUTABLE_WITH_LIST;
@@ -218,7 +218,7 @@ class ProductKitTest extends UbercartTestBase {
     $this->assertTextPattern('/Subtotal:\s*' . preg_quote(uc_currency_format($total * $qty)) . '/', 'Updated product kit total found.');
 
     $this->drupalPostForm(NULL, array(), 'Remove');
-    $this->assertText('There are no products in your shopping cart.');
+    $this->assertText(t('There are no products in your shopping cart.'));
 
     // Test mutable kits.
     $kit_data['mutable'] = UC_PRODUCT_KIT_MUTABLE;
@@ -254,7 +254,7 @@ class ProductKitTest extends UbercartTestBase {
     $this->drupalPostForm(NULL, array(), 'Remove');
     $this->drupalPostForm(NULL, array(), 'Remove');
     $this->drupalPostForm(NULL, array(), 'Remove');
-    $this->assertText('There are no products in your shopping cart.');
+    $this->assertText(t('There are no products in your shopping cart.'));
   }
 
 }

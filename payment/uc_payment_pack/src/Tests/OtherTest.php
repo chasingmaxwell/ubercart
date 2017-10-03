@@ -23,7 +23,7 @@ class OtherTest extends PaymentPackTestBase {
 
     // Test review order page
     $this->drupalPostForm(NULL, array(), 'Review order');
-    $this->assertText('Other', 'Other payment method found on review page.');
+    $this->assertText(t('Other'), 'Other payment method found on review page.');
     $this->drupalPostForm(NULL, array(), 'Submit order');
 
     // Test user order view
@@ -31,11 +31,11 @@ class OtherTest extends PaymentPackTestBase {
     $this->assertEqual($order->getPaymentMethodId(), $other['id'], 'Order has other payment method.');
 
     $this->drupalGet('user/' . $order->getOwnerId() . '/orders/' . $order->id());
-    $this->assertText('Method: Other', 'Other payment method displayed.');
+    $this->assertText(t('Method: Other'), 'Other payment method displayed.');
 
     // Test admin order view
     $this->drupalGet('admin/store/orders/' . $order->id());
-    $this->assertText('Method: Other', 'Other payment method displayed.');
+    $this->assertText(t('Method: Other'), 'Other payment method displayed.');
 
     $this->drupalGet('admin/store/orders/' . $order->id() . '/edit');
     $this->assertFieldByName('payment_method', $other['id'], 'Other payment method is selected in the order edit form.');

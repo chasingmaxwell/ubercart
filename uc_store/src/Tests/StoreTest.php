@@ -17,10 +17,10 @@ class StoreTest extends UbercartTestBase {
 
     $this->drupalGet('admin/store');
     $this->assertTitle('Store | Drupal');
-    $this->assertText('Configuration');
-    $this->assertLink('Store');
-    $this->assertLink('Countries and addresses');
-    $this->assertText('Store status');
+    $this->assertText(t('Configuration'));
+    $this->assertLink(t('Store'));
+    $this->assertLink(t('Countries and addresses'));
+    $this->assertText(t('Store status'));
 
     $edit = array(
       'uc_store_name' => $this->randomMachineName(),

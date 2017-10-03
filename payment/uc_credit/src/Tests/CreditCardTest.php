@@ -133,7 +133,7 @@ class CreditCardTest extends UbercartTestBase {
     $config->set('encryption_path', '')->save();
 
     $this->drupalGet('admin/store');
-    $this->assertText('You must review your credit card security settings and enable encryption before you can accept credit card payments.');
+    $this->assertText(t('You must review your credit card security settings and enable encryption before you can accept credit card payments.'));
 
     $this->drupalPostForm(
       'admin/store/config/payment/credit',
@@ -154,7 +154,7 @@ class CreditCardTest extends UbercartTestBase {
       array('uc_credit_encryption_path' => ''),
       t('Save configuration')
     );
-    $this->assertText('Key path must be specified in security settings tab.');
+    $this->assertText(t('Key path must be specified in security settings tab.'));
 
     // Specify non-existent directory
     $this->drupalPostForm(
@@ -162,7 +162,7 @@ class CreditCardTest extends UbercartTestBase {
       array('uc_credit_encryption_path' => 'sites/default/ljkh/asdfasfaaaaa'),
       t('Save configuration')
     );
-    $this->assertText('You have specified a non-existent directory.');
+    $this->assertText(t('You have specified a non-existent directory.'));
 
     // Next, specify existing directory that's write protected.
     // Use /dev, as that should never be accessible.
@@ -171,7 +171,7 @@ class CreditCardTest extends UbercartTestBase {
       array('uc_credit_encryption_path' => '/dev'),
       t('Save configuration')
     );
-    $this->assertText('Cannot write to directory, please verify the directory permissions.');
+    $this->assertText(t('Cannot write to directory, please verify the directory permissions.'));
 
     // Next, specify writeable directory, but with excess whitespace
     // and trailing /
@@ -187,7 +187,7 @@ class CreditCardTest extends UbercartTestBase {
       'sites/default/files/testkey',
       'Key file path has been set.'
     );
-    $this->assertText('Credit card encryption key file generated.');
+    $this->assertText(t('Credit card encryption key file generated.'));
 
     // Check that warning about needing key file goes away.
     $this->assertNoText(t('Credit card security settings must be configured in the security settings tab.'));
@@ -200,7 +200,7 @@ class CreditCardTest extends UbercartTestBase {
       array('uc_credit_encryption_path' => 'sites/default/files/testkey'),
       t('Save configuration')
     );
-    $this->assertText('Credit card encryption key file generated.');
+    $this->assertText(t('Credit card encryption key file generated.'));
 
     // Test contents - must contain 32-character hexadecimal string.
     $this->assertTrue(
@@ -252,7 +252,7 @@ class CreditCardTest extends UbercartTestBase {
 
     // Try to submit the bad CVV.
     $this->drupalPostForm(NULL, [], 'Submit order');
-    $this->assertText('We were unable to process your credit card payment. Please verify your details and try again.');
+    $this->assertText(t('We were unable to process your credit card payment. Please verify your details and try again.'));
 
     // Go back.
     $this->drupalPostForm(NULL, [], 'Back');
@@ -267,7 +267,7 @@ class CreditCardTest extends UbercartTestBase {
 
     // Check for success.
     $this->drupalPostForm(NULL, [], 'Submit order');
-    $this->assertText('Your order is complete!');
+    $this->assertText(t('Your order is complete!'));
   }
 
   /**
@@ -290,10 +290,10 @@ class CreditCardTest extends UbercartTestBase {
         $this->drupalPostForm('admin/store/orders/' . $order->id() . '/credit/' . $this->paymentMethod['id'], $edit, 'Charge amount');
 
         if ($y > $year || $m >= $month) {
-          $this->assertText('The credit card was processed successfully.', SafeMarkup::format('Card with expiry date @month/@year passed validation.', ['@month' => $m, '@year' => $y]));
+          $this->assertText(t('The credit card was processed successfully.'), SafeMarkup::format('Card with expiry date @month/@year passed validation.', ['@month' => $m, '@year' => $y]));
         }
         else {
-          $this->assertNoText('The credit card was processed successfully.', SafeMarkup::format('Card with expiry date @month/@year correctly failed validation.', ['@month' => $m, '@year' => $y]));
+          $this->assertNoText(t('The credit card was processed successfully.'), SafeMarkup::format('Card with expiry date @month/@year correctly failed validation.', ['@month' => $m, '@year' => $y]));
         }
       }
     }

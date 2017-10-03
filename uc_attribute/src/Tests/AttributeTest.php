@@ -318,8 +318,8 @@ class AttributeTest extends UbercartTestBase {
     $this->drupalPostForm('admin/store/products/attributes/add', $edit, t('Submit'));
     if ($edit['display'] != 0) {
       // We redirect to add options page ONLY for non-textfield attributes.
-      $this->assertText('Options for ' . $edit['name']);
-      $this->assertText('No options for this attribute have been added yet.');
+      $this->assertText(t('Options for @name', ['@name' => $edit['name']]));
+      $this->assertText(t('No options for this attribute have been added yet.'));
     }
     else {
       // For textfield attributes we redirect to attribute list.
@@ -647,13 +647,13 @@ class AttributeTest extends UbercartTestBase {
     $option = $this->createAttributeOption(array('aid' => $attribute->aid));
 
     $this->drupalGet('node/' . $product->id() . '/edit/attributes');
-    $this->assertText('No attributes available.');
+    $this->assertText(t('No attributes available.'));
 
     $this->clickLink('Add existing attribute');
     $this->assertText($attribute->name);
 
     $this->drupalPostForm(NULL, array('add_attributes[' . $attribute->aid. ']' => 1), t('Add attributes'));
-    $this->assertText('1 attribute has been added.');
+    $this->assertText(t('1 attribute has been added.'));
     $this->assertText($attribute->name, 'Attribute name found');
     $this->assertFieldByName('attributes[' . $attribute->aid . '][label]', $attribute->label, 'Attribute label found');
     $this->assertText($option->name, 'Default option name found');
@@ -662,11 +662,11 @@ class AttributeTest extends UbercartTestBase {
 
     $this->drupalGet('node/' . $product->id() . '/edit/attributes/add');
     $this->assertNoText($attribute->name);
-    $this->assertText('No attributes left to add.');
+    $this->assertText(t('No attributes left to add.'));
 
     $edit = array('attributes[' . $attribute->aid. '][remove]' => 1);
     $this->drupalPostForm('node/' . $product->id() . '/edit/attributes', $edit, t('Save changes'));
-    $this->assertText('No attributes available.');
+    $this->assertText(t('No attributes available.'));
   }
 
   /**
@@ -706,7 +706,7 @@ class AttributeTest extends UbercartTestBase {
     uc_attribute_subject_save($attribute, 'product', $product->id(), TRUE);
 
     $this->drupalGet('node/' . $product->id() . '/edit/adjustments');
-    $this->assertText('Default product SKU: ' . $product->model->value, 'Default product SKU found');
+    $this->assertText(t('Default product SKU: @sku', ['@sku' => $product->model->value]), 'Default product SKU found');
     $this->assertRaw('<th>' . $attribute->name . '</th>', 'Attribute name found');
     foreach ($attribute->options as $option) {
       $this->assertRaw('<td>' . $option->name . '</td>', 'Option name found');
@@ -739,7 +739,7 @@ class AttributeTest extends UbercartTestBase {
 
     // Test required attribute.
     $this->addToCart($product);
-    $this->assertText($attribute->label . ' field is required', 'Required attribute message found.');
+    $this->assertText(t('@label field is required', ['@label' => $attribute->label]), 'Required attribute message found.');
 
     // Cart display.
     $price = uc_currency_format($product->price->value + $option->price);
@@ -764,7 +764,7 @@ class AttributeTest extends UbercartTestBase {
     // Invoice display.
     $this->drupalGet('admin/store/orders/1/invoice');
     $this->assertText($attribute->label . ': ' . $option->name, 'Attribute and selected option found on invoice');
-    $this->assertText('SKU: ' . $option->model, 'Adjusted SKU found on invoice');
+    $this->assertText(t('SKU: @sku', ['@sku' => $option->model]), 'Adjusted SKU found on invoice');
     $this->assertText($price, 'Adjusted price found on invoice');
   }
 

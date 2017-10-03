@@ -28,7 +28,7 @@ class PaymentPaneTest extends UbercartTestBase {
   public function testPaymentMethodOptions() {
     // No payment methods.
     $this->drupalGet('cart/checkout');
-    $this->assertText('Checkout cannot be completed without any payment methods enabled. Please contact an administrator to resolve the issue.');
+    $this->assertText(t('Checkout cannot be completed without any payment methods enabled. Please contact an administrator to resolve the issue.'));
 
     // Single payment method.
     $check = $this->createPaymentMethod('check');

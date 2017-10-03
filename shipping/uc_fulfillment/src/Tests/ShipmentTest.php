@@ -96,7 +96,7 @@ class ShipmentTest extends UbercartTestBase {
     $this->assertResponse(200);
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new');
     $this->assertText(
-      'No shipments have been made for this order.',
+      t('No shipments have been made for this order.'),
       'Ship action found.'
     );
     $this->assertText(
@@ -120,11 +120,11 @@ class ShipmentTest extends UbercartTestBase {
     // Check that we're now on the shipment details page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/ship?method_id=manual&0=1');
     $this->assertText(
-      'Origin address',
+      t('Origin address'),
       'Origin address pane found.'
     );
     $this->assertText(
-      'Destination address',
+      t('Destination address'),
       'Destination address pane found.'
     );
     $this->assertText(
@@ -132,7 +132,7 @@ class ShipmentTest extends UbercartTestBase {
       'Packages data pane found.'
     );
     $this->assertText(
-      'Shipment data',
+      t('Shipment data'),
       'Shipment data pane found.'
     );
 
@@ -213,7 +213,7 @@ class ShipmentTest extends UbercartTestBase {
     // Check that we're now on the shipments overview page
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments');
     $this->assertText(
-      'Shipment ID',
+      t('Shipment ID'),
       'Shipment summary found.'
     );
     $this->assertText(
@@ -293,7 +293,7 @@ class ShipmentTest extends UbercartTestBase {
     // Delete takes us to confirm page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/1/delete');
     $this->assertText(
-      'The shipment will be canceled and the packages it contains will be available for reshipment.',
+      t('The shipment will be canceled and the packages it contains will be available for reshipment.'),
       'Deletion confirm question found.'
     );
     // "Cancel" returns to the shipment list page.

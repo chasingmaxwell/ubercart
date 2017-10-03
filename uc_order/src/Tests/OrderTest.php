@@ -135,7 +135,7 @@ class OrderTest extends UbercartTestBase {
     $this->assertLinkByHref('admin/store/orders/' . $order_id, 0, 'View link appears on customer order list.');
 
     $this->clickLink('Create order for this customer');
-    $this->assertText('Order created by the administration.');
+    $this->assertText(t('Order created by the administration.'));
     $this->assertFieldByName('uid_text', $this->customer->id(), 'The customer UID appears on the page.');
   }
 

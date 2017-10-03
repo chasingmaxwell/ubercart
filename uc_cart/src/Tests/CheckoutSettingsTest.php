@@ -64,7 +64,7 @@ class CheckoutSettingsTest extends UbercartTestBase {
       t('Checkout')
     );
     $this->assertNoText(
-      'Enter your billing address and information here.',
+      t('Enter your billing address and information here.'),
       'The checkout page is not displayed.'
     );
   }

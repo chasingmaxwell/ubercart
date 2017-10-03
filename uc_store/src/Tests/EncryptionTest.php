@@ -41,7 +41,11 @@ class EncryptionTest extends WebTestBase {
     $errors = $this->crypt->getErrors();
     if (!empty($errors)) {
       $this->pass('Tried to use invalid cypher.');
-      $this->assertEqual($errors[0], 'ubbi-dubbi is not a valid cypher', 'Invalid cypher error message found.');
+      $this->assertEqual(
+        $errors[0],
+        t('@cypher is not a valid cypher', ['@cypher' => 'ubbi-dubbi']),
+        'Invalid cypher error message found.'
+      );
     }
 
     $this->crypt->setCypher('aes-128-cbc');

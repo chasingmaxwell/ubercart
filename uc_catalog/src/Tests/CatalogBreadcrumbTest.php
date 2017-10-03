@@ -43,8 +43,8 @@ class CatalogBreadcrumbTest extends UbercartTestBase {
     $links = $this->xpath('//nav[@class="breadcrumb"]/ol/li/a');
     $links = array_map('strval', $links);
     $this->assertEqual(count($links), 5, 'The correct number of links were found.');
-    $this->assertEqual($links[0], 'Home');
-    $this->assertEqual($links[1], 'Catalog');
+    $this->assertEqual($links[0], t('Home'));
+    $this->assertEqual($links[1], t('Catalog'));
     $this->assertEqual($links[2], $grandparent->label());
     $this->assertEqual($links[3], $parent->label());
     $this->assertEqual($links[4], $term->label());
@@ -72,8 +72,8 @@ class CatalogBreadcrumbTest extends UbercartTestBase {
     $links = $this->xpath('//nav[@class="breadcrumb"]/ol/li/a');
     $links = array_map('strval', $links);
     $this->assertEqual(count($links), 4, 'The correct number of links were found.');
-    $this->assertEqual($links[0], 'Home');
-    $this->assertEqual($links[1], 'Catalog');
+    $this->assertEqual($links[0], t('Home'));
+    $this->assertEqual($links[1], t('Catalog'));
     $this->assertEqual($links[2], $grandparent->label());
     $this->assertEqual($links[3], $parent->label());
   }

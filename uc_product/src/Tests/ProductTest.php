@@ -24,9 +24,9 @@ class ProductTest extends UbercartTestBase {
 
   public function testProductAdmin() {
     $this->drupalGet('admin/store/products/view');
-    $this->assertText('Title');
+    $this->assertText(t('Title'));
     $this->assertText($this->product->getTitle());
-    $this->assertText('Price');
+    $this->assertText(t('Price'));
     $this->assertText(uc_currency_format($this->product->price->value));
   }
 
@@ -157,8 +157,8 @@ class ProductTest extends UbercartTestBase {
     $this->drupalPostForm('node/add/product', $edit, 'Save');
 
     $this->assertText(t('Product @title has been created.', ['@title' => $edit['title[0][value]']]), 'Product created.');
-    $this->assertNoText('Weight', 'Zero weight not shown.');
-    $this->assertNoText('Dimensions', 'Zero dimensions not shown.');
+    $this->assertNoText(t('Weight'), 'Zero weight not shown.');
+    $this->assertNoText(t('Dimensions'), 'Zero dimensions not shown.');
   }
 
   public function testProductClassForm() {
@@ -206,14 +206,14 @@ class ProductTest extends UbercartTestBase {
 
     // Check zero quantity message.
     $this->addToCart($this->product, array('qty' => 0));
-    $this->assertText('The quantity cannot be zero.');
+    $this->assertText(t('The quantity cannot be zero.'));
 
     // Check invalid quantity messages.
     $this->addToCart($this->product, array('qty' => 'x'));
-    $this->assertText('The quantity must be an integer.');
+    $this->assertText(t('The quantity must be an integer.'));
 
     $this->addToCart($this->product, array('qty' => '1a'));
-    $this->assertText('The quantity must be an integer.');
+    $this->assertText(t('The quantity must be an integer.'));
 
     // Check cart add message.
     $this->addToCart($this->product, array('qty' => 1));
@@ -221,7 +221,7 @@ class ProductTest extends UbercartTestBase {
 
     // Check cart update message.
     $this->addToCart($this->product, array('qty' => 1));
-    $this->assertText('Your item(s) have been updated.');
+    $this->assertText(t('Your item(s) have been updated.'));
   }
 
 }

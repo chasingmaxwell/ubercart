@@ -17,7 +17,7 @@ class CheckTest extends PaymentPackTestBase {
    */
   public function testCheck() {
     $this->drupalGet('admin/store/config/payment/add/check');
-    $this->assertText('Check');
+    $this->assertText(t('Check'));
     $this->assertFieldByName('settings[policy]', 'Personal and business checks will be held for up to 10 business days to ensure payment clears before an order is shipped.', 'Default check payment policy found.');
 
     $edit = [
@@ -62,14 +62,14 @@ class CheckTest extends PaymentPackTestBase {
     // Test that check settings show up on checkout page.
     $this->drupalGet('cart/checkout');
     $this->assertFieldByName('panes[payment][payment_method]', $edit['id'], 'Check payment method is selected at checkout.');
-    $this->assertText('Checks should be made out to:');
+    $this->assertText(t('Checks should be made out to:'));
     $this->assertRaw((string) $address, 'Properly formatted check mailing address found.');
     $this->assertEscaped($edit['settings[policy]'], 'Check payment policy found at checkout.');
 
     // Test that check settings show up on review order page.
     $this->drupalPostForm(NULL, array(), 'Review order');
-    $this->assertText('Check', 'Check payment method found on review page.');
-    $this->assertText('Mail to', 'Check payment method help text found on review page.');
+    $this->assertText(t('Check'), 'Check payment method found on review page.');
+    $this->assertText(t('Mail to'), 'Check payment method help text found on review page.');
     $this->assertRaw((string) $address, 'Properly formatted check mailing address found.');
     $this->drupalPostForm(NULL, array(), 'Submit order');
 
@@ -78,13 +78,13 @@ class CheckTest extends PaymentPackTestBase {
     $this->assertEqual($order->getPaymentMethodId(), $edit['id'], 'Order has check payment method.');
 
     $this->drupalGet('user/' . $order->getOwnerId() . '/orders/' . $order->id());
-    $this->assertText('Method: Check', 'Check payment method displayed.');
+    $this->assertText(t('Method: Check'), 'Check payment method displayed.');
 
     // Test admin order view - receive check.
     $this->drupalGet('admin/store/orders/' . $order->id());
-    $this->assertText('Method: Check', 'Check payment method displayed.');
-    $this->assertLink('Receive Check');
-    $this->clickLink('Receive Check');
+    $this->assertText(t('Method: Check'), 'Check payment method displayed.');
+    $this->assertLink(t('Receive Check'));
+    $this->clickLink(t('Receive Check'));
     $this->assertFieldByName('amount', number_format($order->getTotal(), 2, '.', ''), 'Amount field defaults to order total.');
 
     // Random receive date between tomorrow and 1 year from now.
@@ -96,13 +96,13 @@ class CheckTest extends PaymentPackTestBase {
       'clear_date[date]' => date('Y-m-d', $receive_date),
     );
     $this->drupalPostForm(NULL, $edit, 'Receive check');
-    $this->assertNoLink('Receive Check');
+    $this->assertNoLink(t('Receive Check'));
     $this->assertText('Clear Date: ' . $formatted, 'Check clear date found.');
 
     // Test that user order view shows check received.
     $this->drupalGet('user/' . $order->getOwnerId() . '/orders/' . $order->id());
-    $this->assertText('Check received');
-    $this->assertText('Expected clear date:');
+    $this->assertText(t('Check received'));
+    $this->assertText(t('Expected clear date:'));
     $this->assertText($formatted, 'Check clear date found.');
   }
 

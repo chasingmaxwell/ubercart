@@ -57,7 +57,7 @@ class CatalogTest extends UbercartTestBase {
     $this->drupalGet('catalog/' . $term->id());
     $this->drupalPostForm(NULL, array(), 'Add to cart');
     $this->assertNoText($product->label() . ' added to your shopping cart.');
-    $this->assertText('This product has options that need to be selected before purchase. Please select them in the form below.');
+    $this->assertText(t('This product has options that need to be selected before purchase. Please select them in the form below.'));
   }
 
   /**
@@ -99,16 +99,16 @@ class CatalogTest extends UbercartTestBase {
     $this->drupalLogin($this->adminUser);
 
     $this->drupalPostForm('admin/structure/types/manage/product/fields/node.product.taxonomy_catalog/delete', array(), t('Delete'));
-    $this->assertText('The field Catalog has been deleted from the Product content type.', 'Catalog taxonomy term reference field deleted.');
+    $this->assertText(t('The field Catalog has been deleted from the Product content type.'), 'Catalog taxonomy term reference field deleted.');
 
     $this->drupalGet('admin/structure/types/manage/product/fields');
     $this->assertNoText('taxonomy_catalog', 'Catalog taxonomy term reference field does not exist.');
 
     $this->drupalGet('admin/store');
-    $this->assertText('The catalog taxonomy reference field is missing.', 'Store status message mentions the missing field.');
+    $this->assertText(t('The catalog taxonomy reference field is missing.'), 'Store status message mentions the missing field.');
 
     $this->drupalGet('admin/store/config/catalog/repair');
-    $this->assertText('The catalog taxonomy reference field has been repaired.', 'Repair message is displayed.');
+    $this->assertText(t('The catalog taxonomy reference field has been repaired.'), 'Repair message is displayed.');
 
     $this->drupalGet('admin/structure/types/manage/product/fields');
     $this->assertText('taxonomy_catalog', 'Catalog taxonomy term reference field exists.');

@@ -73,7 +73,7 @@ class PackageTest extends UbercartTestBase {
     $this->clickLink(t('Package'));
     $this->assertResponse(200);
     $this->assertText(
-      'This order\'s products have not been organized into packages.',
+      t("This order's products have not been organized into packages."),
       'Package action found.'
     );
 
@@ -113,7 +113,7 @@ class PackageTest extends UbercartTestBase {
     $this->clickLink(t('Packages'));
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
-      'This order\'s products have not been organized into packages.',
+      t("This order's products have not been organized into packages."),
       'Package action found.'
     );
 
@@ -121,7 +121,7 @@ class PackageTest extends UbercartTestBase {
     $this->drupalPostForm(NULL, array(), t('Create one package'));
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
-      'Packages must contain at least one product.',
+      t('Packages must contain at least one product.'),
       'Validation that there must be products in a package.'
     );
 
@@ -152,7 +152,7 @@ class PackageTest extends UbercartTestBase {
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     // But we've already packaged everything...
     $this->assertText(
-      'There are no products available for this type of package.',
+      t('There are no products available for this type of package.'),
       'Create packages local action found.'
     );
 
@@ -197,7 +197,7 @@ class PackageTest extends UbercartTestBase {
     // Delete takes us to confirm page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/1/delete');
     $this->assertText(
-      'The products it contains will be available for repackaging.',
+      t('The products it contains will be available for repackaging.'),
       'Deletion confirm question found.'
     );
     // "Cancel" returns to the package list page.

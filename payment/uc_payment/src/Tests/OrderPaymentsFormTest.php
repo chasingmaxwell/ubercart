@@ -71,7 +71,7 @@ class OrderPaymentsFormTest extends UbercartTestBase {
       $edit,
       t('Record payment')
     );
-    $this->assertText('Payment entered.');
+    $this->assertText(t('Payment entered.'));
     // Verify partial payment shows up in table.
     $this->assertRaw(
       '<span class="uc-price">' . uc_currency_format($first_payment) . '</span>',
@@ -116,7 +116,7 @@ class OrderPaymentsFormTest extends UbercartTestBase {
     // Delete takes us to confirm page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/payments/1/delete');
     $this->assertText(
-      'Are you sure you want to delete this payment?',
+      t('Are you sure you want to delete this payment?'),
       'Deletion confirm question found.'
     );
     // "Cancel" returns to the payments list page.
@@ -129,7 +129,7 @@ class OrderPaymentsFormTest extends UbercartTestBase {
     $this->drupalPostForm(NULL, array(), t('Delete'));
     // Delete returns to new payments page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/payments');
-    $this->assertText('Payment deleted.');
+    $this->assertText(t('Payment deleted.'));
 
     // Verify balance has increased.
     $this->assertRaw(

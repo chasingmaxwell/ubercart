@@ -50,7 +50,7 @@ class FulfillmentTest extends UbercartTestBase {
     // Check redirected path.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
-      'This order\'s products have not been organized into packages.',
+      t("This order's products have not been organized into packages."),
       'Packages tab found.'
     );
 
@@ -64,7 +64,7 @@ class FulfillmentTest extends UbercartTestBase {
     // Check redirected path.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
-      'This order\'s products have not been organized into packages.',
+      t("This order's products have not been organized into packages."),
       'Shipments tab found.'
     );
 
@@ -104,7 +104,7 @@ class FulfillmentTest extends UbercartTestBase {
     // Check redirected path.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new');
     $this->assertText(
-      'No shipments have been made for this order.',
+      t('No shipments have been made for this order.'),
       'New shipments page reached.'
     );
     $this->assertText(
@@ -126,19 +126,19 @@ class FulfillmentTest extends UbercartTestBase {
     // Check that we're now on the shipment details page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/ship?method_id=manual&0=1');
     $this->assertText(
-      'Origin address',
+      t('Origin address'),
       'Origin address pane found.'
     );
     $this->assertText(
-      'Destination address',
+      t('Destination address'),
       'Destination address pane found.'
     );
     $this->assertText(
-      'Package 1',
+      t('Package 1'),
       'Packages data pane found.'
     );
     $this->assertText(
-      'Shipment data',
+      t('Shipment data'),
       'Shipment data pane found.'
     );
 
@@ -219,7 +219,7 @@ class FulfillmentTest extends UbercartTestBase {
     // Check that we're now on the shipments overview page
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments');
     $this->assertText(
-      'Shipment ID',
+      t('Shipment ID'),
       'Shipment summary found.'
     );
     $this->assertText(
