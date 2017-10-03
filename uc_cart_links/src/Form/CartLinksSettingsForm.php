@@ -76,22 +76,6 @@ class CartLinksSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    // Check for properly formattted Cart Links in the restrictions textarea.
-    $restrictions = (string) $form_state->getValue('uc_cart_links_restrictions');
-    if (!empty($restrictions)) {
-      $data = explode("\n", $restrictions);
-      foreach ($data as $restriction) {
-        // Ignore blank lines.
-        if (preg_match('/^\s*$/', $restriction)) {
-          continue;
-        }
-        elseif (!uc_cart_links_is_valid_syntax('/cart/add/' . $restriction)) {
-          $form_state->setErrorByName('uc_cart_links_restrictions', $this->t('Invalid syntax in Cart Links restriction "%restriction".', ['%restriction' => $restriction]));
-        }
-      }
-    }
-
-    // Check for properly formattted messages.
     $messages = (string) $form_state->getValue('uc_cart_links_messages');
     if (!empty($messages)) {
       $data = explode("\n", $messages);
