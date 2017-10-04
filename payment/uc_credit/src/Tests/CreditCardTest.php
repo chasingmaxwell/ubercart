@@ -121,7 +121,7 @@ class CreditCardTest extends UbercartTestBase {
    */
   public function testSecuritySettings() {
     // TODO:  Still need tests with existing key file
-    // where key file is not readable or doesn't contain a valid key
+    // where key file is not readable or doesn't contain a valid key.
 
     // Create key directory, make it readable and writeable.
     \Drupal::service('file_system')->mkdir('sites/default/files/testkey', 0755);
@@ -156,7 +156,7 @@ class CreditCardTest extends UbercartTestBase {
     );
     $this->assertText(t('Key path must be specified in security settings tab.'));
 
-    // Specify non-existent directory
+    // Specify non-existent directory.
     $this->drupalPostForm(
       'admin/store/config/payment/credit',
       array('uc_credit_encryption_path' => 'sites/default/ljkh/asdfasfaaaaa'),
@@ -194,7 +194,7 @@ class CreditCardTest extends UbercartTestBase {
     // Remove key file.
     \Drupal::service('file_system')->unlink('sites/default/files/testkey/' . UC_CREDIT_KEYFILE_NAME);
 
-    // Finally, specify good directory
+    // Finally, specify good directory.
     $this->drupalPostForm(
       'admin/store/config/payment/credit',
       array('uc_credit_encryption_path' => 'sites/default/files/testkey'),

@@ -14,7 +14,7 @@ class AuthorizeNetController extends ControllerBase {
    * Receives a payment notification and handles it appropriately.
    */
   public function silentPost() {
-    // Determine if this is an ARB notification or not
+    // Determine if this is an ARB notification or not.
     $arb = (isset($_POST['x_subscription_id']) and isset($_POST['x_subscription_paynum']));
 
     // Log ARB payment notification, if enabled.

@@ -40,7 +40,6 @@ define('UC_CREDIT_VOID', 'void');
 /** Name of encryption key file. */
 define('UC_CREDIT_KEYFILE_NAME', 'uc_credit.key');
 
-
 /**
  * Implements hook_help().
  */

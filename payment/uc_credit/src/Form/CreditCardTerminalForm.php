@@ -14,11 +14,15 @@ class CreditCardTerminalForm extends FormBase {
 
   /**
    * The order that is being processed.
+   *
+   * @var OrderInterface
    */
   protected $order;
 
   /**
    * The payment method that is in use.
+   *
+   * @var PaymentMethod
    */
   protected $paymentMethod;
 
@@ -121,7 +125,7 @@ class CreditCardTerminalForm extends FormBase {
 
     // If any authorizations existed...
     if (!empty($options)) {
-      // Display a fieldset with the authorizations and available action buttons.
+      // Display fieldset with the authorizations and available action buttons.
       $form['authorizations'] = array(
         '#type' => 'details',
         '#title' => $this->t('Prior authorizations'),

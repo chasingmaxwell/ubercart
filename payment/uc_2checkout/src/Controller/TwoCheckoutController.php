@@ -133,7 +133,7 @@ class TwoCheckoutController extends ControllerBase {
       $plugin = \Drupal::service('plugin.manager.uc_payment.method')->createFromOrder($order);
       $configuration = $plugin->getConfiguration();
 
-      // Validate the hash
+      // Validate the hash.
       $secret_word = $configuration['secret_word'];
       $sid = $configuration['sid'];
       $twocheckout_order_id = $values->get('sale_id');

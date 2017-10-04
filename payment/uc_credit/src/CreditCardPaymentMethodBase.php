@@ -131,7 +131,8 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
 
     $order->payment_details = array();
 
-    // Encrypted data in the session is from the user returning from the review page.
+    // Encrypted data in the session is from the user
+    // returning from the review page.
     $session = \Drupal::service('session');
     if ($session->has('sescrd')) {
       $order->payment_details = uc_credit_cache($session->get('sescrd'));
@@ -201,12 +202,18 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
         '#type' => 'number',
         '#title' => $this->t('Start date'),
         '#options' => array(
-          1 => $this->t('01 - January'), 2 => $this->t('02 - February'),
-          3 => $this->t('03 - March'), 4 => $this->t('04 - April'),
-          5 => $this->t('05 - May'), 6 => $this->t('06 - June'),
-          7 => $this->t('07 - July'), 8 => $this->t('08 - August'),
-          9 => $this->t('09 - September'), 10 => $this->t('10 - October'),
-          11 => $this->t('11 - November'), 12 => $this->t('12 - December'),
+          1 => $this->t('01 - January'),
+          2 => $this->t('02 - February'),
+          3 => $this->t('03 - March'),
+          4 => $this->t('04 - April'),
+          5 => $this->t('05 - May'),
+          6 => $this->t('06 - June'),
+          7 => $this->t('07 - July'),
+          8 => $this->t('08 - August'),
+          9 => $this->t('09 - September'),
+          10 => $this->t('10 - October'),
+          11 => $this->t('11 - November'),
+          12 => $this->t('12 - December'),
         ),
         '#default_value' => $month,
         '#required' => TRUE,

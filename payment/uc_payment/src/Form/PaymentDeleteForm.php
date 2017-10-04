@@ -16,6 +16,8 @@ class PaymentDeleteForm extends ConfirmFormBase {
 
   /**
    * The payment to be deleted.
+   *
+   * @var PaymentReceiptInterface
    */
   protected $payment;
 

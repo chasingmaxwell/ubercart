@@ -382,7 +382,7 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
       $response[$i] = substr($response[$i], 1, strlen($response[$i]) - 2);
     }
 
-    /**
+    /*
      * Response key index:
      * 0 = Response Code
      * 2 = Response Reason Code
@@ -429,7 +429,7 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
       // Create a transaction reference if specified in the payment gateway
       // settings and this is an appropriate transaction type.
       if ($this->configuration['cim']['cim_profile'] && in_array($txn_type, array(UC_CREDIT_AUTH_ONLY, UC_CREDIT_AUTH_CAPTURE))) {
-        // Ignore the returned message for now; that will appear in the comments.
+        // Ignore returned message for now; it will appear in the comments.
         _uc_authorizenet_cim_profile_create($order);
       }
     }
@@ -457,13 +457,13 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
     uc_order_comment_save($order->id(), $user->id(), $comment, 'admin');
 
     return $result;
-}
+  }
 
   /**
    * Sends an XML API Request to Authorize.Net.
    *
    * @param string $server
-   *   The name of the server to send a request to - 'production' or 'developer'.
+   *   The name of the server to send request to - 'production' or 'developer'.
    * @param string $xml
    *   The XML to send to Authorize.Net.
    * @param string $callback
@@ -508,39 +508,51 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
       case 'A':
         $text .= $this->t('Address (Street) matches, ZIP does not');
         break;
+
       case 'B':
         $text .= $this->t('Address information not provided for AVS check');
         break;
+
       case 'E':
         $text .= $this->t('AVS error');
         break;
+
       case 'G':
         $text .= $this->t('Non-U.S. Card Issuing Bank');
         break;
+
       case 'N':
         $text .= $this->t('No Match on Address (Street) or ZIP');
         break;
+
       case 'P':
         $text .= $this->t('AVS not applicable for this transaction');
         break;
+
       case 'R':
         $text .= $this->t('Retry – System unavailable or timed out');
         break;
+
       case 'S':
         $text .= $this->t('Service not supported by issuer');
         break;
+
       case 'U':
         $text .= $this->t('Address information is unavailable');
         break;
+
       case 'W':
         $text .= $this->t('Nine digit ZIP matches, Address (Street) does not');
         break;
+
       case 'X':
         $text .= $this->t('Address (Street) and nine digit ZIP match');
         break;
+
       case 'Y':
         $text .= $this->t('Address (Street) and five digit ZIP match');
         break;
+
       case 'Z':
         $text .= $this->t('Five digit ZIP matches, Address (Street) does not');
         break;

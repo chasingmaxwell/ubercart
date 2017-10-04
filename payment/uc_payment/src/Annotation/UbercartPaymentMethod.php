@@ -21,9 +21,9 @@ class UbercartPaymentMethod extends Plugin {
   /**
    * The human readable name of the payment method.
    *
-   * @ingroup plugin_translatable
-   *
    * @var \Drupal\Core\Annotation\Translation
+   *
+   * @ingroup plugin_translatable
    */
   public $name;
 
@@ -50,4 +50,5 @@ class UbercartPaymentMethod extends Plugin {
    * @var string
    */
   public $express = NULL;
+
 }
