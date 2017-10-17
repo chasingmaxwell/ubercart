@@ -22,6 +22,7 @@ use Drupal\Core\Url;
 use Drupal\user\UserInterface;
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_order\OrderInterface;
+use Drupal\node\Entity\Node;
 
 require_once dirname(__FILE__) . '/uc_order.line_item.inc';
 
@@ -230,7 +231,7 @@ function uc_order_product_revive($products, $published = TRUE) {
   foreach ($products as $product) {
     $nids[] = $product->nid->target_id;
   }
-  $nodes = node_load_multiple($nids);
+  $nodes = Node::loadMultiple($nids);
 
   // Merge in fields from any nodes that still exist (but don't override order
   // product fields that are already set).
