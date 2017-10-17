@@ -2,6 +2,8 @@
 
 namespace Drupal\uc_tax\Tests;
 
+use Drupal\node\Entity\Node;
+
 /**
  * Tests that inclusive taxes are calculated and displayed correctly.
  *
@@ -68,10 +70,10 @@ class InclusiveTaxTest extends TaxTestBase {
     ));
 
     // Set the kit total to $9 to automatically apply a discount.
-    $kit = node_load($kit->id());
+    $kit = Node::load($kit->id());
     $kit->kit_total = 9;
     $kit->save();
-    $kit = node_load($kit->id());
+    $kit = Node::load($kit->id());
     $this->assertEqual($kit->products[$product->id()]->discount, -1, 'Product kit component has correct discount applied.');
 
     // Ensure the price is displayed tax-inclusively on the add-to-cart form.

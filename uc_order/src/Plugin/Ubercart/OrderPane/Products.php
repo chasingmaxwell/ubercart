@@ -9,6 +9,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\uc_order\EditableOrderPanePluginBase;
 use Drupal\uc_order\Entity\OrderProduct;
 use Drupal\uc_order\OrderInterface;
+use Drupal\node\Entity\Node;
 
 /**
  * Manage the products an order contains.
@@ -456,7 +457,7 @@ class Products extends EditableOrderPanePluginBase {
    */
   public function productSelectSubmit($form, FormStateInterface $form_state) {
     $form_state->set('products_action', 'add_product');
-    $form_state->set('node', node_load($form_state->getValue(['product_controls', 'nid'])));
+    $form_state->set('node', Node::load($form_state->getValue(['product_controls', 'nid'])));
     $form_state->set('refresh_products', NULL);
     $form_state->setRebuild();
   }

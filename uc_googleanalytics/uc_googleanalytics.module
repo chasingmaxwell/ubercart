@@ -13,6 +13,7 @@
 use Drupal\Component\Serialization\Json;
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_order\OrderInterface;
+use Drupal\node\Entity\Node;
 
 /**
  * Implements hook_enable().
@@ -147,7 +148,7 @@ function uc_googleanalytics_ecommerce_js($order) {
     // only have one category, the first one returned (in the
     // $node->taxonomy_catalog) is chosen.
     if (\Drupal::moduleHandler()->moduleExists('taxonomy')) {
-      $node = node_load($product->nid);
+      $node = Node::load($product->nid);
       if (isset($node->taxonomy_catalog[LANGUAGE_NOT_SPECIFIED][0]['tid'])) {
         $term = taxonomy_term_load($node->taxonomy_catalog[LANGUAGE_NOT_SPECIFIED][0]['tid']);
         $product->category = $term->name;

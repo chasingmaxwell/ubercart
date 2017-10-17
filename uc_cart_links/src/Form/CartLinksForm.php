@@ -7,6 +7,7 @@ use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
@@ -169,7 +170,7 @@ class CartLinksForm extends ConfirmFormBase {
           if ($p['nid'] > 0 && $p['qty'] > 0) {
             // If it's a product kit, we need black magic to make everything work
             // right. In other words, we have to simulate FAPI's form values.
-            $node = node_load($p['nid']);
+            $node = Node::load($p['nid']);
             if ($node->status) {
               if (isset($node->products) && is_array($node->products)) {
                 foreach ($node->products as $nid => $product) {

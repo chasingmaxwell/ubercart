@@ -5,6 +5,8 @@
  * Hooks provided by the Cart module.
  */
 
+use Drupal\node\Entity\Node;
+
 /**
  * @addtogroup hooks
  * @{
@@ -68,7 +70,7 @@ function hook_uc_add_to_cart($nid, $qty, $data) {
  *   An array of data to be merged into the item added to the cart.
  */
 function hook_uc_add_to_cart_data($form_values) {
-  $node = node_load($form_values['nid']);
+  $node = Node::load($form_values['nid']);
   return array('module' => 'uc_product', 'shippable' => $node->shippable->value);
 }
 

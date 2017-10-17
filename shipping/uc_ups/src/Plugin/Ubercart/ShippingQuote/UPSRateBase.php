@@ -6,6 +6,7 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\uc_order\OrderInterface;
 use Drupal\uc_quote\ShippingQuotePluginBase;
+use Drupal\node\Entity\Node;
 
 /**
  * Common functionality for UPS shipping quotes plugins.
@@ -176,7 +177,7 @@ abstract class UPSRateBase extends ShippingQuotePluginBase {
         // object is being read out of the $order object rather than from
         // the database, and the $order object only carries around a limited
         // number of product properties.
-        $temp = node_load($product->nid->value);
+        $temp = Node::load($product->nid->value);
         $product->length = $temp->length->value;
         $product->width = $temp->width->value;
         $product->height = $temp->height->value;
@@ -251,7 +252,7 @@ abstract class UPSRateBase extends ShippingQuotePluginBase {
           // object is being read out of the $order object rather than from
           // the database, and the $order object only carries around a limited
           // number of product properties.
-          $temp = node_load($product->nid);
+          $temp = Node::load($product->nid);
           $product->length = $temp->length;
           $product->width = $temp->width;
           $product->height = $temp->height;

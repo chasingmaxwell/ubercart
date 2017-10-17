@@ -190,7 +190,7 @@ function uc_product_kit_node_insert($node) {
 
   foreach ($node->products as $product) {
     if (is_numeric($product)) {
-      $product = node_load($product);
+      $product = Node::load($product);
     }
 
     db_insert('uc_product_kits')
@@ -432,7 +432,7 @@ function uc_product_kit_node_delete($node) {
     $empty = array();
     $result = db_query('SELECT DISTINCT nid FROM {uc_product_kits} WHERE product_id = :nid', [':nid' => $node->id()]);
     while ($nid = $result->fetchField()) {
-      $kit = node_load($nid, NULL, TRUE);
+      $kit = Node::load($nid, NULL, TRUE);
       unset($kit->products[$node->id()]);
 
       if (empty($kit->products)) {
@@ -540,7 +540,7 @@ function uc_product_kit_form_node_form_alter(&$form, FormStateInterface $form_st
     ->execute();
 
   foreach ($result as $nid) {
-    $product = node_load($nid);
+    $product = Node::load($nid);
     $products[$nid] = $product->label();
   }
 
@@ -736,7 +736,7 @@ function uc_product_kit_add_to_cart_form_validate($form, FormStateInterface $for
  */
 function uc_product_kit_add_to_cart_form_submit($form, FormStateInterface $form_state) {
   if (\Drupal::config('uc_cart.settings')->get('add_item_msg')) {
-    $node = node_load($form_state->getValue('nid'));
+    $node = Node::load($form_state->getValue('nid'));
     drupal_set_message(t('<strong>@product-title</strong> added to <a href=":url">your shopping cart</a>.', ['@product-title' => $node->label(), ':url' => Url::fromRoute('uc_cart.cart')->toString()]));
   }
   $cart = \Drupal::service('uc_cart.manager')->get();
@@ -753,7 +753,7 @@ function uc_product_kit_add_to_cart_form_submit($form, FormStateInterface $form_
  */
 function uc_product_kit_buy_it_now_form_validate($form, FormStateInterface $form_state) {
   if (\Drupal::moduleHandler()->moduleExists('uc_attribute')) {
-    $node = node_load($form_state->getValue('nid'));
+    $node = Node::load($form_state->getValue('nid'));
     if (is_array($node->products)) {
       foreach ($node->products as $nid => $product) {
         $attributes = uc_product_get_attributes($nid);
@@ -772,7 +772,7 @@ function uc_product_kit_buy_it_now_form_validate($form, FormStateInterface $form
  * @see uc_product_kit_buy_it_now_form()
  */
 function uc_product_kit_buy_it_now_form_submit($form, FormStateInterface $form_state) {
-  $node = node_load($form_state->getValue('nid'));
+  $node = Node::load($form_state->getValue('nid'));
   if (\Drupal::moduleHandler()->moduleExists('uc_attribute')) {
     $attributes = uc_product_get_attributes($node->nid);
     if (!empty($attributes)) {
@@ -803,7 +803,7 @@ function uc_product_kit_buy_it_now_form_submit($form, FormStateInterface $form_s
  * Implements hook_uc_add_to_cart().
  */
 function uc_product_kit_uc_add_to_cart($nid, $qty, $kit_data) {
-  $node = node_load($nid);
+  $node = Node::load($nid);
   if ($node->getType() == 'product_kit') {
     $cart = \Drupal::service('uc_cart.manager')->get();
     $unique = uniqid('', TRUE);
@@ -854,11 +854,11 @@ function uc_product_kit_uc_add_to_cart($nid, $qty, $kit_data) {
 function uc_product_kit_uc_product_alter(&$variant) {
   if (isset($variant->data['kit_id'])) {
     // If this is a kit component load, we would cause infinite recursion trying
-    // to node_load() the parent, but we already have the discount available.
+    // to Node::load() the parent, but we already have the discount available.
     if (isset($variant->data['kit_discount'])) {
       $discount = $variant->data['kit_discount'];
     }
-    elseif (($kit = node_load($variant->data['kit_id'])) && $kit->mutable != UC_PRODUCT_KIT_MUTABLE) {
+    elseif (($kit = Node::load($variant->data['kit_id'])) && $kit->mutable != UC_PRODUCT_KIT_MUTABLE) {
       $discount = $kit->products[$variant->id()]->discount;
     }
     else {
@@ -923,7 +923,7 @@ function uc_product_kit_uc_cart_display($item) {
   static $elements = array();
   static $products;
   $unique_id = $item->data->unique_id;
-  $kit = node_load($item->data->kit_id);
+  $kit = Node::load($item->data->kit_id);
   if ($kit->mutable == UC_PRODUCT_KIT_MUTABLE) {
     return uc_product_uc_cart_display($item);
   }
@@ -1011,7 +1011,7 @@ function uc_product_kit_uc_update_cart_item($nid, $data = array(), $qty, $cid = 
     uc_product_uc_update_cart_item($nid, $data, $qty, $cid);
   }
   else {
-    $kit = node_load($nid);
+    $kit = Node::load($nid);
     foreach ($data as $p_nid => $data) {
       uc_product_uc_update_cart_item($p_nid, $data, $qty * $kit->products[$p_nid]->qty, $cid);
     }

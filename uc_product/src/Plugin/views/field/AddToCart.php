@@ -4,6 +4,7 @@ namespace Drupal\uc_product\Plugin\views\field;
 
 use Drupal\views\Plugin\views\field\FieldPluginBase;
 use Drupal\views\ResultRow;
+use Drupal\node\Entity\Node;
 
 /**
  * Field handler to provide payment method.
@@ -19,7 +20,7 @@ class AddToCart extends FieldPluginBase {
    */
   public function render(ResultRow $values) {
     $nid = $this->getValue($values);
-    $node = node_load($nid);
+    $node = Node::load($nid);
     if (uc_product_is_product($node)) {
       $form_object = new \Drupal\uc_product\Form\AddToCartForm($node->id());
       $form = \Drupal::formBuilder()->getForm($form_object, $node);

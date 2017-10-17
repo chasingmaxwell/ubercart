@@ -4,6 +4,7 @@ namespace Drupal\uc_product\Plugin\views\field;
 
 use Drupal\uc_store\Plugin\views\field\Price;
 use Drupal\views\ResultRow;
+use Drupal\node\Entity\Node;
 
 /**
  * Field handler to provide formatted display prices.
@@ -32,11 +33,11 @@ class DisplayPrice extends Price {
     $nid = parent::getValue($values, $field);
     if (!is_null($nid)) {
       // @todo Refactor to allow display price to be calculated.
-      $node = node_load($nid);
+      $node = Node::load($nid);
       return $node->price->value;
 
       // !TODO Refactor so that all variants are loaded at once in the pre_render hook.
-      $node = node_view(node_load($nid), 'teaser');
+      $node = node_view(Node::load($nid), 'teaser');
       return $node['display_price']['#value'];
     }
   }

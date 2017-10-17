@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Render\Element;
+use Drupal\node\Entity\Node;
 
 /**
  * @addtogroup hooks
@@ -27,7 +28,7 @@ function hook_uc_form_alter(&$form, &$form_state, $form_id) {
   // If the node has a product list, add attributes to them
   if (isset($form['products']) && count(Element::children($form['products']))) {
     foreach (Element::children($form['products']) as $key) {
-      $form['products'][$key]['attributes'] = _uc_attribute_alter_form(node_load($key));
+      $form['products'][$key]['attributes'] = _uc_attribute_alter_form(Node::load($key));
       if (is_array($form['products'][$key]['attributes'])) {
         $form['products'][$key]['attributes']['#tree'] = TRUE;
         $form['products'][$key]['#type'] = 'details';

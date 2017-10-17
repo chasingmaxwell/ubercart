@@ -7,6 +7,7 @@
 
 use Drupal\Component\Utility\SafeMarkup;
 use Drupal\node\NodeInterface;
+use Drupal\node\Entity\Node;
 
 /**
  * Renders a product kit component.
@@ -17,7 +18,7 @@ function theme_uc_product_kit_list_item(array $variables) {
   $product = $variables['product'];
 
   if ($product instanceof NodeInterface) {
-    $node = node_load($product->id());
+    $node = Node::load($product->id());
     if ($node->access('view')) {
       $title = $product->toLink()->toString();
     }

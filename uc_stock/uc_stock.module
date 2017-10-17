@@ -14,6 +14,7 @@
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\node\Entity\Node;
 
 /**
  * Implements hook_help().
@@ -196,7 +197,7 @@ function uc_stock_adjust_product_stock($product, $key, $order) {
 
   // Should we notify?
   if (\Drupal::config('uc_stock.settings')->get('notify') && $stock->stock <= $stock->threshold) {
-    $node = node_load($product->nid->target_id);
+    $node = Node::load($product->nid->target_id);
     _uc_stock_send_mail($order, $node, $stock);
   }
 

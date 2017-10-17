@@ -7,6 +7,7 @@
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Drupal\node\Entity\Node;
 
 /**
  * Implements hook_menu().
@@ -588,7 +589,7 @@ function uc_ups_quote($products, $details, $method) {
       // object is being read out of the $order object rather than from
       // the database, and the $order object only carries around a limited
       // number of product properties.
-      $temp = node_load($product->nid);
+      $temp = Node::load($product->nid);
       $product->length = $temp->length;
       $product->width = $temp->width;
       $product->height = $temp->height;
@@ -654,7 +655,7 @@ function uc_ups_quote($products, $details, $method) {
       // object is being read out of the $order object rather than from
       // the database, and the $order object only carries around a limited
       // number of product properties.
-      $temp = node_load($product->nid);
+      $temp = Node::load($product->nid);
       $product->length = $temp->length;
       $product->width = $temp->width;
       $product->height = $temp->height;

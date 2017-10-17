@@ -21,6 +21,7 @@ use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
+use Drupal\node\Entity\Node;
 
 /**
  * Implements hook_page_attachments().
@@ -179,7 +180,7 @@ function _uc_product_get_variant($node, $data = FALSE) {
  *   if the node is not found.
  */
 function uc_product_load_variant($nid, $data = FALSE) {
-  if ($node = node_load($nid)) {
+  if ($node = Node::load($nid)) {
     return _uc_product_get_variant($node, $data);
   }
   else {
@@ -674,7 +675,7 @@ function uc_product_uc_update_cart_item($nid, $data = array(), $qty, $cid = NULL
  */
 function uc_product_uc_add_to_cart_data($form_values) {
   if (isset($form_values['nid'])) {
-    $node = node_load($form_values['nid']);
+    $node = Node::load($form_values['nid']);
     return array(
       'shippable' => $node->shippable->value,
       'type' => $node->getType(),
@@ -707,7 +708,7 @@ function uc_product_types() {
 function uc_product_is_product($node) {
   // Load the node object if we received an integer as an argument.
   if (is_numeric($node)) {
-    $node = node_load($node);
+    $node = Node::load($node);
   }
 
   // Determine the node type based on the data type of $node.
@@ -795,7 +796,7 @@ function uc_product_get_models($nid, $add_blank = TRUE) {
  *   product node, or an empty array if no image is available.
  */
 function uc_product_get_picture($nid, $style = 'uc_product') {
-  $product = node_load($nid);
+  $product = Node::load($nid);
   if (!$product) {
     return array();
   }

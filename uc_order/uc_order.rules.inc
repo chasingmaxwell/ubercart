@@ -6,6 +6,8 @@
  * related entity, conditions, events, and actions work.
  */
 
+use Drupal\node\Entity\Node;
+
 /**
  * Implements hook_rules_data_info().
  */
@@ -480,7 +482,7 @@ function uc_order_condition_has_product_class($order, $product_classes, $require
     else {
       // Otherwise, use the node type.  If the node can't be loaded, ignore
       // this product.
-      $node = node_load($product->nid);
+      $node = Node::load($product->nid);
       if (!empty($node)) {
         $order_product_classes[] = $node->type;
       }
