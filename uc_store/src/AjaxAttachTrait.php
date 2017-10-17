@@ -65,9 +65,9 @@ use Drupal\uc_store\Ajax\CommandWrapper;
  * replace the contents of an entire checkout pane. It is generally preferable
  * to use this when updating data on the checkout form, as this will
  * further reduce the likelihood of redundant replacements. You should use
- * your own callback only when behaviours other than replacement are
- * desired, or when replacing data that lie outside a checkout pane. Note
- * also that you may combine both formulations by mixing numeric and string keys.
+ * your own callback only when behaviours other than replacement are desired,
+ * or when replacing data that lie outside a checkout pane. Note also that you
+ * may combine both formulations by mixing numeric and string keys.
  * For example:
  *
  * @code
@@ -83,7 +83,7 @@ trait AjaxAttachTrait {
    * Form process callback to allow multiple Ajax callbacks on form elements.
    */
   public function ajaxProcessForm(array $form, FormStateInterface $form_state) {
-    // When processing the top level form, add any variable-defined pane wrappers.
+    // When processing top level form, add any variable-defined pane wrappers.
     if (isset($form['#form_id'])) {
       switch ($form['#form_id']) {
         case 'uc_cart_checkout_form':
@@ -111,7 +111,7 @@ trait AjaxAttachTrait {
 
       // Add this process function recursively to the children.
       if (empty($element['#process']) && !empty($element['#type'])) {
-        // We want to be sure the default process functions for the element type are called.
+        // Ensure the default process functions for the element type are called.
         $info = element_info($element['#type']);
         if (!empty($info['#process'])) {
           $element['#process'] = $info['#process'];
@@ -167,18 +167,25 @@ trait AjaxAttachTrait {
   public function ajaxMultiplex(array $form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
 
+    // $attachments collects other AjaxResponse objects' attachments.
+    $attachments = array();
+
     $element = $form_state->getTriggeringElement();
     foreach ($element['#ajax']['list'] as $wrapper => $callback) {
       $callback = $form_state->prepareCallback($callback);
       if (!empty($callback) && is_callable($callback) && $result = call_user_func_array($callback, [$form, $form_state, $wrapper])) {
         if ($result instanceof AjaxResponse) {
+          // Merge the current AjaxResponse object's attachments into the
+          // $attachments variable.
+          $attachments = array_merge_recursive($attachments, $result->getAttachments());
           // Merge AjaxResponse commands into our single list.
           foreach ($result->getCommands() as $command) {
             $response->addCommand(new CommandWrapper($command));
           }
         }
         elseif (is_string($wrapper)) {
-          // Otherwise, assume the callback returned a string or render-array, and insert it into the wrapper.
+          // Otherwise, assume the callback returned a string or render-array,
+          // and insert it into the wrapper.
           $html = is_string($result) ? $result : drupal_render($result);
           $response->addCommand(new ReplaceCommand('#' . $wrapper, trim($html)));
           $status_messages = array('#type' => 'status_messages');
@@ -186,6 +193,9 @@ trait AjaxAttachTrait {
         }
       }
     }
+
+    // Set the collected attachments into newly created AjaxResponse object.
+    $response->setAttachments($attachments);
 
     return $response;
   }
@@ -201,12 +211,14 @@ trait AjaxAttachTrait {
    *   Special third parameter passed for uc_ajax callbacks containing the ajax
    *   wrapper for this callback.  Here used to determine which pane to replace.
    *
-   * @return
+   * @return array|null
    *   The form element representing the pane, suitable for ajax rendering. If
    *   the pane does not exist, or if the wrapper does not refer to a checkout
    *   pane, returns nothing.
    */
   public function ajaxReplaceCheckoutPane(array $form, FormStateInterface $form_state, $wrapper = NULL) {
+    $response = new AjaxResponse();
+
     $element = $form_state->getTriggeringElement();
     if (empty($wrapper) && !empty($element['#ajax']['wrapper'])) {
       // If $wrapper is absent, then we were not invoked by ajaxMultiplex(),
@@ -216,7 +228,12 @@ trait AjaxAttachTrait {
     if (!empty($wrapper)) {
       list($pane, $verify) = explode('-', $wrapper);
       if ($verify === 'pane' && !empty($form['panes'][$pane])) {
-        return $form['panes'][$pane];
+        // Replace the corresponding pane.
+        $response->addCommand(
+          new ReplaceCommand('#' . $wrapper, $form['panes'][$pane])
+        );
+
+        return $response;
       }
     }
   }
