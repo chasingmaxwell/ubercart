@@ -118,8 +118,10 @@ class AjaxTest extends UbercartTestBase {
   public function testCheckoutPaneAjax() {
 
     // Create two unique policy messages for our two payment methods.
-    $policy1 = $this->randomString();
-    $policy2 = $this->randomString();
+    // Use randomMachineName() as randomString() has escaping problems when
+    // sent over Ajax; see https://www.drupal.org/node/2664320
+    $policy1 = $this->randomMachineName();
+    $policy2 = $this->randomMachineName();
 
     // Add first Cash-On-Delivery payment method.
     $payment1 = $this->createPaymentMethod('cod', ['settings[policy]' => $policy1]);
