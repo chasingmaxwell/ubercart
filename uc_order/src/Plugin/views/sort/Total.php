@@ -20,7 +20,7 @@ class Total extends SortPluginBase {
   /**
    * {@inheritdoc}
    */
-  function query() {
+  public function query() {
     $this->ensure_my_table();
     // Add the field.
     $this->query->add_orderby(NULL, NULL, $this->options['order'], $this->table . '_' . $this->field);

@@ -14,7 +14,7 @@ class RoleTest extends UbercartTestBase {
 
   // editor.module caused a crash on non-shippable products.
   // @see https://www.drupal.org/node/2695639
-  public static $modules = array('uc_payment', 'uc_payment_pack', 'uc_role', 'editor');
+  public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_role', 'editor'];
 
   public function testRolePurchaseCheckout() {
     // Add role assignment to a free, non-shippable product.

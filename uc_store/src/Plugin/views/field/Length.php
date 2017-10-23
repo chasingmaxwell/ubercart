@@ -21,7 +21,7 @@ class Length extends NumericField {
   protected function defineOptions() {
     $options = parent::defineOptions();
 
-    $options['format'] = array('default' => 'uc_length');
+    $options['format'] = ['default' => 'uc_length'];
 
     return $options;
   }

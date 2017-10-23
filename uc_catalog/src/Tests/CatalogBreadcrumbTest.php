@@ -13,8 +13,8 @@ use Drupal\uc_store\Tests\UbercartTestBase;
  */
 class CatalogBreadcrumbTest extends UbercartTestBase {
 
-  public static $modules = array('uc_catalog');
-  public static $adminPermissions = array('view catalog');
+  public static $modules = ['uc_catalog'];
+  public static $adminPermissions = ['view catalog'];
 
   /**
    * @inheritDoc

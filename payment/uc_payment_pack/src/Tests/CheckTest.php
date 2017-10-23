@@ -67,11 +67,11 @@ class CheckTest extends PaymentPackTestBase {
     $this->assertEscaped($edit['settings[policy]'], 'Check payment policy found at checkout.');
 
     // Test that check settings show up on review order page.
-    $this->drupalPostForm(NULL, array(), 'Review order');
+    $this->drupalPostForm(NULL, [], 'Review order');
     $this->assertText(t('Check'), 'Check payment method found on review page.');
     $this->assertText(t('Mail to'), 'Check payment method help text found on review page.');
     $this->assertRaw((string) $address, 'Properly formatted check mailing address found.');
-    $this->drupalPostForm(NULL, array(), 'Submit order');
+    $this->drupalPostForm(NULL, [], 'Submit order');
 
     // Test user order view.
     $order = Order::load(1);

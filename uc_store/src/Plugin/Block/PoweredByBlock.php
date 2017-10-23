@@ -21,12 +21,12 @@ class PoweredByBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
+    return [
       'label_display' => 0,
-      'cache' => array(
+      'cache' => [
         'max_age' => Cache::PERMANENT,
-      )
-    );
+      ],
+    ];
   }
 
   /**
@@ -76,27 +76,27 @@ class PoweredByBlock extends BlockBase {
       $id = (hexdec(substr(md5($path . $private_key), 0, 2)) % count($messages)) + 1;
     }
 
-    return array('#markup' => $messages[$id]);
+    return ['#markup' => $messages[$id]];
   }
 
   /**
    * Returns the default message options.
    */
   protected function options() {
-    $url = array(':url' => Url::fromUri('http://www.ubercart.org/')->toString());
-    return array(
+    $url = [':url' => Url::fromUri('http://www.ubercart.org/')->toString()];
+    return [
       1 => $this->t('<a href=":url">Powered by Ubercart</a>', $url),
       2 => $this->t('<a href=":url">Drupal e-commerce</a> provided by Ubercart.', $url),
       3 => $this->t('Supported by Ubercart, an <a href=":url">open source e-commerce suite</a>.', $url),
       4 => $this->t('Powered by Ubercart, the <a href=":url">free shopping cart software</a>.', $url),
-    );
+    ];
   }
 
   /**
    * {@inheritdoc}
    */
   protected function getRequiredCacheContexts() {
-    return array('url');
+    return ['url'];
   }
 
 }

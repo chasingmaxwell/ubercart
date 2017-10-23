@@ -13,8 +13,8 @@ use Drupal\uc_store\Tests\UbercartTestBase;
  */
 class ShipmentTest extends UbercartTestBase {
 
-  public static $modules = array('uc_payment', 'uc_payment_pack', 'uc_fulfillment');
-  public static $adminPermissions = array('fulfill orders');
+  public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_fulfillment'];
+  public static $adminPermissions = ['fulfill orders'];
 
   public function testShipmentsUI() {
     $this->drupalLogin($this->adminUser);
@@ -302,7 +302,7 @@ class ShipmentTest extends UbercartTestBase {
 
     // Again with the "Delete".
     $this->clickLink(t('Delete'));
-    $this->drupalPostForm(NULL, array(), t('Delete'));
+    $this->drupalPostForm(NULL, [], t('Delete'));
     // Delete returns to new packages page with all packages unchecked.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new');
     $this->assertText(

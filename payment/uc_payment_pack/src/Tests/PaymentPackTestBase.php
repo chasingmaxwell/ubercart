@@ -9,7 +9,7 @@ use Drupal\uc_store\Tests\UbercartTestBase;
  */
 abstract class PaymentPackTestBase extends UbercartTestBase {
 
-  public static $modules = array('uc_payment', 'uc_payment_pack');
+  public static $modules = ['uc_payment', 'uc_payment_pack'];
 
   /**
    * {@inheritdoc}

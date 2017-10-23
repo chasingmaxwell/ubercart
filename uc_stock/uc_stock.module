@@ -2,15 +2,13 @@
 
 /**
  * @file
- * Allow ubercart products to have stock levels associated with their SKU
+ * Allow ubercart products to have stock levels associated with their SKU.
  *
  * uc_stock enables ubercart to manage stock for products. Store admins can set
  * the stock levels on a product edit page and a threshold for each SKU value
  * When that threshold is reached admins can be optionally notified about the
  * current stock level. Store admins can view all stock levels in the reports
  * section of Ubercart.
- *
- * Development sponsored by the Ubercart project. http://www.ubercart.org
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -23,6 +21,7 @@ function uc_stock_help($route_name, RouteMatchInterface $route_match) {
   switch ($route_name) {
     case 'uc_stock.edit':
       return '<p>' . t('To keep track of stock for a particular product SKU, make sure it is marked as active and enter a stock value. When the stock level drops below the threshold value, you can be notified based on your stock settings.') . '</p>';
+
     case 'admin/store/reports/stock':
     case 'admin/store/reports/stock/threshold':
       return '<p>' . t('This is the list of product SKUs that are currently active. Stock levels below their threshold have highlighted rows. Toggle the checkbox below to alter which stock levels are shown.') . '</p>';
@@ -56,11 +55,11 @@ function uc_stock_mail($key, &$message, $params) {
 /**
  * Adjusts the product stock level by a set amount.
  *
- * @param $sku
+ * @param string $sku
  *   The product SKU of the stock level to adjust.
- * @param $qty
+ * @param int $qty
  *   The amount to add to or subtract from the stock level.
- * @param $check_active
+ * @param bool $check_active
  *   If FALSE, don't check if stock tracking is active for this SKU.
  */
 function uc_stock_adjust($sku, $qty, $check_active = TRUE) {
@@ -73,19 +72,19 @@ function uc_stock_adjust($sku, $qty, $check_active = TRUE) {
   }
 
   db_update('uc_product_stock')
-    ->expression('stock', 'stock + :qty', array(':qty' => $qty))
+    ->expression('stock', 'stock + :qty', [':qty' => $qty])
     ->condition('sku', $sku)
     ->execute();
 
-  \Drupal::moduleHandler()->invokeAll('uc_stock_adjusted', array($sku, $stock->stock, $qty));
+  \Drupal::moduleHandler()->invokeAll('uc_stock_adjusted', [$sku, $stock->stock, $qty]);
 }
 
 /**
  * Sets the product stock level.
  *
- * @param $sku
+ * @param string $sku
  *   The product SKU of the stock level to set.
- * @param $qty
+ * @param int $qty
  *   The number of items in stock.
  */
 function uc_stock_set($sku, $qty) {
@@ -98,10 +97,10 @@ function uc_stock_set($sku, $qty) {
 /**
  * Gets the stock level of a particular product SKU.
  *
- * @param $sku
+ * @param string $sku
  *   The Ubercart product SKU of the stock level to return.
  *
- * @return
+ * @return int|false
  *   The SKU's stock level, or FALSE if not active.
  */
 function uc_stock_level($sku) {
@@ -117,10 +116,10 @@ function uc_stock_level($sku) {
 /**
  * Checks if a SKU has an active stock record.
  *
- * @param $sku
+ * @param string $sku
  *   The Ubercart product SKU to check
  *
- * @return
+ * @return bool
  *   Boolean indicating whether or not the sku has an active stock record.
  */
 function uc_stock_is_active($sku) {
@@ -130,14 +129,14 @@ function uc_stock_is_active($sku) {
 /**
  * Emails administrator regarding any stock level thresholds hit.
  *
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   The order object that tripped the threshold limit.
  * @param $node
  *   The node object that is associated with the SKU/model.
  * @param $stock
  *   The stock level object that contains the stock level and SKU.
  *
- * @return
+ * @return array
  *   The result of \Drupal::service('plugin.manager.mail')->mail().
  */
 function _uc_stock_send_mail($order, $node, $stock) {
@@ -187,7 +186,7 @@ function uc_stock_uc_checkout_complete($order) {
  *   The product whose stock is being adjusted.
  * @param $key
  *   Internal, so this function can be used as a callback of array_walk().
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   Order object.
  */
 function uc_stock_adjust_product_stock($product, $key, $order) {

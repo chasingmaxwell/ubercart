@@ -11,8 +11,8 @@ use Drupal\uc_store\Tests\UbercartTestBase;
  */
 class OrderPaymentsFormTest extends UbercartTestBase {
 
-  public static $modules = array('uc_payment', 'uc_payment_pack');
-  public static $adminPermissions = array('view payments', 'manual payments', 'delete payments');
+  public static $modules = ['uc_payment', 'uc_payment_pack'];
+  public static $adminPermissions = ['view payments', 'manual payments', 'delete payments'];
 
   /**
    * @var int
@@ -126,7 +126,7 @@ class OrderPaymentsFormTest extends UbercartTestBase {
     // Again with the "Delete".
     // Delete the first partial payment, not the $1 initial payment.
     $this->clickLink(t('Delete'), 1);
-    $this->drupalPostForm(NULL, array(), t('Delete'));
+    $this->drupalPostForm(NULL, [], t('Delete'));
     // Delete returns to new payments page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/payments');
     $this->assertText(t('Payment deleted.'));

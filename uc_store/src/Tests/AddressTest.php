@@ -13,7 +13,7 @@ class AddressTest extends UbercartTestBase {
   use AddressTestTrait;
 
   /** Array of Address objects */
-  protected $test_address = array();
+  protected $test_address = [];
 
   /**
    * {@inheritdoc}
@@ -88,7 +88,7 @@ class AddressTest extends UbercartTestBase {
     // Use randomly generated address first.
     $address = clone($this->test_address[0]);
 
-    // Modify phone number and test equality
+    // Modify phone number and test equality.
     $address->phone = 'this is not a valid phone number';
     $this->assertTrue(
       $this->test_address[0]->isSamePhysicalLocation($address),
@@ -98,14 +98,14 @@ class AddressTest extends UbercartTestBase {
     // Use specific address.
     $address = clone($this->test_address[1]);
 
-    // Modify city and test equality
+    // Modify city and test equality.
     $address->city = 'vIcToRia';
     $this->assertTrue(
       $this->test_address[1]->isSamePhysicalLocation($address),
       'Case-insensitive address comparison works.'
     );
 
-    // Modify city and test equality
+    // Modify city and test equality.
     $address->city = '		vic toria ';
     $this->assertTrue(
       $this->test_address[1]->isSamePhysicalLocation($address),

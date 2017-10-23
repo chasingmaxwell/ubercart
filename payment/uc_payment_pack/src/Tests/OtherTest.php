@@ -22,9 +22,9 @@ class OtherTest extends PaymentPackTestBase {
     $this->assertFieldByName('panes[payment][payment_method]', $other['id'], 'Other payment method is selected at checkout.');
 
     // Test review order page
-    $this->drupalPostForm(NULL, array(), 'Review order');
+    $this->drupalPostForm(NULL, [], 'Review order');
     $this->assertText(t('Other'), 'Other payment method found on review page.');
-    $this->drupalPostForm(NULL, array(), 'Submit order');
+    $this->drupalPostForm(NULL, [], 'Submit order');
 
     // Test user order view
     $order = Order::load(1);
@@ -42,7 +42,7 @@ class OtherTest extends PaymentPackTestBase {
     $edit = array(
       'payment_details[description]' => $this->randomString(),
     );
-    $this->drupalPostForm(NULL, array(), 'Save changes');
+    $this->drupalPostForm(NULL, [], 'Save changes');
     // @todo: Test storage of payment details.
   }
 

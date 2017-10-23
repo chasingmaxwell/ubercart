@@ -19,7 +19,7 @@ trait AddressTestTrait {
    * @return \Drupal\uc_store\AddressInterface
    *   Address object.
    */
-  protected function createAddress($settings = array()) {
+  protected function createAddress($settings = []) {
     $street = array_flip(array(
       'Street',
       'Avenue',

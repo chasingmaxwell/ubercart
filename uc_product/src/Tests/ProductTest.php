@@ -11,8 +11,8 @@ use Drupal\uc_store\Tests\UbercartTestBase;
  */
 class ProductTest extends UbercartTestBase {
 
-  public static $modules = array('path', 'uc_product');
-  public static $adminPermissions = array('administer content types');
+  public static $modules = ['path', 'uc_product'];
+  public static $adminPermissions = ['administer content types'];
 
   /**
    * {@inheritdoc}

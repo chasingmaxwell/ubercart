@@ -29,9 +29,9 @@ class CashOnDeliveryTest extends PaymentPackTestBase {
     $this->assertEscaped($cod['settings[policy]'], 'COD policy found at checkout.');
 
     // Test review order page.
-    $this->drupalPostForm(NULL, array(), 'Review order');
+    $this->drupalPostForm(NULL, [], 'Review order');
     $this->assertText(t('Cash on delivery'), 'COD payment method found on review page.');
-    $this->drupalPostForm(NULL, array(), 'Submit order');
+    $this->drupalPostForm(NULL, [], 'Submit order');
 
     // Test user order view.
     $order = Order::load(1);

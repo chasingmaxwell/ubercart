@@ -25,7 +25,7 @@ class CreditCardTest extends UbercartTestBase {
    * These numbers all pass the Luhn algorithm check and are reserved by
    * the card issuer for testing purposes.
    */
-  protected static $test_cards = array(
+  protected static $test_cards = [
     '378282246310005',  // American Express
     '371449635398431',
     '370000000000002',
@@ -46,12 +46,12 @@ class CreditCardTest extends UbercartTestBase {
     '4012888888881881',
     '4007000000027',
     '4012888818888',
-  );
+  ];
 
   protected $paymentMethod;
 
-  public static $modules = array('uc_payment', 'uc_credit');
-  public static $adminPermissions = array('administer credit cards', 'process credit cards');
+  public static $modules = ['uc_payment', 'uc_credit'];
+  public static $adminPermissions = ['administer credit cards', 'process credit cards'];
 
   /**
    * {@inheritdoc}
@@ -79,9 +79,7 @@ class CreditCardTest extends UbercartTestBase {
 
     $this->drupalPostForm(
       'admin/store/config/payment/credit',
-      array(
-        'uc_credit_encryption_path' => 'sites/default/files/simpletest.keys',
-      ),
+      ['uc_credit_encryption_path' => 'sites/default/files/simpletest.keys'],
       t('Save configuration')
     );
 
@@ -137,7 +135,7 @@ class CreditCardTest extends UbercartTestBase {
 
     $this->drupalPostForm(
       'admin/store/config/payment/credit',
-      array(),
+      [],
       t('Save configuration')
     );
     $this->assertFieldByName(
@@ -151,7 +149,7 @@ class CreditCardTest extends UbercartTestBase {
     // Try to submit settings form with an empty key file path.
     $this->drupalPostForm(
       'admin/store/config/payment/credit',
-      array('uc_credit_encryption_path' => ''),
+      ['uc_credit_encryption_path' => ''],
       t('Save configuration')
     );
     $this->assertText(t('Key path must be specified in security settings tab.'));
@@ -159,7 +157,7 @@ class CreditCardTest extends UbercartTestBase {
     // Specify non-existent directory.
     $this->drupalPostForm(
       'admin/store/config/payment/credit',
-      array('uc_credit_encryption_path' => 'sites/default/ljkh/asdfasfaaaaa'),
+      ['uc_credit_encryption_path' => 'sites/default/ljkh/asdfasfaaaaa'],
       t('Save configuration')
     );
     $this->assertText(t('You have specified a non-existent directory.'));
@@ -168,7 +166,7 @@ class CreditCardTest extends UbercartTestBase {
     // Use /dev, as that should never be accessible.
     $this->drupalPostForm(
       'admin/store/config/payment/credit',
-      array('uc_credit_encryption_path' => '/dev'),
+      ['uc_credit_encryption_path' => '/dev'],
       t('Save configuration')
     );
     $this->assertText(t('Cannot write to directory, please verify the directory permissions.'));
@@ -177,7 +175,7 @@ class CreditCardTest extends UbercartTestBase {
     // and trailing /
     $this->drupalPostForm(
       'admin/store/config/payment/credit',
-      array('uc_credit_encryption_path' => '  sites/default/files/testkey/ '),
+      ['uc_credit_encryption_path' => '  sites/default/files/testkey/ '],
       t('Save configuration')
     );
     // See that the directory has been properly re-written to remove
@@ -197,7 +195,7 @@ class CreditCardTest extends UbercartTestBase {
     // Finally, specify good directory.
     $this->drupalPostForm(
       'admin/store/config/payment/credit',
-      array('uc_credit_encryption_path' => 'sites/default/files/testkey'),
+      ['uc_credit_encryption_path' => 'sites/default/files/testkey'],
       t('Save configuration')
     );
     $this->assertText(t('Credit card encryption key file generated.'));

@@ -11,7 +11,7 @@ use Drupal\uc_store\Tests\UbercartTestBase;
  */
 class PaymentPaneTest extends UbercartTestBase {
 
-  public static $modules = array('uc_payment', 'uc_payment_pack');
+  public static $modules = ['uc_payment', 'uc_payment_pack'];
 
   /**
    * {@inheritdoc}
@@ -87,8 +87,8 @@ class PaymentPaneTest extends UbercartTestBase {
     $this->assertNoText("Subtotal:\n      $0.00");
 
     // Check that free products can be purchased successfully with no payment.
-    $this->drupalPostForm('cart', array(), t('Remove'));
-    $this->drupalPostForm('cart', array(), t('Remove'));
+    $this->drupalPostForm('cart', [], t('Remove'));
+    $this->drupalPostForm('cart', [], t('Remove'));
     $this->addToCart($free_product);
     $this->drupalGet('cart/checkout');
     $this->assertNoEscaped($check['label']);

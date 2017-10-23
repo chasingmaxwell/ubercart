@@ -13,8 +13,8 @@ use Drupal\uc_store\Tests\UbercartTestBase;
  */
 class PackageTest extends UbercartTestBase {
 
-  public static $modules = array('uc_payment', 'uc_payment_pack', 'uc_fulfillment');
-  public static $adminPermissions = array('fulfill orders');
+  public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_fulfillment'];
+  public static $adminPermissions = ['fulfill orders'];
 
   public function testPackagesUI() {
     $this->drupalLogin($this->adminUser);
@@ -118,7 +118,7 @@ class PackageTest extends UbercartTestBase {
     );
 
     // Now test the "Create one package" button without selecting anything.
-    $this->drupalPostForm(NULL, array(), t('Create one package'));
+    $this->drupalPostForm(NULL, [], t('Create one package'));
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
       t('Packages must contain at least one product.'),
@@ -187,7 +187,7 @@ class PackageTest extends UbercartTestBase {
       );
     }
     // Save the package to make sure the submit handler is working.
-    $this->drupalPostForm(NULL, array(), t('Save'));
+    $this->drupalPostForm(NULL, [], t('Save'));
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/packages');
 
     // Third, "Delete".
@@ -206,7 +206,7 @@ class PackageTest extends UbercartTestBase {
 
     // Again with the "Delete".
     $this->clickLink(t('Delete'));
-    $this->drupalPostForm(NULL, array(), t('Delete'));
+    $this->drupalPostForm(NULL, [], t('Delete'));
     // Delete returns to new packages page with all packages unchecked.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
@@ -293,14 +293,14 @@ class PackageTest extends UbercartTestBase {
 
     // Now delete both packages.
     $this->clickLink(t('Delete'));
-    $this->drupalPostForm(NULL, array(), t('Delete'));
+    $this->drupalPostForm(NULL, [], t('Delete'));
     $this->assertText(
       'Package 2 has been deleted.',
       'Package deleted message found.'
     );
     // There's still one left to delete...
     $this->clickLink(t('Delete'));
-    $this->drupalPostForm(NULL, array(), t('Delete'));
+    $this->drupalPostForm(NULL, [], t('Delete'));
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
       'Package 3 has been deleted.',

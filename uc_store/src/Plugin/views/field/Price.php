@@ -21,7 +21,7 @@ class Price extends NumericField {
   protected function defineOptions() {
     $options = parent::defineOptions();
 
-    $options['format'] = array('default' => 'uc_price');
+    $options['format'] = ['default' => 'uc_price'];
 
     return $options;
   }
@@ -43,7 +43,7 @@ class Price extends NumericField {
       '#weight' => -1,
     );
 
-    foreach (array('separator', 'format_plural', 'prefix', 'suffix') as $field) {
+    foreach (['separator', 'format_plural', 'prefix', 'suffix'] as $field) {
       $form[$field]['#states']['visible']['input[name="options[format]"]']['value'] = 'numeric';
     }
   }

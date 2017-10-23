@@ -12,7 +12,7 @@ use Drupal\uc_store\Tests\UbercartTestBase;
  */
 class CartCheckoutTest extends UbercartTestBase {
 
-  public static $modules = array('uc_payment', 'uc_payment_pack');
+  public static $modules = ['uc_payment', 'uc_payment_pack'];
 
   /**
    * Authenticated but unprivileged user.

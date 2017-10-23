@@ -21,7 +21,7 @@ class Weight extends NumericField {
   protected function defineOptions() {
     $options = parent::defineOptions();
 
-    $options['format'] = array('default' => 'uc_weight');
+    $options['format'] = ['default' => 'uc_weight'];
 
     return $options;
   }
@@ -43,7 +43,7 @@ class Weight extends NumericField {
       '#weight' => -1,
     );
 
-    foreach (array('separator', 'format_plural', 'prefix', 'suffix') as $field) {
+    foreach (['separator', 'format_plural', 'prefix', 'suffix'] as $field) {
       $form[$field]['#states']['visible']['input[name="options[format]"]']['value'] = 'numeric';
     }
   }

@@ -13,7 +13,7 @@ use Drupal\simpletest\WebTestBase;
  */
 class CountryTest extends WebTestBase {
 
-  public static $modules = array('uc_country', 'uc_store');
+  public static $modules = ['uc_country', 'uc_store'];
 
   /**
    * Test enable/disable of countries.

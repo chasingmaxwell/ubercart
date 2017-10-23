@@ -11,8 +11,8 @@ use Drupal\uc_store\Tests\UbercartTestBase;
  */
 class FulfillmentTest extends UbercartTestBase {
 
-  public static $modules = array('uc_payment', 'uc_payment_pack', 'uc_fulfillment');
-  public static $adminPermissions = array('fulfill orders');
+  public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_fulfillment'];
+  public static $adminPermissions = ['fulfill orders'];
 
   /**
    * Tests packaging and shipping a simple order with the "Manual" plugin.

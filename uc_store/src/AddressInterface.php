@@ -2,7 +2,6 @@
 
 namespace Drupal\uc_store;
 
-
 /**
  * Defines an object to hold Ubercart mailing address information.
  */
@@ -207,8 +206,7 @@ interface AddressInterface {
   public function setEmail($email);
 
   /**
-   * Compares two Address objects to determine if they represent the same
-   * physical address.
+   * Determines if two Address objects represent the same physical address.
    *
    * Address properties such as first_name, phone, and email aren't considered
    * in this comparison because they don't contain information about the

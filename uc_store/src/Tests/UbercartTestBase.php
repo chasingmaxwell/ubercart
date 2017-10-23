@@ -31,7 +31,7 @@ abstract class UbercartTestBase extends WebTestBase {
   protected $adminUser;
 
   /** Permissions for administrator user. */
-  public static $adminPermissions = array(
+  public static $adminPermissions = [
     'access administration pages',
     'administer store',
     'administer countries',
@@ -48,7 +48,7 @@ abstract class UbercartTestBase extends WebTestBase {
     'edit orders',
     'delete orders',
     'unconditionally delete orders',
-  );
+  ];
 
   /**
    * Test product.

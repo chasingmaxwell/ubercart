@@ -12,7 +12,7 @@ use Drupal\simpletest\WebTestBase;
 class EncryptionTest extends WebTestBase {
 
   // Need access to uc_store.encryption service.
-  public static $modules = array('uc_store');
+  public static $modules = ['uc_store'];
 
   /**
    * Encryption object.

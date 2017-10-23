@@ -11,7 +11,7 @@ use Drupal\uc_store\Tests\UbercartTestBase;
  */
 class CartBlockTest extends UbercartTestBase {
 
-  public static $modules = array('uc_cart', 'block');
+  public static $modules = ['uc_cart', 'block'];
 
   /**
    * The cart block being tested.

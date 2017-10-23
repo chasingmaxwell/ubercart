@@ -11,8 +11,8 @@ use Drupal\uc_store\Tests\UbercartTestBase;
  */
 class StockTest extends UbercartTestBase {
 
-  public static $modules = array('uc_stock');
-  public static $adminPermissions = array('administer product stock');
+  public static $modules = ['uc_stock'];
+  public static $adminPermissions = ['administer product stock'];
 
   /**
    * {@inheritdoc}
@@ -31,6 +31,9 @@ class StockTest extends UbercartTestBase {
     $this->drupalLogin($this->adminUser);
   }
 
+  /**
+   * Tests stock settings on product edit page.
+   */
   public function testProductStock() {
     $sku = $this->product->model->value;
     $prefix = 'stock[' . $sku . ']';
@@ -60,6 +63,9 @@ class StockTest extends UbercartTestBase {
     $this->assertFieldByName($prefix . '[stock]', (string)$stock, 'Set stock level found.');
   }
 
+  /**
+   * Tests stock decrementing.
+   */
   public function testStockDecrement() {
     $prefix = 'stock[' . $this->product->model->value . ']';
     $stock = rand(100, 1000);
@@ -82,6 +88,9 @@ class StockTest extends UbercartTestBase {
     $this->assertEqual($stock - $qty, uc_stock_level($this->product->model->value));
   }
 
+  /**
+   * Tests sending out mail when stock drops below threshold.
+   */
   public function testStockThresholdMail() {
     $prefix = 'stock[' . $this->product->model->value . ']';
 
@@ -99,7 +108,7 @@ class StockTest extends UbercartTestBase {
     $this->addToCart($this->product);
     $this->checkout();
 
-    $mail = $this->drupalGetMails(array('id' => 'uc_stock_threshold'));
+    $mail = $this->drupalGetMails(['id' => 'uc_stock_threshold']);
     $mail = array_pop($mail);
     $this->assertEqual($mail['to'], uc_store_email(), 'Threshold mail recipient is correct.');
     $this->assertTrue(strpos($mail['subject'], 'Stock threshold limit reached') !== FALSE, 'Threshold mail subject is correct.');

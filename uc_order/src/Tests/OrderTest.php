@@ -28,7 +28,7 @@ class OrderTest extends UbercartTestBase {
     $this->drupalPlaceBlock('page_title_block');
 
     // Create a simple customer user account.
-    $this->customer = $this->drupalCreateUser(array('view own orders'));
+    $this->customer = $this->drupalCreateUser(['view own orders']);
   }
 
   public function testOrderAPI() {

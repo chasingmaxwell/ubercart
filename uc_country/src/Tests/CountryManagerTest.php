@@ -11,7 +11,7 @@ use Drupal\simpletest\WebTestBase;
  */
 class CountryManagerTest extends WebTestBase {
 
-  public static $modules = array('uc_country');
+  public static $modules = ['uc_country'];
 
   /**
    * Test overriding the core Drupal country_manager service.

@@ -32,7 +32,7 @@ class CustomerAdminTest extends UbercartTestBase {
    *
    * @var string[]
    */
-  public static $modules = array('views');
+  public static $modules = ['views'];
 
   /**
    * {@inheritdoc}
