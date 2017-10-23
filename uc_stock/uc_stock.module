@@ -30,6 +30,18 @@ function uc_stock_help($route_name, RouteMatchInterface $route_match) {
 }
 
 /**
+ * Implements hook_menu_links_discovered_alter().
+ */
+function uc_stock_menu_links_discovered_alter(&$links) {
+  // Remove uc_stock.reports link if the uc_report module is not enabled.
+  // See https://www.drupal.org/node/2315801.
+  // @todo: Remove this hook when the above core issue is fixed.
+  if (!\Drupal::moduleHandler()->moduleExists('uc_report')) {
+    unset($links['uc_stock.reports']);
+  }
+}
+
+/**
  * Implements hook_mail().
  */
 function uc_stock_mail($key, &$message, $params) {
