@@ -163,12 +163,21 @@ class OrderTest extends UbercartTestBase {
     $this->assertLink($order->getEmail(), 0, 'Link to customer email address found.');
   }
 
+  /**
+   * Tests the customer view of the completed order.
+   */
   public function testOrderCustomerView() {
     $order = $this->ucCreateOrder($this->customer);
+
+    // Update the status to pending, so the user can see the order on the
+    // "My order history" page.
+    $order->setStatusId('pending');
+    $order->save();
 
     $this->drupalLogin($this->customer);
     $this->drupalGet('user/' . $this->customer->id() . '/orders');
     $this->assertText(t('My order history'));
+    $this->assertText(t('Pending'), 'Order status is visible to the customer.');
 
     $this->drupalGet('user/' . $this->customer->id() . '/orders/' . $order->id());
     $this->assertResponse(200, 'Customer can view their own order.');
