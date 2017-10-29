@@ -4,5 +4,5 @@ description: 'Manages stock levels of your products.'
 package: Ubercart - extra
 core: 8.x
 dependencies:
-  - uc_product
+  - ubercart:uc_product
 configure: uc_stock.settings

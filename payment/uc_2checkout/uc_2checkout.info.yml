@@ -4,4 +4,4 @@ description: 'Processes payments using 2Checkout.com.'
 package: Ubercart - payment
 core: 8.x
 dependencies:
-  - uc_payment
+  - ubercart:uc_payment

@@ -4,5 +4,5 @@ description: 'REQUIRED. Handles store settings and management of your Ubercart s
 package: Ubercart - core
 core: 8.x
 dependencies:
-  - uc_country
+  - ubercart:uc_country
 configure: uc_store.admin

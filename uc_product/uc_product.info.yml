@@ -4,8 +4,8 @@ description: 'REQUIRED. Provides content types to represent items in an online s
 package: Ubercart - core
 core: 8.x
 dependencies:
-  - image
-  - path
-  - node
-  - uc_store
+  - drupal:image
+  - drupal:path
+  - drupal:node
+  - ubercart:uc_store
 configure: uc_product.settings

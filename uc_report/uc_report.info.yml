@@ -4,6 +4,6 @@ description: "Provides reports about your store's sales, customers, and products
 package: Ubercart - core (optional)
 core: 8.x
 dependencies:
-  - uc_order
-  - uc_product
+  - ubercart:uc_order
+  - ubercart:uc_product
 configure: uc_store.config

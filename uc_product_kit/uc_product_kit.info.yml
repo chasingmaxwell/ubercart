@@ -4,4 +4,4 @@ description: 'Provides a content type that groups two or more products together,
 package: Ubercart - extra
 core: 8.x
 dependencies:
-  - uc_product
+  - ubercart:uc_product

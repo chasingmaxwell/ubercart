@@ -5,5 +5,5 @@ package: Ubercart - shipping
 core: 8.x
 dependencies:
   - not_yet_ported
-  - uc_quote
+  - ubercart:uc_quote
 configure: uc_usps.settings

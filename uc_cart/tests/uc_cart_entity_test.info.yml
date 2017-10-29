@@ -4,5 +4,5 @@ description: 'Helper module to test cart item entity.'
 package: Ubercart - core
 core: 8.x
 dependencies:
-  - uc_cart
+  - ubercart:uc_cart
 hidden: true

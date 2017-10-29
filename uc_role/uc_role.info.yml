@@ -4,5 +4,5 @@ description: 'Assigns permanent or expirable roles based on product purchases.'
 package: Ubercart - core (optional)
 core: 8.x
 dependencies:
-  - uc_product
-  - uc_order
+  - ubercart:uc_product
+  - ubercart:uc_order

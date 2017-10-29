@@ -4,6 +4,6 @@ description: 'Creates specialized links to purchase products.'
 package: Ubercart - extra
 core: 8.x
 dependencies:
-  - uc_cart
-  - views
+  - ubercart:uc_cart
+  - drupal:views
 configure: uc_cart_links.settings

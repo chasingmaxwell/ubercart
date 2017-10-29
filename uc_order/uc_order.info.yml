@@ -4,6 +4,6 @@ description: 'REQUIRED. Receives and manages orders through your website.'
 package: Ubercart - core
 core: 8.x
 dependencies:
-  - uc_product
-  - views
+  - ubercart:uc_product
+  - drupal:views
 configure: uc_order.workflow

@@ -4,4 +4,4 @@ description: 'Processes payments using PayPal Payments Standard, Website Payment
 package: Ubercart - payment
 core: 8.x
 dependencies:
-  - uc_payment
+  - ubercart:uc_payment
