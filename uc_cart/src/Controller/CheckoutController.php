@@ -82,7 +82,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
       if ($this->config('user.settings')->get('register') != USER_REGISTER_ADMINISTRATORS_ONLY) {
         drupal_set_message($this->t('If you do not have an account yet, you should <a href=":url">register now</a>.', [':url' => Url::fromRoute('user.register', [], ['query' => drupal_get_destination()])->toString()]));
       }
-      return $this->redirect('user.page', [], ['query' => drupal_get_destination()]);
+      return $this->redirect('user.login', [], ['query' => $this->getDestinationArray()]);
     }
 
     // Load an order from the session, if available.
