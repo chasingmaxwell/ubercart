@@ -3,6 +3,7 @@
 namespace Drupal\uc_cart\Plugin\Ubercart\CheckoutPane;
 
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Routing\RedirectDestinationTrait;
 use Drupal\Core\Url;
 use Drupal\uc_cart\CheckoutPanePluginBase;
 use Drupal\uc_order\OrderInterface;
@@ -18,6 +19,8 @@ use Drupal\uc_order\OrderInterface;
  */
 class CustomerInfoPane extends CheckoutPanePluginBase {
 
+  use RedirectDestinationTrait;
+
   /**
    * {@inheritdoc}
    */
@@ -30,12 +33,12 @@ class CustomerInfoPane extends CheckoutPanePluginBase {
       $contents['#description'] = $this->t('Order information will be sent to your account e-mail listed below.');
       $contents['primary_email'] = array('#type' => 'hidden', '#value' => $email);
       $contents['email_text'] = array(
-        '#markup' => '<div>' . $this->t('<b>E-mail address:</b> @email (<a href=":url">edit</a>)', ['@email' => $email, ':url' => Url::fromRoute('entity.user.edit_form', ['user' => $user->id()], ['query' => drupal_get_destination()])->toString()]) . '</div>',
+        '#markup' => '<div>' . $this->t('<b>E-mail address:</b> @email (<a href=":url">edit</a>)', ['@email' => $email, ':url' => Url::fromRoute('entity.user.edit_form', ['user' => $user->id()], ['query' => $this->getDestinationArray()])->toString()]) . '</div>',
       );
     }
     else {
       $email = $order->getEmail();
-      $contents['#description'] = $this->t('Enter a valid email address for this order or <a href=":url">click here</a> to login with an existing account and return to checkout.', [':url' => Url::fromRoute('user.login', [], ['query' => drupal_get_destination()])->toString()]);
+      $contents['#description'] = $this->t('Enter a valid email address for this order or <a href=":url">click here</a> to login with an existing account and return to checkout.', [':url' => Url::fromRoute('user.login', [], ['query' => $this->getDestinationArray()])->toString()]);
       $contents['primary_email'] = array(
         '#type' => 'email',
         '#title' => $this->t('E-mail address'),
