@@ -12,25 +12,25 @@ use Drupal\uc_payment\Entity\PaymentMethod;
  * Implements hook_token_info().
  */
 function uc_payment_token_info() {
-  $order['payment-method'] = array(
+  $order['payment-method'] = [
     'name' => t('Payment method'),
     'description' => t('The payment method of the order.'),
-  );
-  $order['payment-balance'] = array(
+  ];
+  $order['payment-balance'] = [
     'name' => t('Balance'),
     'description' => t('The payment balance of the order'),
-  );
+  ];
 
-  return array(
-    'tokens' => array('uc_order' => $order),
-  );
+  return [
+    'tokens' => ['uc_order' => $order],
+  ];
 }
 
 /**
  * Implements hook_tokens().
  */
 function uc_payment_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
-  $values = array();
+  $values = [];
 
   if ($type == 'uc_order' && !empty($data['uc_order'])) {
     $order = $data['uc_order'];

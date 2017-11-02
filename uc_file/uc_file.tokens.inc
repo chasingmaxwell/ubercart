@@ -12,34 +12,34 @@ use Drupal\Core\Render\BubbleableMetadata;
  * Implements hook_token_info().
  */
 function uc_file_token_info() {
-  $type = array(
+  $type = [
     'name' => t('File downloads'),
     'description' => t('Tokens for purchased file downloads.'),
     'needs-data' => 'uc_file',
-  );
+  ];
 
-  $tokens['downloads'] = array(
+  $tokens['downloads'] = [
     'name' => t('Downloads'),
     'description' => t('The list of file download links (if any) associated with an order'),
-  );
+  ];
 
-  return array(
-    'types' => array('uc_file' => $type),
-    'tokens' => array('uc_file' => $tokens),
-  );
+  return [
+    'types' => ['uc_file' => $type],
+    'tokens' => ['uc_file' => $tokens],
+  ];
 }
 
 /**
  * Implements hook_tokens().
  */
 function uc_file_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
-  $replacements = array();
+  $replacements = [];
 
   if ($type == 'uc_file' && !empty($data['uc_file'])) {
     $files = $data['uc_file'];
 
     if (isset($tokens['downloads'])) {
-      $replacements[$tokens['downloads']] = theme('uc_file_downloads_token', array('file_downloads' => $files));
+      $replacements[$tokens['downloads']] = theme('uc_file_downloads_token', ['file_downloads' => $files]);
     }
   }
 

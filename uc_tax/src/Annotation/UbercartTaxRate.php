@@ -21,16 +21,16 @@ class UbercartTaxRate extends Plugin {
   /**
    * The administrative label of the tax rate.
    *
-   * @ingroup plugin_translatable
-   *
    * @var \Drupal\Core\Annotation\Translation
+   *
+   * @ingroup plugin_translatable
    */
   public $label = '';
 
   /**
    * The plugin weight.
    *
-   * @var integer
+   * @var int
    */
   public $weight;
 

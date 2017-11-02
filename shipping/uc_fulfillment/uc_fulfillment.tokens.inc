@@ -12,30 +12,30 @@ use Drupal\uc_fulfillment\Shipment;
  * Implements hook_token_info().
  */
 function uc_fulfillment_token_info() {
-  $tokens = array();
+  $tokens = [];
 
-  $tokens['tracking-number'] = array(
+  $tokens['tracking-number'] = [
     'name' => t('Shipment tracking number(s)'),
     'description' => t('Tracking number(s) (if applicable) for product shipments.'),
-  );
+  ];
 
-  return array(
-    'tokens' => array('uc_order' => $tokens),
-  );
+  return [
+    'tokens' => ['uc_order' => $tokens],
+  ];
 }
 
 /**
  * Implements hook_tokens().
  */
 function uc_fulfillment_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
-  $replacements = array();
+  $replacements = [];
 
   if ($type == 'uc_order' && !empty($data['uc_order'])) {
     $order = $data['uc_order'];
     foreach ($tokens as $name => $original) {
       switch ($name) {
         case 'tracking-number':
-          $tracking_numbers = array();
+          $tracking_numbers = [];
           $shipments = Shipment::loadByOrder($order->id());
           foreach ($shipments as $shipment) {
             if ($shipment->getTrackingNumber()) {

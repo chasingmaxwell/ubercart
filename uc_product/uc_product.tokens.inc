@@ -123,7 +123,7 @@ function uc_product_token_info() {
  * Implements hook_tokens().
  */
 function uc_product_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
-  $replacements = array();
+  $replacements = [];
 
   if ($type == 'node' && !empty($data['node']) && uc_product_is_product($data['node'])) {
     $product = &$data['node'];

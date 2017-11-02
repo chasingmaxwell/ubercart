@@ -42,7 +42,6 @@ abstract class FileTestBase extends UbercartTestBase {
     return $this->testFilename;
   }
 
-
   /**
    * Helper function to upload test file for downloading.
    *
@@ -67,15 +66,15 @@ abstract class FileTestBase extends UbercartTestBase {
    * Helper function to configure the file downloads directory.
    */
   protected function configureDownloadDirectory() {
-    // Use $this->getTempFilesDirectory() as a place to store the downloads for
-    // the tests, but this is NOT where you'd put the downloads directory on a
-    // live site.  On a live site, it should be outside the web root.
+    /*
+     * Use $this->getTempFilesDirectory() as a place to store the downloads for
+     * the tests, but this is NOT where you'd put the downloads directory on a
+     * live site. On a live site, it should be outside the web root.
+     */
 
     $this->drupalPostForm(
       'admin/store/config/file',
-      array(
-        'base_dir' => $this->getTempFilesDirectory(),
-      ),
+      ['base_dir' => $this->getTempFilesDirectory()],
       t('Save configuration')
     );
 

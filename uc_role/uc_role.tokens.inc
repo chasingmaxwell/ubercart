@@ -11,26 +11,26 @@ use Drupal\Core\Render\BubbleableMetadata;
  * Implements hook_token_info().
  */
 function uc_role_token_info() {
-  $type = array(
+  $type = [
     'name' => t('Role promotions'),
     'description' => t('Tokens related to purchased, temporary roles.'),
     'needs-data' => 'uc_role',
-  );
+  ];
 
-  $tokens['expiration'] = array(
+  $tokens['expiration'] = [
     'name' => t('Expiration'),
     'description' => t('The date the role will expire.'),
     'type' => 'date',
-  );
-  $tokens['name'] = array(
+  ];
+  $tokens['name'] = [
     'name' => t('Role'),
     'description' => t('The associated role name'),
-  );
+  ];
 
-  return array(
-    'types' => array('uc_role' => $type),
-    'tokens' => array('uc_role' => $tokens),
-  );
+  return [
+    'types' => ['uc_role' => $type],
+    'tokens' => ['uc_role' => $tokens],
+  ];
 }
 
 /**
@@ -39,7 +39,7 @@ function uc_role_token_info() {
 function uc_role_tokens($type, $tokens, array $data, array $options, BubbleableMetadata $bubbleable_metadata) {
   $token_service = \Drupal::token();
 
-  $replacements = array();
+  $replacements = [];
 
   if ($type == 'uc_role' && !empty($data['uc_role'])) {
     $object = $data['uc_role'];
@@ -57,7 +57,7 @@ function uc_role_tokens($type, $tokens, array $data, array $options, BubbleableM
     }
 
     if ($expiration_tokens = $token_service->findWithPrefix($tokens, 'expiration')) {
-      $replacements += $token_service->generate('date', $expiration_tokens, array('date' => $object->expiration), $options, $bubbleable_metadata);
+      $replacements += $token_service->generate('date', $expiration_tokens, ['date' => $object->expiration], $options, $bubbleable_metadata);
     }
   }
 

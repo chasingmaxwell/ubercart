@@ -15,124 +15,124 @@ use Drupal\Core\Url;
  * Implements hook_token_info().
  */
 function uc_order_token_info() {
-  $types = array(
+  $types = [
     'name' => t('Orders'),
     'description' => t('Tokens related to Ubercart orders.'),
     'needs-data' => 'uc_order',
-  );
+  ];
 
-  $tokens = array();
+  $tokens = [];
 
-  $tokens['new-username'] = array(
+  $tokens['new-username'] = [
     'name' => t('New username'),
     'description' => t('New username associated with an order if applicable.'),
-  );
-  $tokens['new-password'] = array(
+  ];
+  $tokens['new-password'] = [
     'name' => t('New password'),
     'description' => t('New password associated with an order if applicable.'),
-  );
-  $tokens['order-number'] = array(
+  ];
+  $tokens['order-number'] = [
     'name' => t('Order number'),
     'description' => t('The unique identifier of the order.'),
-  );
-  $tokens['url'] = array(
+  ];
+  $tokens['url'] = [
     'name' => t('URL'),
     'description' => t('The URL to the order'),
     'type' => 'url',
-  );
-  $tokens['link'] = array(
+  ];
+  $tokens['link'] = [
     'name' => t('Link'),
     'description' => t('A link to the order using the order ID.'),
-  );
-  $tokens['admin-url'] = array(
+  ];
+  $tokens['admin-url'] = [
     'name' => t('Admin URL'),
     'description' => t('The URL to the admin view page using the order ID.'),
     'type' => 'url',
-  );
-  $tokens['admin-link'] = array(
+  ];
+  $tokens['admin-link'] = [
     'name' => t('Admin link'),
     'description' => t('A link to the order admin view page using the order ID.'),
-  );
-  $tokens['subtotal'] = array(
+  ];
+  $tokens['subtotal'] = [
     'name' => t('Subtotal'),
     'description' => t('The subtotal of products on an order.'),
-  );
-  $tokens['total'] = array(
+  ];
+  $tokens['total'] = [
     'name' => t('Total'),
     'description' => t('The order total.'),
-  );
-  $tokens['email'] = array(
+  ];
+  $tokens['email'] = [
     'name' => t('Email'),
     'description' => t('The primary e-mail address of the order.'),
-  );
+  ];
   // Duplicate [uc_order:email] as [uc_order:mail] as VBO validates tokens ending in :mail.
   $tokens['mail'] = $tokens['email'];
-  $tokens['shipping-method'] = array(
+  $tokens['shipping-method'] = [
     'name' => t('Shipping method'),
     'description' => t('The title of the first shipping line item.'),
-  );
-  $tokens['shipping-address'] = array(
+  ];
+  $tokens['shipping-address'] = [
     'name' => t('Shipping address'),
     'description' => t('The order shipping address.'),
-  );
-  $tokens['shipping-phone'] = array(
+  ];
+  $tokens['shipping-phone'] = [
     'name' => t('Shipping phone number'),
     'description' => t('The phone number for the shipping address.'),
-  );
-  $tokens['billing-address'] = array(
+  ];
+  $tokens['billing-address'] = [
     'name' => t('Billing address'),
     'description' => t('The order billing address.'),
-  );
-  $tokens['billing-phone'] = array(
+  ];
+  $tokens['billing-phone'] = [
     'name' => t('Billing phone number'),
     'description' => t('The phone number for the billing address.'),
-  );
-  $tokens['first-name'] = array(
+  ];
+  $tokens['first-name'] = [
     'name' => t("Customer's first name"),
     'description' => t('The first name associated with the order.'),
-  );
-  $tokens['last-name'] = array(
+  ];
+  $tokens['last-name'] = [
     'name' => t("Customer's last name"),
     'description' => t('The last name associated with the order.'),
-  );
-  $tokens['comments'] = array(
+  ];
+  $tokens['comments'] = [
     'name' => t('Comments'),
     'description' => t('Comments left by the customer.'),
-  );
-  $tokens['last-comment'] = array(
+  ];
+  $tokens['last-comment'] = [
     'name' => t('Last comment'),
     'description' => t('Last order comment left by an administrator (not counting the order admin comments).'),
-  );
-  $tokens['order-status'] = array(
+  ];
+  $tokens['order-status'] = [
     'name' => t('Order status'),
     'description' => t('The current order status.'),
-  );
+  ];
 
-  $tokens['customer'] = array(
+  $tokens['customer'] = [
     'name' => t('Customer'),
     'description' => t('The user associated with the order.'),
     'type' => 'user',
-  );
-  $tokens['created'] = array(
+  ];
+  $tokens['created'] = [
     'name' => t('Date created'),
     'description' => t('The date and time when the order was created.'),
     'type' => 'date',
-  );
-  $tokens['changed'] = array(
+  ];
+  $tokens['changed'] = [
     'name' => t('Date changed'),
     'description' => t('The date the order was most recently updated.'),
     'type' => 'date',
-  );
+  ];
 
-  $tokens['products'] = array(
+  $tokens['products'] = [
     'name' => t('Products'),
     'description' => t('A list of products in the order.'),
-  );
+  ];
 
-  return array(
-    'types' => array('uc_order' => $types),
-    'tokens' => array('uc_order' => $tokens),
-  );
+  return [
+    'types' => ['uc_order' => $types],
+    'tokens' => ['uc_order' => $tokens],
+  ];
 }
 
 /**
@@ -238,7 +238,7 @@ function uc_order_tokens($type, $tokens, array $data, array $options, Bubbleable
 
         case 'shipping-address':
           // Cast Address object to string to get country-specific formatting.
-          $address = array('#markup' => (string) $order->getAddress('delivery'));
+          $address = ['#markup' => (string) $order->getAddress('delivery')];
           $replacements[$original] = drupal_render($address);
           break;
 
@@ -248,7 +248,7 @@ function uc_order_tokens($type, $tokens, array $data, array $options, Bubbleable
 
         case 'billing-address':
           // Cast Address object to string to get country-specific formatting.
-          $address = array('#markup' => (string) $order->getAddress('billing'));
+          $address = ['#markup' => (string) $order->getAddress('billing')];
           $replacements[$original] = drupal_render($address);
           break;
 
@@ -305,12 +305,12 @@ function uc_order_tokens($type, $tokens, array $data, array $options, Bubbleable
           break;
 
         case 'products':
-          $products = array();
+          $products = [];
           foreach ($order->products as $product) {
-            $qty = array(
+            $qty = [
               '#theme' => 'uc_qty',
               '#qty' => $product->qty->value,
-            );
+            ];
             $products[] = drupal_render($qty) . ' ' . $product->title->value;
           }
           $replacements[$original] = implode("<br />\n", $products);

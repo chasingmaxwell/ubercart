@@ -21,7 +21,7 @@ class TaxRateController extends ControllerBase {
    */
   public function addForm($plugin_id) {
     // Create a tax rate configuration entity.
-    $entity = $this->entityTypeManager()->getStorage('uc_tax_rate')->create(array('plugin' => $plugin_id));
+    $entity = $this->entityTypeManager()->getStorage('uc_tax_rate')->create(['plugin' => $plugin_id]);
 
     return $this->entityFormBuilder()->getForm($entity);
   }
