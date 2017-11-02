@@ -46,6 +46,7 @@ class TwoCheckout extends PaymentMethodPluginBase implements OffsitePaymentMetho
     return [
       'check' => FALSE,
       'checkout_type' => 'dynamic',
+      'currency_code' => '',
       'demo' => TRUE,
       'language' => 'en',
       'notification_url' => '',
