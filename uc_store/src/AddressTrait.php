@@ -285,14 +285,14 @@ trait AddressTrait {
    * {@inheritdoc}
    */
   public function isSamePhysicalLocation(AddressInterface $address) {
-    $physicalProperty = array(
-      'street1', 'street2', 'city', 'zone', 'country', 'postal_code'
-    );
+    $physicalProperty = [
+      'street1', 'street2', 'city', 'zone', 'country', 'postal_code',
+    ];
 
     foreach ($physicalProperty as $property) {
       // Canonicalize properties before comparing.
-      if (Address::makeCanonical($this->$property)   !=
-          Address::makeCanonical($address->$property)  ) {
+      if (Address::makeCanonical($this->$property) !=
+          Address::makeCanonical($address->$property)) {
         return FALSE;
       }
     }

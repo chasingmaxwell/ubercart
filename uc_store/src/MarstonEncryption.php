@@ -29,16 +29,15 @@ class MarstonEncryption implements EncryptionInterface {
   protected static $scramble1 = '! #$%&()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[]^_`"abcdefghijklmnopqrstuvwxyz{|}~';
   protected static $scramble2 = 'f^jAE]okIOzU[2&q1{3`h5w_794p@6s8?BgP>dFV=m" D<TcS%Ze|r:lGK/uCy.Jx)HiQ!#$~(;Lt-R}Ma,NvW+Ynb*0X';
 
-  protected $errors = array();
+  protected $errors = [];
   protected $adj = 1.75;
   protected $mod = 3;
-
 
   /**
    * {@inheritdoc}
    */
   public function encrypt($key, $plaintext, $sourcelen = 0) {
-    $this->errors = array();
+    $this->errors = [];
 
     // Convert key into sequence of numbers.
     $fudgefactor = $this->convertKey($key);
@@ -48,7 +47,7 @@ class MarstonEncryption implements EncryptionInterface {
 
     if (empty($plaintext)) {
       // Commented out to prevent errors getting logged for use cases that may
-      // have variable encryption/decryption requirements. -RS
+      // have variable encryption/decryption requirements.
       // $this->errors[] = t('No value has been supplied for encryption');
       return;
     }
@@ -85,7 +84,7 @@ class MarstonEncryption implements EncryptionInterface {
    * {@inheritdoc}
    */
   public function decrypt($key, $cyphertext) {
-    $this->errors = array();
+    $this->errors = [];
 
     // Convert key into sequence of numbers.
     $fudgefactor = $this->convertKey($key);
@@ -233,13 +232,13 @@ class MarstonEncryption implements EncryptionInterface {
    * @param string $key
    *   Encryption key.
    *
-   * @return array
+   * @return array|null
    *   Array of integers.
    */
   protected function convertKey($key) {
     if (empty($key)) {
       // Commented out to prevent errors getting logged for use cases that may
-      // have variable encryption/decryption requirements. -RS
+      // have variable encryption/decryption requirements.
       // $this->errors[] = 'No value has been supplied for the encryption key';
       return;
     }

@@ -18,10 +18,10 @@ class UbercartMail extends PhpMail {
   /**
    * Concatenates the e-mail body for HTML mails.
    *
-   * @param $message
+   * @param array $message
    *   A message array, as described in hook_mail_alter().
    *
-   * @return
+   * @return string
    *   The formatted $message.
    */
   public function format(array $message) {

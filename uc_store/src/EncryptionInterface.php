@@ -2,7 +2,6 @@
 
 namespace Drupal\uc_store;
 
-
 /**
  * Provides common interface for encryption methods.
  */

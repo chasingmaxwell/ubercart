@@ -35,16 +35,16 @@ class PoweredByBlock extends BlockBase {
   public function blockForm($form, FormStateInterface $form_state) {
     $configuration = $this->configuration;
 
-    $form['message'] = array(
+    $form['message'] = [
       '#type' => 'radios',
       '#title' => $this->t('Footer message for store pages'),
       '#options' => array_merge(
-        array(0 => $this->t('Randomly select a message from the list below.')),
+        [0 => $this->t('Randomly select a message from the list below.')],
         $this->options()
       ),
       '#default_value' => isset($configuration['message']) ? $configuration['message'] : '',
       '#weight' => 10,
-    );
+    ];
 
     return $form;
   }

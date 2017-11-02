@@ -117,14 +117,14 @@ trait AjaxAttachTrait {
           $element['#process'] = $info['#process'];
         }
       }
-      $element['#process'][] = array($this, 'ajaxProcessForm');
+      $element['#process'][] = [$this, 'ajaxProcessForm'];
 
       // Multiplex any Ajax calls for this element.
       $parents = $form['#array_parents'];
       array_push($parents, $child);
       $key = implode('][', $parents);
 
-      $callbacks = array();
+      $callbacks = [];
       foreach ($form_state->get('uc_ajax') as $fields) {
         if (!empty($fields[$key])) {
           if (is_array($fields[$key])) {
@@ -138,7 +138,7 @@ trait AjaxAttachTrait {
 
       if (!empty($callbacks)) {
         if (empty($element['#ajax'])) {
-          $element['#ajax'] = array();
+          $element['#ajax'] = [];
         }
         elseif (!empty($element['#ajax']['callback'])) {
           if (!empty($element['#ajax']['wrapper'])) {
@@ -149,10 +149,10 @@ trait AjaxAttachTrait {
           }
         }
 
-        $element['#ajax'] = array_merge($element['#ajax'], array(
-          'callback' => array($this, 'ajaxMultiplex'),
+        $element['#ajax'] = array_merge($element['#ajax'], [
+          'callback' => [$this, 'ajaxMultiplex'],
           'list' => $callbacks,
-        ));
+        ]);
       }
     }
 
@@ -168,7 +168,7 @@ trait AjaxAttachTrait {
     $response = new AjaxResponse();
 
     // $attachments collects other AjaxResponse objects' attachments.
-    $attachments = array();
+    $attachments = [];
 
     $element = $form_state->getTriggeringElement();
     foreach ($element['#ajax']['list'] as $wrapper => $callback) {
@@ -188,7 +188,7 @@ trait AjaxAttachTrait {
           // and insert it into the wrapper.
           $html = is_string($result) ? $result : drupal_render($result);
           $response->addCommand(new ReplaceCommand('#' . $wrapper, trim($html)));
-          $status_messages = array('#type' => 'status_messages');
+          $status_messages = ['#type' => 'status_messages'];
           $response->addCommand(new PrependCommand('#' . $wrapper, drupal_render($status_messages)));
         }
       }

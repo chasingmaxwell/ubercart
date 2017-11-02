@@ -9,10 +9,22 @@ use Drupal\Component\Utility\Crypt;
  */
 class OpenSSLEncryption implements EncryptionInterface {
 
-  // Default to using AES cypher in CBC mode.
+  /*
+   * Cypher to use.
+   *
+   * Valid values are defined by OpenSSL.
+   * Default is to use AES cypher in CBC mode.
+   *
+   * @var string
+   */
   protected $cypher = 'AES-128-CBC';
 
-  protected $errors = array();
+  /*
+   * Array of error messages.
+   *
+   * @var string[]
+   */
+  protected $errors = [];
 
   /**
    * {@inheritdoc}
@@ -20,7 +32,7 @@ class OpenSSLEncryption implements EncryptionInterface {
   public function getErrors() {
     $errors = $this->errors;
     // Reset error array.
-    $this->errors = array();
+    $this->errors = [];
     return $errors;
   }
 
