@@ -124,7 +124,7 @@ function uc_store_tokens($type, $tokens, array $data, array $options, Bubbleable
 
         case 'address':
           // Cast Address object to string to get country-specific formatting.
-          $address = ['#markup' => (string) uc_store_address());
+          $address = ['#markup' => (string) uc_store_address()];
           $replacements[$original] = drupal_render($address);
           break;
 
@@ -136,7 +136,7 @@ function uc_store_tokens($type, $tokens, array $data, array $options, Bubbleable
 
     // Handle chaining for tokens that have 'type' defined in hook_token_info()
     if ($link_tokens = $token_service->findWithPrefix($tokens, 'help-url')) {
-      $replacements += $token_service->generate('url', $link_tokens, ['path' => $config->get('help_page')), $options, $bubbleable_metadata);
+      $replacements += $token_service->generate('url', $link_tokens, ['path' => $config->get('help_page')], $options, $bubbleable_metadata);
     }
   }
 
