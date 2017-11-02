@@ -26,7 +26,7 @@ class CartLinksTest extends UbercartTestBase {
     // Set front page so we have someplace to redirect to for invalid Cart Links.
     \Drupal::configFactory()->getEditable('system.site')->set('page.front', '/node')->save();
 
-    // Need page_title_block because we test page titles
+    // Need page_title_block because we test page titles.
     $this->drupalPlaceBlock('page_title_block');
 
     // System help block is needed to see output from hook_help().
@@ -54,13 +54,13 @@ class CartLinksTest extends UbercartTestBase {
    * Tests access to admin settings page and tests default values.
    */
   public function testCartLinksUISettingsPage() {
-    // Access settings page by anonymous user
+    // Access settings page by anonymous user.
     $this->drupalGet('admin/store/config/cart-links');
     $this->assertResponse(403);
     $this->assertText(t('Access denied'));
     $this->assertText(t('You are not authorized to access this page.'));
 
-    // Access settings page by privileged user
+    // Access settings page by privileged user.
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('admin/store/config/cart-links');
     $this->assertResponse(200);
@@ -94,7 +94,7 @@ class CartLinksTest extends UbercartTestBase {
       'Cart Links restrictions is empty.'
     );
 
-    // Test presence of and contents of Help page
+    // Test presence of and contents of Help page.
     $this->clickLink(t('View the help page'));
     $this->assertText(
       'http://www.example.com/cart/add/&lt;cart_link_content&gt;',
@@ -106,31 +106,31 @@ class CartLinksTest extends UbercartTestBase {
    * Tests Cart Links on a page under a variety of conditions.
    */
   public function testCartLinksBasicFunctionality() {
-    // Create product
+    // Create product.
     $products[] = $this->createCartLinksProduct(FALSE);
 
-    // Create a product class
+    // Create a product class.
     $products[] = $this->createCartLinksProduct(FALSE);  // later ...
 
-    // Create some valid Cart Links for these products
+    // Create some valid Cart Links for these products.
     $link_array = $this->createValidCartLinks($products);
     $cart_links = $link_array['links'];
     $link_data  = $link_array['data'];
 
     // Need to test incorrect links as well:
-    //   links which add invalid attributes
-    //   links which omit required attributes
+    //   links which add invalid attributes.
+    //   links which omit required attributes.
 
-    // Create a page containing these links
+    // Create a page containing these links.
     $page = $this->createCartLinksPage($cart_links);
 
     //
-    // Test clicking on links
+    // Test clicking on links.
     //
 
     foreach ($cart_links as $key => $test_link) {
       $this->drupalGet('node/' . $page->id());
-      // Look for link on page
+      // Look for link on page.
       $this->assertLink(
         t('Cart Link #@link', ['@link' => $key]),
         0,
@@ -142,16 +142,16 @@ class CartLinksTest extends UbercartTestBase {
         SafeMarkup::format('Cart Link @link found on page.', ['@link' => $test_link])
       );
 
-      // Click on link
+      // Click on link.
       $this->clickLink(t('Cart Link #@link', ['@link' => $key]));
       // Check for notice that item was added (this notice is set ON
-      // by default, see admin/store/config/cart)
+      // by default, see admin/store/config/cart).
       $this->assertText(
         t('@title added to your shopping cart.', ['@title' => $link_data[$key]['title']]),
         SafeMarkup::format('Product @title added to cart.', ['@title' => $link_data[$key]['title']])
       );
 
-      // Check contents of cart
+      // Check contents of cart.
       $this->drupalGet('cart');
       $this->assertText(
         $link_data[$key]['title'],
@@ -163,14 +163,14 @@ class CartLinksTest extends UbercartTestBase {
         'Product quantity correct in cart.'
       );
 
-      // Check for correct attribute name(s) in cart
+      // Check for correct attribute name(s) in cart.
       foreach ($link_data[$key]['attributes'] as $label => $attribute) {
         $this->assertText(
           $label . ':',
           SafeMarkup::format('Attribute @label correct in cart.', ['@label' => $label])
         );
         foreach ($attribute as $option) {
-          // Check for correct option name(s) in cart
+          // Check for correct option name(s) in cart.
           $this->assertText(
             $option,
             SafeMarkup::format('Option @name correct in cart.', ['@name' => $option])
@@ -179,15 +179,15 @@ class CartLinksTest extends UbercartTestBase {
       }
 
       // Use the same link, but this time append an '_s' to turn
-      // off message display for this product
+      // off message display for this product.
       $this->drupalGet($test_link . '_s');
-      // Default add-to-cart message is different when adding a duplicate item
+      // Default add-to-cart message is different when adding a duplicate item.
       $this->assertNoText(
         t('Your item(s) have been updated.'),
         'Default add-to-cart message suppressed.'
       );
 
-      // Empty cart (press remove button)
+      // Empty cart (press remove button).
       $this->drupalPostForm('cart', array(), t('Remove'));
       $this->assertText(t('There are no products in your shopping cart.'));
     }
@@ -197,31 +197,31 @@ class CartLinksTest extends UbercartTestBase {
    * Tests Cart Links product action messages.
    */
   public function testCartLinksProductActionMessage() {
-    // Create product
+    // Create product.
     $products[] = $this->createCartLinksProduct(FALSE);
 
-    // Create a product class
+    // Create a product class.
     $products[] = $this->createCartLinksProduct(FALSE);  // later ...
 
-    // Create some valid Cart Links for these products
+    // Create some valid Cart Links for these products.
     $link_array = $this->createValidCartLinks($products);
     $cart_links = $link_array['links'];
     $link_data  = $link_array['data'];
 
-    // Create a page containing these links
+    // Create a page containing these links.
     $page = $this->createCartLinksPage($cart_links);
 
     $this->drupalLogin($this->adminUser);
 
     //
-    // Test product action message display
+    // Test product action message display.
     //
 
-    // Turn on display of product action message
+    // Turn on display of product action message.
     $this->setCartLinksUIProductActionMessage(TRUE);
-    // Go to page with Cart Links
+    // Go to page with Cart Links.
     $this->drupalGet('node/' . $page->id());
-    // Pick one of the links at random
+    // Pick one of the links at random.
     $test_link = array_rand($cart_links);
     $this->clickLink(t('Cart Link #@link', ['@link' => $test_link]));
     $this->assertText(
@@ -229,15 +229,15 @@ class CartLinksTest extends UbercartTestBase {
       'Cart Link product action message found.'
     );
 
-    // Empty cart (press remove button)
+    // Empty cart (press remove button).
     $this->drupalPostForm('cart', array(), t('Remove'));
     $this->assertText(t('There are no products in your shopping cart.'));
 
-    // Turn off display of product action message
+    // Turn off display of product action message.
     $this->setCartLinksUIProductActionMessage(FALSE);
-    // Go to page with Cart Links
+    // Go to page with Cart Links.
     $this->drupalGet('node/' . $page->id());
-    // Pick one of the links at random
+    // Pick one of the links at random.
     $test_link = array_rand($cart_links);
     $this->clickLink(t('Cart Link #@link', ['@link' => $test_link]));
     $this->assertNoText(
@@ -252,35 +252,35 @@ class CartLinksTest extends UbercartTestBase {
    * Tests Cart Links cart empty action.
    */
   public function testCartLinksAllowEmptying() {
-    // Create product
+    // Create product.
     $products[] = $this->createCartLinksProduct(FALSE);
 
-    // Create a product class
+    // Create a product class.
     $products[] = $this->createCartLinksProduct(FALSE);  // later ...
 
-    // Create some valid Cart Links for these products
+    // Create some valid Cart Links for these products.
     $link_array = $this->createValidCartLinks($products);
     $cart_links = $link_array['links'];
     $link_data  = $link_array['data'];
 
-    // Create a page containing these links
+    // Create a page containing these links.
     $page = $this->createCartLinksPage($cart_links);
 
     $this->drupalLogin($this->adminUser);
 
     //
-    // Test empty cart action
+    // Test empty cart action.
     //
 
-    // Allow links to empty cart
+    // Allow links to empty cart.
     $this->setCartLinksUIAllowEmptying(TRUE);
-    // Go to page with Cart Links
+    // Go to page with Cart Links.
     $this->drupalGet('node/' . $page->id());
-    // Pick one of the links at random and add it to the cart
+    // Pick one of the links at random and add it to the cart.
     $test_link_0 = array_rand($cart_links);
     $this->clickLink(t('Cart Link #@link', ['@link' => $test_link_0]));
 
-    // Pick another link at random and prepend an 'e-' so it will empty cart
+    // Pick another link at random and prepend an 'e-' so it will empty cart.
     $in_cart = $cart_links[$test_link_0];
     // (Don't want to use the same link.)
     unset($cart_links[$test_link_0]);
@@ -290,10 +290,10 @@ class CartLinksTest extends UbercartTestBase {
       t('The current contents of your shopping cart will be lost. Are you sure you want to continue?'),
       'Empty cart confirmation page found.'
     );
-    // Allow
+    // Allow.
     $this->drupalPostForm(NULL, array(), t('Confirm'));
 
-    // Verify the cart doesn't have the first item and does have the second item
+    // Verify the cart doesn't have the first item and does have the second item.
     $this->drupalGet('cart');
     $this->assertText(
       $link_data[$test_link]['title'],
@@ -304,13 +304,13 @@ class CartLinksTest extends UbercartTestBase {
       'Cart was emptied by Cart Link.'
     );
 
-    // Still have something ($test_link) in the cart
+    // Still have something ($test_link) in the cart.
 
-    // Forbid links to empty cart
+    // Forbid links to empty cart.
     $this->setCartLinksUIAllowEmptying(FALSE);
-    // Re-use $test_link_0 and prepend an 'e-' so it will (try to) empty cart
+    // Re-use $test_link_0 and prepend an 'e-' so it will (try to) empty cart.
     $this->drupalGet(str_replace('add/p', 'add/e-p', $in_cart));
-    // Verify the cart has both items - cart wasn't emptied
+    // Verify the cart has both items - cart wasn't emptied.
     $this->drupalGet('cart');
     $this->assertText(
       $link_data[$test_link_0]['title'],
@@ -328,51 +328,51 @@ class CartLinksTest extends UbercartTestBase {
    * Tests Cart Links restrictions.
    */
   public function testCartLinksRestrictions() {
-    // Create product
+    // Create product.
     $products[] = $this->createCartLinksProduct(FALSE);
 
-    // Create a product class
+    // Create a product class.
     $products[] = $this->createCartLinksProduct(FALSE);  // later ...
 
-    // Create some valid Cart Links for these products
+    // Create some valid Cart Links for these products.
     $link_array = $this->createValidCartLinks($products);
     $cart_links = $link_array['links'];
     $link_data  = $link_array['data'];
 
-    // Create a page containing these links
+    // Create a page containing these links.
     $page = $this->createCartLinksPage($cart_links);
 
     $this->drupalLogin($this->adminUser);
 
     //
-    // Test Cart Links restrictions
+    // Test Cart Links restrictions.
     //
 
-    // Go to page with Cart Links
+    // Go to page with Cart Links.
     $this->drupalGet('node/' . $page->id());
-    // Pick one of the links at random and restrict it
+    // Pick one of the links at random and restrict it.
     $test_link_0 = array_rand($cart_links);
-    // Only this link is allowed - strip '/cart/add/' from beginning
+    // Only this link is allowed - strip '/cart/add/' from beginning.
     $this->setCartLinksUIRestrictions(substr($cart_links[$test_link_0], 10));
 
-    // Attempt to click link - should pass
+    // Attempt to click link - should pass.
     $this->drupalGet('node/' . $page->id());
     $this->clickLink(t('Cart Link #@link', ['@link' => $test_link_0]));
 
     // Check for notice that item was added (this notice is set ON
-    // by default, see admin/store/config/cart)
+    // by default, see admin/store/config/cart).
     $this->assertText(
       t('@title added to your shopping cart.', ['@title' => $link_data[$test_link_0]['title']]),
       SafeMarkup::format('Product @title added to cart.', ['@title' => $link_data[$test_link_0]['title']])
     );
 
-    // Pick another link at random, as long as it is different from first
+    // Pick another link at random, as long as it is different from first.
     $in_cart = $cart_links[$test_link_0];
     unset($cart_links[$test_link_0]);
     $test_link = array_rand($cart_links);
 
-    // Attempt to click it
-    // It should fail and redirect to the home page (default)
+    // Attempt to click it.
+    // It should fail and redirect to the home page (default).
     $this->drupalGet('node/' . $page->id());
     $this->clickLink(t('Cart Link #@link', ['@link' => $test_link]));
     $this->assertText(
@@ -383,7 +383,7 @@ class CartLinksTest extends UbercartTestBase {
       'Redirected to front page for link not in restrictions.'
     );
 
-    // Now create a special redirect page for bad links
+    // Now create a special redirect page for bad links.
     $redirect_page = $this->drupalCreateNode(
       array(
         'body' => array(
@@ -393,7 +393,7 @@ class CartLinksTest extends UbercartTestBase {
       )
     );
 
-    // Set redirect link
+    // Set redirect link.
     $this->setCartLinksUIRedirect('node/' . $redirect_page->id());
 
     // Attempt to click same restricted link as above.
@@ -405,7 +405,7 @@ class CartLinksTest extends UbercartTestBase {
       'Redirected to error page for link not in restrictions.'
     );
 
-    // Remove restrictions, try to add again - it should pass
+    // Remove restrictions, try to add again - it should pass.
     $this->setCartLinksUIRestrictions('');
     $this->drupalGet('node/' . $page->id());
     $this->clickLink(t('Cart Link #@link', ['@link' => $test_link]));
@@ -422,24 +422,24 @@ class CartLinksTest extends UbercartTestBase {
    */
   public function testCartLinksMessages() {
 
-    // Create product
+    // Create product.
     $products[] = $this->createCartLinksProduct(FALSE);
 
-    // Create a product class
+    // Create a product class.
     $products[] = $this->createCartLinksProduct(FALSE);  // later ...
 
-    // Create some valid Cart Links for these products
+    // Create some valid Cart Links for these products.
     $link_array = $this->createValidCartLinks($products);
     $cart_links = $link_array['links'];
     $link_data  = $link_array['data'];
 
-    // Create a page containing these links
+    // Create a page containing these links.
     $page = $this->createCartLinksPage($cart_links);
 
-    // Need to be admin to define messages
+    // Need to be admin to define messages.
     $this->drupalLogin($this->adminUser);
 
-    // Define some messages
+    // Define some messages.
     $messages = array();
     for ($i = 0; $i < 15; $i++) {
       $key = mt_rand(1, 999);
@@ -448,13 +448,13 @@ class CartLinksTest extends UbercartTestBase {
     $this->setCartLinksUIMessages($messages);
 
     //
-    // Test message display
+    // Test message display.
     //
 
-    // Go to page with Cart Links
+    // Go to page with Cart Links.
     $this->drupalGet('node/' . $page->id());
 
-    // Pick one link at random and append an '-m<#>' to display a message
+    // Pick one link at random and append an '-m<#>' to display a message.
     $test_link = array_rand($cart_links);
     $message_key  = array_rand($messages);
     $message_text = explode('|', $messages[$message_key]);
@@ -464,7 +464,7 @@ class CartLinksTest extends UbercartTestBase {
       SafeMarkup::format('Message @key displayed.', ['@key' => $message_key])
     );
 
-    // Empty cart (press remove button)
+    // Empty cart (press remove button).
     $this->drupalPostForm('cart', array(), t('Remove'));
     $this->assertText(t('There are no products in your shopping cart.'));
 
@@ -476,50 +476,50 @@ class CartLinksTest extends UbercartTestBase {
    */
   public function testCartLinksTracking() {
 
-    // Create product
+    // Create product.
     $products[] = $this->createCartLinksProduct(FALSE);
 
-    // Create a product class
+    // Create a product class.
     $products[] = $this->createCartLinksProduct(FALSE);  // later ...
 
-    // Create some valid Cart Links for these products
+    // Create some valid Cart Links for these products.
     $link_array = $this->createValidCartLinks($products);
     $cart_links = $link_array['links'];
     $link_data  = $link_array['data'];
 
-    // Create a page containing these links
+    // Create a page containing these links.
     $page = $this->createCartLinksPage($cart_links);
 
     $this->drupalLogin($this->adminUser);
 
     //
-    // Test Cart Links tracking
+    // Test Cart Links tracking.
     //
 
-    // Go to page with Cart Links
+    // Go to page with Cart Links.
     $this->drupalGet('node/' . $page->id());
 
-    // Create three tracking IDs
+    // Create three tracking IDs.
     $tracking = array();
     for ($i = 0; $i < 3; $i++) {
       $tracking[$this->randomMachineName(16)] = 0;
     }
 
-    // Click a number of links to create some statistics
+    // Click a number of links to create some statistics.
     for ($i = 0; $i < 50; $i++) {
-      // Pick one link at random and append an '-i<tracking ID>'
+      // Pick one link at random and append an '-i<tracking ID>'.
       $test_link = array_rand($cart_links);
 
-      // Assign one of the tracking IDs
+      // Assign one of the tracking IDs.
       $tracking_id = array_rand($tracking);
       $this->drupalGet($cart_links[$test_link] . '-i' . $tracking_id);
-      // Keep a record of how many links were assigned this key
+      // Keep a record of how many links were assigned this key.
       $tracking[$tracking_id] += 1;
     }
     // Sort by # of clicks, as that is how Views displays them by default.
     arsort($tracking, SORT_NUMERIC);
 
-    // Check report to see these clicks have been recorded correctly
+    // Check report to see these clicks have been recorded correctly.
     $this->drupalGet('admin/store/reports/cart-links');
     $total = 0;
     foreach ($tracking as $id => $clicks) {
@@ -719,7 +719,7 @@ class CartLinksTest extends UbercartTestBase {
    */
   protected function createCartLinksProduct($product_class = FALSE) {
 
-    // Create a product
+    // Create a product.
     if ($product_class) {
       $product = $this->createProductClass(array('promote' => 0));
     }
@@ -727,7 +727,7 @@ class CartLinksTest extends UbercartTestBase {
       $product = $this->createProduct(array('promote' => 0));
     }
 
-    // Create some attributes
+    // Create some attributes.
     for ($i = 0; $i < 5; $i++) {
       $attribute = $this->createAttribute();
       $attributes[$attribute->aid] = $attribute;
@@ -758,8 +758,8 @@ class CartLinksTest extends UbercartTestBase {
     // Load the attributes back.
     $loaded_attributes = uc_attribute_load_multiple($aids);
 
-      // TODO: add attributes of all 4 types
-      // TODO: create both required and not required attributes
+      // @todo: add attributes of all 4 types.
+      // @todo: create both required and not required attributes.
 
     // Add the selected attributes to the product.
     foreach ($loaded_attributes as $loaded_attribute) {
@@ -808,7 +808,7 @@ class CartLinksTest extends UbercartTestBase {
       // $cart_links and $link_data share the same keys.
       $cart_links[$key] = '/cart/add/p' . $nid . '_q' . $qty;
 
-      // Loop over attributes, append all attribute/option combos to links
+      // Loop over attributes, append all attribute/option combos to links.
       $attributes = uc_product_get_attributes($nid);
       foreach ($attributes as $attribute) {
         // If this is textfield, radio, or select option, then

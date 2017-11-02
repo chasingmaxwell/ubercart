@@ -20,7 +20,7 @@ class AttributeTest extends UbercartTestBase {
   protected function setUp() {
     parent::setUp();
 
-    // Need page_title_block because we test page titles
+    // Need page_title_block because we test page titles.
     $this->drupalPlaceBlock('page_title_block');
 
     $this->drupalLogin($this->adminUser);

@@ -18,7 +18,7 @@ class CountryTest extends WebTestBase {
   /**
    * Test enable/disable of countries.
    */
-  public function testCountryUI() {
+  public function testCountryUi() {
     $this->drupalLogin($this->drupalCreateUser(array('administer countries', 'administer store')));
 
     // Testing all countries is too much, so we just enable a random selection

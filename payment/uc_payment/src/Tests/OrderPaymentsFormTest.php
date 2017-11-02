@@ -15,8 +15,9 @@ class OrderPaymentsFormTest extends UbercartTestBase {
   public static $adminPermissions = ['view payments', 'manual payments', 'delete payments'];
 
   /**
+   * Number of digits after decimal point, for currency rounding.
+   *
    * @var int
-   *   Number of digits after decimal point, for currency rounding.
    */
   protected $precision = 2;
 

@@ -27,7 +27,11 @@ abstract class UbercartTestBase extends WebTestBase {
    */
   protected $strictConfigSchema = FALSE;
 
-  /** User with privileges to do everything. */
+  /**
+   * User with privileges to do everything.
+   *
+   * @var \Drupal\user\UserInterface
+   */
   protected $adminUser;
 
   /** Permissions for administrator user. */

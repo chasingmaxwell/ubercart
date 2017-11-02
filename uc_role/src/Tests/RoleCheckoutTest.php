@@ -15,7 +15,11 @@ class RoleCheckoutTest extends UbercartTestBase {
 
   public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_role'];
 
-  /** Authenticated but unprivileged user. */
+  /**
+   * Authenticated but unprivileged user.
+   *
+   * @var \Drupal\user\UserInterface
+   */
   protected $customer;
 
   /**
@@ -33,6 +37,9 @@ class RoleCheckoutTest extends UbercartTestBase {
       ->save();
   }
 
+  /**
+   *
+   */
   public function testCheckoutRoleAssignment() {
     $this->drupalLogin($this->adminUser);
     $method = $this->createPaymentMethod('other');

@@ -37,7 +37,7 @@ class UPSSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $ups_config = $this->config('uc_ups.settings');
 
-    // Put fieldsets into vertical tabs
+    // Put fieldsets into vertical tabs.
     $form['ups-settings'] = array(
       '#type' => 'vertical_tabs',
       '#attached' => array(
@@ -47,7 +47,7 @@ class UPSSettingsForm extends ConfigFormBase {
       ),
     );
 
-    // Container for credential forms
+    // Container for credential forms.
     $form['credentials'] = array(
       '#type'          => 'details',
       '#title'         => $this->t('Credentials'),
@@ -105,7 +105,7 @@ class UPSSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Select the UPS services that are available to customers.'),
     );
 
-    // Container for quote options
+    // Container for quote options.
     $form['quote_options'] = array(
       '#type'          => 'details',
       '#title'         => $this->t('Quote options'),
@@ -124,7 +124,7 @@ class UPSSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Indicate whether each product is quoted as shipping separately or all in one package. Orders with one kind of product will still use the package quantity to determine the number of packages needed, however.'),
     );
 
-    // Form to select package types
+    // Form to select package types.
     $form['quote_options']['package_type'] = array(
       '#type' => 'select',
       '#title' => $this->t('Default Package Type'),
@@ -152,7 +152,7 @@ class UPSSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Is your UPS account receiving negotiated rates on shipments?'),
     );
 
-    // Form to select pickup type
+    // Form to select pickup type.
     $form['quote_options']['pickup_type'] = array(
       '#type' => 'select',
       '#title' => $this->t('Pickup type'),
@@ -196,7 +196,7 @@ class UPSSettingsForm extends ConfigFormBase {
       '#description' => $this->t('When enabled, the quotes presented to the customer will include the cost of insurance for the full sales price of all products in the order.'),
     );
 
-    // Container for markup forms
+    // Container for markup forms.
     $form['markups'] = array(
       '#type'          => 'details',
       '#title'         => $this->t('Markups'),
@@ -204,7 +204,7 @@ class UPSSettingsForm extends ConfigFormBase {
       '#group'         => 'ups-settings',
     );
 
-    // Form to select type of rate markup
+    // Form to select type of rate markup.
     $form['markups']['rate_markup_type'] = array(
       '#type' => 'select',
       '#title' => $this->t('Rate markup type'),
@@ -216,7 +216,7 @@ class UPSSettingsForm extends ConfigFormBase {
       ),
     );
 
-    // Form to select rate markup amount
+    // Form to select rate markup amount.
     $form['markups']['rate_markup'] = array(
       '#type' => 'textfield',
       '#title' => $this->t('Shipping rate markup'),
@@ -224,7 +224,7 @@ class UPSSettingsForm extends ConfigFormBase {
       '#description' => $this->t('Markup shipping rate quote by currency amount, percentage, or multiplier.'),
     );
 
-    // Form to select type of weight markup
+    // Form to select type of weight markup.
     $form['markups']['weight_markup_type'] = array(
       '#type'          => 'select',
       '#title'         => $this->t('Weight markup type'),
@@ -237,7 +237,7 @@ class UPSSettingsForm extends ConfigFormBase {
       '#disabled' => TRUE,
     );
 
-    // Form to select weight markup amount
+    // Form to select weight markup amount.
     $form['markups']['weight_markup'] = array(
       '#type'          => 'textfield',
       '#title'         => $this->t('Shipping weight markup'),
@@ -246,7 +246,7 @@ class UPSSettingsForm extends ConfigFormBase {
       '#disabled' => TRUE,
     );
 
-    // Container for label printing
+    // Container for label printing.
     $form['labels'] = array(
       '#type'          => 'details',
       '#title'         => $this->t('Label Printing'),
@@ -258,7 +258,7 @@ class UPSSettingsForm extends ConfigFormBase {
     $period = array_map(array(\Drupal::service('date.formatter'), 'formatInterval'), array_combine($intervals, $intervals));
     $period[0] = $this->t('Forever');
 
-    // Form to select how long labels stay on server
+    // Form to select how long labels stay on server.
     $form['labels']['label_lifetime'] = array(
       '#type'          => 'select',
       '#title'         => $this->t('Label lifetime'),

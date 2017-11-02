@@ -9,6 +9,9 @@ namespace Drupal\uc_tax\Tests;
  */
 class TaxRateUITest extends TaxTestBase {
 
+  /**
+   * Tests the operation of the tax rate configuration user interface.
+   */
   public function testTaxUI() {
     $this->drupalLogin($this->adminUser);
 

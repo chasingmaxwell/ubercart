@@ -16,7 +16,10 @@ class PackageTest extends UbercartTestBase {
   public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_fulfillment'];
   public static $adminPermissions = ['fulfill orders'];
 
-  public function testPackagesUI() {
+  /**
+   * Tests the User Interface for packaging products.
+   */
+  public function testPackagesUi() {
     $this->drupalLogin($this->adminUser);
     $method = $this->createPaymentMethod('other');
 
@@ -287,7 +290,7 @@ class PackageTest extends UbercartTestBase {
       );
     }
 
-    // How do we test for two packages? Look for two "Ship" links
+    // How do we test for two packages? Look for two "Ship" links.
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments/new?pkgs=2');
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments/new?pkgs=3');
 

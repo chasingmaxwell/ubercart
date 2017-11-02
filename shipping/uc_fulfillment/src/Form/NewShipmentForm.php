@@ -80,7 +80,7 @@ class NewShipmentForm extends FormBase {
         $row = array();
         $row['checked'] = array(
           '#type' => 'checkbox',
-          '#default_value' => (in_array($package->id(), $checked_pkgs) ? 1 : 0)
+          '#default_value' => (in_array($package->id(), $checked_pkgs) ? 1 : 0),
         );
         $row['package_id'] = array(
           '#markup' => $package->id(),

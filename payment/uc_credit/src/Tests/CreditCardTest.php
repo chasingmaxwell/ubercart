@@ -21,9 +21,12 @@ use Drupal\uc_store\Tests\UbercartTestBase;
 class CreditCardTest extends UbercartTestBase {
 
   /**
-   * A selection of "test" numbers to use for testing credit card payemnts.
+   * A selection of "test" numbers to use for testing credit card payments.
+   *
    * These numbers all pass the Luhn algorithm check and are reserved by
    * the card issuer for testing purposes.
+   *
+   * @var string[]
    */
   protected static $test_cards = [
     '378282246310005',  // American Express
@@ -48,6 +51,11 @@ class CreditCardTest extends UbercartTestBase {
     '4012888818888',
   ];
 
+  /**
+   * The payment method to use.
+   *
+   * @var \Drupal\uc_payment\PaymentMethodInterface
+   */
   protected $paymentMethod;
 
   public static $modules = ['uc_payment', 'uc_credit'];

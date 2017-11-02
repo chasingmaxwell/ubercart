@@ -12,7 +12,11 @@ use Drupal\uc_store\Address;
 class AddressTest extends UbercartTestBase {
   use AddressTestTrait;
 
-  /** Array of Address objects */
+  /**
+   * Typical Address objects to test.
+   *
+   * @var \Drupal\uc_store\Address[]
+   */
   protected $test_address = [];
 
   /**

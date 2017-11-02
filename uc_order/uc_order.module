@@ -213,10 +213,10 @@ function uc_order_product_save($order_id, $product) {
  *
  * @param $products
  *   An array of order_products.
- * @param $published
+ * @param bool $published
  *   TRUE to load only published nodes, FALSE to load all nodes.
  *
- * @return
+ * @return bool
  *   TRUE if the merge was successful for all products in the set. FALSE
  *   otherwise (i.e. if the associated product node no longer exists).
  */

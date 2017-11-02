@@ -15,7 +15,11 @@ use Drupal\uc_store\Tests\UbercartTestBase;
  */
 class OrderTest extends UbercartTestBase {
 
-  /** Authenticated but unprivileged user. */
+  /**
+   * Authenticated but unprivileged user.
+   *
+   * @var \Drupal\user\UserInterface
+   */
   protected $customer;
 
   /**
@@ -24,14 +28,17 @@ class OrderTest extends UbercartTestBase {
   protected function setUp() {
     parent::setUp();
 
-    // Need page_title_block because we test page titles
+    // Need page_title_block because we test page titles.
     $this->drupalPlaceBlock('page_title_block');
 
     // Create a simple customer user account.
     $this->customer = $this->drupalCreateUser(['view own orders']);
   }
 
-  public function testOrderAPI() {
+  /**
+   *
+   */
+  public function testOrderApi() {
     // Test defaults.
     $order = Order::create();
     $order->save();
@@ -52,6 +59,9 @@ class OrderTest extends UbercartTestBase {
     $this->assertFalse($deleted_order, 'Order was successfully deleted');
   }
 
+  /**
+   *
+   */
   public function testOrderEntity() {
     $order = Order::create();
     $this->assertEqual($order->getOwnerId(), 0, 'New order is anonymous.');
@@ -80,6 +90,9 @@ class OrderTest extends UbercartTestBase {
     $this->assertFalse($deleted_order, 'Order was successfully deleted');
   }
 
+  /**
+   *
+   */
   public function testEntityHooks() {
     \Drupal::service('module_installer')->install(array('entity_crud_hook_test'));
 
@@ -107,6 +120,9 @@ class OrderTest extends UbercartTestBase {
     $this->assertHookMessage('entity_crud_hook_test_entity_delete called for type uc_order');
   }
 
+  /**
+   *
+   */
   public function testOrderCreation() {
     $this->drupalLogin($this->adminUser);
 
@@ -139,6 +155,9 @@ class OrderTest extends UbercartTestBase {
     $this->assertFieldByName('uid_text', $this->customer->id(), 'The customer UID appears on the page.');
   }
 
+  /**
+   *
+   */
   public function testOrderView() {
     $order = $this->ucCreateOrder($this->customer);
 
@@ -191,6 +210,9 @@ class OrderTest extends UbercartTestBase {
     $this->assertResponse(403, 'Customer may not edit orders.');
   }
 
+  /**
+   *
+   */
   public function testOrderEditing() {
     $order = $this->ucCreateOrder($this->customer);
 
@@ -205,6 +227,9 @@ class OrderTest extends UbercartTestBase {
     $this->assertFieldByName('billing[last_name]', $edit['billing[last_name]'], 'Billing last name changed.');
   }
 
+  /**
+   *
+   */
   public function testOrderState() {
     $this->drupalLogin($this->adminUser);
 
@@ -277,6 +302,9 @@ class OrderTest extends UbercartTestBase {
     $this->assertNoText($edit['id'], 'Deleted status ID not found.');
   }
 
+  /**
+   *
+   */
   protected function ucCreateOrder($customer) {
     $order = Order::create(array(
       'uid' => $customer->id(),
@@ -330,6 +358,9 @@ class OrderTest extends UbercartTestBase {
     return $order;
   }
 
+  /**
+   *
+   */
   protected function assertHookMessage($text, $message = NULL, $group = 'Other') {
     if (!isset($message)) {
       $message = $text;

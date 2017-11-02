@@ -17,7 +17,7 @@ class CartCheckoutTest extends UbercartTestBase {
   /**
    * Authenticated but unprivileged user.
    *
-   * @var \Drupal\user\Entity\User
+   * @var \Drupal\user\UserInterface
    */
   protected $customer;
 
@@ -31,7 +31,7 @@ class CartCheckoutTest extends UbercartTestBase {
   /**
    * The test user's cart.
    *
-   * @var CartInterface
+   * @var \Drupal\uc_cart\CartInterface
    */
   protected $cart;
 

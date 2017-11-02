@@ -15,6 +15,8 @@ class CartBlockTest extends UbercartTestBase {
 
   /**
    * The cart block being tested.
+   *
+   * @var \Drupal\block\Entity\Block
    */
   protected $block;
 

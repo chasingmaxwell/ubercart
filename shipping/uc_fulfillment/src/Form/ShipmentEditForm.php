@@ -60,7 +60,7 @@ class ShipmentEditForm extends FormBase {
       }
 
       // Create list of products and get a representative product (last one in
-      // the loop) to use for some default values
+      // the loop) to use for some default values.
       $product_list = array();
       $declared_value = 0;
       $products_weight = 0;
@@ -263,7 +263,7 @@ class ShipmentEditForm extends FormBase {
     $form['actions']['submit'] = array(
       '#type' => 'submit',
       '#value' => $this->t('Save shipment'),
-      '#weight' => 10
+      '#weight' => 10,
     );
 
     return $form;

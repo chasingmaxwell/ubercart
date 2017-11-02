@@ -12,7 +12,11 @@ use Drupal\user\Entity\User;
  */
 class FileCheckoutTest extends FileTestBase {
 
-  /** Authenticated but unprivileged user. */
+  /**
+   * Authenticated but unprivileged user.
+   *
+   * @var \Drupal\user\UserInterface
+   */
   protected $customer;
 
   /**

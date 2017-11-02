@@ -16,7 +16,7 @@ class CountryListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    *
    * All countries on one page so sorting works properly.
-   * @TODO make sorting work properly in a paged view.
+   * @todo Make sorting work properly in a paged view.
    */
   protected $limit = 250;
 
