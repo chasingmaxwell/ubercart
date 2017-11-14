@@ -5,9 +5,6 @@ default_by_quantity: false
 default_show_expiration: true
 default_end_expiration: 'rel'
 default_end_time:
-default_expiration_header:
-default_expiration_title:
-default_expiration_message:
 
 default_granularity: 'never'
 default_length: null

@@ -199,9 +199,6 @@ class FeatureSettingsForm extends ConfigFormBase {
       ->set('reminder_length', $form_state->getValue('reminder_length'))
       ->set('reminder_granularity', $form_state->getValue('reminder_granularity'))
       ->set('default_show_expiration', $form_state->getValue('default_show_expiration'))
-      ->set('default_expiration_header', $form_state->getValue('default_expiration_header'))
-      ->set('default_expiration_title', $form_state->getValue('default_expiration_title'))
-      ->set('default_expiration_message', $form_state->getValue('default_expiration_message'))
       ->save();
 
     parent::submitForm($form, $form_state);
