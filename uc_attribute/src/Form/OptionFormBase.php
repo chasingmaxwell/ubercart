@@ -43,7 +43,7 @@ abstract class OptionFormBase extends FormBase {
     $form['adjustments'] = array(
       '#type' => 'fieldset',
       '#title' => $this->t('Default adjustments'),
-      '#description' => $this->t('Enter a positive or negative value for each adjustment applied when this option is selected.<br />Any of these may be overriden at the product level.'),
+      '#description' => $this->t('Enter a positive or negative value for each adjustment applied when this option is selected.<br />Any of these may be overridden at the product level.'),
       '#weight' => 8,
     );
     $form['adjustments']['cost'] = array(
