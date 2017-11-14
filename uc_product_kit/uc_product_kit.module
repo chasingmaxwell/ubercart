@@ -1047,13 +1047,9 @@ function uc_product_kit_entity_bundle_field_info(EntityTypeInterface $entity_typ
       ->setRequired(TRUE)
       ->setCustomStorage(TRUE)
       ->setDefaultValue('1')
-      ->setDisplayOptions('form', array(
-        'type' => 'hidden',
-      ))
+      ->setDisplayOptions('form', ['region' => 'hidden'])
       ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayOptions('view', array(
-        'type' => 'hidden',
-      ))
+      ->setDisplayOptions('view', ['region' => 'hidden'])
       ->setDisplayConfigurable('view', TRUE);
 
     return $fields;
