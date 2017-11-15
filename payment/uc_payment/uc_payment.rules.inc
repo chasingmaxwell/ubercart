@@ -6,28 +6,6 @@
  */
 
 /**
- * Implements hook_rules_event_info().
- */
-function uc_payment_rules_event_info() {
-  $events['uc_payment_entered'] = array(
-    'label' => t('A payment gets entered for an order'),
-    'group' => t('Payment'),
-    'variables' => array(
-      'order' => array(
-        'type' => 'uc_order',
-        'label' => t('Order'),
-      ),
-      'account' => array(
-        'type' => 'user',
-        'label' => t('User'),
-      ),
-    ),
-  );
-
-  return $events;
-}
-
-/**
  * Implements hook_rules_condition_info().
  */
 function uc_payment_rules_condition_info() {

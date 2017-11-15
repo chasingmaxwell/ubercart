@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityChangedTrait;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
+use Drupal\uc_order\Event\OrderStatusUpdateEvent;
 use Drupal\uc_order\OrderInterface;
 use Drupal\uc_store\Address;
 use Drupal\user\Entity\User;
@@ -55,8 +56,8 @@ class Order extends ContentEntityBase implements OrderInterface {
 
   use EntityChangedTrait;
 
-  public $products = array();
-  public $line_items = array();
+  public $products = [];
+  public $line_items = [];
 
   /**
    * {@inheritdoc}
@@ -139,10 +140,13 @@ class Order extends ContentEntityBase implements OrderInterface {
         (string) t('Order status') => [
           'old' => $this->original->getStatus()->getName(),
           'new' => $this->getStatus()->getName(),
-        ]
+        ],
       ]);
 
       // rules_invoke_event('uc_order_status_update', $this->original, $this);
+      $event = new OrderStatusUpdateEvent($this->original, $this);
+      $event_dispatcher = \Drupal::service('event_dispatcher');
+      $event_dispatcher->dispatch(OrderStatusUpdateEvent::EVENT_NAME, $event);
     }
   }
 
@@ -186,7 +190,6 @@ class Order extends ContentEntityBase implements OrderInterface {
     return $this->get('created')->value;
   }
 
-
   /**
    * {@inheritdoc}
    */
@@ -199,18 +202,18 @@ class Order extends ContentEntityBase implements OrderInterface {
    * {@inheritdoc}
    */
   public function getLineItems() {
-    $items = array();
+    $items = [];
 
     $result = db_query("SELECT * FROM {uc_order_line_items} WHERE order_id = :id", [':id' => $this->id()]);
     foreach ($result as $row) {
-      $items[] = array(
+      $items[] = [
         'line_item_id' => $row->line_item_id,
         'type' => $row->type,
         'title' => $row->title,
         'amount' => $row->amount,
         'weight' => $row->weight,
         'data' => unserialize($row->data),
-      );
+      ];
     }
 
     $line_item_manager = \Drupal::service('plugin.manager.uc_order.line_item');
@@ -219,14 +222,14 @@ class Order extends ContentEntityBase implements OrderInterface {
         $result = $line_item_manager->createInstance($type['id'])->load($this);
         if ($result !== FALSE && is_array($result)) {
           foreach ($result as $line) {
-            $items[] = array(
+            $items[] = [
               'line_item_id' => $line['id'],
               'type' => $type['id'],
               'title' => $line['title'],
               'amount' => $line['amount'],
               'weight' => isset($line['weight']) ? $line['weight'] : $type['weight'],
-              'data' => isset($line['data']) ? $line['data'] : array(),
-            );
+              'data' => isset($line['data']) ? $line['data'] : [],
+            ];
           }
         }
       }
@@ -249,14 +252,14 @@ class Order extends ContentEntityBase implements OrderInterface {
         $result = $line_item_manager->createInstance($item['id'])->display($this);
         if (is_array($result)) {
           foreach ($result as $line) {
-            $line_items[] = array(
+            $line_items[] = [
               'line_item_id' => $line['id'],
               'type' => $item['id'],
               'title' => $line['title'],
               'amount' => $line['amount'],
               'weight' => isset($line['weight']) ? $line['weight'] : $item['weight'],
-              'data' => isset($line['data']) ? $line['data'] : array(),
-            );
+              'data' => isset($line['data']) ? $line['data'] : [],
+            ];
           }
         }
       }
@@ -465,15 +468,15 @@ class Order extends ContentEntityBase implements OrderInterface {
           $entry = (string) $value;
         }
 
-        $markup = array('#markup' => $entry);
+        $markup = ['#markup' => $entry];
 
         db_insert('uc_order_log')
-          ->fields(array(
+          ->fields([
             'order_id' => $this->id(),
             'uid' => \Drupal::currentUser()->id(),
             'changes' => \Drupal::service('renderer')->renderPlain($markup),
             'created' => REQUEST_TIME,
-          ))
+          ])
           ->execute();
       }
     }
@@ -621,7 +624,7 @@ class Order extends ContentEntityBase implements OrderInterface {
     $fields['currency'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Currency'))
       ->setDescription(t('The ISO currency code for the order.'))
-      ->setPropertyConstraints('value', array('Length' => array('max' => 3)))
+      ->setPropertyConstraints('value', ['Length' => ['max' => 3]])
       ->setSetting('default_value', '')
       ->setSetting('max_length', 3);
 
@@ -637,7 +640,7 @@ class Order extends ContentEntityBase implements OrderInterface {
    *   An array of default values.
    */
   public static function getCurrentUserId() {
-    return array(\Drupal::currentUser()->id());
+    return [\Drupal::currentUser()->id()];
   }
 
 }

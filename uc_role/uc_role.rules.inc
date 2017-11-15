@@ -172,62 +172,6 @@ function uc_role_message_formats() {
 }
 
 /**
- * Implements hook_rules_event_info().
- */
-function uc_role_rules_event_info() {
-  $order = array(
-    'type' => 'uc_order',
-    'label' => t('Order'),
-  );
-  $account = array(
-    'type' => 'user',
-    'label' => t('User'),
-  );
-  $expiration = array(
-    'type' => 'uc_role_expiration',
-    'label' => t('Role expiration'),
-  );
-
-  $events['uc_role_notify_grant'] = array(
-    'label' => t('E-mail for granted roles'),
-    'group' => t('Notification'),
-    'variables' => array(
-      'order' => $order,
-      'expiration' => $expiration,
-    ),
-  );
-
-  $events['uc_role_notify_revoke'] = array(
-    'label' => t('E-mail for revoked roles'),
-    'group' => t('Notification'),
-    'variables' => array(
-      'account' => $account,
-      'expiration' => $expiration,
-    ),
-  );
-
-  $events['uc_role_notify_renew'] = array(
-    'label' => t('E-mail for renewed roles'),
-    'group' => t('Notification'),
-    'variables' => array(
-      'order' => $order,
-      'expiration' => $expiration,
-    ),
-  );
-
-  $events['uc_role_notify_reminder'] = array(
-    'label' => t('E-mail for role expiration reminders'),
-    'group' => t('Notification'),
-    'variables' => array(
-      'account' => $account,
-      'expiration' => $expiration,
-    ),
-  );
-
-  return $events;
-}
-
-/**
  * Send an email with order and role replacement tokens.
  *
  * The recipients, subject, and message fields take order token replacements.

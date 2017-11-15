@@ -2,6 +2,7 @@
 
 namespace Drupal\uc_fulfillment;
 
+use Drupal\uc_fulfillment\Event\ShipmentSaveEvent;
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_store\Address;
 use Drupal\uc_store\AddressInterface;
@@ -23,7 +24,7 @@ class Shipment implements ShipmentInterface {
    *
    * @var int
    */
-  protected $order_id;
+  protected $orderId;
 
   /**
    * Name of the shipping method.
@@ -54,7 +55,7 @@ class Shipment implements ShipmentInterface {
   protected $transaction_id = '';
 
   /**
-   * Shipment tracking number,
+   * Shipment tracking number.
    *
    * @var string
    */
@@ -100,7 +101,7 @@ class Shipment implements ShipmentInterface {
    *
    * @var \Drupal\uc_fulfillment\Package[]
    */
-  protected $packages = array();
+  protected $packages = [];
 
   /**
    * Shipment origin address.
@@ -126,8 +127,8 @@ class Shipment implements ShipmentInterface {
   /**
    * {@inheritdoc}
    */
-  public function setOrderId($order_id) {
-    $this->order_id = $order_id;
+  public function setOrderId($orderId) {
+    $this->orderId = $orderId;
     return $this;
   }
 
@@ -135,7 +136,7 @@ class Shipment implements ShipmentInterface {
    * {@inheritdoc}
    */
   public function getOrderId() {
-    return $this->order_id;
+    return $this->orderId;
   }
 
   /**
@@ -361,15 +362,15 @@ class Shipment implements ShipmentInterface {
   /**
    * Loads a shipment and its packages for a given order.
    *
-   * @param array $order_id
+   * @param int $orderId
    *   An order ID.
    *
    * @return \Drupal\uc_fulfillment\Shipment[]
    *   Array of shipment objects for the given order.
    */
-  public static function loadByOrder($order_id) {
-    $shipments = array();
-    $result = db_query('SELECT sid FROM {uc_shipments} WHERE order_id = :id', [':id' => $order_id]);
+  public static function loadByOrder($orderId) {
+    $shipments = [];
+    $result = db_query('SELECT sid FROM {uc_shipments} WHERE order_id = :id', [':id' => $orderId]);
     while ($shipment_id = $result->fetchField()) {
       $shipments[] = Shipment::load($shipment_id);
     }
@@ -391,8 +392,8 @@ class Shipment implements ShipmentInterface {
     $result = db_query('SELECT * FROM {uc_shipments} WHERE sid = :sid', [':sid' => $shipment_id]);
     if ($assoc = $result->fetchAssoc()) {
       $shipment = Shipment::create();
-      $origin_fields = array();
-      $destination_fields = array();
+      $origin_fields = [];
+      $destination_fields = [];
 
       foreach ($assoc as $key => $value) {
         $subkey = substr($key, 0, 2);
@@ -411,13 +412,13 @@ class Shipment implements ShipmentInterface {
       $shipment->setDestination(Address::create($destination_fields));
 
       $result2 = db_query('SELECT package_id FROM {uc_packages} WHERE sid = :sid', [':sid' => $shipment_id]);
-      $packages = array();
+      $packages = [];
       foreach ($result2 as $package) {
         $packages[$package->package_id] = Package::load($package->package_id);
       }
       $shipment->setPackages($packages);
 
-      $extra = \Drupal::moduleHandler()->invokeAll('uc_shipment', array('load', $shipment));
+      $extra = \Drupal::moduleHandler()->invokeAll('uc_shipment', ['load', $shipment]);
       if (is_array($extra)) {
         foreach ($extra as $key => $value) {
           $shipment->$key = $value;
@@ -435,7 +436,7 @@ class Shipment implements ShipmentInterface {
     $this->changed = time();
 
     // Break Address objects into individual fields for saving.
-    $fields = array();
+    $fields = [];
     if (isset($this->origin)) {
       foreach ($this->origin as $field => $value) {
         $field = 'o_' . $field;
@@ -450,8 +451,8 @@ class Shipment implements ShipmentInterface {
     }
 
     // Yuck.
-    $fields += array(
-      'order_id' => $this->order_id,
+    $fields += [
+      'order_id' => $this->orderId,
       'shipping_method' => $this->shipping_method,
       'accessorials' => $this->accessorials,
       'carrier' => $this->carrier,
@@ -462,7 +463,7 @@ class Shipment implements ShipmentInterface {
       'cost' => $this->cost,
       'currency' => $this->currency,
       'changed' => $this->changed,
-    );
+    ];
     if (!isset($this->sid)) {
       $this->sid = db_insert('uc_shipments')
         ->fields($fields)
@@ -491,9 +492,12 @@ class Shipment implements ShipmentInterface {
       }
     }
 
-    \Drupal::moduleHandler()->invokeAll('uc_shipment', array('save', $this));
-    $order = Order::load($this->order_id);
-    // rules_invoke_event('uc_shipment_save', $order, $shipment);
+    \Drupal::moduleHandler()->invokeAll('uc_shipment', ['save', $this]);
+    $order = Order::load($this->orderId);
+    // rules_invoke_event('uc_shipment_save', $order, $this);
+    $event = new ShipmentSaveEvent($order, $this);
+    $event_dispatcher = \Drupal::service('event_dispatcher');
+    $event_dispatcher->dispatch(ShipmentSaveEvent::EVENT_NAME, $event);
   }
 
   /**
@@ -501,11 +505,11 @@ class Shipment implements ShipmentInterface {
    */
   public function delete() {
     db_update('uc_packages')
-      ->fields(array(
+      ->fields([
         'sid' => NULL,
         'tracking_number' => NULL,
         'label_image' => NULL,
-      ))
+      ])
       ->condition('sid', $this->sid)
       ->execute();
 
@@ -520,7 +524,7 @@ class Shipment implements ShipmentInterface {
       }
     }
 
-    \Drupal::moduleHandler()->invokeAll('uc_shipment', array('delete', $this));
+    \Drupal::moduleHandler()->invokeAll('uc_shipment', ['delete', $this]);
     drupal_set_message(t('Shipment @id has been deleted.', ['@id' => $this->sid]));
   }
 

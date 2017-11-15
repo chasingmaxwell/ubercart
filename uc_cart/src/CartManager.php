@@ -4,6 +4,7 @@ namespace Drupal\uc_cart;
 
 use Drupal\Core\Session\AccountProxyInterface;
 use Drupal\user\Entity\User;
+use Drupal\uc_cart\Event\CheckoutCompleteEvent;
 use Drupal\uc_order\OrderInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
@@ -87,10 +88,15 @@ class CartManager implements CartManagerInterface {
 
       $order->save();
 
-      // Invoke the checkout complete trigger and hook.
+      // Invoke the checkout complete hook.
       $account = $order->getOwner();
-      \Drupal::moduleHandler()->invokeAll('uc_checkout_complete', array($order, $account));
+      \Drupal::moduleHandler()->invokeAll('uc_checkout_complete', [$order, $account]);
+
+      // Trigger the checkout complete event.
       // rules_invoke_event('uc_checkout_complete', $order);
+      $event = new CheckoutCompleteEvent($order);
+      $event_dispatcher = \Drupal::service('event_dispatcher');
+      $event_dispatcher->dispatch(CheckoutCompleteEvent::EVENT_NAME, $event);
     }
 
     $type = $order->data->complete_sale;
@@ -104,17 +110,17 @@ class CartManager implements CartManagerInterface {
     }
 
     $message = \Drupal::config('uc_cart.messages')->get($type);
-    $message = \Drupal::token()->replace($message, array('uc_order' => $order));
+    $message = \Drupal::token()->replace($message, ['uc_order' => $order]);
 
     $variables['!new_username'] = isset($order->data->new_user_name) ? $order->data->new_user_name : '';
     $variables['!new_password'] = isset($order->password) ? $order->password : t('Your password');
     $message = strtr($message, $variables);
 
-    return array(
+    return [
       '#theme' => 'uc_cart_complete_sale',
-      '#message' => array('#markup' => $message),
+      '#message' => ['#markup' => $message],
       '#order' => $order,
-    );
+    ];
   }
 
   /**
@@ -139,14 +145,14 @@ class CartManager implements CartManagerInterface {
 
     // Set up a new user.
     $cart_config = \Drupal::config('uc_cart.settings');
-    $fields = array(
+    $fields = [
       'name' => uc_store_email_to_username($order->getEmail()),
       'mail' => $order->getEmail(),
       'init' => $order->getEmail(),
       'pass' => user_password(),
-      'roles' => array(),
+      'roles' => [],
       'status' => $cart_config->get('new_customer_status_active') ? 1 : 0,
-    );
+    ];
 
     // Override the username, if specified.
     if (isset($order->data->new_user_name)) {
@@ -170,12 +176,12 @@ class CartManager implements CartManagerInterface {
     // Send the customer their account details if enabled.
     if ($cart_config->get('new_customer_email')) {
       $type = $cart_config->get('new_customer_status_active') ? 'register_no_approval_required' : 'register_pending_approval';
-      \Drupal::service('plugin.manager.mail')->mail('user', $type, $order->getEmail(), uc_store_mail_recipient_langcode($order->getEmail()), array('account' => $account), uc_store_email_from());
+      \Drupal::service('plugin.manager.mail')->mail('user', $type, $order->getEmail(), uc_store_mail_recipient_langcode($order->getEmail()), ['account' => $account], uc_store_email_from());
     }
 
     $order->setOwner($account);
     $order->data->new_user_name = $fields['name'];
-    $order->data->complete_sale =  'new_user';
+    $order->data->complete_sale = 'new_user';
   }
 
 }

@@ -8,6 +8,7 @@ use Drupal\Core\Url;
 use Drupal\uc_cart\CartInterface;
 use Drupal\uc_cart\CartManagerInterface;
 use Drupal\uc_cart\Plugin\CheckoutPaneManager;
+use Drupal\uc_cart\Event\CheckoutStartEvent;
 use Drupal\uc_order\Entity\Order;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -89,8 +90,9 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
     if ($this->session->has('cart_order')) {
       $order = $this->loadOrder();
       if ($order) {
-        // Don't use an existing order if it has changed status or owner, or if
-        // there has been no activity for 10 minutes (to prevent identity theft).
+        // To prevent identity theft, don't use an existing order if it has
+        // changed status or owner, or if there has been no activity for 10
+        // minutes.
         if ($order->getStateId() != 'in_checkout' ||
             ($this->currentUser()->isAuthenticated() && $this->currentUser()->id() != $order->getOwnerId()) ||
             $order->getChangedTime() < REQUEST_TIME - CartInterface::CHECKOUT_TIMEOUT) {
@@ -109,7 +111,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
       }
     }
 
-    // Determine whether the form is being submitted or built for the first time.
+    // Determine if the form is being submitted or built for the first time.
     if (isset($_POST['form_id']) && $_POST['form_id'] == 'uc_cart_checkout_form') {
       // If this is a form submission, make sure the cart order is still valid.
       if (!isset($order)) {
@@ -126,9 +128,9 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
       $rebuild = FALSE;
       if (!isset($order)) {
         // Create a new order if necessary.
-        $order = Order::create(array(
+        $order = Order::create([
           'uid' => $this->currentUser()->id(),
-        ));
+        ]);
         $order->save();
         $this->session->set('cart_order', $order->id());
         $rebuild = TRUE;
@@ -149,7 +151,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
 
       if ($rebuild) {
         // Copy the cart contents to the cart order.
-        $order->products = array();
+        $order->products = [];
         foreach ($items as $item) {
           $order->products[] = $item->toOrderProduct();
         }
@@ -167,9 +169,14 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
       return $this->redirect('uc_cart.cart');
     }
 
-    // Trigger the "Customer starts checkout" hook and event.
-    $this->moduleHandler()->invokeAll('uc_cart_checkout_start', array($order));
+    // Invoke the customer starts checkout hook.
+    $this->moduleHandler()->invokeAll('uc_cart_checkout_start', [$order]);
+
+    // Trigger the checkout start event.
     // rules_invoke_event('uc_cart_checkout_start', $order);
+    $event = new CheckoutStartEvent($order);
+    $event_dispatcher = \Drupal::service('event_dispatcher');
+    $event_dispatcher->dispatch(CheckoutStartEvent::EVENT_NAME, $event);
 
     return $this->formBuilder()->getForm('Drupal\uc_cart\Form\CheckoutForm', $order);
   }
@@ -193,7 +200,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
       return $this->redirect('uc_cart.cart');
     }
 
-    $filter = array('enabled' => FALSE);
+    $filter = ['enabled' => FALSE];
 
     // If the cart isn't shippable, bypass panes with shippable == TRUE.
     if (!$order->isShippable() && $this->config('uc_cart.settings')->get('panes.delivery.settings.delivery_not_shippable')) {
@@ -208,11 +215,11 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
       }
     }
 
-    $build = array(
+    $build = [
       '#theme' => 'uc_cart_checkout_review',
       '#panes' => $data,
       '#form' => $this->formBuilder()->getForm('Drupal\uc_cart\Form\CheckoutReviewForm', $order),
-    );
+    ];
 
     $build['#attached']['library'][] = 'uc_cart/uc_cart.styles';
     $build['#attached']['library'][] = 'uc_cart/uc_cart.review.scripts';
