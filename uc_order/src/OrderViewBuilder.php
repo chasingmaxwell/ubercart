@@ -68,22 +68,22 @@ class OrderViewBuilder extends EntityViewBuilder {
         }
 
         if ($contents = $pane->view($order, $view_mode)) {
-          $build[$id][$pane_id] = array(
+          $build[$id][$pane_id] = [
             '#type' => 'container',
-            '#attributes' => array(
+            '#attributes' => [
               'id' => 'order-pane-' . $pane_id,
-              'class' => array_merge(array('order-pane'), $pane->getClasses()),
-            ),
-          );
+              'class' => array_merge(['order-pane'], $pane->getClasses()),
+            ],
+          ];
 
           if ($title = $pane->getTitle()) {
-            $build[$id][$pane_id]['title'] = array(
+            $build[$id][$pane_id]['title'] = [
               '#type' => 'container',
               '#markup' => $title . ':',
-              '#attributes' => array(
-                'class' => array('order-pane-title'),
-              ),
-            );
+              '#attributes' => [
+                'class' => ['order-pane-title'],
+              ],
+            ];
           }
 
           $build[$id][$pane_id]['pane'] = $contents;

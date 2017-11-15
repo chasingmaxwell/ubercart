@@ -30,7 +30,7 @@ class TaxRateListBuilder extends ConfigEntityListBuilder {
    */
   public function buildRow(EntityInterface $entity) {
     $row['label'] = $this->getLabel($entity);
-    $row['rate'] = ((float) $entity->getRate() * 100) . '%' ;
+    $row['rate'] = ((float) $entity->getRate() * 100) . '%';
     $row['shippable'] = $entity->isForShippable() ? $this->t('Shippable products') : $this->t('Any product');
     $row['product_types'] = implode(', ', $entity->getProductTypes());
     $row['line_item_types'] = implode(', ', $entity->getLineItemTypes());

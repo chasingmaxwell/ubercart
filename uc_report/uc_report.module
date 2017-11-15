@@ -73,7 +73,7 @@ function uc_report_help($route_name, RouteMatchInterface $route_match) {
       $output .= "<p>" . t('All reports are your local timezone, which is <b>@timezone</b>.', ['@timezone' => date_default_timezone_get()]) . "</p>";
     }
     if ($include_statuses) {
-      $statuses = array();
+      $statuses = [];
       foreach (uc_report_order_statuses() as $status) {
         $statuses[] = SafeMarkup::checkPlain(OrderStatus::load($status)->name);
       }
@@ -89,12 +89,20 @@ function uc_report_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_theme().
  */
 function uc_report_theme() {
-  return array(
-    'uc_report_product_table' => array(
-      'variables' => array('header' => NULL, 'rows' => NULL, 'attributes' => array(), 'caption' => NULL, 'colgroups' => array(), 'sticky' => TRUE, 'empty' => ''),
+  return [
+    'uc_report_product_table' => [
+      'variables' => [
+        'header' => NULL,
+        'rows' => NULL,
+        'attributes' => [],
+        'caption' => NULL,
+        'colgroups' => [],
+        'sticky' => TRUE,
+        'empty' => '',
+      ],
       'function' => 'theme_uc_report_product_table',
-    ),
-  );
+    ],
+  ];
 }
 
 /**
@@ -131,7 +139,7 @@ function theme_uc_report_product_table(array $variables) {
   // Format the table columns:
   if (count($colgroups)) {
     foreach ($colgroups as $colgroup) {
-      $attributes = array();
+      $attributes = [];
 
       // Check if we're dealing with a simple or complex column
       if (isset($colgroup['data'])) {
@@ -173,7 +181,7 @@ function theme_uc_report_product_table(array $variables) {
         $header_count++;
       }
     }
-    $rows[] = array(array('data' => $empty, 'colspan' => $header_count, 'class' => array('empty', 'message')));
+    $rows[] = [['data' => $empty, 'colspan' => $header_count, 'class' => ['empty', 'message']]];
   }
 
   // Format the table header:
@@ -190,16 +198,16 @@ function theme_uc_report_product_table(array $variables) {
     $output .= (count($rows) ? " </tr></thead>\n" : "</tr>\n");
   }
   else {
-    $ts = array();
+    $ts = [];
   }
 
   // Format the table rows:
   if (count($rows)) {
     $output .= "<tbody>\n";
-    $flip = array('even' => 'odd', 'odd' => 'even');
+    $flip = ['even' => 'odd', 'odd' => 'even'];
     $class = 'even';
     foreach ($rows as $row) {
-      $attributes = array();
+      $attributes = [];
 
       // Check if we're dealing with a simple or complex row
       if (isset($row['data'])) {

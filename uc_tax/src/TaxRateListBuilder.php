@@ -61,27 +61,27 @@ class TaxRateListBuilder extends DraggableListBuilder implements FormInterface {
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['label'] = array(
+    $header['label'] = [
       'data' => $this->t('Name'),
-    );
-    $header['description'] = array(
+    ];
+    $header['description'] = [
       'data' => $this->t('Description'),
-    );
-    $header['shippable'] = array(
+    ];
+    $header['shippable'] = [
       'data' => $this->t('Taxed products'),
-      'class' => array(RESPONSIVE_PRIORITY_LOW),
-    );
-    $header['product_types'] = array(
+      'class' => [RESPONSIVE_PRIORITY_LOW],
+    ];
+    $header['product_types'] = [
       'data' => $this->t('Taxed product types'),
-      'class' => array(RESPONSIVE_PRIORITY_LOW),
-    );
-    $header['line_item_types'] = array(
+      'class' => [RESPONSIVE_PRIORITY_LOW],
+    ];
+    $header['line_item_types'] = [
       'data' => $this->t('Taxed line items'),
-      'class' => array(RESPONSIVE_PRIORITY_LOW),
-    );
-    $header['status'] = array(
+      'class' => [RESPONSIVE_PRIORITY_LOW],
+    ];
+    $header['status'] = [
       'data' => $this->t('Status'),
-    );
+    ];
     return $header + parent::buildHeader();
   }
 
@@ -105,11 +105,11 @@ class TaxRateListBuilder extends DraggableListBuilder implements FormInterface {
    */
   public function buildOperations(EntityInterface $entity) {
     $build = parent::buildOperations($entity);
-    $build['#links']['clone'] = array(
+    $build['#links']['clone'] = [
       'title' => $this->t('Clone'),
       'url' => Url::fromRoute('entity.uc_tax_rate.clone', ['uc_tax_rate' => $entity->id()]),
       'weight' => 10, // 'edit' is 0, 'delete' is 100
-    );
+    ];
 
     uasort($build['#links'], 'Drupal\Component\Utility\SortArray::sortByWeightElement');
     return $build;
@@ -188,7 +188,7 @@ class TaxRateListBuilder extends DraggableListBuilder implements FormInterface {
    * {@inheritdoc}
    */
   public function render() {
-    $build['description'] = array(
+    $build['description'] = [
       '#markup' => $this->t("<p>This is a list of the tax rates currently"
         . " defined on your Drupal site.</p><p>You may use the 'Add tax rate'"
         . " button to add a new rate, or use the widget in the 'Operations'"
@@ -200,7 +200,7 @@ class TaxRateListBuilder extends DraggableListBuilder implements FormInterface {
         . " To re-order, drag the method to its desired location using the drag icon then save"
         . " the configuration using the button at the bottom of the page.</p>"
       ),
-    );
+    ];
     $build += parent::render();
 
     return $build;

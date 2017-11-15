@@ -58,7 +58,7 @@ class Address implements AddressInterface {
    *   A formatted string containing the address.
    */
   public function __toString() {
-    $variables = array(
+    $variables = [
       '!company' => $this->company,
       '!first_name' => $this->first_name,
       '!last_name' => $this->last_name,
@@ -66,17 +66,17 @@ class Address implements AddressInterface {
       '!street2' => $this->street2,
       '!city' => $this->city,
       '!postal_code' => $this->postal_code,
-    );
+    ];
 
     $country = $this->country ? \Drupal::service('country_manager')->getCountry($this->country) : NULL;
     if ($country) {
-      $variables += array(
+      $variables += [
         '!zone_code' => $this->zone ?: $this->t('N/A'),
         '!zone_name' => isset($country->getZones()[$this->zone]) ? $country->getZones()[$this->zone] : $this->t('Unknown'),
         '!country_name' => $this->t($country->getName()),
         '!country_code2' => $country->id(),
         '!country_code3' => $country->getAlpha3(),
-      );
+      ];
 
       if ($this->country != $this->defaultCountry) {
         $variables['!country_name_if'] = $variables['!country_name'];

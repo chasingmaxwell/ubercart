@@ -24,7 +24,7 @@ abstract class TaxRatePluginBase extends PluginBase implements TaxRatePluginInte
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array();
+    return [];
   }
 
   /**
@@ -64,14 +64,14 @@ abstract class TaxRatePluginBase extends PluginBase implements TaxRatePluginInte
    * {@inheritdoc}
    */
   public function calculateDependencies() {
-    return array();
+    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   public function calculateTax(OrderInterface $order) {
-    return array();
+    return [];
   }
 
 }

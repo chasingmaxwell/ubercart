@@ -203,25 +203,3 @@ function uc_fulfillment_address_property_set($shipment, $name, $address) {
     $shipment->{$type . $field} = $value;
   }
 }
-
-/**
- * Implements hook_rules_event_info().
- */
-function uc_fulfillment_rules_event_info() {
-  $events['uc_shipment_save'] = array(
-    'label' => t('A shipment is saved'),
-    'group' => t('Fulfillment'),
-    'variables' => array(
-      'order' => array(
-        'type' => 'uc_order',
-        'label' => t('Order'),
-      ),
-      'shipment' => array(
-        'type' => 'uc_shipment',
-        'label' => t('Shipment'),
-      ),
-    ),
-  );
-
-  return $events;
-}

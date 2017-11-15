@@ -110,7 +110,7 @@ class CountryManager implements CountryManagerInterface {
     if ($country = $this->entityTypeManager->getStorage('uc_country')->load($alpha_2)) {
       return $country->getZones();
     }
-    return array();
+    return [];
   }
 
 }

@@ -47,9 +47,9 @@ use Drupal\uc_store\Ajax\CommandWrapper;
  * form element. For example:
  *
  * @code
- *   $form_state->set(['uc_ajax', 'mymodule', 'panes][quotes][quote_button'], array(
+ *   $form_state->set(['uc_ajax', 'mymodule', 'panes][quotes][quote_button'], [
  *     '::myAjaxCallback',
- *   ));
+ *   ]);
  *   ...
  *   public function myAjaxCallback($form, $form_state) {
  *     $response = new AjaxResponse();
@@ -71,10 +71,10 @@ use Drupal\uc_store\Ajax\CommandWrapper;
  * For example:
  *
  * @code
- *   $form_state->set(['uc_ajax', 'mymodule', 'panes][quotes][quote_button'], array(
+ *   $form_state->set(['uc_ajax', 'mymodule', 'panes][quotes][quote_button'], [
  *     '::myAjaxCallback',
  *     'quotes-pane' => '::ajaxReplaceCheckoutPane',
- *   ));
+ *   ]);
  * @endcode
  */
 trait AjaxAttachTrait {

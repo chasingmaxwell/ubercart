@@ -62,7 +62,7 @@ class CountryListBuilder extends ConfigEntityListBuilder {
    *   Renderable array.
    */
   public function render() {
-    $build['description'] = array(
+    $build['description'] = [
       '#markup' => $this->t("<p>This is a list of the countries currently"
         . " defined for use on your Drupal site. This country data adheres to"
         . " the @iso standard for country and zone naming used by payment"
@@ -76,7 +76,7 @@ class CountryListBuilder extends ConfigEntityListBuilder {
         . " edit a country's name or address format.</p>",
         ['@iso' => Link::fromTextAndUrl('ISO 3166', Url::fromUri('http://en.wikipedia.org/wiki/ISO_3166'))->toString()]
       ),
-    );
+    ];
     $build += parent::render();
     $build['table']['#empty'] = $this->t('No countries have been configured yet.');
     return $build;

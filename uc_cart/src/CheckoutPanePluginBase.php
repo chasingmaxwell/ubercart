@@ -52,22 +52,22 @@ abstract class CheckoutPanePluginBase extends PluginBase implements CheckoutPane
    * {@inheritdoc}
    */
   public function getConfiguration() {
-    return array(
+    return [
       'status' => $this->isEnabled(),
       'weight' => $this->getWeight(),
       'settings' => $this->configuration,
-    );
+    ];
   }
 
   /**
    * {@inheritdoc}
    */
   public function setConfiguration(array $configuration) {
-    $configuration += array(
+    $configuration += [
       'status' => $this->pluginDefinition['status'],
       'weight' => $this->pluginDefinition['weight'],
-      'settings' => array(),
-    );
+      'settings' => [],
+    ];
     $this->status = $configuration['status'];
     $this->weight = $configuration['weight'];
     $this->configuration = $configuration['settings'] + $this->defaultConfiguration();
@@ -78,7 +78,7 @@ abstract class CheckoutPanePluginBase extends PluginBase implements CheckoutPane
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array();
+    return [];
   }
 
   /**
@@ -111,7 +111,7 @@ abstract class CheckoutPanePluginBase extends PluginBase implements CheckoutPane
    * {@inheritdoc}
    */
   public function calculateDependencies() {
-    return array();
+    return [];
   }
 
 }

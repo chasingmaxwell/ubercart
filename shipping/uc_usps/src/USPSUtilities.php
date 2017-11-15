@@ -99,4 +99,5 @@ class USPSUtilities {
       'NONRECTANGULAR' => t('Non-rectangular'),
     );
   }
+
 }

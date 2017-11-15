@@ -55,16 +55,16 @@ class OrderForm extends ContentEntityForm {
 
     $form['#order'] = $order;
 
-    $form['order_modified'] = array(
+    $form['order_modified'] = [
       '#type' => 'value',
       '#value' => $form_state->getValue('order_modified') ?: $order->getChangedTime(),
-    );
+    ];
 
     $panes = $this->orderPaneManager->getPanes();
     $components = $this->getFormDisplay($form_state)->getComponents();
     foreach ($panes as $id => $pane) {
       if ($pane instanceof EditableOrderPanePluginInterface) {
-        $form[$id] = $pane->buildForm($order, array(), $form_state);
+        $form[$id] = $pane->buildForm($order, [], $form_state);
 
         $form[$id]['#prefix'] = '<div class="order-pane ' . implode(' ', $pane->getClasses()) . '" id="order-pane-' . $id . '">';
         if ($title = $pane->getTitle()) {
@@ -77,7 +77,7 @@ class OrderForm extends ContentEntityForm {
 
     $form = parent::form($form, $form_state);
 
-    $form['#process'][] = array($this, 'ajaxProcessForm');
+    $form['#process'][] = [$this, 'ajaxProcessForm'];
 
     return $form;
   }
@@ -123,12 +123,12 @@ class OrderForm extends ContentEntityForm {
       }
     }
 
-    $log = array();
+    $log = [];
 
     foreach (array_keys($order->getFieldDefinitions()) as $key) {
       if ($order->$key->value != $original->$key->value) {
         if (!is_array($order->$key->value)) {
-          $log[$key] = array('old' => $original->$key->value, 'new' => $order->$key->value);
+          $log[$key] = ['old' => $original->$key->value, 'new' => $order->$key->value];
         }
       }
     }

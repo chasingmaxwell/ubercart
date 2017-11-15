@@ -132,7 +132,7 @@ class TaxRate extends ConfigEntityBase implements TaxRateInterface {
    *
    * @var array
    */
-  protected $settings = array();
+  protected $settings = [];
 
   /**
    * {@inheritdoc}

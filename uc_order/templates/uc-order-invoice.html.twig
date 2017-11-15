@@ -65,7 +65,6 @@
 
         <tr valign="top">
           <td>
-
             {% if thank_you_message %}
             <p><b>{{ 'Thanks for your order, @order_first_name!'|t({'@order_first_name': order_first_name}) }}</b></p>
 
@@ -87,16 +86,11 @@
                 </td>
               </tr>
               <tr>
-                <td nowrap="nowrap">
-                  <b>{{ 'E-mail Address:'|t }}</b>
-                </td>
-                <td width="98%">
-                  {{ order_email }}
-                </td>
+                <td nowrap="nowrap"><b>{{ 'E-mail Address:'|t }}</b></td>
+                <td width="98%">{{ order_email }}</td>
               </tr>
               <tr>
                 <td colspan="2">
-
                   <table width="100%" cellspacing="0" cellpadding="0" style="font-family: verdana, arial, helvetica; font-size: small;">
                     <tr>
                       <td valign="top" width="50%">
@@ -117,7 +111,6 @@
                       {% endif %}
                     </tr>
                   </table>
-
                 </td>
               </tr>
               <tr>
@@ -131,12 +124,8 @@
 
               {% if order_payment_method %}
               <tr>
-                <td nowrap="nowrap">
-                  <b>{{ 'Payment Method:'|t }}</b>
-                </td>
-                <td width="98%">
-                  {{ order_payment_method }}
-                </td>
+                <td nowrap="nowrap"><b>{{ 'Payment Method:'|t }}</b></td>
+                <td width="98%">{{ order_payment_method }}</td>
               </tr>
               {% endif %}
 
@@ -159,52 +148,32 @@
 
                   <table border="0" cellpadding="1" cellspacing="0" width="100%" style="font-family: verdana, arial, helvetica; font-size: small;">
                     <tr>
-                      <td nowrap="nowrap">
-                        <b>{{ 'Order #:'|t }}</b>
-                      </td>
-                      <td width="98%">
-                        {{ order_link }}
-                      </td>
+                      <td nowrap="nowrap"><b>{{ 'Order #:'|t }}</b></td>
+                      <td width="98%">{{ order_link }}</td>
                     </tr>
 
                     <tr>
-                      <td nowrap="nowrap">
-                        <b>{{ 'Order Date: '|t }}</b>
-                      </td>
-                      <td width="98%">
-                        {{ order_created }}
-                      </td>
+                      <td nowrap="nowrap"><b>{{ 'Order Date: '|t }}</b></td>
+                      <td width="98%">{{ order_created }}</td>
                     </tr>
 
                     {% if shipping_method and shippable %}
                     <tr>
-                      <td nowrap="nowrap">
-                        <b>{{ 'Shipping Method:'|t }}</b>
-                      </td>
-                      <td width="98%">
-                        {{ order_shipping_method }}
-                      </td>
+                      <td nowrap="nowrap"><b>{{ 'Shipping Method:'|t }}</b></td>
+                      <td width="98%">{{ order_shipping_method }}</td>
                     </tr>
                     {% endif %}
 
                     <tr>
-                      <td nowrap="nowrap">
-                        {{ 'Products Subtotal:'|t }}&nbsp;
-                      </td>
-                      <td width="98%">
-                        {{ order_subtotal }}
-                      </td>
+                      <td nowrap="nowrap">{{ 'Products Subtotal:'|t }}&nbsp;</td>
+                      <td width="98%">{{ order_subtotal }}</td>
                     </tr>
 
                     {% for item in line_items if item.type != 'subtotal' and item.type != 'total' %}
 
                     <tr>
-                      <td nowrap="nowrap">
-                        {{ item.title }}:
-                      </td>
-                      <td>
-                        {{ item.formatted_amount }}
-                      </td>
+                      <td nowrap="nowrap">{{ item.title }}:</td>
+                      <td>{{ item.formatted_amount }}</td>
                     </tr>
 
                     {% endfor %}
@@ -215,12 +184,8 @@
                     </tr>
 
                     <tr>
-                      <td nowrap="nowrap">
-                        <b>{{ 'Total for this Order:'|t }}&nbsp;</b>
-                      </td>
-                      <td>
-                        <b>{{ order_total }}</b>
-                      </td>
+                      <td nowrap="nowrap"><b>{{ 'Total for this Order:'|t }}&nbsp;</b></td>
+                      <td><b>{{ order_total }}</b></td>
                     </tr>
 
                     <tr>
@@ -231,9 +196,7 @@
 
                           {% for product in products %}
                           <tr>
-                            <td valign="top" nowrap="nowrap">
-                              <b>{{ product.qty }} x </b>
-                            </td>
+                            <td valign="top" nowrap="nowrap"><b>{{ product.qty }} x </b></td>
                             <td width="98%">
                               <b>{{ product.title }} - {{ product.total_price }}</b>
                               {{ product.individual_price }}<br />

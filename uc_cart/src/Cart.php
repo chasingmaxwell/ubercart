@@ -38,7 +38,7 @@ class Cart implements CartInterface {
    * {@inheritdoc}
    */
   public function getContents() {
-    $items = array();
+    $items = [];
 
     $result = \Drupal::entityQuery('uc_cart_item')
       ->condition('cart_id', $this->id)
@@ -66,7 +66,7 @@ class Cart implements CartInterface {
     }
 
     // Invoke hook_uc_add_to_cart() to give other modules a chance to affect the process.
-    $result = \Drupal::moduleHandler()->invokeAll('uc_add_to_cart', array($nid, $qty, $data));
+    $result = \Drupal::moduleHandler()->invokeAll('uc_add_to_cart', [$nid, $qty, $data]);
     if (is_array($result) && !empty($result)) {
       foreach ($result as $row) {
         if ($row['success'] === FALSE) {
@@ -119,7 +119,7 @@ class Cart implements CartInterface {
       }
       $item_entity = CartItem::load(current(array_keys($result)));
       $qty += $item_entity->qty->value;
-      \Drupal::moduleHandler()->invoke($data['module'], 'uc_update_cart_item', array($nid, $data, min($qty, 999999), $this->id));
+      \Drupal::moduleHandler()->invoke($data['module'], 'uc_update_cart_item', [$nid, $data, min($qty, 999999), $this->id]);
     }
 
     // Invalidate the cache.

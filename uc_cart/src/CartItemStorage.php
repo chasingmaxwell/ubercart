@@ -18,7 +18,7 @@ class CartItemStorage extends SqlContentEntityStorage {
   public function save(EntityInterface $entity) {
     if ($entity->qty->value < 1) {
       if (isset($entity->cart_item_id->value)) {
-        parent::delete(array($entity->cart_item_id->value => $entity));
+        parent::delete([$entity->cart_item_id->value => $entity]);
       }
     }
     else {
@@ -37,16 +37,16 @@ class CartItemStorage extends SqlContentEntityStorage {
     // performant.
     $schema['uc_cart_products']['fields']['cart_id']['not null'] = TRUE;
 
-    $schema['uc_cart_products']['indexes'] += array(
-     'cart_id' => array('cart_id'),
-    );
+    $schema['uc_cart_products']['indexes'] += [
+     'cart_id' => ['cart_id'],
+    ];
 
-    $schema['uc_cart_products']['foreign keys'] += array(
-      'node' => array(
+    $schema['uc_cart_products']['foreign keys'] += [
+      'node' => [
         'table' => 'node',
-        'columns' => array('nid' => 'nid'),
-      ),
-    );
+        'columns' => ['nid' => 'nid'],
+      ],
+    ];
     return $schema;
   }
 
