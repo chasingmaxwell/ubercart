@@ -108,7 +108,7 @@ abstract class AddressPaneBase extends CheckoutPanePluginBase {
         }
       }
 
-      if ($element['#name'] == "panes[$pane][select_address]") {
+      if ($element['#name'] == "panes[$pane][select_address]" && isset($addresses[$element['#value']])) {
         $address = $addresses[$element['#value']];
         foreach ($address as $field => $value) {
           $input['panes'][$pane][$field] = $value;
