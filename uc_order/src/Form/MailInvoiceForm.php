@@ -13,6 +13,8 @@ class MailInvoiceForm extends FormBase {
 
   /**
    * The order to be emailed.
+   *
+   * @var \Drupal\uc_order\OrderInterface
    */
   protected $order;
 
@@ -29,17 +31,17 @@ class MailInvoiceForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, OrderInterface $uc_order = NULL) {
     $this->order = $uc_order;
 
-    $form['email'] = array(
+    $form['email'] = [
       '#type' => 'email',
       '#title' => $this->t('Recipient e-mail address'),
       '#default_value' => $uc_order->getEmail(),
       '#required' => TRUE,
-    );
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    ];
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Mail invoice'),
-    );
+    ];
 
     return $form;
   }
@@ -49,12 +51,12 @@ class MailInvoiceForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $recipient = $form_state->getValue('email');
-    $params = array('order' => $this->order);
+    $params = ['order' => $this->order];
     \Drupal::service('plugin.manager.mail')->mail('uc_order', 'invoice', $recipient, uc_store_mail_recipient_langcode($recipient), $params, uc_store_email_from());
 
     $message = $this->t('Invoice e-mailed to @email.', ['@email' => $recipient]);
     drupal_set_message($message);
-    $this->order->logChanges(array($message));
+    $this->order->logChanges([$message]);
   }
 
 }

@@ -22,10 +22,10 @@ abstract class PaymentPackTestBase extends UbercartTestBase {
     $this->addToCart($this->product);
 
     // Disable address panes during checkout.
-    $edit = array(
+    $edit = [
       'panes[delivery][status]' => FALSE,
       'panes[billing][status]' => FALSE,
-    );
+    ];
     $this->drupalPostForm('admin/store/config/checkout', $edit, t('Save configuration'));
   }
 

@@ -197,8 +197,8 @@ interface OrderInterface extends ContentEntityInterface, EntityChangedInterface,
    *     associative arrays with the keys 'old' and 'new' to represent the old
    *     and new values of the field. These will be converted into a changed
    *     message.
-   *   - string: A pre-formatted string describing the change. This is useful for
-   *     logging details like payments.
+   *   - string: A pre-formatted string describing the change. This is useful
+   *     for logging details like payments.
    *
    * @return $this
    */

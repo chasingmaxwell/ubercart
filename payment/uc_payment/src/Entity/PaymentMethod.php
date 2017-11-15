@@ -86,7 +86,7 @@ class PaymentMethod extends ConfigEntityBase implements PaymentMethodInterface {
    *
    * @var array
    */
-  protected $settings = array();
+  protected $settings = [];
 
   /**
    * The locked status of this payment method.

@@ -33,25 +33,25 @@ class CashOnDelivery extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form['policy'] = array(
+    $form['policy'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Policy message'),
       '#default_value' => $this->configuration['policy'],
       '#description' => $this->t('Help message shown at checkout.'),
-    );
+    ];
 
-    $form['max_order'] = array(
+    $form['max_order'] = [
       '#type' => 'uc_price',
       '#title' => $this->t('Maximum order total eligible for COD'),
       '#default_value' => $this->configuration['max_order'],
       '#description' => $this->t('Set to 0 for no maximum order limit.'),
-    );
+    ];
 
-    $form['delivery_date'] = array(
+    $form['delivery_date'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Let customers enter a desired delivery date.'),
       '#default_value' => $this->configuration['delivery_date'],
-    );
+    ];
     return $form;
   }
 
@@ -69,18 +69,18 @@ class CashOnDelivery extends PaymentMethodPluginBase {
    */
   public function cartDetails(OrderInterface $order, array $form, FormStateInterface $form_state) {
     $build['#attached']['library'][] = 'uc_payment_pack/cod.styles';
-    $build['policy'] = array(
+    $build['policy'] = [
       '#prefix' => '<p>',
       '#markup' => Html::escape($this->configuration['policy']),
       '#suffix' => '</p>',
-    );
+    ];
 
     if (($max = $this->configuration['max_order']) > 0 && is_numeric($max)) {
-      $build['eligibility'] = array(
+      $build['eligibility'] = [
         '#prefix' => '<p>',
         '#markup' => $this->t('Orders totalling more than @amount are <b>not eligible</b> for COD.', ['@amount' => uc_currency_format($max)]),
         '#suffix' => '</p>',
-      );
+      ];
     }
 
     if ($this->configuration['delivery_date']) {
@@ -108,13 +108,13 @@ class CashOnDelivery extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function cartReview(OrderInterface $order) {
-    $review = array();
+    $review = [];
 
     if ($this->configuration['delivery_date'] &&
         isset($order->payment_details['delivery_date'])) {
       $date = \Drupal::service('date.formatter')->format($order->payment_details['delivery_date'], 'uc_store');
 
-      $review[] = array('title' => $this->t('Delivery date'), 'data' => $date);
+      $review[] = ['title' => $this->t('Delivery date'), 'data' => $date];
     }
 
     return $review;
@@ -124,7 +124,7 @@ class CashOnDelivery extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function orderView(OrderInterface $order) {
-    $build = array();
+    $build = [];
 
     if ($this->configuration['delivery_date'] &&
         isset($order->payment_details['delivery_date'])) {
@@ -138,7 +138,7 @@ class CashOnDelivery extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function orderEditDetails(OrderInterface $order) {
-    $build = array();
+    $build = [];
 
     if ($this->configuration['delivery_date']) {
       $build = $this->deliveryDateForm($order);
@@ -178,10 +178,10 @@ class CashOnDelivery extends PaymentMethodPluginBase {
   public function orderSave(OrderInterface $order) {
     if (isset($order->payment_details['delivery_date'])) {
       db_merge('uc_payment_cod')
-        ->key(array('order_id' => $order->id()))
-        ->fields(array(
+        ->key(['order_id' => $order->id()])
+        ->fields([
           'delivery_date' => $order->payment_details['delivery_date'],
-        ))
+        ])
         ->execute();
     }
   }
@@ -214,7 +214,7 @@ class CashOnDelivery extends PaymentMethodPluginBase {
                      DrupalDateTime::createFromTimestamp(REQUEST_TIME) :
                      DrupalDateTime::createFromTimestamp($order->payment_details['delivery_date']);
 
-    $form['delivery_date'] = array(
+    $form['delivery_date'] = [
       '#type' => 'datetime',
       '#title' => $this->t('Enter a desired delivery date:'),
       '#date_date_element' => 'date',
@@ -222,7 +222,7 @@ class CashOnDelivery extends PaymentMethodPluginBase {
       '#prefix' => '<div>',
       '#suffix' => '</div>',
       '#default_value' => $delivery_date,
-    );
+    ];
 
     return $form;
   }

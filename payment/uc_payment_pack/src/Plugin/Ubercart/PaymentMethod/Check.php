@@ -35,25 +35,25 @@ class Check extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form['policy'] = array(
+    $form['policy'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Check payment policy', [], ['context' => 'cheque']),
       '#description' => $this->t('Instructions for customers on the checkout page.'),
       '#default_value' => $this->configuration['policy'],
       '#rows' => 3,
-    );
-    $form['name'] = array(
+    ];
+    $form['name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Contact'),
       '#description' => $this->t('Direct checks to a person or department.'),
       '#default_value' => $this->configuration['name'],
-    );
-    $form['address'] = array(
+    ];
+    $form['address'] = [
       '#type' => 'uc_address',
       '#tree' => TRUE,
       '#default_value' => $this->configuration['address'],
       '#required' => FALSE,
-    );
+    ];
 
     return $form;
   }
@@ -71,23 +71,23 @@ class Check extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function cartDetails(OrderInterface $order, array $form, FormStateInterface $form_state) {
-    $build['instructions'] = array(
+    $build['instructions'] = [
       '#markup' => $this->t('Checks should be made out to:'),
-    );
+    ];
 
     $address = Address::create($this->configuration['address']);
     $address->setFirstName($this->configuration['name']);
-    $build['address'] = array(
+    $build['address'] = [
       '#prefix' => '<p>',
       '#markup' => (string) $address,
       '#suffix' => '</p>',
-    );
+    ];
 
-    $build['policy'] = array(
+    $build['policy'] = [
       '#prefix' => '<p>',
       '#markup' => Html::escape($this->configuration['policy']),
       '#suffix' => '</p>',
-    );
+    ];
 
     return $build;
   }
@@ -98,10 +98,10 @@ class Check extends PaymentMethodPluginBase {
   public function cartReview(OrderInterface $order) {
     $address = Address::create($this->configuration['address']);
     $address->setFirstName($this->configuration['name']);
-    $review[] = array(
+    $review[] = [
       'title' => $this->t('Mail to'),
-      'data' => array('#markup' => (string) $address),
-    );
+      'data' => ['#markup' => (string) $address],
+    ];
 
     return $review;
   }
@@ -110,7 +110,7 @@ class Check extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function orderView(OrderInterface $order) {
-    $build = array('#suffix' => '<br />');
+    $build = ['#suffix' => '<br />'];
 
     $result = db_query('SELECT clear_date FROM {uc_payment_check} WHERE order_id = :id ', [':id' => $order->id()]);
     if ($clear_date = $result->fetchField()) {
@@ -129,7 +129,7 @@ class Check extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function customerView(OrderInterface $order) {
-    $build = array();
+    $build = [];
 
     $result = db_query('SELECT clear_date FROM {uc_payment_check} WHERE order_id = :id ', [':id' => $order->id()]);
     if ($clear_date = $result->fetchField()) {

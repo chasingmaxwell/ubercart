@@ -31,7 +31,7 @@ abstract class PaymentMethodPluginBase extends PluginBase implements PaymentMeth
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array();
+    return [];
   }
 
   /**
@@ -71,14 +71,14 @@ abstract class PaymentMethodPluginBase extends PluginBase implements PaymentMeth
    * {@inheritdoc}
    */
   public function calculateDependencies() {
-    return array();
+    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   public function cartDetails(OrderInterface $order, array $form, FormStateInterface $form_state) {
-    return array();
+    return [];
   }
 
   /**
@@ -99,7 +99,7 @@ abstract class PaymentMethodPluginBase extends PluginBase implements PaymentMeth
    * {@inheritdoc}
    */
   public function cartReview(OrderInterface $order) {
-    return array();
+    return [];
   }
 
   /**
@@ -112,14 +112,14 @@ abstract class PaymentMethodPluginBase extends PluginBase implements PaymentMeth
    * {@inheritdoc}
    */
   public function orderEditDetails(OrderInterface $order) {
-    return array();
+    return [];
   }
 
   /**
    * {@inheritdoc}
    */
   public function orderEditProcess(OrderInterface $order, array $form, FormStateInterface $form_state) {
-    return array();
+    return [];
   }
 
   /**
@@ -144,7 +144,7 @@ abstract class PaymentMethodPluginBase extends PluginBase implements PaymentMeth
    * {@inheritdoc}
    */
   public function orderView(OrderInterface $order) {
-    return array();
+    return [];
   }
 
   /**

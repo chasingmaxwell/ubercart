@@ -53,7 +53,7 @@ class PaymentReceipt extends ContentEntityBase implements PaymentReceiptInterfac
     $fields['currency'] = BaseFieldDefinition::create('string')
       ->setLabel(t('Currency'))
       ->setDescription(t('The ISO currency code for the payment.'))
-      ->setPropertyConstraints('value', array('Length' => array('max' => 3)))
+      ->setPropertyConstraints('value', ['Length' => ['max' => 3]])
       ->setSetting('default_value', '')
       ->setSetting('max_length', 3);
     $fields['uid'] = BaseFieldDefinition::create('entity_reference')

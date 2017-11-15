@@ -24,39 +24,39 @@ class ReceiveCheckForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, OrderInterface $uc_order = NULL) {
     $balance = uc_payment_balance($uc_order);
-    $form['balance'] = array(
+    $form['balance'] = [
       '#prefix' => '<strong>' . $this->t('Order balance:') . '</strong> ',
       '#markup' => uc_currency_format($balance),
-    );
-    $form['order_id'] = array(
+    ];
+    $form['order_id'] = [
       '#type' => 'hidden',
       '#value' => $uc_order->id(),
-    );
-    $form['amount'] = array(
+    ];
+    $form['amount'] = [
       '#type' => 'uc_price',
       '#title' => $this->t('Check amount'),
       '#default_value' => $balance,
-    );
-    $form['comment'] = array(
+    ];
+    $form['comment'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Comment'),
       '#description' => $this->t('Any notes about the check, like type or check number.'),
       '#size' => 64,
       '#maxlength' => 256,
-    );
-    $form['clear_date'] = array(
+    ];
+    $form['clear_date'] = [
       '#type' => 'datetime',
       '#title' => $this->t('Expected clear date'),
       '#date_date_element' => 'date',
       '#date_time_element' => 'none',
       '#default_value' => DrupalDateTime::createFromTimestamp(REQUEST_TIME),
-    );
+    ];
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Receive check'),
-    );
+    ];
 
     return $form;
   }
@@ -69,10 +69,10 @@ class ReceiveCheckForm extends FormBase {
 
     $clear_date = $form_state->getValue('clear_date')->getTimestamp();
     db_insert('uc_payment_check')
-      ->fields(array(
+      ->fields([
         'order_id' => $form_state->getValue('order_id'),
         'clear_date' => $clear_date,
-      ))
+      ])
       ->execute();
     drupal_set_message($this->t('Check received, expected clear date of @date.', ['@date' => \Drupal::service('date.formatter')->format($clear_date, 'uc_store')]));
 

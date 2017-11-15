@@ -21,7 +21,7 @@ class FulfillmentMethodController extends ControllerBase {
    */
   public function addForm($plugin_id) {
     // Create a fulfillment method configuration entity.
-    $entity = $this->entityTypeManager()->getStorage('uc_fulfillment_method')->create(array('plugin' => $plugin_id));
+    $entity = $this->entityTypeManager()->getStorage('uc_fulfillment_method')->create(['plugin' => $plugin_id]);
 
     return $this->entityFormBuilder()->getForm($entity);
   }

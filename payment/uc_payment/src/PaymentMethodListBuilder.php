@@ -61,16 +61,16 @@ class PaymentMethodListBuilder extends DraggableListBuilder implements FormInter
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['label'] = array(
+    $header['label'] = [
       'data' => $this->t('Payment method'),
-    );
-    $header['plugin'] = array(
+    ];
+    $header['plugin'] = [
       'data' => $this->t('Type'),
-      'class' => array(RESPONSIVE_PRIORITY_LOW),
-    );
-    $header['status'] = array(
+      'class' => [RESPONSIVE_PRIORITY_LOW],
+    ];
+    $header['status'] = [
       'data' => $this->t('Status'),
-    );
+    ];
     return $header + parent::buildHeader();
   }
 
@@ -113,38 +113,38 @@ class PaymentMethodListBuilder extends DraggableListBuilder implements FormInter
     if ($options) {
       uasort($options, 'strnatcasecmp');
 
-      $form['add'] = array(
+      $form['add'] = [
         '#type' => 'details',
         '#title' => $this->t('Add payment method'),
         '#open' => TRUE,
-        '#attributes' => array(
-          'class' => array('container-inline'),
-        ),
-      );
-      $form['add']['payment_method_type'] = array(
+        '#attributes' => [
+          'class' => ['container-inline'],
+        ],
+      ];
+      $form['add']['payment_method_type'] = [
         '#type' => 'select',
         '#title' => $this->t('Type'),
         '#empty_option' => $this->t('- Choose -'),
         '#options' => $options,
-      );
-      $form['add']['submit'] = array(
+      ];
+      $form['add']['submit'] = [
         '#type' => 'submit',
         '#value' => $this->t('Add payment method'),
-        '#validate' => array('::validateAddPaymentMethod'),
-        '#submit' => array('::submitAddPaymentMethod'),
-        '#limit_validation_errors' => array(array('payment_method_type')),
-      );
+        '#validate' => ['::validateAddPaymentMethod'],
+        '#submit' => ['::submitAddPaymentMethod'],
+        '#limit_validation_errors' => [['payment_method_type']],
+      ];
     }
 
     $form = parent::buildForm($form, $form_state);
     $form[$this->entitiesKey]['#empty'] = $this->t('No payment methods have been configured.');
 
     $form['actions']['#type'] = 'actions';
-    $form['actions']['submit'] = array(
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save configuration'),
       '#button_type' => 'primary',
-    );
+    ];
 
     return $form;
   }
@@ -173,7 +173,7 @@ class PaymentMethodListBuilder extends DraggableListBuilder implements FormInter
   public function submitAddPaymentMethod(array &$form, FormStateInterface $form_state) {
     $form_state->setRedirect(
       'entity.uc_payment_method.add_form',
-      array('plugin_id' => $form_state->getValue('payment_method_type'))
+      ['plugin_id' => $form_state->getValue('payment_method_type')]
     );
   }
 
@@ -181,9 +181,9 @@ class PaymentMethodListBuilder extends DraggableListBuilder implements FormInter
    * {@inheritdoc}
    */
   public function render() {
-    $build['description'] = array(
+    $build['description'] = [
       '#markup' => '<p>' . $this->t('By default, only the "No payment required" payment method is listed here. To see additional payment methods you must <a href=":install">install additional modules</a>. The "Payment Method Pack" module that comes with Ubercart provides "Check" and "COD" payment methods. The "Credit Card" module that comes with Ubercart provides a credit card payment method, although you will need an additional module to provide a payment gateway for your credit card. For more information about payment methods and settings please read the <a href=":doc">Ubercart Documentation</a>.', [':install' => Url::fromRoute('system.modules_list', [], ['fragment' => 'edit-modules-ubercart-payment'])->toString(), ':doc' => Url::fromUri('http://www.drupal.org/documentation/modules/ubercart')->toString()]) . '</p><p>' . $this->t('The order of methods shown below is the order those methods will appear on the checkout page. To re-order, drag the method to its desired location using the drag icon then save the configuration using the button at the bottom of the page.') . '</p>',
-    );
+    ];
     $build += parent::render();
 
     return $build;

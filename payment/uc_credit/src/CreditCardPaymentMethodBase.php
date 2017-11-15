@@ -66,17 +66,17 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
    */
   public function getDisplayLabel($label) {
     $build['#attached']['library'][] = 'uc_credit/uc_credit.styles';
-    $build['label'] = array(
+    $build['label'] = [
       '#plain_text' => $label,
-    );
+    ];
     $cc_types = $this->getEnabledTypes();
     foreach ($cc_types as $type => $description) {
-      $build['image'][$type] = array(
+      $build['image'][$type] = [
         '#theme' => 'image',
         '#uri' => drupal_get_path('module', 'uc_credit') . '/images/' . $type . '.gif',
         '#alt' => $description,
-        '#attributes' => array('class' => array('uc-credit-cctype', 'uc-credit-cctype-' . $type)),
-      );
+        '#attributes' => ['class' => ['uc-credit-cctype', 'uc-credit-cctype-' . $type]],
+      ];
     }
     return $build;
   }
@@ -118,57 +118,57 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function cartDetails(OrderInterface $order, array $form, FormStateInterface $form_state) {
-    $build = array(
+    $build = [
       '#type' => 'container',
-      '#attributes' => array('class' => 'uc-credit-form'),
-    );
+      '#attributes' => ['class' => 'uc-credit-form'],
+    ];
     $build['#attached']['library'][] = 'uc_credit/uc_credit.styles';
-    $build['cc_policy'] = array(
+    $build['cc_policy'] = [
       '#prefix' => '<p>',
       '#markup' => $this->t('Your billing information must match the billing address for the credit card entered below or we will be unable to process your payment.'),
       '#suffix' => '</p>',
-    );
+    ];
 
-    $order->payment_details = array();
+    $order->payment_details = [];
 
     // Encrypted data in the session is from the user
     // returning from the review page.
     $session = \Drupal::service('session');
     if ($session->has('sescrd')) {
       $order->payment_details = uc_credit_cache($session->get('sescrd'));
-      $build['payment_details_data'] = array(
+      $build['payment_details_data'] = [
         '#type' => 'hidden',
         '#value' => base64_encode($session->get('sescrd')),
-      );
+      ];
       $session->remove('sescrd');
     }
     elseif (isset($_POST['panes']['payment']['details']['payment_details_data'])) {
       // Copy any encrypted data that was POSTed in.
-      $build['payment_details_data'] = array(
+      $build['payment_details_data'] = [
         '#type' => 'hidden',
         '#value' => $_POST['panes']['payment']['details']['payment_details_data'],
-      );
+      ];
     }
 
     $fields = $this->getEnabledFields();
     if (!empty($fields['type'])) {
-      $build['cc_type'] = array(
+      $build['cc_type'] = [
         '#type' => 'select',
         '#title' => $this->t('Card type'),
         '#options' => $this->getEnabledTypes(),
         '#default_value' => isset($order->payment_details['cc_type']) ? $order->payment_details['cc_type'] : NULL,
-      );
+      ];
     }
 
     if (!empty($fields['owner'])) {
-      $build['cc_owner'] = array(
+      $build['cc_owner'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Card owner'),
         '#default_value' => isset($order->payment_details['cc_owner']) ? $order->payment_details['cc_owner'] : '',
-        '#attributes' => array('autocomplete' => 'off'),
+        '#attributes' => ['autocomplete' => 'off'],
         '#size' => 32,
         '#maxlength' => 64,
-      );
+      ];
     }
 
     // Set up the default CC number on the credit card form.
@@ -185,23 +185,23 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
       $default_num = $this->t('(Last 4) ') . substr($order->payment_details['cc_number'], -4);
     }
 
-    $build['cc_number'] = array(
+    $build['cc_number'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Card number'),
       '#default_value' => $default_num,
-      '#attributes' => array('autocomplete' => 'off'),
+      '#attributes' => ['autocomplete' => 'off'],
       '#size' => 20,
       '#maxlength' => 19,
-    );
+    ];
 
     if (!empty($fields['start'])) {
       $month = isset($order->payment_details['cc_start_month']) ? $order->payment_details['cc_start_month'] : NULL;
       $year = isset($order->payment_details['cc_start_year']) ? $order->payment_details['cc_start_year'] : NULL;
       $year_range = range(date('Y') - 10, date('Y'));
-      $build['cc_start_month'] = array(
+      $build['cc_start_month'] = [
         '#type' => 'number',
         '#title' => $this->t('Start date'),
-        '#options' => array(
+        '#options' => [
           1 => $this->t('01 - January'),
           2 => $this->t('02 - February'),
           3 => $this->t('03 - March'),
@@ -214,11 +214,11 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
           10 => $this->t('10 - October'),
           11 => $this->t('11 - November'),
           12 => $this->t('12 - December'),
-        ),
+        ],
         '#default_value' => $month,
         '#required' => TRUE,
-      );
-      $build['cc_start_year'] = array(
+      ];
+      $build['cc_start_year'] = [
         '#type' => 'select',
         '#title' => $this->t('Start year'),
         '#title_display' => 'invisible',
@@ -226,27 +226,27 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
         '#default_value' => $year,
         '#field_suffix' => $this->t('(if present)'),
         '#required' => TRUE,
-      );
+      ];
     }
 
     $month = isset($order->payment_details['cc_exp_month']) ? $order->payment_details['cc_exp_month'] : 1;
     $year = isset($order->payment_details['cc_exp_year']) ? $order->payment_details['cc_exp_year'] : date('Y');
     $year_range = range(date('Y'), date('Y') + 20);
-    $build['cc_exp_month'] = array(
+    $build['cc_exp_month'] = [
       '#type' => 'select',
       '#title' => $this->t('Expiration date'),
-      '#options' => array(
+      '#options' => [
         1 => $this->t('01 - January'), 2 => $this->t('02 - February'),
         3 => $this->t('03 - March'), 4 => $this->t('04 - April'),
         5 => $this->t('05 - May'), 6 => $this->t('06 - June'),
         7 => $this->t('07 - July'), 8 => $this->t('08 - August'),
         9 => $this->t('09 - September'), 10 => $this->t('10 - October'),
         11 => $this->t('11 - November'), 12 => $this->t('12 - December'),
-      ),
+      ],
       '#default_value' => $month,
       '#required' => TRUE,
-    );
-    $build['cc_exp_year'] = array(
+    ];
+    $build['cc_exp_year'] = [
       '#type' => 'select',
       '#title' => $this->t('Expiration year'),
       '#title_display' => 'invisible',
@@ -254,7 +254,7 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
       '#default_value' => $year,
       '#field_suffix' => $this->t('(if present)'),
       '#required' => TRUE,
-    );
+    ];
 
     if (!empty($fields['issue'])) {
       // Set up the default Issue Number on the credit card form.
@@ -271,15 +271,15 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
         $default_card_issue = str_repeat('-', strlen($order->payment_details['cc_issue']));
       }
 
-      $build['cc_issue'] = array(
+      $build['cc_issue'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Issue number'),
         '#default_value' => $default_card_issue,
-        '#attributes' => array('autocomplete' => 'off'),
+        '#attributes' => ['autocomplete' => 'off'],
         '#size' => 2,
         '#maxlength' => 2,
         '#field_suffix' => $this->t('(if present)'),
-      );
+      ];
     }
 
     if (!empty($fields['cvv'])) {
@@ -296,29 +296,29 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
         $default_cvv = str_repeat('-', strlen($order->payment_details['cc_cvv']));
       }
 
-      $build['cc_cvv'] = array(
+      $build['cc_cvv'] = [
         '#type' => 'textfield',
         '#title' => $this->t('CVV'),
         '#default_value' => $default_cvv,
-        '#attributes' => array('autocomplete' => 'off'),
+        '#attributes' => ['autocomplete' => 'off'],
         '#size' => 4,
         '#maxlength' => 4,
-        '#field_suffix' => array(
+        '#field_suffix' => [
           '#theme' => 'uc_credit_cvv_help',
           '#method' => $order->getPaymentMethodId(),
-        ),
-      );
+        ],
+      ];
     }
 
     if (!empty($fields['bank'])) {
-      $build['cc_bank'] = array(
+      $build['cc_bank'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Issuing bank'),
         '#default_value' => isset($order->payment_details['cc_bank']) ? $order->payment_details['cc_bank'] : '',
-        '#attributes' => array('autocomplete' => 'off'),
+        '#attributes' => ['autocomplete' => 'off'],
         '#size' => 32,
         '#maxlength' => 64,
-      );
+      ];
     }
 
     return $build;
@@ -338,22 +338,22 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
     $fields = $this->getEnabledFields();
 
     if (!empty($fields['type'])) {
-      $review[] = array('title' => $this->t('Card type'), 'data' => $order->payment_details['cc_type']);
+      $review[] = ['title' => $this->t('Card type'), 'data' => $order->payment_details['cc_type']];
     }
     if (!empty($fields['owner'])) {
-      $review[] = array('title' => $this->t('Card owner'), 'data' => $order->payment_details['cc_owner']);
+      $review[] = ['title' => $this->t('Card owner'), 'data' => $order->payment_details['cc_owner']];
     }
-    $review[] = array('title' => $this->t('Card number'), 'data' => $this->displayCardNumber($order->payment_details['cc_number']));
+    $review[] = ['title' => $this->t('Card number'), 'data' => $this->displayCardNumber($order->payment_details['cc_number'])];
     if (!empty($fields['start'])) {
       $start = $order->payment_details['cc_start_month'] . '/' . $order->payment_details['cc_start_year'];
-      $review[] = array('title' => $this->t('Start date'), 'data' => strlen($start) > 1 ? $start : '');
+      $review[] = ['title' => $this->t('Start date'), 'data' => strlen($start) > 1 ? $start : ''];
     }
-    $review[] = array('title' => $this->t('Expiration'), 'data' => $order->payment_details['cc_exp_month'] . '/' . $order->payment_details['cc_exp_year']);
+    $review[] = ['title' => $this->t('Expiration'), 'data' => $order->payment_details['cc_exp_month'] . '/' . $order->payment_details['cc_exp_year']];
     if (!empty($fields['issue'])) {
-      $review[] = array('title' => $this->t('Issue number'), 'data' => $order->payment_details['cc_issue']);
+      $review[] = ['title' => $this->t('Issue number'), 'data' => $order->payment_details['cc_issue']];
     }
     if (!empty($fields['bank'])) {
-      $review[] = array('title' => $this->t('Issuing bank'), 'data' => $order->payment_details['cc_bank']);
+      $review[] = ['title' => $this->t('Issuing bank'), 'data' => $order->payment_details['cc_bank']];
     }
 
     return $review;
@@ -363,12 +363,12 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function orderView(OrderInterface $order) {
-    $build = array();
+    $build = [];
 
     // Add the hidden span for the CC details if possible.
     $account = \Drupal::currentUser();
     if ($account->hasPermission('view cc details')) {
-      $rows = array();
+      $rows = [];
 
       if (!empty($order->payment_details['cc_type'])) {
         $rows[] = $this->t('Card type') . ': ' . $order->payment_details['cc_type'];
@@ -398,9 +398,9 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
         $rows[] = $this->t('Issuing bank') . ': ' . $order->payment_details['cc_bank'];
       }
 
-      $build['cc_info'] = array(
+      $build['cc_info'] = [
         '#markup' => implode('<br />', $rows) . '<br />',
-      );
+      ];
     }
 
     // Add the form to process the card if applicable.
@@ -422,7 +422,7 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function customerView(OrderInterface $order) {
-    $build = array();
+    $build = [];
 
     if (!empty($order->payment_details['cc_number'])) {
       $build['#markup'] = $this->t('Card number') . ':<br />' . $this->displayCardNumber($order->payment_details['cc_number']);
@@ -726,7 +726,7 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
    *   TRUE if CVV has the correct number of digits.
    */
   protected function validateCvv($cvv) {
-    $digits = array();
+    $digits = [];
 
     $types = $this->getEnabledTypes();
     if (!empty($types['visa']) ||

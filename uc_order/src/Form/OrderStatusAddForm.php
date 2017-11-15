@@ -23,49 +23,49 @@ class OrderStatusAddForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['id'] = array(
+    $form['id'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Order status ID'),
       '#description' => $this->t('Must be a unique ID with no spaces.'),
       '#size' => 32,
       '#maxlength' => 32,
       '#required' => TRUE,
-    );
+    ];
 
-    $form['name'] = array(
+    $form['name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Title'),
       '#description' => $this->t('The order status title displayed to users.'),
       '#size' => 32,
       '#maxlength' => 48,
       '#required' => TRUE,
-    );
+    ];
 
-    $form['state'] = array(
+    $form['state'] = [
       '#type' => 'select',
       '#title' => $this->t('Order state'),
       '#description' => $this->t('Set which order state this status is for.'),
       '#options' => uc_order_state_options_list(),
       '#default_value' => 'post_checkout',
-    );
+    ];
 
-    $form['weight'] = array(
+    $form['weight'] = [
       '#type' => 'weight',
       '#title' => $this->t('List position'),
       '#delta' => 20,
       '#default_value' => 0,
-    );
+    ];
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['create'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['create'] = [
       '#type' => 'submit',
       '#value' => $this->t('Create'),
-    );
-    $form['actions']['cancel'] = array(
+    ];
+    $form['actions']['cancel'] = [
       '#type' => 'link',
       '#title' => $this->t('Cancel'),
       '#url' => Url::fromRoute('uc_order.workflow'),
-    );
+    ];
 
     return $form;
   }
@@ -88,12 +88,12 @@ class OrderStatusAddForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    OrderStatus::create(array(
+    OrderStatus::create([
       'id' => strtolower(trim($form_state->getValue('id'))),
       'name' => $form_state->getValue('name'),
       'state' => $form_state->getValue('state'),
       'weight' => (int) $form_state->getValue('weight'),
-    ))->save();
+    ])->save();
 
     drupal_set_message($this->t('Custom order status created.'));
 

@@ -17,31 +17,29 @@ class OtherTest extends PaymentPackTestBase {
   public function testOther() {
     $other = $this->createPaymentMethod('other');
 
-    // Test checkout page
+    // Test checkout page.
     $this->drupalGet('cart/checkout');
     $this->assertFieldByName('panes[payment][payment_method]', $other['id'], 'Other payment method is selected at checkout.');
 
-    // Test review order page
+    // Test review order page.
     $this->drupalPostForm(NULL, [], 'Review order');
     $this->assertText(t('Other'), 'Other payment method found on review page.');
     $this->drupalPostForm(NULL, [], 'Submit order');
 
-    // Test user order view
+    // Test user order view.
     $order = Order::load(1);
     $this->assertEqual($order->getPaymentMethodId(), $other['id'], 'Order has other payment method.');
 
     $this->drupalGet('user/' . $order->getOwnerId() . '/orders/' . $order->id());
     $this->assertText(t('Method: Other'), 'Other payment method displayed.');
 
-    // Test admin order view
+    // Test admin order view.
     $this->drupalGet('admin/store/orders/' . $order->id());
     $this->assertText(t('Method: Other'), 'Other payment method displayed.');
 
     $this->drupalGet('admin/store/orders/' . $order->id() . '/edit');
     $this->assertFieldByName('payment_method', $other['id'], 'Other payment method is selected in the order edit form.');
-    $edit = array(
-      'payment_details[description]' => $this->randomString(),
-    );
+    $edit = ['payment_details[description]' => $this->randomString()];
     $this->drupalPostForm(NULL, [], 'Save changes');
     // @todo: Test storage of payment details.
   }

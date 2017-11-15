@@ -14,7 +14,7 @@ class FulfillmentController extends ControllerBase {
   /**
    * Checks access to fulfill this order.
    *
-   * @param \Drupal\uc_order\OrderInterface $order
+   * @param \Drupal\uc_order\OrderInterface $uc_order
    *   The Order to check access for.
    *
    * @return \Drupal\Core\Access\AccessResultInterface
@@ -31,7 +31,7 @@ class FulfillmentController extends ControllerBase {
   /**
    * Checks access to the Shipments tab for this order.
    *
-   * @param \Drupal\uc_order\OrderInterface $order
+   * @param \Drupal\uc_order\OrderInterface $uc_order
    *   The order to check access for.
    *
    * @return \Drupal\Core\Access\AccessResultInterface

@@ -26,7 +26,7 @@ class Payment extends EditableOrderPanePluginBase {
    * {@inheritdoc}
    */
   public function getClasses() {
-    return array('pos-left');
+    return ['pos-left'];
   }
 
   /**
@@ -34,41 +34,45 @@ class Payment extends EditableOrderPanePluginBase {
    */
   public function view(OrderInterface $order, $view_mode) {
     if ($view_mode != 'customer') {
-      $build['balance'] = array('#markup' => $this->t('Balance: @balance', ['@balance' => uc_currency_format(uc_payment_balance($order))]));
+      $build['balance'] = [
+        '#markup' => $this->t('Balance: @balance', ['@balance' => uc_currency_format(uc_payment_balance($order))])
+      ];
 
       $account = \Drupal::currentUser();
       if ($account->hasPermission('view payments')) {
-        $build['view_payments'] = array(
+        $build['view_payments'] = [
           '#type' => 'link',
           '#prefix' => ' (',
           '#title' => $this->t('View'),
           '#url' => Url::fromRoute('uc_payments.order_payments', ['uc_order' => $order->id()]),
           '#suffix' => ')',
-        );
+        ];
       }
 
       $method = \Drupal::service('plugin.manager.uc_payment.method')->createFromOrder($order);
-      $build['method'] = array(
+      $build['method'] = [
         '#markup' => $this->t('Method: @payment_method', ['@payment_method' => $method->cartReviewTitle()]),
         '#prefix' => '<br />',
-      );
+      ];
 
       $method_output = $method->orderView($order);
       if (!empty($method_output)) {
-        $build['output'] = $method_output + array(
+        $build['output'] = $method_output + [
           '#prefix' => '<br />',
-        );
+        ];
       }
     }
     else {
       $method = \Drupal::service('plugin.manager.uc_payment.method')->createFromOrder($order);
-      $build['method'] = array('#markup' => $this->t('Method: @payment_method', ['@payment_method' => $method->cartReviewTitle()]));
+      $build['method'] = [
+        '#markup' => $this->t('Method: @payment_method', ['@payment_method' => $method->cartReviewTitle()])
+      ];
 
       $method_output = $method->customerView($order);
       if (!empty($method_output)) {
-        $build['output'] = $method_output + array(
+        $build['output'] = $method_output + [
           '#prefix' => '<br />',
-        );
+        ];
       }
 
     }
@@ -80,31 +84,31 @@ class Payment extends EditableOrderPanePluginBase {
    * {@inheritdoc}
    */
   public function buildForm(OrderInterface $order, array $form, FormStateInterface $form_state) {
-    $options = array();
+    $options = [];
     $methods = PaymentMethod::loadMultiple();
     uasort($methods, 'Drupal\uc_payment\Entity\PaymentMethod::sort');
     foreach ($methods as $method) {
       $options[$method->id()] = $method->label();
     }
 
-    $form['payment_method'] = array(
+    $form['payment_method'] = [
       '#type' => 'select',
       '#title' => $this->t('Payment method'),
       '#default_value' => $order->getPaymentMethodId(),
       '#options' => $options,
-      '#ajax' => array(
-        'callback' => array($this, 'ajaxCallback'),
-        'progress' => array('type' => 'throbber'),
+      '#ajax' => [
+        'callback' => [$this, 'ajaxCallback'],
+        'progress' => ['type' => 'throbber'],
         'wrapper' => 'payment-details',
-      ),
-    );
+      ],
+    ];
 
     // An empty <div> for Ajax.
-    $form['payment_details'] = array(
+    $form['payment_details'] = [
       '#type' => 'container',
-      '#attributes' => array('id' => 'payment-details'),
+      '#attributes' => ['id' => 'payment-details'],
       '#tree' => TRUE,
-    );
+    ];
 
     $method = $form_state->getValue('payment_method') ?: $order->getPaymentMethodId();
     if ($method && $details = PaymentMethod::load($method)->getPlugin()->orderEditDetails($order)) {
@@ -124,7 +128,7 @@ class Payment extends EditableOrderPanePluginBase {
    */
   public function submitForm(OrderInterface $order, array &$form, FormStateInterface $form_state) {
     $changes['payment_method'] = $form_state->getValue('payment_method');
-    $changes['payment_details'] = $form_state->getValue('payment_details') ?: array();
+    $changes['payment_details'] = $form_state->getValue('payment_details') ?: [];
 
     $order->setPaymentMethodId($changes['payment_method']);
     $method = \Drupal::service('plugin.manager.uc_payment.method')->createFromOrder($order);
@@ -141,7 +145,7 @@ class Payment extends EditableOrderPanePluginBase {
   public function ajaxCallback($form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
     $response->addCommand(new ReplaceCommand('#payment-details', trim(drupal_render($form['payment']['payment_details']))));
-    $status_messages = array('#type' => 'status_messages');
+    $status_messages = ['#type' => 'status_messages'];
     $response->addCommand(new PrependCommand('#payment-details', drupal_render($status_messages)));
 
     return $response;

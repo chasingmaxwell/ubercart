@@ -23,7 +23,7 @@ abstract class FulfillmentMethodPluginBase extends PluginBase implements Fulfill
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array();
+    return [];
   }
 
   /**
@@ -63,7 +63,7 @@ abstract class FulfillmentMethodPluginBase extends PluginBase implements Fulfill
    * {@inheritdoc}
    */
   public function calculateDependencies() {
-    return array();
+    return [];
   }
 
 }

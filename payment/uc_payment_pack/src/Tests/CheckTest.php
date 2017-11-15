@@ -39,7 +39,7 @@ class CheckTest extends PaymentPackTestBase {
     $address->setCountry($country_id);
     $this->drupalPostAjaxForm(NULL, ['settings[address][country]' => $address->getCountry()], 'settings[address][country]');
 
-    $edit += array(
+    $edit += [
       'settings[name]' => $address->getFirstName(),
       'settings[address][company]' => $address->getCompany(),
       'settings[address][street1]' => $address->getStreet1(),
@@ -47,14 +47,12 @@ class CheckTest extends PaymentPackTestBase {
       'settings[address][city]' => $address->getCity(),
       'settings[address][country]' => $address->getCountry(),
       'settings[address][postal_code]' => $address->getPostalCode(),
-    );
+    ];
     // Don't try to set the zone unless the country has zones!
     $zone_list = \Drupal::service('country_manager')->getZoneList($country_id);
     if (!empty($zone_list)) {
       $address->setZone(array_rand($zone_list));
-      $edit += array(
-        'settings[address][zone]' => $address->getZone(),
-      );
+      $edit += ['settings[address][zone]' => $address->getZone()];
     }
 
     $this->drupalPostForm(NULL, $edit, 'Save');
@@ -91,10 +89,10 @@ class CheckTest extends PaymentPackTestBase {
     $receive_date = strtotime('now +' . mt_rand(1, 365) . ' days');
     $formatted = \Drupal::service('date.formatter')->format($receive_date, 'uc_store');
 
-    $edit = array(
+    $edit = [
       'comment' => $this->randomString(),
       'clear_date[date]' => date('Y-m-d', $receive_date),
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, 'Receive check');
     $this->assertNoLink(t('Receive Check'));
     $this->assertText('Clear Date: ' . $formatted, 'Check clear date found.');

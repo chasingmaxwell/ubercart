@@ -24,67 +24,67 @@ class CreditController extends ControllerBase {
 
     $build['#attached']['library'][] = 'uc_credit/uc_credit.styles';
     // @todo: Move the embedded CSS below into uc_credit.css.
-    $build['title'] = array(
+    $build['title'] = [
       '#prefix' => '<strong>',
       '#markup' => $this->t('What is the CVV?'),
       '#suffix' => '</strong>',
-    );
-    $build['definition'] = array(
+    ];
+    $build['definition'] = [
       '#prefix' => '<p>',
       '#markup' => $this->t('CVV stands for "Card Verification Value". This number is used as a security feature to protect you from credit card fraud. Finding the number on your card is a very simple process. Just follow the directions below.'),
       '#suffix' => '</p>',
-    );
+    ];
 
     $valid_types = array_diff_key($types, ['amex' => 1]);
     if (!empty($valid_types)) {
-      $build['types'] = array(
+      $build['types'] = [
         '#prefix' => '<br /><strong>',
         '#markup' => implode(', ', $valid_types),
         '#suffix' => ':</strong>',
-      );
-      $build['image'] = array(
+      ];
+      $build['image'] = [
         '#theme' => 'image',
         '#uri' => drupal_get_path('module', 'uc_credit') . '/images/visa_cvv.jpg',
         '#alt' => 'CVV location',
-        '#attributes' => array('align' => 'left'),
+        '#attributes' => ['align' => 'left'],
         '#prefix' => '<p>',
         '#suffix' => '</p>',
-      );
-      $build['where'] = array(
+      ];
+      $build['where'] = [
         '#prefix' => '<p>',
         '#markup' => $this->t('The CVV for these cards is found on the back side of the card. It is only the last three digits on the far right of the signature panel box.'),
         '#suffix' => '</p>',
-      );
+      ];
     }
 
     if (isset($types['amex'])) {
-      $build['types-amex'] = array(
+      $build['types-amex'] = [
         '#prefix' => '<br /><strong>',
         '#markup' => $this->t('American Express'),
         '#suffix' => ':</strong>',
-      );
-      $build['image-amex'] = array(
+      ];
+      $build['image-amex'] = [
         '#theme' => 'image',
         '#uri' => drupal_get_path('module', 'uc_credit') . '/images/amex_cvv.jpg',
         '#alt' => 'Amex CVV location',
-        '#attributes' => array('align' => 'left'),
+        '#attributes' => ['align' => 'left'],
         '#prefix' => '<p>',
         '#suffix' => '</p>',
-      );
-      $build['where-amex'] = array(
+      ];
+      $build['where-amex'] = [
         '#prefix' => '<p>',
         '#markup' => $this->t('The CVV on American Express cards is found on the front of the card. It is a four digit number printed in smaller text on the right side above the credit card number.'),
         '#suffix' => '</p>',
-      );
+      ];
     }
 
-    $build['close'] = array(
+    $build['close'] = [
       '#type' => 'button',
       '#prefix' => '<p align="right">',
       '#value' => $this->t('Close this window'),
-      '#attributes' => array('onclick' => 'self.close();'),
+      '#attributes' => ['onclick' => 'self.close();'],
       '#suffix' => '</p>',
-    );
+    ];
 
     $renderer = \Drupal::service('bare_html_page_renderer');
     // @todo: Make our own theme function to use instead of 'page'?

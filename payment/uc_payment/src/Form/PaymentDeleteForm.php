@@ -17,7 +17,7 @@ class PaymentDeleteForm extends ConfirmFormBase {
   /**
    * The payment to be deleted.
    *
-   * @var PaymentReceiptInterface
+   * @var \Drupal\uc_payment\PaymentReceiptInterface
    */
   protected $payment;
 
