@@ -8,6 +8,7 @@ use Drupal\Core\Url;
 use Drupal\uc_cart\CartInterface;
 use Drupal\uc_cart\CartManagerInterface;
 use Drupal\uc_cart\Plugin\CheckoutPaneManager;
+use Drupal\uc_cart\Event\CheckoutReviewOrderEvent;
 use Drupal\uc_cart\Event\CheckoutStartEvent;
 use Drupal\uc_order\Entity\Order;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -223,6 +224,15 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
 
     $build['#attached']['library'][] = 'uc_cart/uc_cart.styles';
     $build['#attached']['library'][] = 'uc_cart/uc_cart.review.scripts';
+
+    // Invoke the customer reviews order checkout hook.
+    $this->moduleHandler()->invokeAll('uc_cart_checkout_review_order', [$order]);
+
+    // Trigger the checkout review order event.
+    // rules_invoke_event('uc_cart_checkout_review_order', $order);
+    $event = new CheckoutReviewOrderEvent($order);
+    $event_dispatcher = \Drupal::service('event_dispatcher');
+    $event_dispatcher->dispatch(CheckoutReviewOrderEvent::EVENT_NAME, $event);
 
     return $build;
   }

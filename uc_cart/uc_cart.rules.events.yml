@@ -6,6 +6,14 @@ uc_cart_checkout_start:
       type: 'entity:uc_order'
       label: 'Order'
 
+uc_cart_checkout_review_order:
+  label: 'Customer reviews order'
+  category: 'Cart'
+  context:
+    order:
+      type: 'entity:uc_order'
+      label: 'Order'
+
 uc_cart_checkout_complete:
   label: 'Customer completes checkout'
   category: 'Cart'
