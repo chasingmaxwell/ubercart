@@ -19,8 +19,7 @@ function uc_cart_links_help($route_name, RouteMatchInterface $route_match) {
       return '<p>' . t('<a href=":url">View the help page</a> to learn how to create Cart Links.', [':url' => Url::fromRoute('help.page', ['name' => 'uc_cart_links'])->toString()]) . '</p>';
 
     case 'help.page.uc_cart_links':
-      $build = CartLinksHelp::creationHelp();
-      return drupal_render($build);
+      return CartLinksHelp::creationHelp();
   }
 }
 
@@ -47,6 +46,6 @@ function uc_cart_links_uc_add_to_cart($nid, $qty, $data) {
         }
       }
     }
-    drupal_set_message(t('Cart Link product action: @cart_link', array('@cart_link' => $cart_link)));
+    drupal_set_message(t('Cart Link product action: @cart_link', ['@cart_link' => $cart_link]));
   }
 }

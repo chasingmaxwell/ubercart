@@ -17,6 +17,8 @@ class CartLinksForm extends ConfirmFormBase {
 
   /**
    * The cart link actions.
+   *
+   * @var string
    */
   protected $actions;
 
@@ -31,7 +33,7 @@ class CartLinksForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return array();
+    return [];
   }
 
   /**
@@ -96,11 +98,20 @@ class CartLinksForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
+  public function validateForm(array &$form, FormStateInterface $form_state) {
+    //if (!uc_cart_links_is_valid_syntax('/cart/add/' . $this->actions)) {
+    //  Don't process cart link, but log it so admin knows bad link was passed.
+    //}
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $cart_links_config = $this->config('uc_cart_links.settings');
 
     $actions = explode('-', urldecode($this->actions));
-    $messages = array();
+    $messages = [];
     $id = $this->t('(not specified)');
 
     $cart = \Drupal::service('uc_cart.manager')->get();
@@ -116,7 +127,7 @@ class CartLinksForm extends ConfirmFormBase {
         case 'p':
         case 'P':
           // Set the default product variables.
-          $p = array('nid' => 0, 'qty' => 1, 'data' => array());
+          $p = ['nid' => 0, 'qty' => 1, 'data' => []];
           $msg = TRUE;
 
           // Parse the product action to adjust the product variables.
@@ -143,18 +154,18 @@ class CartLinksForm extends ConfirmFormBase {
                 }
                 else {
                   // Multiple options for this attribute implies checkbox
-                  // attribute, which we must store as an array
+                  // attribute, which we must store as an array.
                   if (is_array($p['attributes'][$attribute])) {
                     // Already an array, just append this new option
                     $p['attributes'][$attribute][$option] = $option;
                   }
                   else {
                     // Set but not an array, means we already have at least one
-                    // option, so put that into an array with this new option
-                    $p['attributes'][$attribute] = array(
+                    // option, so put that into an array with this new option.
+                    $p['attributes'][$attribute] = [
                       $p['attributes'][$attribute] => $p['attributes'][$attribute],
                       $option => $option
-                    );
+                    ];
                   }
                 }
                 break;
@@ -174,16 +185,16 @@ class CartLinksForm extends ConfirmFormBase {
             if ($node->status) {
               if (isset($node->products) && is_array($node->products)) {
                 foreach ($node->products as $nid => $product) {
-                  $p['data']['products'][$nid] = array(
+                  $p['data']['products'][$nid] = [
                     'nid' => $nid,
                     'qty' => $product->qty,
-                  );
+                  ];
                 }
               }
-              $cart->addItem($p['nid'], $p['qty'], $p['data'] + \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', array($p)), $msg);
+              $cart->addItem($p['nid'], $p['qty'], $p['data'] + \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', [$p]), $msg);
             }
             else {
-              $this->logger('uc_cart_link')->error('Cart Link on %url tried to add an unpublished product to the cart.', array('%url' => $this->getRequest()->server->get('HTTP_REFERER')));
+              $this->logger('uc_cart_link')->error('Cart Link on %url tried to add an unpublished product to the cart.', ['%url' => $this->getRequest()->server->get('HTTP_REFERER')]);
             }
           }
           break;
@@ -205,7 +216,7 @@ class CartLinksForm extends ConfirmFormBase {
             foreach ($data as $message) {
               // Skip blank lines.
               if (preg_match('/^\s*$/', $message)) {
-                 continue;
+                continue;
               }
               list($mkey, $mdata) = explode('|', $message, 2);
               $messages[trim($mkey)] = trim($mdata);
@@ -223,12 +234,12 @@ class CartLinksForm extends ConfirmFormBase {
 
     if ($cart_links_config->get('track')) {
       db_merge('uc_cart_link_clicks')
-        ->key(array('cart_link_id' => (string) $id))
-        ->fields(array(
+        ->key(['cart_link_id' => (string) $id])
+        ->fields([
           'clicks' => 1,
           'last_click' => REQUEST_TIME,
-        ))
-        ->expression('clicks', 'clicks + :i', array(':i' => 1))
+        ])
+        ->expression('clicks', 'clicks + :i', [':i' => 1])
         ->execute();
     }
 
@@ -241,9 +252,9 @@ class CartLinksForm extends ConfirmFormBase {
     }
     else {
       $path = 'cart';
-      $options = array();
+      $options = [];
     }
-    $options += array('absolute' => TRUE);
+    $options += ['absolute' => TRUE];
 
     // Form redirect is for confirmed links.
     $form_state->setRedirectUrl(Url::fromUri('base:/' . $path, $options));

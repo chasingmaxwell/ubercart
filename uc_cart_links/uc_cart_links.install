@@ -9,33 +9,33 @@
  * Implements hook_schema().
  */
 function uc_cart_links_schema() {
-  $schema['uc_cart_link_clicks'] = array(
+  $schema['uc_cart_link_clicks'] = [
     'description' => 'Stores information for cart links.',
-    'fields' => array(
-      'cart_link_id' => array(
+    'fields' => [
+      'cart_link_id' => [
         'description' => 'The cart link identifier.',
         'type' => 'varchar',
         'length' => 32,
         'not null' => TRUE,
         'default' => '0',
-      ),
-      'clicks' => array(
+      ],
+      'clicks' => [
         'description' => 'The number of times this cart link was clicked.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'last_click' => array(
+      ],
+      'last_click' => [
         'description' => 'The time of the last click on this cart link, stored as a UNIX timestamp.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
-      ),
-    ),
-    'primary key' => array(
+      ],
+    ],
+    'primary key' => [
       'cart_link_id',
-    ),
-  );
+    ],
+  ];
 
   return $schema;
 }
