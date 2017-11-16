@@ -53,7 +53,7 @@ uc_order.admin_invoice:
   requirements:
     _permission: 'view all orders'
   options:
-    _admin_route: true
+    _admin_route: TRUE
 
 uc_order.admin_invoice_print:
   path: '/admin/store/orders/{uc_order}/invoice/print'
