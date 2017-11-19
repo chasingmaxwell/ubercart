@@ -51,50 +51,50 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
     $form = parent::buildConfigurationForm($form, $form_state);
 
     // Express Checkout specific settings.
-    $form['ec_landingpage_style'] = array(
+    $form['ec_landingpage_style'] = [
       '#type' => 'radios',
       '#title' => $this->t('Default PayPal landing page'),
-      '#options' => array(
+      '#options' => [
         'Billing' => $this->t('Credit card submission form.'),
         'Login' => $this->t('Account login form.'),
-      ),
+      ],
       '#default_value' => $this->configuration['ec_landingpage_style'],
-    );
-    $form['ec_rqconfirmed_addr'] = array(
+    ];
+    $form['ec_rqconfirmed_addr'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Require Express Checkout users to use a PayPal confirmed shipping address.'),
       '#default_value' => $this->configuration['ec_rqconfirmed_addr'],
-    );
-    $form['ec_review_shipping'] = array(
+    ];
+    $form['ec_review_shipping'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Enable the shipping select form on the Review payment page.'),
       '#default_value' => $this->configuration['ec_review_shipping'],
-    );
-    $form['ec_review_company'] = array(
+    ];
+    $form['ec_review_company'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Enable the company name box on the Review payment page.'),
       '#default_value' => $this->configuration['ec_review_company'],
-    );
-    $form['ec_review_phone'] = array(
+    ];
+    $form['ec_review_phone'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Enable the contact phone number box on the Review payment page.'),
       '#default_value' => $this->configuration['ec_review_phone'],
-    );
-    $form['ec_review_comment'] = array(
+    ];
+    $form['ec_review_comment'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Enable the comment text box on the Review payment page.'),
       '#default_value' => $this->configuration['ec_review_comment'],
-    );
-    $form['wpp_cc_txn_type'] = array(
+    ];
+    $form['wpp_cc_txn_type'] = [
       '#type' => 'radios',
       '#title' => $this->t('Payment action'),
       '#description' => $this->t('"Complete sale" will authorize and capture the funds at the time the payment is processed.<br>"Authorization" will only reserve funds on the card to be captured later through your PayPal account.'),
-      '#options' => array(
+      '#options' => [
         'Sale' => $this->t('Complete sale'),
         'Authorization' => $this->t('Authorization'),
-      ),
+      ],
       '#default_value' => $this->configuration['wpp_cc_txn_type'],
-    );
+    ];
 
     return $form;
   }
@@ -151,7 +151,7 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
     }
 
     $address = $order->getAddress('delivery');
-    $request = array(
+    $request = [
       'METHOD' => 'SetExpressCheckout',
       'RETURNURL' => Url::fromRoute('uc_paypal.ec_complete', [], ['absolute' => TRUE])->toString(),
       'CANCELURL' => Url::fromRoute('uc_cart.checkout_review', [], ['absolute' => TRUE])->toString(),
@@ -173,7 +173,7 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
       'SHIPTOZIP' => substr($address->postal_code, 0, 20),
       'PHONENUM' => substr($address->phone, 0, 20),
       'LANDINGPAGE' => $this->configuration['ec_landingpage_style'],
-    );
+    ];
 
     if (!$order->isShippable()) {
       $request['NOSHIPPING'] = 1;
@@ -193,11 +193,11 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
     $url = 'https://www.' . $sandbox . 'paypal.com/cgi-bin/webscr?cmd=_express-checkout&useraction=commit&token=' . $response['TOKEN'];
     $form['#action'] = $url;
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Submit order'),
-    );
+    ];
 
     return $form;
   }
@@ -280,7 +280,7 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
       'uid' => \Drupal::currentUser()->id(),
       'payment_method' => $this->methodId,
     ]);
-    $order->products = array();
+    $order->products = [];
     foreach ($items as $item) {
       $order->products[] = $item->toOrderProduct();
     }
@@ -330,11 +330,11 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
       $pane = \Drupal::service('plugin.manager.uc_cart.checkout_pane')->createInstance('quotes');
       $pane->prepare($order, $form, $form_state);
 
-      $form['panes']['quotes'] = array(
+      $form['panes']['quotes'] = [
         '#type' => 'details',
         '#title' => $this->t('Shipping cost'),
         '#open' => TRUE,
-      );
+      ];
       $form['panes']['quotes'] += $pane->view($order, $form, $form_state);
       $form['panes']['quotes']['quotes']['quote_option']['#required'] = TRUE;
       unset($form['panes']['quotes']['#description']);
@@ -345,31 +345,31 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
 
     // @todo: Replace with "BUSINESS" from PayPal
     if ($this->configuration['ec_review_company']) {
-      $form['delivery_company'] = array(
+      $form['delivery_company'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Company'),
         '#description' => $order->isShippable() ? $this->t('Leave blank if shipping to a residence.') : '',
         '#default_value' => $address->company,
-      );
+      ];
     }
 
     // @todo: Replace with "SHIPTOPHONENUM" from PayPal
     if ($this->configuration['ec_review_phone']) {
-      $form['delivery_phone'] = array(
+      $form['delivery_phone'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Contact phone number'),
         '#default_value' => $address->phone,
         '#size' => 24,
-      );
+      ];
     }
 
     // @todo: Replace with "NOTE" from PayPal
     if ($this->configuration['ec_review_comment']) {
-      $form['order_comments'] = array(
+      $form['order_comments'] = [
         '#type' => 'textarea',
         '#title' => $this->t('Order comments'),
         '#description' => $this->t('Special instructions or notes regarding your order.'),
-      );
+      ];
     }
 
     return $form;

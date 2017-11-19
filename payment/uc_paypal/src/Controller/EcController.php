@@ -96,9 +96,9 @@ class EcController extends ControllerBase {
 
     $order->save();
 
-    $build['instructions'] = array(
+    $build['instructions'] = [
       '#markup' => $this->t("Your order is almost complete! Please fill in the following details and click 'Continue checkout' to finalize the purchase."),
-    );
+    ];
 
     $build['form'] = $this->formBuilder()->getForm('\Drupal\uc_paypal\Form\EcReviewForm', $order);
 

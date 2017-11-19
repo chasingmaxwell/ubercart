@@ -41,43 +41,43 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
     $form = parent::buildConfigurationForm($form, $form_state);
 
-    $form['wps_email'] = array(
+    $form['wps_email'] = [
       '#type' => 'email',
       '#title' => $this->t('PayPal e-mail address'),
       '#description' => $this->t('The e-mail address you use for the PayPal account you want to receive payments.'),
       '#default_value' => $this->configuration['wps_email'],
-    );
-    $form['wpp_server'] = array(
+    ];
+    $form['wpp_server'] = [
       '#type' => 'select',
       '#title' => $this->t('API server'),
       '#description' => $this->t('Sign up for and use a Sandbox account for testing.'),
-      '#options' => array(
+      '#options' => [
         'https://api-3t.sandbox.paypal.com/nvp' => $this->t('Sandbox'),
         'https://api-3t.paypal.com/nvp' => $this->t('Live'),
-      ),
+      ],
       '#default_value' => $this->configuration['wpp_server'],
-    );
-    $form['api'] = array(
+    ];
+    $form['api'] = [
       '#type' => 'details',
       '#title' => $this->t('API credentials'),
       '#description' => $this->t('@link for information on obtaining credentials. You need to acquire an API Signature. If you have already requested API credentials, you can review your settings under the API Access section of your PayPal profile.', ['@link' => Link::fromTextAndUrl($this->t('Click here'), Url::fromUri('https://developer.paypal.com/docs/classic/api/apiCredentials/'))->toString()]),
       '#open' => TRUE,
-    );
-    $form['api']['api_username'] = array(
+    ];
+    $form['api']['api_username'] = [
       '#type' => 'textfield',
       '#title' => $this->t('API username'),
       '#default_value' => $this->configuration['api']['api_username'],
-    );
-    $form['api']['api_password'] = array(
+    ];
+    $form['api']['api_password'] = [
       '#type' => 'textfield',
       '#title' => $this->t('API password'),
       '#default_value' => $this->configuration['api']['api_password'],
-    );
-    $form['api']['api_signature'] = array(
+    ];
+    $form['api']['api_signature'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Signature'),
       '#default_value' => $this->configuration['api']['api_signature'],
-    );
+    ];
 
     return $form;
   }
@@ -99,13 +99,13 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
    */
   protected function chargeCard(OrderInterface $order, $amount, $txn_type, $reference = NULL) {
     if ($txn_type == UC_CREDIT_PRIOR_AUTH_CAPTURE) {
-      $nvp_request = array(
+      $nvp_request = [
         'METHOD' => 'DoCapture',
         'AUTHORIZATIONID' => $reference,
         'AMT' => uc_currency_format($amount, FALSE, FALSE, '.'),
         'CURRENCYCODE' => $order->getCurrency(),
         'COMPLETETYPE' => 'Complete',
-      );
+      ];
     }
     else {
       if (intval($order->payment_details['cc_exp_month']) < 10) {
@@ -122,13 +122,16 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
           case 'american express':
             $cc_type = 'Amex';
             break;
+
           case 'visa':
             $cc_type = 'Visa';
             break;
+
           case 'mastercard':
           case 'master card':
             $cc_type = 'MasterCard';
             break;
+
           case 'discover':
             $cc_type = 'Discover';
             break;
@@ -139,7 +142,7 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
         if ($cc_type === FALSE) {
           drupal_set_message($this->t('The credit card type did not pass validation.'), 'error');
           \Drupal::logger('uc_paypal')->error('Could not figure out cc type: @number / @type', ['@number' => $order->payment_details['cc_number'], '@type' => $order->payment_details['cc_type']]);
-          return array('success' => FALSE);
+          return ['success' => FALSE];
         }
       }
 
@@ -147,7 +150,7 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
       $ip_address = ltrim(\Drupal::request()->getClientIp(), '::ffff:');
 
       $address = $order->getAddress('billing');
-      $nvp_request = array(
+      $nvp_request = [
         'METHOD' => 'DoDirectPayment',
         'PAYMENTACTION' => $txn_type == UC_CREDIT_AUTH_ONLY ? 'Authorization' : 'Sale',
         'IPADDRESS' => $ip_address,
@@ -171,11 +174,11 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
         'NOTIFYURL' => Url::fromRoute('uc_paypal.ipn', [], ['absolute' => TRUE])->toString(),
         'EMAIL' => substr($order->getEmail(), 0, 127),
         'PHONENUM' => substr($address->phone, 0, 20),
-      );
+      ];
 
       if ($order->isShippable()) {
         $address = $order->getAddress('delivery');
-        $nvp_request += array(
+        $nvp_request += [
           'SHIPTONAME' => substr($address->first_name . ' ' . $address->last_name, 0, 25),
           'SHIPTOSTREET' => substr($address->street1, 0, 100),
           'SHIPTOSTREET2' => substr($address->street2, 0, 100),
@@ -183,7 +186,7 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
           'SHIPTOSTATE' => $address->zone,
           'SHIPTOZIP' => $address->postal_code,
           'SHIPTOCOUNTRYCODE' => $address->country,
-        );
+        ];
       }
     }
 
@@ -193,11 +196,11 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
     switch ($nvp_response['ACK']) {
       case 'SuccessWithWarning':
         \Drupal::logger('uc_paypal')->warning('<b>@type succeeded with a warning.</b>@paypal_message',
-          array(
+          [
             '@paypal_message' => $this->buildErrorMessages($nvp_response),
             '@type' => $types[$txn_type],
             'link' => $order->toLink($this->t('view order'))->toString(),
-          )
+          ]
         );
       // Fall through.
       case 'Success':
@@ -206,13 +209,13 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
           $message .= '<br />' . $this->t('<b>Address:</b> @avscode', ['@avscode' => $this->avscodeMessage($nvp_response['AVSCODE'])]);
           $message .= '<br />' . $this->t('<b>CVV2:</b> @cvvmatch', ['@cvvmatch' => $this->cvvmatchMessage($nvp_response['CVV2MATCH'])]);
         }
-        $result = array(
+        $result = [
           'success' => TRUE,
           'comment' => $this->t('PayPal transaction ID: @transactionid', ['@transactionid' => $nvp_response['TRANSACTIONID']]),
           'message' => $message,
           'data' => SafeMarkup::checkPlain($nvp_response['TRANSACTIONID']),
           'uid' => \Drupal::currentUser()->id(),
-        );
+        ];
 
         // If this was an authorization only transaction...
         if ($txn_type == UC_CREDIT_AUTH_ONLY) {
@@ -225,7 +228,7 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
 
         // Log the IPN to the database.
         db_insert('uc_payment_paypal_ipn')
-          ->fields(array(
+          ->fields([
             'order_id' => $order->id(),
             'txn_id' => $nvp_response['TRANSACTIONID'],
             'txn_type' => 'web_accept',
@@ -233,34 +236,36 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
             'status' => 'Completed',
             'payer_email' => $order->getEmail(),
             'received' => REQUEST_TIME,
-          ))
+          ])
           ->execute();
 
         break;
+
       case 'FailureWithWarning':
         // Fall through.
       case 'Failure':
         $message = $this->t('<b>@type failed.</b>', ['@type' => $types[$txn_type]]) . $this->buildErrorMessages($nvp_response);
-        $result = array(
+        $result = [
           'success' => FALSE,
           'message' => $message,
           'uid' => \Drupal::currentUser()->id(),
-        );
+        ];
         break;
+
       default:
         $message = $this->t('Unexpected acknowledgement status: @status', ['@status' => $nvp_response['ACK']]);
-        $result = array(
+        $result = [
           'success' => NULL,
           'message' => $message,
           'uid' => \Drupal::currentUser()->id(),
-        );
+        ];
         break;
     }
 
     uc_order_comment_save($order->id(), \Drupal::currentUser()->id(), $message, 'admin');
 
     // Don't log this as a payment money wasn't actually captured.
-    if (in_array($txn_type, array(UC_CREDIT_AUTH_ONLY))) {
+    if (in_array($txn_type, [UC_CREDIT_AUTH_ONLY])) {
       $result['log_payment'] = FALSE;
     }
 
@@ -311,10 +316,13 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
     switch (substr(strval($cc_number), 0, 1)) {
       case '3':
         return 'Amex';
+
       case '4':
         return 'Visa';
+
       case '5':
         return 'MasterCard';
+
       case '6':
         return 'Discover';
     }
@@ -330,14 +338,19 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
       switch ($code) {
         case '0':
           return $this->t('All the address information matched.');
+
         case '1':
           return $this->t('None of the address information matched; transaction declined.');
+
         case '2':
           return $this->t('Part of the address information matched.');
+
         case '3':
           return $this->t('The merchant did not provide AVS information. Not processed.');
+
         case '4':
           return $this->t('Address not checked, or acquirer had no response. Service not available.');
+
         default:
           return $this->t('No AVS response was obtained.');
       }
@@ -347,32 +360,43 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
       case 'A':
       case 'B':
         return $this->t('Address matched; postal code did not');
+
       case 'C':
       case 'N':
         return $this->t('Nothing matched; transaction declined');
+
       case 'D':
       case 'F':
       case 'X':
       case 'Y':
         return $this->t('Address and postal code matched');
+
       case 'E':
         return $this->t('Not allowed for MOTO transactions; transaction declined');
+
       case 'G':
         return $this->t('Global unavailable');
+
       case 'I':
         return $this->t('International unavailable');
+
       case 'P':
       case 'W':
       case 'Z':
         return $this->t('Postal code matched; address did not');
+
       case 'R':
         return $this->t('Retry for validation');
+
       case 'S':
         return $this->t('Service not supported');
+
       case 'U':
         return $this->t('Unavailable');
+
       case 'Null':
         return $this->t('No AVS response was obtained.');
+
       default:
         return $this->t('An unknown error occurred.');
     }
@@ -386,14 +410,19 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
       switch ($code) {
         case '0':
           return $this->t('Matched');
+
         case '1':
           return $this->t('No match');
+
         case '2':
           return $this->t('The merchant has not implemented CVV2 code handling.');
+
         case '3':
           return $this->t('Merchant has indicated that CVV2 is not present on card.');
+
         case '4':
           return $this->t('Service not available');
+
         default:
           return $this->t('Unkown error');
       }
@@ -402,16 +431,22 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
     switch ($code) {
       case 'M':
         return $this->t('Match');
+
       case 'N':
         return $this->t('No match');
+
       case 'P':
         return $this->t('Not processed');
+
       case 'S':
         return $this->t('Service not supported');
+
       case 'U':
         return $this->t('Service not available');
+
       case 'X':
         return $this->t('No response');
+
       default:
         return $this->t('Not checked');
     }

@@ -91,7 +91,7 @@ class FulfillmentMethod extends ConfigEntityBase implements FulfillmentMethodInt
    *
    * @var array
    */
-  protected $settings = array();
+  protected $settings = [];
 
   /**
    * The package type supported by this plugin.

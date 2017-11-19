@@ -26,46 +26,46 @@ class AddressForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, array $addresses = [], OrderInterface $uc_order = NULL) {
     $form['#attached']['library'][] = 'uc_fulfillment/uc_fulfillment.scripts';
 
-    $form['origin'] = array(
+    $form['origin'] = [
       '#type' => 'fieldset',
       '#title' => t('Origin address'),
       '#weight' => -2,
-    );
+    ];
     $form['origin']['pickup_address_select'] = $this->selectAddress($addresses);
     $form['origin']['pickup_address_select']['#weight'] = -2;
 
-    $form['origin']['pickup_email'] = array(
+    $form['origin']['pickup_email'] = [
       '#type' => 'email',
       '#title' => t('E-mail'),
       '#default_value' => uc_store_email(),
       '#weight' => -1,
-    );
-    $form['origin']['pickup_address'] = array(
+    ];
+    $form['origin']['pickup_address'] = [
       '#type' => 'uc_address',
       '#default_value' => reset($addresses),
       '#required' => FALSE,
-    );
+    ];
 
-    $form['destination'] = array(
+    $form['destination'] = [
       '#type' => 'fieldset',
       '#title' => t('Destination address'),
       '#weight' => -1,
-    );
+    ];
     if ($form_state->hasValue('delivery_country')) {
       $uc_order->delivery_country = $form_state->getValue('delivery_country');
     }
-    $form['destination']['delivery_email'] = array(
+    $form['destination']['delivery_email'] = [
       '#type' => 'email',
       '#title' => t('E-mail'),
       '#default_value' => $uc_order->getEmail(),
       '#weight' => -1,
-    );
-    $form['destination']['delivery_address'] = array(
+    ];
+    $form['destination']['delivery_address'] = [
       '#type' => 'uc_address',
       '#default_value' => $uc_order->getAddress('delivery'),
       '#required' => FALSE,
       '#key_prefix' => 'delivery',
-    );
+    ];
     return $form;
   }
 
@@ -85,7 +85,7 @@ class AddressForm extends FormBase {
       $addresses[] = $ship_from_address;
     }
 
-    $blank = Address::create(array(
+    $blank = Address::create([
       'first_name' => '',
       'last_name' => '',
       'company' => '',
@@ -96,21 +96,21 @@ class AddressForm extends FormBase {
       'country' => '',
       'zone' => '',
       'phone' => '',
-    ));
+    ]);
 
-    $options = array(Json::encode($blank) => t('- Reset fields -'));
+    $options = [Json::encode($blank) => t('- Reset fields -')];
     foreach ($addresses as $address) {
       $options[Json::encode($address)] = $address->getCompany() . ' ' . $address->getStreet1() . ' ' . $address->getCity();
     }
 
-    $select = array(
+    $select = [
       '#type' => 'select',
       '#title' => t('Saved addresses'),
       '#options' => $options,
       '#default_value' => Json::encode($addresses[0]),
-      '#attributes' => array('onchange' => 'apply_address(\'pickup\', this.value);'),
-      //'#attributes' => array('id' => array('uc-fulfillment-select-shipment-address')),
-    );
+      '#attributes' => ['onchange' => 'apply_address(\'pickup\', this.value);'],
+      //'#attributes' => ['id' => ['uc-fulfillment-select-shipment-address']],
+    ];
 
     return $select;
   }

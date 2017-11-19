@@ -21,7 +21,7 @@ class Tracking extends OrderPanePluginBase {
    * {@inheritdoc}
    */
   public function getClasses() {
-    return array('pos-left');
+    return ['pos-left'];
   }
 
   /**
@@ -29,7 +29,7 @@ class Tracking extends OrderPanePluginBase {
    */
   public function view(OrderInterface $uc_order, $view_mode) {
     if ($view_mode == 'customer' || $view_mode == 'view') {
-      $tracking = array();
+      $tracking = [];
       $shipments = Shipment::loadByOrder($uc_order->id());
       foreach ($shipments as $shipment) {
         if ($shipment->getTrackingNumber()) {
@@ -46,18 +46,18 @@ class Tracking extends OrderPanePluginBase {
 
       // Do not show an empty pane to customers.
       if ($view_mode == 'view' || !empty($tracking)) {
-        $build = array();
+        $build = [];
         foreach ($tracking as $title => $list) {
-          $build[$title] = array(
+          $build[$title] = [
             '#theme' => 'item_list',
             '#title' => $title,
             '#items' => $list, // @todo #plain_text ?
-          );
+          ];
         }
         if (empty($tracking)) {
-          $build = array(
+          $build = [
             '#markup' => $this->t('No tracking numbers have been entered.'),
-          );
+          ];
         }
 
         return $build;

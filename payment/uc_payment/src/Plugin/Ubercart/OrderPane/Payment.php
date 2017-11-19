@@ -35,7 +35,7 @@ class Payment extends EditableOrderPanePluginBase {
   public function view(OrderInterface $order, $view_mode) {
     if ($view_mode != 'customer') {
       $build['balance'] = [
-        '#markup' => $this->t('Balance: @balance', ['@balance' => uc_currency_format(uc_payment_balance($order))])
+        '#markup' => $this->t('Balance: @balance', ['@balance' => uc_currency_format(uc_payment_balance($order))]),
       ];
 
       $account = \Drupal::currentUser();
@@ -65,7 +65,7 @@ class Payment extends EditableOrderPanePluginBase {
     else {
       $method = \Drupal::service('plugin.manager.uc_payment.method')->createFromOrder($order);
       $build['method'] = [
-        '#markup' => $this->t('Method: @payment_method', ['@payment_method' => $method->cartReviewTitle()])
+        '#markup' => $this->t('Method: @payment_method', ['@payment_method' => $method->cartReviewTitle()]),
       ];
 
       $method_output = $method->customerView($order);

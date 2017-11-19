@@ -31,43 +31,43 @@ abstract class PayPalPaymentMethodPluginBase extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form['wps_email'] = array(
+    $form['wps_email'] = [
       '#type' => 'email',
       '#title' => $this->t('PayPal e-mail address'),
       '#description' => $this->t('The e-mail address you use for the PayPal account you want to receive payments.'),
       '#default_value' => $this->configuration['wps_email'],
-    );
-    $form['wpp_server'] = array(
+    ];
+    $form['wpp_server'] = [
       '#type' => 'select',
       '#title' => $this->t('API server'),
       '#description' => $this->t('Sign up for and use a Sandbox account for testing.'),
-      '#options' => array(
+      '#options' => [
         'https://api-3t.sandbox.paypal.com/nvp' => $this->t('Sandbox'),
         'https://api-3t.paypal.com/nvp' => $this->t('Live'),
-      ),
+      ],
       '#default_value' => $this->configuration['wpp_server'],
-    );
-    $form['api'] = array(
+    ];
+    $form['api'] = [
       '#type' => 'details',
       '#title' => $this->t('API credentials'),
       '#description' => $this->t('@link for information on obtaining credentials. You need to acquire an API Signature. If you have already requested API credentials, you can review your settings under the API Access section of your PayPal profile.', ['@link' => Link::fromTextAndUrl($this->t('Click here'), Url::fromUri('https://developer.paypal.com/docs/classic/api/apiCredentials/'))->toString()]),
       '#open' => TRUE,
-    );
-    $form['api']['api_username'] = array(
+    ];
+    $form['api']['api_username'] = [
       '#type' => 'textfield',
       '#title' => $this->t('API username'),
       '#default_value' => $this->configuration['api']['api_username'],
-    );
-    $form['api']['api_password'] = array(
+    ];
+    $form['api']['api_password'] = [
       '#type' => 'textfield',
       '#title' => $this->t('API password'),
       '#default_value' => $this->configuration['api']['api_password'],
-    );
-    $form['api']['api_signature'] = array(
+    ];
+    $form['api']['api_signature'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Signature'),
       '#default_value' => $this->configuration['api']['api_signature'],
-    );
+    ];
 
     return $form;
   }

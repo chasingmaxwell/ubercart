@@ -38,28 +38,28 @@ class PayPalPaymentsStandard extends PayPalPaymentMethodPluginBase implements Of
    * {@inheritdoc}
    */
   public function getDisplayLabel($label) {
-    $build['paypal-mark'] = array(
+    $build['paypal-mark'] = [
       '#theme' => 'image',
       '#uri' => 'https://www.paypal.com/en_US/i/logo/PayPal_mark_37x23.gif',
       '#alt' => $this->t('PayPal'),
-      '#attributes' => array('class' => array('uc-credit-cctype', 'uc-credit-cctype-paypal')),
-    );
-    $build['label'] = array(
+      '#attributes' => ['class' => ['uc-credit-cctype', 'uc-credit-cctype-paypal']],
+    ];
+    $build['label'] = [
       '#prefix' => ' ',
       '#plain_text' => $this->t('PayPal - pay without sharing your financial information.'),
       '#suffix' => '<br /> ',
-    );
-    $build['includes'] = array(
+    ];
+    $build['includes'] = [
       '#plain_text' => $this->t('Includes:') . ' ',
-    );
+    ];
     $cc_types = $this->getEnabledTypes();
     foreach ($cc_types as $type => $description) {
-      $build['image'][$type] = array(
+      $build['image'][$type] = [
         '#theme' => 'image',
         '#uri' => drupal_get_path('module', 'uc_credit') . '/images/' . $type . '.gif',
         '#alt' => $description,
-        '#attributes' => array('class' => array('uc-credit-cctype', 'uc-credit-cctype-' . $type)),
-      );
+        '#attributes' => ['class' => ['uc-credit-cctype', 'uc-credit-cctype-' . $type]],
+      ];
     }
     $build['image']['paypal'] = $build['paypal-mark'];
 
@@ -87,78 +87,78 @@ class PayPalPaymentsStandard extends PayPalPaymentMethodPluginBase implements Of
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form['wps_email'] = array(
+    $form['wps_email'] = [
       '#type' => 'email',
       '#title' => $this->t('PayPal e-mail address'),
       '#description' => $this->t('The e-mail address you use for the PayPal account you want to receive payments.'),
       '#default_value' => $this->configuration['wps_email'],
-    );
-    $languages = array('AU', 'DE', 'FR', 'IT', 'GB', 'ES', 'US');
-    $form['wps_language'] = array(
+    ];
+    $languages = ['AU', 'DE', 'FR', 'IT', 'GB', 'ES', 'US'];
+    $form['wps_language'] = [
       '#type' => 'select',
       '#title' => $this->t('PayPal login page language'),
       '#options' => array_combine($languages, $languages),
       '#default_value' => $this->configuration['wps_language'],
-    );
-    $form['wps_server'] = array(
+    ];
+    $form['wps_server'] = [
       '#type' => 'select',
       '#title' => $this->t('PayPal server'),
       '#description' => $this->t('Sign up for and use a Sandbox account for testing.'),
-      '#options' => array(
+      '#options' => [
         'https://www.sandbox.paypal.com/cgi-bin/webscr' => ('Sandbox'),
         'https://www.paypal.com/cgi-bin/webscr' => ('Live'),
-      ),
+      ],
       '#default_value' => $this->configuration['wps_server'],
-    );
-    $form['wps_payment_action'] = array(
+    ];
+    $form['wps_payment_action'] = [
       '#type' => 'select',
       '#title' => $this->t('Payment action'),
       '#description' => $this->t('"Complete sale" will authorize and capture the funds at the time the payment is processed.<br />"Authorization" will only reserve funds on the card to be captured later through your PayPal account.'),
-      '#options' => array(
+      '#options' => [
         'Sale' => $this->t('Complete sale'),
         'Authorization' => $this->t('Authorization'),
-      ),
+      ],
       '#default_value' => $this->configuration['wps_payment_action'],
-    );
-    $form['wps_submit_method'] = array(
+    ];
+    $form['wps_submit_method'] = [
       '#type' => 'radios',
       '#title' => $this->t('PayPal cart submission method'),
-      '#options' => array(
+      '#options' => [
         'single' => $this->t('Submit the whole order as a single line item.'),
         'itemized' => $this->t('Submit an itemized order showing each product and description.'),
-      ),
+      ],
       '#default_value' => $this->configuration['wps_submit_method'],
-    );
-    $form['wps_no_shipping'] = array(
+    ];
+    $form['wps_no_shipping'] = [
       '#type' => 'radios',
       '#title' => $this->t('Shipping address prompt in PayPal'),
-      '#options' => array(
+      '#options' => [
         '1' => $this->t('Do not show shipping address prompt at PayPal.'),
         '0' => $this->t('Prompt customer to include a shipping address.'),
         '2' => $this->t('Require customer to provide a shipping address.'),
-      ),
+      ],
       '#default_value' => $this->configuration['wps_no_shipping'],
-    );
-    $form['wps_address_override'] = array(
+    ];
+    $form['wps_address_override'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Submit address information to PayPal to override PayPal stored addresses.'),
       '#description' => $this->t('Works best with the first option above.'),
       '#default_value' => $this->configuration['wps_address_override'],
-    );
-    $form['wps_address_selection'] = array(
+    ];
+    $form['wps_address_selection'] = [
       '#type' => 'radios',
       '#title' => $this->t('Sent address selection'),
-      '#options' => array(
+      '#options' => [
         'billing' => $this->t('Send billing address to PayPal.'),
         'delivery' => $this->t('Send shipping address to PayPal.'),
-      ),
+      ],
       '#default_value' => $this->configuration['wps_address_selection'],
-    );
-    $form['wps_debug_ipn'] = array(
+    ];
+    $form['wps_debug_ipn'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Show debug info in the logs for Instant Payment Notifications.'),
       '#default_value' => $this->configuration['wps_debug_ipn'],
-    );
+    ];
 
     return $form;
   }
@@ -237,7 +237,7 @@ class PayPalPaymentsStandard extends PayPalPaymentMethodPluginBase implements Of
       $phone_a = $phone_b = $phone_c = '';
     }
 
-    $data = array(
+    $data = [
       // PayPal command variable.
       'cmd' => '_cart',
 
@@ -279,7 +279,7 @@ class PayPalPaymentsStandard extends PayPalPaymentMethodPluginBase implements Of
       'night_phone_a' => $phone_a,
       'night_phone_b' => $phone_b,
       'night_phone_c' => $phone_c,
-    );
+    ];
 
     if ($this->configuration['wps_address_override']) {
       $data['address_override'] = 1;
@@ -336,15 +336,15 @@ class PayPalPaymentsStandard extends PayPalPaymentMethodPluginBase implements Of
 
     foreach ($data as $name => $value) {
       if (!empty($value)) {
-        $form[$name] = array('#type' => 'hidden', '#value' => $value);
+        $form[$name] = ['#type' => 'hidden', '#value' => $value];
       }
     }
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Submit order'),
-    );
+    ];
 
     return $form;
   }

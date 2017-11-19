@@ -9,44 +9,44 @@
  * Implements hook_schema().
  */
 function uc_usps_schema() {
-  $schema = array();
+  $schema = [];
 
-  $schema['uc_usps_products'] = array(
+  $schema['uc_usps_products'] = [
     'description' => 'Stores product information for USPS shipping quotes.',
-    'fields' => array(
-      'vid' => array(
+    'fields' => [
+      'vid' => [
         'description' => 'The {uc_products}.vid.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'nid' => array(
+      ],
+      'nid' => [
         'description' => 'The {uc_products}.nid.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'container' => array(
+      ],
+      'container' => [
         'description' => 'The package type in which the product will be shipped.',
         'type' => 'varchar',
         'length' => '255',
         'not null' => TRUE,
         'default' => '',
-      ),
-    ),
-    'primary key' => array('vid'),
-    'foreign keys' => array(
-      'uc_products' => array(
+      ],
+    ],
+    'primary key' => ['vid'],
+    'foreign keys' => [
+      'uc_products' => [
         'table' => 'uc_products',
-        'columns' => array(
+        'columns' => [
           'nid' => 'nid',
           'vid' => 'vid',
-        ),
-      ),
-    ),
-  );
+        ],
+      ],
+    ],
+  ];
 
   return $schema;
 }

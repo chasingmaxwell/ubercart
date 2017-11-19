@@ -180,26 +180,37 @@ class PayPalController extends ControllerBase {
     switch ($reason) {
       case 'address':
         return $this->t('The payment is pending because your customer did not include a confirmed shipping address and your Payment Receiving Preferences is set to allow you to manually accept or deny each of these payments.');
+
       case 'authorization':
         return $this->t('The payment is pending because you set the payment action to Authorization and have not yet captured funds.');
+
       case 'echeck':
         return $this->t('The payment is pending because it was made by an eCheck that has not yet cleared.');
+
       case 'intl':
         return $this->t('The payment is pending because you hold a non-U.S. account and do not have a withdrawal mechanism. You must manually accept or deny this international payment from your Account Overview.');
+
       case 'multi_currency':
         return $this->t('The payment is pending because you do not have a balance in the currency sent, and you do not have your Payment Receiving Preferences set to automatically convert and accept this payment. You must manually accept or deny a payment of this currency from your Account Overview.');
+
       case 'order':
         return $this->t('The payment is pending because you set the payment action to Order and have not yet captured funds.');
+
       case 'paymentreview':
         return $this->t('The payment is pending while it is being reviewed by PayPal for risk.');
+
       case 'unilateral':
         return $this->t('The payment is pending because it was made to an e-mail address that is not yet registered or confirmed.');
+
       case 'upgrade':
         return $this->t('The payment is pending because it was either made via credit card and you do not have a Business or Premier account or you have reached the monthly limit for transactions on your account.');
+
       case 'verify':
         return $this->t('The payment is pending because you are not yet a verified PayPal member. Please verify your account.');
+
       case 'other':
         return $this->t('The payment is pending for a reason other than those listed above. For more information, contact PayPal Customer Service.');
+
       default:
         return $this->t('Reason "@reason" unknown; contact PayPal Customer Service for more information.', ['@reason' => $reason]);
     }
@@ -212,12 +223,16 @@ class PayPalController extends ControllerBase {
     switch ($reason) {
       case 'chargeback':
         return $this->t('The customer has initiated a chargeback.');
+
       case 'guarantee':
         return $this->t('The customer triggered a money-back guarantee.');
+
       case 'buyer-complaint':
         return $this->t('The customer filed a complaint about the transaction.');
+
       case 'refund':
         return $this->t('You gave the customer a refund.');
+
       default:
         return $this->t('Reason "@reason" unknown; contact PayPal Customer Service for more information.', ['@reason' => $reason]);
     }
