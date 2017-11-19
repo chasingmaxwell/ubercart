@@ -37,7 +37,6 @@ class TwoCheckoutController extends ControllerBase {
    * {@inheritdoc}
    */
   public static function create(ContainerInterface $container) {
-    // @todo: Also need to inject logger
     return new static(
       $container->get('uc_cart.manager')
     );
@@ -52,7 +51,7 @@ class TwoCheckoutController extends ControllerBase {
    *   The request of the page.
    */
   public function complete($cart_id = 0, Request $request) {
-    \Drupal::logger('uc_2checkout')->notice('Receiving new order notification for order @order_id.', ['@order_id' => SafeMarkup::checkPlain($request->request->get('merchant_order_id'))]);
+    $this->getLogger('uc_2checkout')->notice('Receiving new order notification for order @order_id.', ['@order_id' => SafeMarkup::checkPlain($request->request->get('merchant_order_id'))]);
 
     $order = Order::load($request->request->get('merchant_order_id'));
 
@@ -75,12 +74,12 @@ class TwoCheckoutController extends ControllerBase {
     }
 
     if ($request->request->get('demo') == 'Y' xor $configuration['demo']) {
-      \Drupal::logger('uc_2checkout')->error('The 2Checkout payment for order <a href=":order_url">@order_id</a> demo flag was set to %flag, but the module is set to %mode mode.', array(
+      $this->getLogger('uc_2checkout')->error('The 2Checkout payment for order <a href=":order_url">@order_id</a> demo flag was set to %flag, but the module is set to %mode mode.', [
         ':order_url' => $order->toUrl()->toString(),
         '@order_id' => $order->id(),
         '%flag' => $request->request->get('demo') == 'Y' ? 'Y' : 'N',
         '%mode' => $configuration['demo'] ? 'Y' : 'N',
-      ));
+      ]);
 
       if (!$configuration['demo']) {
         throw new AccessDeniedHttpException();
@@ -125,7 +124,7 @@ class TwoCheckoutController extends ControllerBase {
    */
   public function notification(Request $request) {
     $values = $request->request;
-    \Drupal::logger('uc_2checkout')->notice('Received 2Checkout notification with following data: @data', ['@data' => print_r($values->all(), TRUE)]);
+    $this->getLogger('uc_2checkout')->notice('Received 2Checkout notification with following data: @data', ['@data' => print_r($values->all(), TRUE)]);
 
     if ($values->has('message_type') && $values->has('md5_hash') && $values->has('message_id')) {
       $order_id = $values->get('vendor_order_id');
@@ -141,15 +140,15 @@ class TwoCheckoutController extends ControllerBase {
       $hash = strtoupper(md5($twocheckout_order_id . $sid . $twocheckout_invoice_id . $secret_word));
 
       if ($hash != $values->get('md5_hash')) {
-        \Drupal::logger('uc_2checkout')->notice('2Checkout notification #@num had a wrong hash.', ['@num' => $values->get('message_id')]);
+        $this->getLogger('uc_2checkout')->notice('2Checkout notification #@num had a wrong hash.', ['@num' => $values->get('message_id')]);
         die('Hash Incorrect');
       }
 
       if ($values->get('message_type') == 'FRAUD_STATUS_CHANGED') {
         switch ($values->get('fraud_status')) {
-// @todo: I think this still needs a lot of work, I don't see anywhere that it
-// validates the INS against an order in the DB then changes order status if the
-// payment was successful, like PayPal IPN does ...
+          // @todo: I think this still needs a lot of work, I don't see anywhere that it
+          // validates the INS against an order in the DB then changes order status if the
+          // payment was successful, like PayPal IPN does ...
           case 'pass':
             break;
 
@@ -161,7 +160,6 @@ class TwoCheckoutController extends ControllerBase {
             $order->setStatusId('canceled')->save();
             uc_order_comment_save($order_id, 0, $this->t('Order have not passed 2Checkout fraud review.'));
             die('fraud');
-            break;
         }
       }
       elseif ($values->get('message_type') == 'REFUND_ISSUED') {
