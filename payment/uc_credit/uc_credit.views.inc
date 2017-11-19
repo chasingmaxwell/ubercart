@@ -9,25 +9,25 @@
  * Implements hook_views_data().
  */
 function uc_credit_views_data() {
-  $data['uc_orders']['cc_type'] = array(
+  $data['uc_orders']['cc_type'] = [
     'title' => t('Credit card type'),
     'help' => t('Credit card type used, if the payment method was credit.'),
     'real field' => 'data',
-    'field' => array(
+    'field' => [
       'id' => 'uc_credit_data',
       'cc field' => 'cc_type',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_orders']['cc_number'] = array(
+  $data['uc_orders']['cc_number'] = [
     'title' => t('Credit card number'),
     'help' => t('Credit card number (last 4) used, if the payment method was credit.'),
     'real field' => 'data',
-    'field' => array(
+    'field' => [
       'id' => 'uc_credit_data',
       'cc field' => 'cc_number',
-    ),
-  );
+    ],
+  ];
 
   return $data;
 }

@@ -54,13 +54,13 @@ function uc_credit_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_theme().
  */
 function uc_credit_theme() {
-  return array(
-    'uc_credit_cvv_help' => array(
-      'variables' => array('method' => ''),
+  return [
+    'uc_credit_cvv_help' => [
+      'variables' => ['method' => ''],
       'file' => 'uc_credit.theme.inc',
       'function' => 'theme_uc_credit_cvv_help',
-    ),
-  );
+    ],
+  ];
 }
 
 /**
@@ -70,18 +70,18 @@ function uc_credit_form_uc_cart_checkout_review_form_alter(&$form, FormStateInte
   // Encrypted data in the session is from the user coming from the checkout.
   $session = \Drupal::service('session');
   if ($session->has('sescrd')) {
-    $form['sescrd'] = array(
+    $form['sescrd'] = [
       '#type' => 'hidden',
       '#value' => base64_encode($session->get('sescrd')),
-    );
+    ];
     $session->remove('sescrd');
   }
   elseif (isset($_POST['sescrd'])) {
     // Copy and cache encrypted data that was POSTed in.
-    $form['sescrd'] = array(
+    $form['sescrd'] = [
       '#type' => 'hidden',
       '#value' => $_POST['sescrd'],
-    );
+    ];
     uc_credit_cache(base64_decode($_POST['sescrd']));
   }
 
@@ -104,18 +104,18 @@ function uc_credit_cart_review_back_submit($form, FormStateInterface $form_state
 function uc_credit_uc_store_status() {
   // Throw up an error row if encryption has not been set up yet.
   if ($key = uc_credit_encryption_key()) {
-    $statuses[] = array(
+    $statuses[] = [
       'status' => 'ok',
       'title' => t('Credit card encryption'),
       'desc' => t('Credit card data is encrypted during checkout for maximum security.'),
-    );
+    ];
   }
   else {
-    $statuses[] = array(
+    $statuses[] = [
       'status' => 'error',
       'title' => t('Credit card encryption'),
       'desc' => t('You must review your <a href=":url">credit card security settings</a> and enable encryption before you can accept credit card payments.', [':url' => Url::fromRoute('uc_credit.settings')->toString()]),
-    );
+    ];
   }
 
   return $statuses;
@@ -134,7 +134,7 @@ function uc_credit_uc_store_status() {
  */
 function uc_credit_cache($data = NULL, $encrypted = TRUE) {
   // The CC data will be stored in this static variable.
-  $cache = &drupal_static(__FUNCTION__, array());
+  $cache = &drupal_static(__FUNCTION__, []);
 
   if ($data) {
     if ($encrypted) {
@@ -179,12 +179,12 @@ function uc_credit_encryption_key() {
  * Returns an array of default credit card transaction types.
  */
 function uc_credit_transaction_types() {
-  $types = array(
+  $types = [
     UC_CREDIT_AUTH_ONLY => t('Authorization only'),
     UC_CREDIT_PRIOR_AUTH_CAPTURE => t('Prior authorization capture'),
     UC_CREDIT_AUTH_CAPTURE => t('Authorize and capture immediately'),
     UC_CREDIT_REFERENCE_TXN => t('Reference transaction'),
-  );
+  ];
 
   return $types;
 }
@@ -208,14 +208,14 @@ function uc_credit_log_authorization($order_id, $auth_id, $amount) {
   $data = unserialize($data);
 
   // Add the authorization to the cc_txns.
-  $data['cc_txns']['authorizations'][$auth_id] = array(
+  $data['cc_txns']['authorizations'][$auth_id] = [
     'amount' => $amount,
     'authorized' => REQUEST_TIME,
-  );
+  ];
 
   // Save the updated data array to the database.
   db_update('uc_orders')
-    ->fields(array('data' => serialize($data)))
+    ->fields(['data' => serialize($data)])
     ->condition('order_id', $order_id)
     ->execute();
 
@@ -249,7 +249,7 @@ function uc_credit_log_prior_auth_capture($order_id, $auth_id) {
 
   // Save the updated data array to the database.
   db_update('uc_orders')
-    ->fields(array('data' => serialize($data)))
+    ->fields(['data' => serialize($data)])
     ->condition('order_id', $order_id)
     ->execute();
 
@@ -276,14 +276,14 @@ function uc_credit_log_reference($order_id, $ref_id, $cc_number) {
   $data = db_query("SELECT data FROM {uc_orders} WHERE order_id = :id", [':id' => $order_id])->fetchField();
   $data = unserialize($data);
 
-  $data['cc_txns']['references'][$ref_id] = array(
+  $data['cc_txns']['references'][$ref_id] = [
     'card' => substr($cc_number, -4),
     'created' => REQUEST_TIME,
-  );
+  ];
 
   // Save the updated data array to the database.
   db_update('uc_orders')
-    ->fields(array('data' => serialize($data)))
+    ->fields(['data' => serialize($data)])
     ->condition('order_id', $order_id)
     ->execute();
 

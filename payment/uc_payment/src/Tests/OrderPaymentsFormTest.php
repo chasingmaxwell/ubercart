@@ -62,11 +62,11 @@ class OrderPaymentsFormTest extends UbercartTestBase {
 
     // Add a partial payment.
     $first_payment = round($order->getTotal() / 4.0, $this->precision);
-    $edit = array(
+    $edit = [
       'amount' => $first_payment,
       'method' => 'check',
       'comment' => 'Test <b>markup</b> in comments.',
-    );
+    ];
     $this->drupalPostForm(
       'admin/store/orders/' . $order->id() . '/payments',
       $edit,
@@ -90,11 +90,11 @@ class OrderPaymentsFormTest extends UbercartTestBase {
     );
     // Add another partial payment.
     $second_payment = round($order->getTotal() / 2.0, $this->precision);
-    $edit = array(
+    $edit = [
       'amount' => $second_payment,
       'method' => 'check',
       'comment' => 'Test <em>markup</em> in comments.',
-    );
+    ];
     $this->drupalPostForm(
       'admin/store/orders/' . $order->id() . '/payments',
       $edit,

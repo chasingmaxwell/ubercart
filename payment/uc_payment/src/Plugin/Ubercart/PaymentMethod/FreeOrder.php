@@ -21,9 +21,9 @@ class FreeOrder extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function cartDetails(OrderInterface $order, array $form, FormStateInterface $form_state) {
-    return array(
+    return [
       '#markup' => $this->t('Continue with checkout to complete your order.'),
-    );
+    ];
   }
 
   /**

@@ -20,7 +20,7 @@ class PaymentMethodController extends ControllerBase {
    *   The payment method instance edit form.
    */
   public function addForm($plugin_id) {
-    $entity = $this->entityTypeManager()->getStorage('uc_payment_method')->create(array('plugin' => $plugin_id));
+    $entity = $this->entityTypeManager()->getStorage('uc_payment_method')->create(['plugin' => $plugin_id]);
 
     return $this->entityFormBuilder()->getForm($entity);
   }

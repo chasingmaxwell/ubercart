@@ -25,12 +25,12 @@ use Drupal\uc_payment\PaymentReceiptInterface;
  * Implements hook_theme().
  */
 function uc_payment_theme() {
-  return array(
-    'uc_payment_totals' => array(
-      'variables' => array('order' => NULL),
+  return [
+    'uc_payment_totals' => [
+      'variables' => ['order' => NULL],
       'template' => 'uc-payment-totals',
-    ),
-  );
+    ],
+  ];
 }
 
 /**
@@ -166,8 +166,8 @@ function uc_payment_uc_payment_receipt_insert(PaymentReceiptInterface $payment) 
 
   // Log a message against the order.
   $method_name = $payment->getMethod() ? $payment->getMethod()->cartReviewTitle() : t('Other');
-  $log_message = t('@method payment for @amount entered.', array('@method' => $method_name, '@amount' => uc_currency_format($payment->getAmount())));
-  $order->logChanges(array($log_message));
+  $log_message = t('@method payment for @amount entered.', ['@method' => $method_name, '@amount' => uc_currency_format($payment->getAmount())]);
+  $order->logChanges([$log_message]);
 
   // Automatically mark paid orders as "payment received".
   // @todo Remove when Rules is available.
@@ -187,8 +187,8 @@ function uc_payment_uc_payment_receipt_delete(PaymentReceiptInterface $payment) 
 
   // Log a message against the order.
   $method_name = $payment->getMethod() ? $payment->getMethod()->cartReviewTitle() : t('Other');
-  $log_message = t('@method payment for @amount deleted.', array('@method' => $method_name, '@amount' => uc_currency_format($payment->getAmount())));
-  $order->logChanges(array($log_message));
+  $log_message = t('@method payment for @amount deleted.', ['@method' => $method_name, '@amount' => uc_currency_format($payment->getAmount())]);
+  $order->logChanges([$log_message]);
 }
 
 /**

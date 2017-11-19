@@ -64,11 +64,11 @@ class PaymentMethodPane extends CheckoutPanePluginBase implements ContainerFacto
     $contents['#attached']['library'][] = 'uc_payment/uc_payment.styles';
 
     if ($this->configuration['show_preview']) {
-      $contents['line_items'] = array(
+      $contents['line_items'] = [
         '#theme' => 'uc_payment_totals',
         '#order' => $order,
         '#weight' => -20,
-      );
+      ];
     }
 
     // Ensure that the form builder uses #default_value to determine which
@@ -79,7 +79,7 @@ class PaymentMethodPane extends CheckoutPanePluginBase implements ContainerFacto
     unset($input['panes']['payment']['payment_method']);
     $form_state->setUserInput($input);
 
-    $options = array();
+    $options = [];
     $methods = PaymentMethod::loadMultiple();
     uasort($methods, 'Drupal\uc_payment\Entity\PaymentMethod::sort');
     foreach ($methods as $method) {
@@ -107,7 +107,7 @@ class PaymentMethodPane extends CheckoutPanePluginBase implements ContainerFacto
       $order->setPaymentMethodId(key($options));
     }
 
-    $contents['payment_method'] = array(
+    $contents['payment_method'] = [
       '#type' => 'radios',
       '#title' => $this->t('Payment method'),
       '#title_display' => 'invisible',
@@ -115,24 +115,24 @@ class PaymentMethodPane extends CheckoutPanePluginBase implements ContainerFacto
       '#default_value' => $order->getPaymentMethodId(),
       '#disabled' => count($options) == 1,
       '#required' => TRUE,
-      '#ajax' => array(
-        'callback' => array($this, 'ajaxRender'),
+      '#ajax' => [
+        'callback' => [$this, 'ajaxRender'],
         'wrapper' => 'payment-details',
-        'progress' => array(
+        'progress' => [
           'type' => 'throbber',
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
 
     // If there are no payment methods available, this will be ''.
     if ($order->getPaymentMethodId()) {
       $plugin = $this->paymentMethodManager->createFromOrder($order);
       $definition = $plugin->getPluginDefinition();
-      $contents['details'] = array(
+      $contents['details'] = [
         '#prefix' => '<div id="payment-details" class="clearfix ' . Html::cleanCssIdentifier('payment-details-' . $definition['id']) . '">',
         '#markup' => $this->t('Continue with checkout to complete payment.'),
         '#suffix' => '</div>',
-      );
+      ];
 
       try {
         $details = $plugin->cartDetails($order, $form, $form_state);
@@ -167,10 +167,10 @@ class PaymentMethodPane extends CheckoutPanePluginBase implements ContainerFacto
   public function review(OrderInterface $order) {
     $line_items = $order->getDisplayLineItems();
     foreach ($line_items as $line_item) {
-      $review[] = array('title' => $line_item['title'], 'data' => uc_currency_format($line_item['amount']));
+      $review[] = ['title' => $line_item['title'], 'data' => uc_currency_format($line_item['amount'])];
     }
     $method = $this->paymentMethodManager->createFromOrder($order);
-    $review[] = array('border' => 'top', 'title' => $this->t('Paying by'), 'data' => $method->cartReviewTitle());
+    $review[] = ['border' => 'top', 'title' => $this->t('Paying by'), 'data' => $method->cartReviewTitle()];
     $result = $method->cartReview($order);
     if (is_array($result)) {
       $review = array_merge($review, $result);
@@ -182,11 +182,11 @@ class PaymentMethodPane extends CheckoutPanePluginBase implements ContainerFacto
    * {@inheritdoc}
    */
   public function settingsForm() {
-    $form['show_preview'] = array(
+    $form['show_preview'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Show the order total preview on the payment pane.'),
       '#default_value' => $this->configuration['show_preview'],
-    );
+    ];
     return $form;
   }
 
@@ -194,9 +194,7 @@ class PaymentMethodPane extends CheckoutPanePluginBase implements ContainerFacto
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
-      'show_preview' => TRUE,
-    );
+    return ['show_preview' => TRUE];
   }
 
   /**

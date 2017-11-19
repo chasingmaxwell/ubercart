@@ -47,9 +47,9 @@ class PaymentMethodDeleteConfirm extends EntityDeleteForm {
       ->count()
       ->execute();
     if ($num_nodes) {
-      $caption = '<p>' . $this->formatPlural($num_nodes, '%type is used by 1 order on your site. You cannot remove %type until you have removed all of the %type orders.', '%type is used by @count orders on your site. You cannot remove %type until you have removed all of the %type orders.', array('%type' => $this->entity->label())) . '</p>';
+      $caption = '<p>' . $this->formatPlural($num_nodes, '%type is used by 1 order on your site. You cannot remove %type until you have removed all of the %type orders.', '%type is used by @count orders on your site. You cannot remove %type until you have removed all of the %type orders.', ['%type' => $this->entity->label()]) . '</p>';
       $form['#title'] = $this->getQuestion();
-      $form['description'] = array('#markup' => $caption);
+      $form['description'] = ['#markup' => $caption];
       return $form;
     }
 

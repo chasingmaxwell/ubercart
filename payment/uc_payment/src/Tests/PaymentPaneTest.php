@@ -50,16 +50,16 @@ class PaymentPaneTest extends UbercartTestBase {
    * Tests operation of uc_payment_show_order_total_preview variable.
    */
   public function testOrderTotalPreview() {
-    $edit = array(
+    $edit = [
       'panes[payment][settings][show_preview]' => TRUE,
-    );
+    ];
     $this->drupalPostForm('admin/store/config/checkout', $edit, 'Save configuration');
     $this->drupalGet('cart/checkout');
     $this->assertText('Order total:');
 
-    $edit = array(
+    $edit = [
       'panes[payment][settings][show_preview]' => FALSE,
-    );
+    ];
     $this->drupalPostForm('admin/store/config/checkout', $edit, 'Save configuration');
     $this->drupalGet('cart/checkout');
     $this->assertNoText('Order total:');
@@ -69,7 +69,7 @@ class PaymentPaneTest extends UbercartTestBase {
    * Tests free orders.
    */
   public function testFreeOrders() {
-    $free_product = $this->createProduct(array('price' => 0));
+    $free_product = $this->createProduct(['price' => 0]);
     $check = $this->createPaymentMethod('check');
 
     // Check that paid products cannot be purchased for free.
