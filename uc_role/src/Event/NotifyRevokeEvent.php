@@ -6,7 +6,7 @@ use Drupal\Core\Session\AccountInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Event that is fired when a user roles is revoked.
+ * Event that is fired when a user role is revoked.
  */
 class NotifyRevokeEvent extends Event {
 
@@ -36,7 +36,7 @@ class NotifyRevokeEvent extends Event {
    *   The expiration.
    */
   public function __construct(AccountInterface $account, array $expiration) {
-    $this->order = $account;
+    $this->account = $account;
     $this->expiration = $expiration;
   }
 

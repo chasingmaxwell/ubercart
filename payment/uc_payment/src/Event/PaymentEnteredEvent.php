@@ -30,13 +30,13 @@ class PaymentEnteredEvent extends Event {
   /**
    * Constructs the object.
    *
-   * @param \Drupal\uc_order\OrderInterface $uc_order
+   * @param \Drupal\uc_order\OrderInterface $order
    *   The order object.
    * @param \Drupal\Core\Session\AccountInterface $account
    *   The user account.
    */
-  public function __construct(OrderInterface $uc_order, AccountInterface $account) {
-    $this->order = $uc_order;
+  public function __construct(OrderInterface $order, AccountInterface $account) {
+    $this->order = $order;
     $this->account = $account;
   }
 

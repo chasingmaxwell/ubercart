@@ -5,7 +5,7 @@
 
 uc_role_notify_grant:
   label: 'E-mail for granted roles'
-  category: 'Role'
+  category: 'Notification'
   context:
     order:
       type: 'entity:uc_order'
@@ -16,7 +16,7 @@ uc_role_notify_grant:
 
 uc_role_notify_revoke:
   label: 'E-mail for revoked roles'
-  category: 'Role'
+  category: 'Notification'
   context:
     account:
       type: 'entity:user'
@@ -27,7 +27,7 @@ uc_role_notify_revoke:
 
 uc_role_notify_renew:
   label: 'E-mail for renewed roles'
-  category: 'Role'
+  category: 'Notification'
   context:
     order:
       type: 'entity:uc_order'
@@ -38,7 +38,7 @@ uc_role_notify_renew:
 
 uc_role_notify_reminder:
   label: 'E-mail for role expiration reminders'
-  category: 'Role'
+  category: 'Notification'
   context:
     account:
       type: 'entity:user'

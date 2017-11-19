@@ -6,7 +6,7 @@ use Drupal\uc_order\OrderInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Event that is fired when a user starts checkout.
+ * Event that is fired when a customer reviews their order in checkout.
  */
 class CheckoutReviewOrderEvent extends Event {
 
@@ -22,11 +22,11 @@ class CheckoutReviewOrderEvent extends Event {
   /**
    * Constructs the object.
    *
-   * @param \Drupal\uc_order\OrderInterface $uc_order
+   * @param \Drupal\uc_order\OrderInterface $order
    *   The order object.
    */
-  public function __construct(OrderInterface $uc_order) {
-    $this->order = $uc_order;
+  public function __construct(OrderInterface $order) {
+    $this->order = $order;
   }
 
 }

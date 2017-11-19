@@ -1,4 +1,4 @@
-uc_shipment_save:
+uc_fulfillment_shipment_save:
   label: 'A shipment is saved'
   category: 'Fulfillment'
   context:

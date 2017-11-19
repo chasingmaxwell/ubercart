@@ -17,7 +17,7 @@ class OrderStatusUpdateEvent extends Event {
    *
    * @var \Drupal\uc_order\OrderInterface
    */
-  public $originalOrder;
+  public $original_order;
 
   /**
    * The new order.
@@ -29,13 +29,13 @@ class OrderStatusUpdateEvent extends Event {
   /**
    * Constructs the object.
    *
-   * @param \Drupal\uc_order\OrderInterface $originalOrder
-   *   The order object.
+   * @param \Drupal\uc_order\OrderInterface $original_order
+   *   The original order object.
    * @param \Drupal\uc_order\OrderInterface $order
-   *   The order object.
+   *   The new order object.
    */
-  public function __construct(OrderInterface $originalOrder, OrderInterface $order) {
-    $this->originalOrder = $originalOrder;
+  public function __construct(OrderInterface $original_order, OrderInterface $order) {
+    $this->original_order = $original_order;
     $this->order = $order;
   }
 

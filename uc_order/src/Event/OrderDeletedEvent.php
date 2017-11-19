@@ -1,16 +1,16 @@
 <?php
 
-namespace Drupal\uc_cart\Event;
+namespace Drupal\uc_order\Event;
 
 use Drupal\uc_order\OrderInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
- * Event that is fired when a customer starts checkout.
+ * Event that is fired when an order is being deleted.
  */
-class CheckoutStartEvent extends Event {
+class OrderDeletedEvent extends Event {
 
-  const EVENT_NAME = 'uc_cart_checkout_start';
+  const EVENT_NAME = 'uc_order_delete';
 
   /**
    * The order.

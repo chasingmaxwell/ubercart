@@ -29,13 +29,13 @@ class NotifyGrantEvent extends Event {
   /**
    * Constructs the object.
    *
-   * @param \Drupal\uc_order\OrderInterface $uc_order
+   * @param \Drupal\uc_order\OrderInterface $order
    *   The order object.
    * @param array $expiration
    *   The expiration.
    */
-  public function __construct(OrderInterface $uc_order, array $expiration) {
-    $this->order = $uc_order;
+  public function __construct(OrderInterface $order, array $expiration) {
+    $this->order = $order;
     $this->expiration = $expiration;
   }
 

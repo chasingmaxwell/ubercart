@@ -11,7 +11,7 @@ use Symfony\Component\EventDispatcher\Event;
  */
 class ShipmentSaveEvent extends Event {
 
-  const EVENT_NAME = 'uc_shipment_save';
+  const EVENT_NAME = 'uc_fulfillment_shipment_save';
 
   /**
    * The order.
@@ -30,13 +30,13 @@ class ShipmentSaveEvent extends Event {
   /**
    * Constructs the object.
    *
-   * @param \Drupal\uc_order\OrderInterface $uc_order
+   * @param \Drupal\uc_order\OrderInterface $order
    *   The order object.
    * @param \Drupal\uc_fulfillment\ShipmentInterface $shipment
    *   The shipment.
    */
-  public function __construct(OrderInterface $uc_order, ShipmentInterface $shipment) {
-    $this->order = $uc_order;
+  public function __construct(OrderInterface $order, ShipmentInterface $shipment) {
+    $this->order = $order;
     $this->shipment = $shipment;
   }
 
