@@ -99,7 +99,7 @@ class TwoCheckout extends PaymentMethodPluginBase implements OffsitePaymentMetho
       '#options' => [
         'dynamic' => $this->t('Dynamic checkout (user is redirected to 2CO)'),
         'direct' => $this->t('Direct checkout (payment page opens in iframe popup)'),
-      ),
+      ],
       '#default_value' => $this->configuration['checkout_type'],
     ];
     $form['notification_url'] = [

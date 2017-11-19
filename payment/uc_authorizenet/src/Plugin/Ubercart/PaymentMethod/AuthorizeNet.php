@@ -71,125 +71,124 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
     }
 
     // Allow admin to set duplicate window.
-    $intervals = array(0, 15, 30, 45, 60, 75, 90, 105, 120);
-    $form['duplicate_window'] = array(
+    $intervals = [0, 15, 30, 45, 60, 75, 90, 105, 120];
+    $form['duplicate_window'] = [
       '#type' => 'select',
       '#title' => $this->t('Duplicate window'),
       '#description' => $this->t('Blocks submission of duplicate transactions within the specified window. Defaults to 120 seconds.'),
       '#default_value' => $this->configuration['duplicate_window'],
       '#options' => array_combine($intervals, $intervals),
-    );
+    ];
 
-    $form['api'] = array(
+    $form['api'] = [
       '#type' => 'details',
       '#title' => $this->t('API Login ID and Transaction Key'),
       '#description' => $this->t('This information is required for Ubercart to interact with your payment gateway account. It is different from your login ID and password and may be found through your account settings page. Do not change the gateway URLs unless you are using this module with an Authorize.net-compatible gateway that requires different URLs.'),
       '#open' => TRUE,
-    );
-    $form['api']['login_id'] = array(
+    ];
+    $form['api']['login_id'] = [
       '#type' => 'textfield',
       '#title' => $this->t('API Login ID'),
       '#default_value' => $this->configuration['api']['login_id'],
-    );
-    $form['api']['transaction_key'] = array(
+    ];
+    $form['api']['transaction_key'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Transaction Key'),
       '#default_value' => $this->configuration['api']['transaction_key'],
-    );
-    $form['api']['test_gateway_url'] = array(
+    ];
+    $form['api']['test_gateway_url'] = [
       '#type' => 'url',
       '#title' => $this->t('Authorize.net Test Gateway URL'),
       '#default_value' => $this->configuration['api']['test_gateway_url'],
-    );
-    $form['api']['live_gateway_url'] = array(
+    ];
+    $form['api']['live_gateway_url'] = [
       '#type' => 'url',
       '#title' => $this->t('Authorize.net Live Gateway URL'),
       '#default_value' => $this->configuration['api']['live_gateway_url'],
-    );
+    ];
 
-    $form['aim'] = array(
+    $form['aim'] = [
       '#type' => 'details',
       '#title' => $this->t('AIM settings'),
       '#description' => $this->t('These settings pertain to the Authorize.Net AIM payment method for card not present transactions.'),
       '#open' => TRUE,
-    );
-    $form['aim']['txn_mode'] = array(
+    ];
+    $form['aim']['txn_mode'] = [
       '#type' => 'radios',
       '#title' => $this->t('Transaction mode'),
       '#description' => $this->t('Only specify a developer test account if you login to your account through https://test.authorize.net.<br />Adjust to live transactions when you are ready to start processing real payments.'),
-      '#options' => array(
+      '#options' => [
         'live' => $this->t('Live transactions in a live account'),
         'live_test' => $this->t('Test transactions in a live account'),
         'developer_test' => $this->t('Developer test account transactions'),
-      ),
+      ],
       '#default_value' => $this->configuration['aim']['txn_mode'],
-    );
+    ];
 
-    $form['aim']['email_customer'] = array(
+    $form['aim']['email_customer'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Tell Authorize.net to e-mail the customer a receipt based on your account settings.'),
       '#default_value' => $this->configuration['aim']['email_customer'],
-    );
-    $form['aim']['response_debug'] = array(
+    ];
+    $form['aim']['response_debug'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Log full API response messages from Authorize.net for debugging.'),
       '#default_value' => $this->configuration['aim']['response_debug'],
-    );
+    ];
 
-
-    $form['arb'] = array(
+    $form['arb'] = [
       '#type' => 'details',
       '#title' => $this->t('ARB settings'),
       '#description' => $this->t('These settings pertain to the Authorize.Net Automated Recurring Billing service.'),
       '#open' => TRUE,
-    );
-    $form['arb']['arb_mode'] = array(
+    ];
+    $form['arb']['arb_mode'] = [
       '#type' => 'radios',
       '#title' => $this->t('Transaction mode'),
       '#description' => $this->t('Only specify developer mode if you login to your account through https://test.authorize.net.<br />Adjust to production mode when you are ready to start processing real recurring fees.'),
-      '#options' => array(
+      '#options' => [
         'production' => $this->t('Production'),
         'developer' => $this->t('Developer test'),
         'disabled' => $this->t('Disabled'),
-      ),
+      ],
       '#default_value' => $this->configuration['arb']['arb_mode'],
-    );
-    $form['arb']['md5_hash'] = array(
+    ];
+    $form['arb']['md5_hash'] = [
       '#type' => 'textfield',
       '#title' => $this->t('MD5 Hash'),
       '#description' => $this->t('<b>Note:</b> You must first configure credit card encryption before setting this.<br />Enter the value here you entered in your Auth.Net account settings.'),
       '#default_value' => $md5_hash,
       '#access' => \Drupal::currentUser()->hasPermission('administer credit cards'),
-    );
-    $form['arb']['report_arb_post'] = array(
+    ];
+    $form['arb']['report_arb_post'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Log reported ARB payments in watchdog.'),
       '#description' => $this->t('Make sure you have set your Silent POST URL in Authorize.Net to :url.', [':url' => Url::fromUri('base:authnet/silent-post', ['absolute' => TRUE])->toString()]),
       '#default_value' => $this->configuration['arb']['report_arb_post'],
-    );
+    ];
 
-    $form['cim'] = array(
+    $form['cim'] = [
       '#type' => 'details',
       '#title' => $this->t('CIM settings'),
       '#description' => $this->t('These settings pertain to the Authorize.Net Customer Information Management service.'),
       '#open' => TRUE,
-    );
-    $form['cim']['cim_profile'] = array(
+    ];
+    $form['cim']['cim_profile'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Always create a CIM profile for securely storing CC info for later use.'),
       '#default_value' => $this->configuration['cim']['cim_profile'],
-    );
-    $form['cim']['cim_mode'] = array(
+    ];
+    $form['cim']['cim_mode'] = [
       '#type' => 'radios',
       '#title' => $this->t('Transaction mode'),
       '#description' => $this->t('Only specify a developer test account if you login to your account through https://test.authorize.net.<br />Adjust to live transactions when you are ready to start processing real payments.'),
-      '#options' => array(
+      '#options' => [
         'production' => $this->t('Production'),
         'developer' => $this->t('Developer test'),
         'disabled' => $this->t('Disabled'),
-      ),
+      ],
       '#default_value' => $this->configuration['cim']['cim_mode'],
-    );
+    ];
 
     return $form;
   }
@@ -227,10 +226,13 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
     }
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function getTransactionTypes() {
     return [
       UC_CREDIT_AUTH_ONLY, UC_CREDIT_PRIOR_AUTH_CAPTURE, UC_CREDIT_AUTH_CAPTURE,
-      UC_CREDIT_REFERENCE_SET, UC_CREDIT_REFERENCE_TXN
+      UC_CREDIT_REFERENCE_SET, UC_CREDIT_REFERENCE_TXN,
     ];
   }
 
@@ -250,10 +252,10 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
       case UC_CREDIT_REFERENCE_SET:
         // Return the error message if this failed.
         if ($message = _uc_authorizenet_cim_profile_create($order)) {
-          return array('success' => FALSE, 'message' => $message);
+          return ['success' => FALSE, 'message' => $message];
         }
         else {
-          return array('success' => TRUE, 'log_payment' => FALSE, 'message' => $this->t('New customer profile created successfully at Authorize.Net.'));
+          return ['success' => TRUE, 'log_payment' => FALSE, 'message' => $this->t('New customer profile created successfully at Authorize.Net.')];
         }
 
       // Accommodate all other transaction types.
@@ -264,13 +266,13 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
   }
 
   /**
-   * Handles authorizations and captures through AIM at Authorize.Net
+   * Handles authorizations and captures through AIM at Authorize.Net.
    */
   protected function _uc_authorizenet_charge(OrderInterface $order, $amount, $txn_type, $reference) {
     global $user;
 
     // Build a description of the order for logging in Auth.Net.
-    $description = array();
+    $description = [];
     foreach ((array) $order->products as $product) {
       $description[] = $product->qty . 'x ' . $product->model;
     }
@@ -287,7 +289,7 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
     }
 
     // Build the POST data for the transaction.
-    $submit_data = array(
+    $submit_data = [
       // Merchant information.
       'x_login' => $this->configuration['login_id'],
       'x_tran_key' => $this->configuration['transaction_key'],
@@ -342,7 +344,7 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
       'x_encap_char' => '"',
       'x_relay_response' => 'FALSE',
       'x_email_customer' => $this->configuration['aim']['email_customer'] ? 'TRUE' : 'FALSE',
-    );
+    ];
 
     if ($txn_type == UC_CREDIT_PRIOR_AUTH_CAPTURE) {
       $submit_data['x_trans_id'] = $data['auth_id'];
@@ -361,14 +363,14 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
 
     $result = \Drupal::httpClient()
       ->setSslVerification(TRUE, TRUE, 2)
-      ->setConfig(array('curl.options' => array(CURLOPT_FOLLOWLOCATION => FALSE)))
+      ->setConfig(['curl.options' => [CURLOPT_FOLLOWLOCATION => FALSE]])
       ->post($post_url, NULL, $submit_data)
       ->send();
 
     // Log any errors to the watchdog.
     if ($result->isError()) {
       \Drupal::logger('uc_authorizenet')->error('@error', ['@error' => $result->getReasonPhrase()]);
-      return array('success' => FALSE);
+      return ['success' => FALSE];
     }
 
     $response = explode('|', $result->getBody(TRUE));
@@ -400,22 +402,22 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
     // If we didn't get an approval response code...
     if ($response[0] != '1') {
       // Fail the charge with the reason text in the decline message.
-      $result = array(
+      $result = [
         'success' => FALSE,
         'message' => $this->t('Credit card payment declined: @message', ['@message' => $response[3]]),
         'uid' => $user->id(),
-      );
+      ];
     }
     else {
       // Build a message for display and comments in the payments table.
       $message = $this->t('Type: @type<br />ID: @id', ['@type' => $this->transactionType($response[11]), '@id' => $response[6]]);
-      $result = array(
+      $result = [
         'success' => TRUE,
         'comment' => $message,
         'message' => $message,
-        'data' => array('module' => 'uc_authorizenet', 'txn_type' => $response[11], 'txn_id' => $response[6], 'txn_authcode' => $response[4]),
+        'data' => ['module' => 'uc_authorizenet', 'txn_type' => $response[11], 'txn_id' => $response[6], 'txn_authcode' => $response[4]],
         'uid' => $user->id(),
-      );
+      ];
 
       // If this was an authorization only transaction...
       if ($txn_type == UC_CREDIT_AUTH_ONLY) {
@@ -428,14 +430,14 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
 
       // Create a transaction reference if specified in the payment gateway
       // settings and this is an appropriate transaction type.
-      if ($this->configuration['cim']['cim_profile'] && in_array($txn_type, array(UC_CREDIT_AUTH_ONLY, UC_CREDIT_AUTH_CAPTURE))) {
+      if ($this->configuration['cim']['cim_profile'] && in_array($txn_type, [UC_CREDIT_AUTH_ONLY, UC_CREDIT_AUTH_CAPTURE])) {
         // Ignore returned message for now; it will appear in the comments.
         _uc_authorizenet_cim_profile_create($order);
       }
     }
 
     // Don't log this as a payment money wasn't actually captured.
-    if (in_array($txn_type, array(UC_CREDIT_AUTH_ONLY))) {
+    if (in_array($txn_type, [UC_CREDIT_AUTH_ONLY])) {
       $result['log_payment'] = FALSE;
     }
 
@@ -485,8 +487,8 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
 
     $response = \Drupal::httpClient()
       ->setSslVerification(TRUE, TRUE, 2)
-      ->setConfig(array('curl.options' => array(CURLOPT_FOLLOWLOCATION => FALSE)))
-      ->post($post_url, array("Content-Type: text/xml"), $xml)
+      ->setConfig(['curl.options' => [CURLOPT_FOLLOWLOCATION => FALSE]])
+      ->post($post_url, ["Content-Type: text/xml"], $xml)
       ->send();
 
     // Log any errors to the watchdog.
@@ -571,15 +573,19 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
       case 'M':
         $text .= $this->t('Match');
         break;
+
       case 'N':
         $text .= $this->t('No Match');
         break;
+
       case 'P':
         $text .= $this->t('Not Processed');
         break;
+
       case 'S':
         $text .= $this->t('Should have been present');
         break;
+
       case 'U':
         $text .= $this->t('Issuer unable to process request');
         break;
@@ -595,14 +601,19 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
     switch (strtoupper($type)) {
       case 'AUTH_CAPTURE':
         return $this->t('Authorization and capture');
+
       case 'AUTH_ONLY':
         return $this->t('Authorization only');
+
       case 'PRIOR_AUTH_CAPTURE':
         return $this->t('Prior authorization capture');
+
       case 'CAPTURE_ONLY':
         return $this->t('Capture only');
+
       case 'CREDIT':
         return $this->t('Credit');
+
       case 'VOID':
         return $this->t('Void');
     }
@@ -615,12 +626,16 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
     switch ($type) {
       case UC_CREDIT_AUTH_ONLY:
         return 'AUTH_ONLY';
+
       case UC_CREDIT_PRIOR_AUTH_CAPTURE:
         return 'PRIOR_AUTH_CAPTURE';
+
       case UC_CREDIT_AUTH_CAPTURE:
         return 'AUTH_CAPTURE';
+
       case UC_CREDIT_CREDIT:
         return 'CREDIT';
+
       case UC_CREDIT_VOID:
         return 'VOID';
     }

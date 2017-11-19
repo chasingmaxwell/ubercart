@@ -11,6 +11,7 @@ class AuthorizeNetController extends ControllerBase {
 
   /**
    * Page callback for Authorize.Net's Silent POST feature.
+   *
    * Receives a payment notification and handles it appropriately.
    */
   public function silentPost() {
@@ -19,18 +20,20 @@ class AuthorizeNetController extends ControllerBase {
 
     // Log ARB payment notification, if enabled.
     if (variable_get('uc_authnet_report_arb_post', FALSE)) {
-      $args = array(
+      $args = [
         '@arb' => $arb ? 'ARB ' : '',
         '@order_id' => $_POST['x_invoice_num'],
         '@post' => print_r($_POST, TRUE),
-      );
-      \Drupal::logger('uc_authorizenet')->notice('@arbSilent POST received for order @order_id: <pre>@post</pre>', $args);
+      ];
+      $this->getLogger('uc_authorizenet')->notice('@arbSilent POST received for order @order_id: <pre>@post</pre>', $args);
     }
 
     // Decrypt the Auth.Net API login data.
     $login_data = _uc_authorizenet_login_data();
 
-    // TODO: Modify the MD5 hash to accommodate differences from AIM to ARB.
+    /*
+     * @todo: Modify the MD5 hash to accommodate differences from AIM to ARB.
+     */
 
     // This is an ARB notification.
     if ($arb) {
@@ -40,11 +43,11 @@ class AuthorizeNetController extends ControllerBase {
 
       // Post an error message if the MD5 hash does not validate.
       if ($_POST['x_MD5_Hash'] != $md5) {
-        \Drupal::logger('uc_authorizenet')->error('Invalid ARB payment notification received.');
+        $this->getLogger('uc_authorizenet')->error('Invalid ARB payment notification received.');
       }
       // Otherwise, let other modules act on the data.
       else {
-        \Drupal::moduleHandler()->invokeAll('uc_auth_arb_payment', array($_POST));
+        $this->moduleHandler()->invokeAll('uc_auth_arb_payment', [$_POST]);
       }
     }
 

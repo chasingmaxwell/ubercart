@@ -14,13 +14,13 @@ define('UC_AUTHORIZENET_LIVE_GATEWAY_URL', 'https://secure.authorize.net/gateway
  * Implements hook_uc_payment_gateway().
  */
 function uc_authorizenet_uc_payment_gateway() {
-  $gateways['authorizenet'] = array(
+  $gateways['authorizenet'] = [
     'title' => t('Authorize.net'),
     'description' => t('Process credit card payments using the AIM service of Authorize.net.'),
     'settings' => 'uc_authorizenet_settings_form',
     'credit' => 'uc_authorizenet_charge',
-    'credit_txn_types' => array(UC_CREDIT_AUTH_ONLY, UC_CREDIT_PRIOR_AUTH_CAPTURE, UC_CREDIT_AUTH_CAPTURE, UC_CREDIT_REFERENCE_SET, UC_CREDIT_REFERENCE_TXN),
-  );
+    'credit_txn_types' => [UC_CREDIT_AUTH_ONLY, UC_CREDIT_PRIOR_AUTH_CAPTURE, UC_CREDIT_AUTH_CAPTURE, UC_CREDIT_REFERENCE_SET, UC_CREDIT_REFERENCE_TXN],
+  ];
 
   return $gateways;
 }
@@ -57,24 +57,24 @@ function _uc_authorizenet_cim_profile_create(OrderInterface $order) {
  * Helper to create the CIM profile creation request.
  */
 function _uc_authorizenet_cim_profile_create_request(OrderInterface $order) {
-  return array(
+  return [
     'refId' => substr($order->id() . '-' . REQUEST_TIME, 0, 20),
-    'profile' => array(
+    'profile' => [
       'merchantCustomerId' => substr($order->getOwnerId(), 0, 20),
       'description' => substr(t('Order @order taking place at @date', ['@order' => $order->id(), '@date' => \Drupal::service('date.formatter')->format(REQUEST_TIME)]), 0, 255),
       'email' => substr($order->getEmail(), 0, 255),
-      'paymentProfiles' => array(
+      'paymentProfiles' => [
         'billTo' => _uc_authorize_cim_xml_billto($order),
-        'payment' => array(
-          'creditCard' => array(
+        'payment' => [
+          'creditCard' => [
             'cardNumber' => $order->payment_details['cc_number'],
             'expirationDate' => $order->payment_details['cc_exp_year'] . '-' . str_pad($order->payment_details['cc_exp_month'], 2, '0', STR_PAD_LEFT),
-          ),
-        ),
-      ),
+          ],
+        ],
+      ],
       'shipToList' => _uc_authorize_cim_xml_shipto($order),
-    ),
-  );
+    ],
+  ];
 }
 
 /**
@@ -90,9 +90,7 @@ function _uc_authorizenet_cim_profile_charge(OrderInterface $order, $amount, $da
   // Check error state.
   if (array_key_exists('errorCode', $request)) {
     $comment[] = $request['text'];
-    $result = array(
-      'success' => FALSE,
-    );
+    $result = ['success' => FALSE];
   }
 
   // Request went off smooth.
@@ -106,17 +104,13 @@ function _uc_authorizenet_cim_profile_charge(OrderInterface $order, $amount, $da
 
     // Error state.
     if ($response['resultCode'] == 'Error') {
-      $result = array(
-        'success' => FALSE,
-      );
+      $result = ['success' => FALSE];
       $comment[] = '(' . $response['resultCode'] . ': ' . $response['text'] . ')';
     }
 
     // Transaction succeeded.
     else {
-      $result = array(
-        'success' => TRUE,
-      );
+      $result = ['success' => TRUE];
 
       // Build info message.
       $types = uc_credit_transaction_types();
@@ -128,11 +122,11 @@ function _uc_authorizenet_cim_profile_charge(OrderInterface $order, $amount, $da
   }
 
   // Build the response to the payment gateway API.
-  return $result + array(
+  return $result + [
     'comment' => implode(', ', $comment),
     'message' => implode('<br />', $comment),
     'uid' => $user->id(),
-  );
+  ];
 }
 
 /**
@@ -144,20 +138,20 @@ function _uc_authorizenet_cim_profile_charge_request(OrderInterface $order, $amo
     return $profile;
   }
   else {
-    return array(
+    return [
       'refId' => substr($order->id() . '-' . REQUEST_TIME, 0, 20),
-      'transaction' => array(
-        'profileTransAuthCapture' => array(
+      'transaction' => [
+        'profileTransAuthCapture' => [
           'amount' => uc_currency_format($amount, FALSE, FALSE, '.'),
           'customerProfileId' => $profile['customerProfileId'],
           'customerPaymentProfileId' => $profile['customerPaymentProfileId'],
           'customerShippingAddressId' => $profile['customerAddressId'],
-          'order' => array(
+          'order' => [
             'invoiceNumber' => $order->id(),
-          ),
-        ),
-      ),
-    );
+          ],
+        ],
+      ],
+    ];
   }
 }
 
@@ -166,9 +160,7 @@ function _uc_authorizenet_cim_profile_charge_request(OrderInterface $order, $amo
  */
 function _uc_authorizenet_cim_profile_get(OrderInterface $order, $profile_id) {
   $server = variable_get('uc_authnet_cim_mode', 'disabled');
-  $request = array(
-    'customerProfileId' => $profile_id,
-  );
+  $request = ['customerProfileId' => $profile_id];
 
   // Request a profile from auth.net.
   $xml = _uc_authorizenet_xml_api_wrapper('getCustomerProfileRequest', _uc_authorizenet_array_to_xml($request));
@@ -184,9 +176,7 @@ function _uc_authorizenet_cim_profile_get(OrderInterface $order, $profile_id) {
  */
 function _uc_authorizenet_cim_payment_profile_get(OrderInterface $order, $profile_id, $payment_profile_id) {
   $server = variable_get('uc_authnet_cim_mode', 'disabled');
-  $request = array(
-    'customerProfileId' => $profile_id,
-  );
+  $request = ['customerProfileId' => $profile_id];
 
   // Request a profile from auth.net.
   $xml = _uc_authorizenet_xml_api_wrapper('getCustomerPaymentProfileRequest', _uc_authorizenet_array_to_xml($request));
@@ -232,7 +222,7 @@ function _uc_authorizenet_array_to_xml($data) {
  * Maps an order's billing information to an array for later XML conversion.
  */
 function _uc_authorize_cim_xml_billto(OrderInterface $order) {
-  return array(
+  return [
     'firstName' => substr($order->billing_first_name, 0, 50),
     'lastName' => substr($order->billing_last_name, 0, 50),
     'company' => substr($order->billing_company, 0, 50),
@@ -242,14 +232,14 @@ function _uc_authorize_cim_xml_billto(OrderInterface $order) {
     'zip' => substr($order->billing_postal_code, 0, 20),
     'country' => $order->billing_country,
     'phoneNumber' => substr($order->billing_phone, 0, 25),
-  );
+  ];
 }
 
 /**
  * Maps an order's shipping information to an array for later XML conversion.
  */
 function _uc_authorize_cim_xml_shipto(OrderInterface $order) {
-  return array(
+  return [
     'firstName' => substr($order->delivery_first_name, 0, 50),
     'lastName' => substr($order->delivery_last_name, 0, 50),
     'company' => substr($order->delivery_company, 0, 50),
@@ -258,7 +248,7 @@ function _uc_authorize_cim_xml_shipto(OrderInterface $order) {
     'state' => substr($order->delivery_zone, 0, 2),
     'zip' => substr($order->delivery_postal_code, 0, 20),
     'country' => $order->delivery_country,
-  );
+  ];
 }
 
 /**
@@ -266,7 +256,7 @@ function _uc_authorize_cim_xml_shipto(OrderInterface $order) {
  */
 function _uc_authorizenet_cim_parse_response($content) {
   // Find the elements in the XML and build the return array.
-  $data = array(
+  $data = [
     'refId' => _uc_authorizenet_substr_between($content, 'refId'),
     'resultCode' => _uc_authorizenet_substr_between($content, 'resultCode'),
     'code' => _uc_authorizenet_substr_between($content, 'code'),
@@ -275,7 +265,7 @@ function _uc_authorizenet_cim_parse_response($content) {
     'directResponse' => _uc_authorizenet_substr_between($content, 'directResponse'),
     'customerPaymentProfileId' => _uc_authorizenet_substr_between($content, 'customerPaymentProfileId'),
     'customerAddressId' => _uc_authorizenet_substr_between($content, 'customerAddressId'),
-  );
+  ];
 
   return $data;
 }
@@ -285,13 +275,13 @@ function _uc_authorizenet_cim_parse_response($content) {
  */
 function _uc_authorizenet_arb_parse_response($content) {
   // Find the elements in the XML and build the return array.
-  $data = array(
+  $data = [
     'refId' => _uc_authorizenet_substr_between($content, 'refId'),
     'resultCode' => _uc_authorizenet_substr_between($content, 'resultCode'),
     'code' => _uc_authorizenet_substr_between($content, 'code'),
     'text' => _uc_authorizenet_substr_between($content, 'text'),
     'subscriptionId' => _uc_authorizenet_substr_between($content, 'subscriptionId'),
-  );
+  ];
 
   return $data;
 }
