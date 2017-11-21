@@ -35,8 +35,8 @@ class PackageEditForm extends FormBase {
 
     $form['#tree'] = TRUE;
     $form['#attached']['library'][] = 'uc_fulfillment/uc_fulfillment.scripts';
-    $products = array();
-    $shipping_types_products = array();
+    $products = [];
+    $shipping_types_products = [];
     foreach ($uc_order->products as $product) {
       if (uc_order_product_is_shippable($product)) {
         $shipping_type = uc_product_get_shipping_type($product);
@@ -45,13 +45,13 @@ class PackageEditForm extends FormBase {
       }
     }
 
-    $header = array(
+    $header = [
       // Fake out tableselect JavaScript into operating on our table.
-      array('data' => '', 'class' => array('select-all')),
+      ['data' => '', 'class' => ['select-all']],
       'model' => $this->t('SKU'),
       'name' => $this->t('Title'),
       'qty' => $this->t('Quantity'),
-    );
+    ];
 
     $result = db_query('SELECT order_product_id, SUM(qty) AS quantity FROM {uc_packaged_products} pp LEFT JOIN {uc_packages} p ON pp.package_id = p.package_id WHERE p.order_id = :id GROUP BY order_product_id', [':id' => $uc_order->id()]);
     foreach ($result as $packaged_product) {
@@ -62,55 +62,55 @@ class PackageEditForm extends FormBase {
       }
     }
 
-    $form['products'] = array(
+    $form['products'] = [
       '#type' => 'table',
       '#header' => $header,
       '#empty' => $this->t('There are no products available for this type of package.'),
-    );
+    ];
 
     foreach ($products as $product) {
       if ($product->qty->value > 0) {
-        $row = array();
-        $row['checked'] = array(
+        $row = [];
+        $row['checked'] = [
           '#type' => 'checkbox',
           '#default_value' => isset($this->package->getProducts()[$product->order_product_id->value]),
-        );
-        $row['model'] = array(
+        ];
+        $row['model'] = [
           '#markup' => $product->model->value,
-        );
-        $row['name'] = array(
+        ];
+        $row['name'] = [
           '#markup' => $product->title->value,
-        );
+        ];
 
         $range = range(1, $product->qty->value);
-        $row['qty'] = array(
+        $row['qty'] = [
           '#type' => 'select',
           '#options' => array_combine($range, $range),
           '#default_value' => isset($this->package->getProducts()[$product->order_product_id->value]) ?
                               $this->package->getProducts()[$product->order_product_id->value]->qty : 1,
-        );
+        ];
 
         $form['products'][$product->order_product_id->value] = $row;
       }
     }
 
-    $options = array();
+    $options = [];
     $shipping_type_options = uc_quote_shipping_type_options();
     foreach (array_keys($shipping_types_products) as $type) {
       $options[$type] = isset($shipping_type_options[$type]) ? $shipping_type_options[$type] : Unicode::ucwords(str_replace('_', ' ', $type));
     }
-    $form['shipping_type'] = array(
+    $form['shipping_type'] = [
       '#type' => 'select',
       '#title' => $this->t('Shipping type'),
       '#options' => $options,
       '#default_value' => $this->package->getShippingType() ? $this->package->getShippingType() : 'small_package',
-    );
+    ];
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save'),
-    );
+    ];
 
     return $form;
   }
@@ -119,7 +119,7 @@ class PackageEditForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $products = array();
+    $products = [];
     foreach ($form_state->getValue('products') as $id => $product) {
       if ($product['checked']) {
         $products[$id] = (object) $product;

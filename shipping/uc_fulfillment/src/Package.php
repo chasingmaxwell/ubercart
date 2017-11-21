@@ -123,14 +123,14 @@ class Package implements PackageInterface {
    *
    * @var \Drupal\uc_order\OrderProductInterface[]
    */
-  protected $products = array();
+  protected $products = [];
 
   /**
    * Array of ship-from addresses for products in this package.
    *
    * @var \Drupal\uc_store\Address[]
    */
-  protected $addresses = array();
+  protected $addresses = [];
 
   /**
    * Package description.
@@ -140,7 +140,7 @@ class Package implements PackageInterface {
   protected $description = '';
 
   /** Cache loaded packages */
-  protected static $packages = array();
+  protected static $packages = [];
 
   /**
    * {@inheritdoc}
@@ -451,7 +451,7 @@ class Package implements PackageInterface {
    *   Array of Package objects for the given order.
    */
   public static function loadByOrder($order_id) {
-    $packages = array();
+    $packages = [];
     $result = db_query('SELECT package_id FROM {uc_packages} WHERE order_id = :id ORDER BY package_id', [':id' => $order_id]);
     while ($package_id = $result->fetchField()) {
       $packages[] = Package::load($package_id);
@@ -475,9 +475,9 @@ class Package implements PackageInterface {
       if ($assoc = $result->fetchAssoc()) {
         $package = Package::create($assoc);
 
-        $products = array();
-        $description = array();
-        $addresses = array();
+        $products = [];
+        $description = [];
+        $addresses = [];
         $result = db_query('SELECT op.order_product_id, pp.qty, op.weight__value AS weight, op.weight__units as weight_units, op.nid, op.title, op.model, op.price, op.data FROM {uc_packaged_products} pp LEFT JOIN {uc_order_products} op ON op.order_product_id = pp.order_product_id WHERE pp.package_id = :id ORDER BY op.order_product_id', [':id' => $package->package_id]);
         foreach ($result as $product) {
           $address = uc_quote_get_default_shipping_address($product->nid);
@@ -512,7 +512,7 @@ class Package implements PackageInterface {
    */
   public function save() {
     $status = '';
-    $fields = array(
+    $fields = [
       'order_id' => $this->order_id,
       'shipping_type' => $this->shipping_type,
       'pkg_type' => $this->pkg_type,
@@ -525,7 +525,7 @@ class Package implements PackageInterface {
       'value' => $this->value,
       'currency' => $this->currency,
       'tracking_number' => $this->tracking_number,
-    );
+    ];
 
     if ($this->sid) {
       $fields['sid'] = $this->sid;
@@ -553,14 +553,14 @@ class Package implements PackageInterface {
     // Now take care of saving the product relations.
     if ($this->products) {
       $insert = db_insert('uc_packaged_products')
-        ->fields(array('package_id', 'order_product_id', 'qty'));
+        ->fields(['package_id', 'order_product_id', 'qty']);
 
       foreach ($this->products as $id => $product) {
-        $insert->values(array(
+        $insert->values([
             'package_id' => $this->package_id,
             'order_product_id' => $id,
             'qty' => $product->qty,
-          ));
+          ]);
 
         // Save the package_id to the OrderProduct.
         // 'package_id' is a key in the serialized 'data' array.

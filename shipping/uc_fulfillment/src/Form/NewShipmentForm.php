@@ -25,21 +25,21 @@ class NewShipmentForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, OrderInterface $uc_order = NULL, Request $request = NULL) {
-    $checked_pkgs = $request->query->has('pkgs') ? (array) $request->query->get('pkgs') : array();
+    $checked_pkgs = $request->query->has('pkgs') ? (array) $request->query->get('pkgs') : [];
     $form['#tree'] = TRUE;
     $form['#attached']['library'][] = 'uc_fulfillment/uc_fulfillment.scripts';
 
     $units = \Drupal::config('uc_store.settings')->get('weight.units');
 
-    $header = array(
+    $header = [
       // Fake out tableselect JavaScript into operating on our table.
-      array('data' => '', 'class' => array('select-all')),
+      ['data' => '', 'class' => ['select-all']],
       'package' => $this->t('Package'),
       'product' => $this->t('Products'),
       'weight' => $this->t('Weight'),
-    );
+    ];
 
-    $packages_by_type = array();
+    $packages_by_type = [];
     $packages = Package::loadByOrder($uc_order->id());
     foreach ($packages as $package) {
       if (!empty($package->getSid())) {
@@ -58,73 +58,73 @@ class NewShipmentForm extends FormBase {
     }
 
     $pkgs_exist = FALSE;
-    $option_methods = array();
+    $option_methods = [];
     $shipping_types = uc_quote_get_shipping_types();
 
     foreach ($packages_by_type as $shipping_type => $packages) {
-      $form['shipping_types'][$shipping_type] = array(
+      $form['shipping_types'][$shipping_type] = [
         '#type' => 'fieldset',
         '#title' => $shipping_types[$shipping_type]['title'],
-      );
+      ];
 
-      $rows = array();
-      $form['shipping_types'][$shipping_type]['table'] = array(
+      $rows = [];
+      $form['shipping_types'][$shipping_type]['table'] = [
         '#type' => 'table',
         '#header' => $header,
         '#empty' => $this->t('There are no packages available to ship.'),
-      );
+      ];
 
       foreach ($packages as $package) {
         $pkgs_exist = TRUE;
 
-        $row = array();
-        $row['checked'] = array(
+        $row = [];
+        $row['checked'] = [
           '#type' => 'checkbox',
           '#default_value' => (in_array($package->id(), $checked_pkgs) ? 1 : 0),
-        );
-        $row['package_id'] = array(
+        ];
+        $row['package_id'] = [
           '#markup' => $package->id(),
-        );
+        ];
 
-        $product_list = array();
+        $product_list = [];
         foreach ($package->getProducts() as $product) {
           $product_list[] = $product->qty . ' x ' . $product->model;
         }
-        $row['products'] = array(
+        $row['products'] = [
           '#theme' => 'item_list',
           '#items' => $product_list,
-        );
-        $row['weight'] = array(
+        ];
+        $row['weight'] = [
           '#markup' => uc_weight_format($package->getWeight(), $units),
-        );
+        ];
         $form['shipping_types'][$shipping_type]['table'][$package->id()] = $row;
       }
 
       if (isset($shipping_methods_by_type[$shipping_type])) {
         foreach ($shipping_methods_by_type[$shipping_type] as $method) {
-          $option_methods += array($method->id() => $method->label());
+          $option_methods += [$method->id() => $method->label()];
         }
       }
     }
 
-    $form['order_id'] = array(
+    $form['order_id'] = [
       '#type' => 'hidden',
       '#value' => $uc_order->id(),
-    );
+    ];
 
     if ($pkgs_exist) {
       // uc_fulfillment has a default plugin to provide the "Manual" method.
-      $form['method'] = array(
+      $form['method'] = [
         '#type' => 'select',
         '#title' => $this->t('Shipping method'),
         '#options' => $option_methods,
         '#default_value' => 'manual',
-      );
-      $form['actions'] = array('#type' => 'actions');
-      $form['actions']['ship'] = array(
+      ];
+      $form['actions'] = ['#type' => 'actions'];
+      $form['actions']['ship'] = [
         '#type' => 'submit',
         '#value' => $this->t('Ship packages'),
-      );
+      ];
     }
 
     return $form;
@@ -134,7 +134,7 @@ class NewShipmentForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $packages = array();
+    $packages = [];
     $i = 1;
     foreach ($form_state->getValue('shipping_types') as $shipping_type) {
       if (is_array($shipping_type['table'])) {

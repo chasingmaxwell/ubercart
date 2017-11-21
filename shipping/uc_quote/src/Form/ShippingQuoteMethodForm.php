@@ -58,28 +58,28 @@ class ShippingQuoteMethodForm extends EntityForm {
     $form = parent::form($form, $form_state);
 
     $definition = $this->plugin->getPluginDefinition();
-    $form['type'] = array(
+    $form['type'] = [
       '#type' => 'item',
       '#title' => $this->t('Type'),
       '#markup' => $definition['admin_label'],
-    );
+    ];
 
-    $form['label'] = array(
+    $form['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
       '#maxlength' => 255,
       '#default_value' => $this->entity->label(),
       '#description' => $this->t('The name shown to the customer when they choose a shipping method at checkout.'),
       '#required' => TRUE,
-    );
-    $form['id'] = array(
+    ];
+    $form['id'] = [
       '#type' => 'machine_name',
       '#default_value' => $this->entity->id(),
-      '#machine_name' => array(
+      '#machine_name' => [
         'exists' => '\Drupal\uc_quote\Entity\ShippingQuoteMethod::load',
-      ),
+      ],
       '#disabled' => !$this->entity->isNew(),
-    );
+    ];
 
     $form['settings'] = $this->plugin->buildConfigurationForm([], $form_state);
     $form['settings']['#tree'] = TRUE;

@@ -162,31 +162,31 @@ class ShipmentController extends ControllerBase {
       $row[] = empty($shipment->getTrackingNumber()) ? $this->t('n/a') : ['data' => ['#plain_text' => $shipment->getTrackingNumber()]];
 
       // Actions.
-      $ops[] = array(
+      $ops[] = [
         '#type' => 'operations',
-        '#links' => array(
-          'view' => array(
+        '#links' => [
+          'view' => [
             'title' => $this->t('View'),
             'url' => Url::fromRoute('uc_fulfillment.view_shipment', ['uc_order' => $uc_order->id(), 'uc_shipment' => $shipment->id()]),
-          ),
-          'edit' => array(
+          ],
+          'edit' => [
             'title' => $this->t('Edit'),
             'url' => Url::fromRoute('uc_fulfillment.edit_shipment', ['uc_order' => $uc_order->id(), 'uc_shipment' => $shipment->id()]),
-          ),
-          'print' => array(
+          ],
+          'print' => [
             'title' => $this->t('Print'),
             'url' => Url::fromRoute('uc_fulfillment.print_shipment', ['uc_order' => $uc_order->id(), 'uc_shipment' => $shipment->id()]),
-          ),
-          'packing_slip' => array(
+          ],
+          'packing_slip' => [
             'title' => $this->t('Packing slip'),
             'url' => Url::fromRoute('uc_fulfillment.packing_slip', ['uc_order' => $uc_order->id(), 'uc_shipment' => $shipment->id()]),
-          ),
-          'delete' => array(
+          ],
+          'delete' => [
             'title' => $this->t('Delete'),
             'url' => Url::fromRoute('uc_fulfillment.delete_shipment', ['uc_order' => $uc_order->id(), 'uc_shipment' => $shipment->id()]),
-          ),
-        ),
-      );
+          ],
+        ],
+      ];
       $row[] = ['data' => $ops];
       $rows[] = $row;
     }

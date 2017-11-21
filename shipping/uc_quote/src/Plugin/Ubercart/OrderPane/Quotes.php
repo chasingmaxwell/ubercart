@@ -24,7 +24,7 @@ class Quotes extends EditableOrderPanePluginBase {
    * {@inheritdoc}
    */
   public function getClasses() {
-    return array('pos-left');
+    return ['pos-left'];
   }
 
   /**
@@ -37,31 +37,31 @@ class Quotes extends EditableOrderPanePluginBase {
    * {@inheritdoc}
    */
   public function buildForm(OrderInterface $order, array $form, FormStateInterface $form_state) {
-    $form['quote_button'] = array(
+    $form['quote_button'] = [
       '#type' => 'submit',
       '#value' => $this->t('Get shipping quotes'),
-      '#submit' => array(array($this, 'retrieveQuotes')),
-      '#ajax' => array(
-        'callback' => array($this, 'replaceOrderQuotes'),
+      '#submit' => [[$this, 'retrieveQuotes']],
+      '#ajax' => [
+        'callback' => [$this, 'replaceOrderQuotes'],
         'wrapper' => 'quote',
         'effect' => 'slide',
-        'progress' => array(
+        'progress' => [
           'type' => 'bar',
           'message' => $this->t('Receiving quotes...'),
-        ),
-      ),
-    );
-    $form['quotes'] = array(
+        ],
+      ],
+    ];
+    $form['quotes'] = [
       '#type' => 'container',
-      '#attributes' => array('id' => 'quote'),
+      '#attributes' => ['id' => 'quote'],
       '#tree' => TRUE,
-    );
+    ];
 
     if ($form_state->get('quote_requested')) {
       // Rebuild form products, from uc_order_edit_form_submit()
       foreach ($form_state->getValue('products') as $product) {
         if (!isset($product['remove']) && intval($product['qty']) > 0) {
-          foreach (array('qty', 'title', 'model', 'weight', 'weight_units', 'cost', 'price') as $field) {
+          foreach (['qty', 'title', 'model', 'weight', 'weight_units', 'cost', 'price'] as $field) {
             $order->products[$product['order_product_id']]->$field = $product[$field];
           }
         }
@@ -69,24 +69,24 @@ class Quotes extends EditableOrderPanePluginBase {
 
       $form['quotes'] += uc_quote_build_quote_form($order);
 
-      $form['quotes']['add_quote'] = array(
+      $form['quotes']['add_quote'] = [
         '#type' => 'submit',
         '#value' => $this->t('Apply to order'),
-        '#submit' => array(array($this, 'applyQuote')),
-        '#ajax' => array(
-          'callback' => array($this, 'updateOrderRates'),
+        '#submit' => [[$this, 'applyQuote']],
+        '#ajax' => [
+          'callback' => [$this, 'updateOrderRates'],
           'effect' => 'fade',
-          'progress' => array(
+          'progress' => [
             'type' => 'throbber',
             'message' => $this->t('Applying quotes...'),
-          ),
-        ),
-      );
+          ],
+        ],
+      ];
     }
 
-    $form_state->set(['uc_ajax', 'uc_quote', 'delivery][delivery_country'], array(
-      'quote' => array($this, 'replaceOrderQuotes'),
-    ));
+    $form_state->set(['uc_ajax', 'uc_quote', 'delivery][delivery_country'], [
+      'quote' => [$this, 'replaceOrderQuotes'],
+    ]);
 
     return $form;
   }
@@ -127,11 +127,11 @@ class Quotes extends EditableOrderPanePluginBase {
             $label,
             $order->quote['rate']
           );
-          $form_state->set('uc_quote', array(
+          $form_state->set('uc_quote', [
             'lid' => $lid,
             'title' => $label,
             'amount' => $order->quote['rate'],
-          ));
+          ]);
         }
         else {
           uc_order_line_item_add($order->id(), 'shipping',
@@ -178,7 +178,7 @@ class Quotes extends EditableOrderPanePluginBase {
 
     // Reset shipping form.
     $response->addCommand(new ReplaceCommand('#quote', trim(drupal_render($form['quotes']['quotes']))));
-    $status_messages = array('#type' => 'status_messages');
+    $status_messages = ['#type' => 'status_messages'];
     $response->addCommand(new PrependCommand('#quote', drupal_render($status_messages)));
 
     return $response;
