@@ -80,7 +80,8 @@ class Order extends ContentEntityBase implements OrderInterface {
     parent::postLoad($storage, $orders);
 
     foreach ($orders as $id => $order) {
-      $order->products = $this->entityTypeManager()->getStorage('uc_order_product')->loadByProperties(['order_id' => $id]);
+      // Need to use \Drupal:: because we're in a static function.
+      $order->products = \Drupal::entityTypeManager()->getStorage('uc_order_product')->loadByProperties(['order_id' => $id]);
 
       // Load line items... has to be last after everything has been loaded.
       $order->line_items = $order->getLineItems();
