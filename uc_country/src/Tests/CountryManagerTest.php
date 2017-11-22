@@ -19,14 +19,20 @@ class CountryManagerTest extends WebTestBase {
   public function testServiceOverride() {
     $country_manager = \Drupal::service('country_manager');
 
-    // Test core Drupal country_manager functions.
+    /*
+     * Test core Drupal country_manager functions.
+     */
 
-    // getList(): Verify that all Drupal-provided countries were imported without error.
+    // getList(): Verify that all Drupal-provided countries
+    // were imported without error.
     $this->assertEqual(count($country_manager->getList()), 258, '258 core Drupal countries found');
 
-    // Test new functions provided by this extended service.
+    /*
+     * Test new functions provided by this extended service.
+     */
 
-    // getAvailableList(): Verify that all Ubercart-provided countries are available.
+    // getAvailableList(): Verify that all Ubercart-provided countries
+    // are available.
     $this->assertEqual(count($country_manager->getAvailableList()), 248, '248 Ubercart countries found');
 
     // getEnabledList(): Verify that no countries are enabled by default.

@@ -30,6 +30,7 @@ interface CountryManagerInterface extends \Drupal\Core\Locale\CountryManagerInte
    *   The two-character ISO 3166 country code.
    *
    * @return \Drupal\uc_country\Entity\Country
+   *   The uc_country config entity with the specified country code.
    */
   public function getCountry($alpha_2);
 

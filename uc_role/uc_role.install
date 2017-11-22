@@ -9,172 +9,172 @@
  * Implements hook_schema().
  */
 function uc_role_schema() {
-  $schema['uc_roles_products'] = array(
+  $schema['uc_roles_products'] = [
     'description' => 'Maps purchasable roles to Ubercart products.',
-    'fields' => array(
-      'rpid' => array(
+    'fields' => [
+      'rpid' => [
         'description' => 'Primary key: the role-product id.',
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
-      ),
-      'pfid' => array(
+      ],
+      'pfid' => [
         'description' => 'The {uc_product_features}.pfid of the product feature this is attached to.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'nid' => array(
+      ],
+      'nid' => [
         'description' => 'The {node}.nid of the node this role feature is attached to.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'model' => array(
+      ],
+      'model' => [
         'description' => 'The product model.',
         'type' => 'varchar',
         'length' => 255,
         'default' => NULL,
-      ),
-      'rid' => array(
+      ],
+      'rid' => [
         'description' => 'The {role}.rid that is purchased with the attached product.',
         'type' => 'varchar',
         'length' => 64,
         'not null' => TRUE,
         'default' => 0,
-      ),
+      ],
 
       // Start of expiration period
       // Not actually implemented yet, this is a placeholder.
-      'start_override' => array(
+      'start_override' => [
         'description' => 'Override the store default start time? 1 => Yes. 0 => No.',
         'type' => 'int',
         'size' => 'tiny',
         'not null' => FALSE,
         'default' => 0,
-      ),
-      'start_time' => array(
+      ],
+      'start_time' => [
         'description' => 'Role expiration start time. 0 signifies to start at product purchase.',
         'type' => 'int',
         'not null' => FALSE,
         'default' => 0,
-      ),
+      ],
 
       // End of expiration period
-      'end_override' => array(
+      'end_override' => [
         'description' => 'Override the default end time? 1 => Yes. 0 => No.',
         'type' => 'int',
         'size' => 'tiny',
         'not null' => FALSE,
         'default' => 0,
-      ),
-      'end_time' => array(
+      ],
+      'end_time' => [
         'description' => 'Role expiration end time. 0 signifies to use a relative expiration.',
         'type' => 'int',
         'not null' => FALSE,
         'default' => 0,
-      ),
-      'duration' => array(
+      ],
+      'duration' => [
         'description' => 'The duration of the granted role, using the value of granualarity.',
         'type' => 'int',
         'size' => 'small',
-      ),
-      'granularity' => array(
+      ],
+      'granularity' => [
         'description' => 'The units of time of duration.',
         'type' => 'varchar',
         'length' => 32,
-      ),
-      'shippable' => array(
+      ],
+      'shippable' => [
         'description' => 'Is this role feature shippable? 1 => Yes. 0 => No.',
         'type' => 'int',
         'size' => 'tiny',
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'by_quantity' => array(
+      ],
+      'by_quantity' => [
         'description' => 'Multiply any relative expiration by the quantity purchased? 1 => Yes. 0 => No.',
         'type' => 'int',
         'size' => 'tiny',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
-      ),
-    ),
-    'indexes' => array(
-      'nid' => array('nid'),
-      'model' => array('model'),
-      'rid' => array('rid'),
-    ),
-    'primary key' => array('rpid'),
-    'foreign keys' => array(
-      'uc_product_features' => array(
+      ],
+    ],
+    'indexes' => [
+      'nid' => ['nid'],
+      'model' => ['model'],
+      'rid' => ['rid'],
+    ],
+    'primary key' => ['rpid'],
+    'foreign keys' => [
+      'uc_product_features' => [
         'table' => 'uc_product_features',
-        'columns' => array('pfid' => 'pfid'),
-      ),
-      'uc_products' => array(
+        'columns' => ['pfid' => 'pfid'],
+      ],
+      'uc_products' => [
         'table' => 'uc_products',
-        'columns' => array('nid' => 'nid'),
-      ),
-      'role' => array(
+        'columns' => ['nid' => 'nid'],
+      ],
+      'role' => [
         'table' => 'role',
-        'columns' => array('rid' => 'rid'),
-      ),
-    ),
-  );
+        'columns' => ['rid' => 'rid'],
+      ],
+    ],
+  ];
 
-  $schema['uc_roles_expirations'] = array(
+  $schema['uc_roles_expirations'] = [
     'description' => 'Store expiration dates of purchased roles.',
-    'fields' => array(
-      'reid' => array(
+    'fields' => [
+      'reid' => [
         'description' => 'Primary key: the unique expiration id.',
         'type' => 'serial',
         'unsigned' => TRUE,
         'not null' => TRUE,
-      ),
-      'uid' => array(
+      ],
+      'uid' => [
         'description' => 'The {users}.uid owning the role.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'rid' => array(
+      ],
+      'rid' => [
         'description' => 'The {role}.rid of the purchased role.',
         'type' => 'varchar',
         'length' => 64,
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'expiration' => array(
+      ],
+      'expiration' => [
         'description' => 'The Unix timestamp indicating when the role will be removed from the user account.',
         'type' => 'int',
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'notified' => array(
+      ],
+      'notified' => [
         'description' => 'A flag indicating that the user was warned that the role will be removed soon.',
         'type' => 'int',
         'size' => 'tiny',
-      ),
-    ),
-    'indexes' => array(
-      'uid' => array('uid'),
-      'rid' => array('rid'),
-    ),
-    'primary key' => array('reid'),
-    'foreign keys' => array(
-      'users' => array(
+      ],
+    ],
+    'indexes' => [
+      'uid' => ['uid'],
+      'rid' => ['rid'],
+    ],
+    'primary key' => ['reid'],
+    'foreign keys' => [
+      'users' => [
         'table' => 'users',
-        'columns' => array('uid' => 'uid'),
-      ),
-      'role' => array(
+        'columns' => ['uid' => 'uid'],
+      ],
+      'role' => [
         'table' => 'role',
-        'columns' => array('rid' => 'rid'),
-      ),
-    ),
-  );
+        'columns' => ['rid' => 'rid'],
+      ],
+    ],
+  ];
 
   return $schema;
 }

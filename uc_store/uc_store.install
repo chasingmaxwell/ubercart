@@ -9,21 +9,21 @@
  * Implements hook_requirements().
  */
 function uc_store_requirements($phase) {
-  $requirements = array();
+  $requirements = [];
 
   if ($phase == 'runtime') {
-    $severities = array(
+    $severities = [
       'warning' => REQUIREMENT_WARNING,
       'error' => REQUIREMENT_ERROR,
-    );
+    ];
 
     $results = \Drupal::moduleHandler()->invokeAll('uc_store_status');
     foreach ($results as $status) {
-      $requirements[] = array(
+      $requirements[] = [
         'severity' => isset($severities[$status['status']]) ? $severities[$status['status']] : NULL,
         'title' => $status['title'],
         'value' => $status['desc'],
-      );
+      ];
     }
   }
 

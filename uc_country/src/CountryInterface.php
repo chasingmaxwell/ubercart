@@ -45,6 +45,7 @@ interface CountryInterface extends ConfigEntityInterface {
    * Returns the address format template.
    *
    * @return string
+   *   A string with placeholders for address elements.
    */
   public function getAddressFormat();
 

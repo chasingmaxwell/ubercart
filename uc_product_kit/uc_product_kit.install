@@ -9,81 +9,81 @@
  * Implements hook_schema().
  */
 function uc_product_kit_schema() {
-  $schema['uc_product_kits'] = array(
+  $schema['uc_product_kits'] = [
     'description' => 'Stores product kit information.',
-    'fields' => array(
-      'vid' => array(
+    'fields' => [
+      'vid' => [
         'description' => 'The {node}.vid of the product kit.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'nid' => array(
+      ],
+      'nid' => [
         'description' => 'The {node}.nid of the product kit.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'product_id' => array(
+      ],
+      'product_id' => [
         'description' => 'The {uc_products}.nid of a product contained in the kit.',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'mutable' => array(
+      ],
+      'mutable' => [
         'description' => 'A flag indicating whether the contents of the kit can be changed by the customer. 1 => Mutable. 0 => Immutable.',
         'type' => 'int',
         'size' => 'tiny',
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'qty' => array(
+      ],
+      'qty' => [
         'description' => 'The number of this product contained in the kit.',
         'type' => 'int',
         'size' => 'small',
         'unsigned' => TRUE,
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'discount' => array(
+      ],
+      'discount' => [
         'description' => 'The adjustment to the price of the product.',
         'type' => 'float',
         'not null' => TRUE,
         'default' => 0.0,
-      ),
-      'ordering' => array(
+      ],
+      'ordering' => [
         'description' => 'The weight of this product in relation to other products in the kit.',
         'type' => 'int',
         'size' => 'small',
         'not null' => TRUE,
         'default' => 0,
-      ),
-      'synchronized' => array(
+      ],
+      'synchronized' => [
         'description' => 'A flag indicating that changes to the price of this product will change the total price of the kit. 1 => Yes. 0 => No.',
         'type' => 'int',
         'size' => 'tiny',
         'not null' => TRUE,
         'default' => 0,
-      ),
-    ),
-    'primary key' => array('vid', 'product_id'),
-    'foreign keys' => array(
-      'node' => array(
+      ],
+    ],
+    'primary key' => ['vid', 'product_id'],
+    'foreign keys' => [
+      'node' => [
         'table' => 'node',
-        'columns' => array(
+        'columns' => [
           'nid' => 'nid',
           'vid' => 'vid',
-        ),
-      ),
-      'uc_products' => array(
+        ],
+      ],
+      'uc_products' => [
         'table' => 'uc_products',
-        'columns' => array('product_id' => 'nid'),
-      ),
-    ),
-  );
+        'columns' => ['product_id' => 'nid'],
+      ],
+    ],
+  ];
 
   return $schema;
 }

@@ -176,8 +176,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
     // Trigger the checkout start event.
     // rules_invoke_event('uc_cart_checkout_start', $order);
     $event = new CheckoutStartEvent($order);
-    $event_dispatcher = \Drupal::service('event_dispatcher');
-    $event_dispatcher->dispatch(CheckoutStartEvent::EVENT_NAME, $event);
+    \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
 
     return $this->formBuilder()->getForm('Drupal\uc_cart\Form\CheckoutForm', $order);
   }
@@ -231,8 +230,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
     // Trigger the checkout review order event.
     // rules_invoke_event('uc_cart_checkout_review_order', $order);
     $event = new CheckoutReviewOrderEvent($order);
-    $event_dispatcher = \Drupal::service('event_dispatcher');
-    $event_dispatcher->dispatch(CheckoutReviewOrderEvent::EVENT_NAME, $event);
+    \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
 
     return $build;
   }
@@ -272,7 +270,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
   protected function loadOrder() {
     $id = $this->session->get('cart_order');
     // Reset uc_order entity cache then load order.
-    $storage = \Drupal::entityTypeManager()->getStorage('uc_order');
+    $storage = $this->entityTypeManager()->getStorage('uc_order');
     $storage->resetCache([$id]);
     return $storage->load($id);
   }
