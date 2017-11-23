@@ -33,208 +33,208 @@ class StoreSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('uc_store.settings');
 
-    $form['store'] = array('#type' => 'vertical_tabs');
+    $form['store'] = ['#type' => 'vertical_tabs'];
 
-    $form['basic'] = array(
+    $form['basic'] = [
       '#type' => 'details',
       '#title' => $this->t('Basic information'),
       '#group' => 'store',
-    );
-    $form['basic']['uc_store_name'] = array(
+    ];
+    $form['basic']['uc_store_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Store name'),
       '#default_value' => uc_store_name(),
-    );
-    $form['basic']['uc_store_email'] = array(
+    ];
+    $form['basic']['uc_store_email'] = [
       '#type' => 'email',
       '#title' => $this->t('E-mail address'),
       '#size' => 32,
       '#required' => TRUE,
       '#default_value' => uc_store_email(),
-    );
-    $form['basic']['uc_store_email_include_name'] = array(
+    ];
+    $form['basic']['uc_store_email_include_name'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Include the store name in the "From" line of store e-mails.'),
       '#description' => $this->t('May not be available on all server configurations. Turn off if this causes problems.'),
       '#default_value' => $config->get('mail_include_name'),
-    );
-    $form['basic']['uc_store_phone'] = array(
+    ];
+    $form['basic']['uc_store_phone'] = [
       '#type' => 'tel',
       '#title' => $this->t('Phone number'),
       '#default_value' => $config->get('phone'),
-    );
-    $form['basic']['uc_store_fax'] = array(
+    ];
+    $form['basic']['uc_store_fax'] = [
       '#type' => 'tel',
       '#title' => $this->t('Fax number'),
       '#default_value' => $config->get('fax'),
-    );
-    $form['basic']['uc_store_help_page'] = array(
+    ];
+    $form['basic']['uc_store_help_page'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Store help page'),
       '#description' => $this->t('The Drupal page for the store help link.'),
       '#default_value' => $config->get('help_page'),
       '#size' => 32,
       '#field_prefix' => Url::fromRoute('<front>', [], ['absolute' => TRUE])->toString(),
-    );
+    ];
 
-    $form['address'] = array(
+    $form['address'] = [
       '#type' => 'details',
       '#title' => $this->t('Store address'),
       '#group' => 'store',
-    );
-    $form['address']['address'] = array(
+    ];
+    $form['address']['address'] = [
       '#type' => 'uc_address',
       '#default_value' => $config->get('address'),
       '#required' => FALSE,
-    );
+    ];
 
-    $form['currency'] = array(
+    $form['currency'] = [
       '#type' => 'details',
       '#title' => $this->t('Currency format'),
       '#group' => 'store',
-    );
-    $form['currency']['uc_currency_code'] = array(
+    ];
+    $form['currency']['uc_currency_code'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Currency code'),
       '#description' => $this->t('While not used directly in formatting, the currency code is used by other modules as the primary currency for your site.  Enter here your three character <a href=":url">ISO 4217</a> currency code.', [':url' => Url::fromUri('http://en.wikipedia.org/wiki/ISO_4217#Active_codes')->toString()]),
       '#default_value' => $config->get('currency.code'),
       '#maxlength' => 3,
       '#size' => 5,
-    );
-    $form['currency']['example'] = array(
+    ];
+    $form['currency']['example'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Current format'),
       '#value' => uc_currency_format(1000.1234),
       '#disabled' => TRUE,
       '#size' => 10,
-    );
-    $form['currency']['uc_currency_sign'] = array(
+    ];
+    $form['currency']['uc_currency_sign'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Currency sign'),
       '#default_value' => $config->get('currency.symbol'),
       '#size' => 10,
       '#maxlength' => 10,
-    );
-    $form['currency']['uc_sign_after_amount'] = array(
+    ];
+    $form['currency']['uc_sign_after_amount'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Display currency sign after amount.'),
       '#default_value' => $config->get('currency.symbol_after'),
-    );
-    $form['currency']['uc_currency_thou'] = array(
+    ];
+    $form['currency']['uc_currency_thou'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Thousands marker'),
       '#default_value' => $config->get('currency.thousands_marker'),
       '#size' => 10,
       '#maxlength' => 10,
-    );
-    $form['currency']['uc_currency_dec'] = array(
+    ];
+    $form['currency']['uc_currency_dec'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Decimal marker'),
       '#default_value' => $config->get('currency.decimal_marker'),
       '#size' => 10,
       '#maxlength' => 10,
-    );
-    $form['currency']['uc_currency_prec'] = array(
+    ];
+    $form['currency']['uc_currency_prec'] = [
       '#type' => 'select',
       '#title' => $this->t('Number of decimal places'),
-      '#options' => array(0 => 0, 1 => 1, 2 => 2),
+      '#options' => [0 => 0, 1 => 1, 2 => 2],
       '#default_value' => $config->get('currency.precision'),
-    );
+    ];
 
-    $form['weight'] = array(
+    $form['weight'] = [
       '#type' => 'details',
       '#title' => $this->t('Weight format'),
       '#group' => 'store',
-    );
-    $form['weight']['uc_weight_unit'] = array(
+    ];
+    $form['weight']['uc_weight_unit'] = [
       '#type' => 'select',
       '#title' => $this->t('Default weight units'),
       '#default_value' => $config->get('weight.units'),
-      '#options' => array(
+      '#options' => [
         'lb' => $this->t('Pounds'),
         'oz' => $this->t('Ounces'),
         'kg' => $this->t('Kilograms'),
         'g' => $this->t('Grams'),
-      ),
-    );
-    $form['weight']['uc_weight_thou'] = array(
+      ],
+    ];
+    $form['weight']['uc_weight_thou'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Thousands marker'),
       '#default_value' => $config->get('weight.thousands_marker'),
       '#size' => 10,
       '#maxlength' => 10,
-    );
-    $form['weight']['uc_weight_dec'] = array(
+    ];
+    $form['weight']['uc_weight_dec'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Decimal marker'),
       '#default_value' => $config->get('weight.decimal_marker'),
       '#size' => 10,
       '#maxlength' => 10,
-    );
-    $form['weight']['uc_weight_prec'] = array(
+    ];
+    $form['weight']['uc_weight_prec'] = [
       '#type' => 'select',
       '#title' => $this->t('Number of decimal places'),
-      '#options' => array(0 => 0, 1 => 1, 2 => 2),
+      '#options' => [0 => 0, 1 => 1, 2 => 2],
       '#default_value' => $config->get('weight.precision'),
-    );
+    ];
 
-    $form['length'] = array(
+    $form['length'] = [
       '#type' => 'details',
       '#title' => $this->t('Length format'),
       '#group' => 'store',
-    );
-    $form['length']['uc_length_unit'] = array(
+    ];
+    $form['length']['uc_length_unit'] = [
       '#type' => 'select',
       '#title' => $this->t('Default length units'),
       '#default_value' => $config->get('length.units'),
-      '#options' => array(
+      '#options' => [
         'in' => $this->t('Inches'),
         'ft' => $this->t('Feet'),
         'cm' => $this->t('Centimeters'),
         'mm' => $this->t('Millimeters'),
-      ),
-    );
-    $form['length']['uc_length_thou'] = array(
+      ],
+    ];
+    $form['length']['uc_length_thou'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Thousands marker'),
       '#default_value' => $config->get('length.thousands_marker'),
       '#size' => 10,
       '#maxlength' => 10,
-    );
-    $form['length']['uc_length_dec'] = array(
+    ];
+    $form['length']['uc_length_dec'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Decimal marker'),
       '#default_value' => $config->get('length.decimal_marker'),
       '#size' => 10,
       '#maxlength' => 10,
-    );
-    $form['length']['uc_length_prec'] = array(
+    ];
+    $form['length']['uc_length_prec'] = [
       '#type' => 'select',
       '#title' => $this->t('Number of decimal places'),
-      '#options' => array(0 => 0, 1 => 1, 2 => 2),
+      '#options' => [0 => 0, 1 => 1, 2 => 2],
       '#default_value' => $config->get('length.precision'),
-    );
+    ];
 
-    $form['display'] = array(
+    $form['display'] = [
       '#type' => 'details',
       '#title' => $this->t('Display settings'),
       '#group' => 'store',
-    );
-    $form['display']['uc_customer_list_address'] = array(
+    ];
+    $form['display']['uc_customer_list_address'] = [
       '#type' => 'radios',
       '#title' => $this->t('Primary customer address'),
       '#description' => $this->t('Select the address to be used on customer lists and summaries.'),
-      '#options' => array(
+      '#options' => [
         'billing' => $this->t('Billing address'),
         'shipping' => $this->t('Shipping address'),
-      ),
+      ],
       '#default_value' => $config->get('customer_address'),
-    );
-    $form['display']['uc_order_capitalize_addresses'] = array(
+    ];
+    $form['display']['uc_order_capitalize_addresses'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Capitalize address on order screens'),
       '#default_value' => $config->get('capitalize_address'),
-    );
+    ];
 
     return parent::buildForm($form, $form_state);
   }

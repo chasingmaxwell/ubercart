@@ -22,7 +22,7 @@ class StoreTest extends UbercartTestBase {
     $this->assertLink(t('Countries and addresses'));
     $this->assertText(t('Store status'));
 
-    $edit = array(
+    $edit = [
       'uc_store_name' => $this->randomMachineName(),
       'uc_store_email' => $this->randomMachineName() . '@example.com',
       'uc_store_phone' => $this->randomMachineName(),
@@ -37,15 +37,15 @@ class StoreTest extends UbercartTestBase {
       'uc_currency_thou' => $this->randomMachineName(1),
       'uc_currency_dec' => $this->randomMachineName(1),
       'uc_currency_prec' => mt_rand(0, 2),
-    );
+    ];
 
     // Don't try to set the zone unless the store country has zones!
     $country_id = \Drupal::config('uc_store.settings')->get('address.country');
     $zone_list = \Drupal::service('country_manager')->getZoneList($country_id);
     if (!empty($zone_list)) {
-      $edit += array(
+      $edit += [
         'address[zone]' => array_rand($zone_list),
-      );
+      ];
     }
 
     $this->drupalPostForm('admin/store/config/store', $edit, 'Save configuration');

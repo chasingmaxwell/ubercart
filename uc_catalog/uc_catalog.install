@@ -26,18 +26,18 @@ function uc_catalog_uninstall() {
 
   $styles = \Drupal\image\Entity\ImageStyle::loadMultiple(['uc_category', 'uc_product_list']);
   if (!empty($styles)) {
-    $style_names = array();
+    $style_names = [];
     foreach ($styles as $style) {
       $style_names[] = $style->label();
     }
     drupal_set_message(\Drupal::translation()->formatPlural(count($style_names),
       'The image style %style has not been deleted. If you need to delete it, <a href=":url">please do so manually</a>.',
       'The image styles %styles have not been deleted. If you need to delete them, <a href=":url">please do so manually</a>.',
-      array(
+      [
         '%style' => $style_names[0],
         '%styles' => implode(', ', $style_names),
         ':url' => \Drupal\Core\Url::fromRoute('entity.image_style.collection')->toString(),
-      )
+      ]
     ), 'warning');
   }
 }

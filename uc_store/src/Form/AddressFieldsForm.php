@@ -33,19 +33,19 @@ class AddressFieldsForm extends ConfigFormBase {
     $config = $this->config('uc_store.settings')
       ->get('address_fields');
 
-    $form['fields'] = array(
+    $form['fields'] = [
       '#type' => 'table',
-      '#header' => array($this->t('Field'), $this->t('Required'), $this->t('List position')),
-      '#tabledrag' => array(
-        array(
+      '#header' => [$this->t('Field'), $this->t('Required'), $this->t('List position')],
+      '#tabledrag' => [
+        [
           'action' => 'order',
           'relationship' => 'sibling',
           'group' => 'uc-store-address-fields-weight',
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
 
-    $fields = array(
+    $fields = [
       'first_name' => $this->t('First name'),
       'last_name' => $this->t('Last name'),
       'company' => $this->t('Company'),
@@ -56,29 +56,29 @@ class AddressFieldsForm extends ConfigFormBase {
       'country' => $this->t('Country'),
       'postal_code' => $this->t('Postal code'),
       'phone' => $this->t('Phone number'),
-    );
+    ];
 
     foreach ($fields as $field => $label) {
       $form['fields'][$field]['#attributes']['class'][] = 'draggable';
       $form['fields'][$field]['#weight'] = $config[$field]['weight'];
-      $form['fields'][$field]['status'] = array(
+      $form['fields'][$field]['status'] = [
         '#type' => 'checkbox',
         '#title' => $label,
         '#default_value' => $config[$field]['status'],
-      );
-      $form['fields'][$field]['required'] = array(
+      ];
+      $form['fields'][$field]['required'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('@title is required', ['@title' => $label]),
         '#title_display' => 'invisible',
         '#default_value' => $config[$field]['required'],
-      );
-      $form['fields'][$field]['weight'] = array(
+      ];
+      $form['fields'][$field]['weight'] = [
         '#type' => 'weight',
         '#title' => $this->t('Weight for @title', ['@title' => $label]),
         '#title_display' => 'invisible',
         '#default_value' => $config[$field]['weight'],
-        '#attributes' => array('class' => array('uc-store-address-fields-weight')),
-      );
+        '#attributes' => ['class' => ['uc-store-address-fields-weight']],
+      ];
     }
     uasort($form['fields'], 'Drupal\Component\Utility\SortArray::sortByWeightProperty');
 

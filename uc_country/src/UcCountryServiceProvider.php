@@ -24,4 +24,5 @@ class UcCountryServiceProvider extends ServiceProviderBase {
     $definition->addArgument(new Reference('entity_type.manager'));
 
   }
+
 }

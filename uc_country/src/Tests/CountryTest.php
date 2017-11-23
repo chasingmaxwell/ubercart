@@ -19,7 +19,7 @@ class CountryTest extends WebTestBase {
    * Test enable/disable of countries.
    */
   public function testCountryUi() {
-    $this->drupalLogin($this->drupalCreateUser(array('administer countries', 'administer store')));
+    $this->drupalLogin($this->drupalCreateUser(['administer countries', 'administer store']));
 
     // Testing all countries is too much, so we just enable a random selection
     // of 8 countries. All countries will then be tested at some point.
@@ -88,11 +88,11 @@ class CountryTest extends WebTestBase {
    * Test functionality with all countries disabled.
    */
   public function testAllDisabled() {
-    $this->drupalLogin($this->drupalCreateUser(array(
+    $this->drupalLogin($this->drupalCreateUser([
       'administer countries',
       'administer store',
       'access administration pages',
-    )));
+    ]));
 
     // Disable all countries.
     $manager = \Drupal::service('country_manager');
@@ -114,9 +114,9 @@ class CountryTest extends WebTestBase {
   /**
    * Follows a link in the same table row as the label text.
    *
-   * @param $label
+   * @param string $label
    *   The label to find in a table column.
-   * @param $link
+   * @param string $link
    *   The link text to find in the same table row.
    *
    * @return bool|string

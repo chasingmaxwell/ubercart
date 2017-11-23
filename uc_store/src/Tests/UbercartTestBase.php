@@ -96,7 +96,7 @@ abstract class UbercartTestBase extends WebTestBase {
     $this->adminUser = $this->drupalCreateUser($adminPermissions);
 
     // Create a test product.
-    $this->product = $this->createProduct(array('uid' => $this->adminUser->id(), 'promote' => 0));
+    $this->product = $this->createProduct(['uid' => $this->adminUser->id(), 'promote' => 0]);
   }
 
   /**
@@ -109,32 +109,32 @@ abstract class UbercartTestBase extends WebTestBase {
    * @return \Drupal\node\NodeInterface
    *   Product node object.
    */
-  protected function createProduct($product = []) {
+  protected function createProduct(array $product = []) {
     // Set the default required fields.
-    $weight_units = array('lb', 'kg', 'oz', 'g');
-    $length_units = array('in', 'ft', 'cm', 'mm');
-    $product += array(
+    $weight_units = ['lb', 'kg', 'oz', 'g'];
+    $length_units = ['in', 'ft', 'cm', 'mm'];
+    $product += [
       'type' => 'product',
       'model' => $this->randomMachineName(8),
       'cost' => mt_rand(1, 9999),
       'price' => mt_rand(1, 9999),
-      'weight' => array(0 => array(
+      'weight' => [0 => [
         'value' => mt_rand(1, 9999),
         'units' => array_rand(array_flip($weight_units)),
-      )),
-      'dimensions' => array(0 => array(
+      ]],
+      'dimensions' => [0 => [
         'length' => mt_rand(1, 9999),
         'width' => mt_rand(1, 9999),
         'height' => mt_rand(1, 9999),
         'units' => array_rand(array_flip($length_units)),
-      )),
+      ]],
       'pkg_qty' => mt_rand(1, 99),
       'default_qty' => 1,
       'shippable' => 1,
-    );
+    ];
 
-    $product['model'] = array(array('value' => $product['model']));
-    $product['price'] = array(array('value' => $product['price']));
+    $product['model'] = [['value' => $product['model']]];
+    $product['price'] = [['value' => $product['price']]];
 
     return $this->drupalCreateNode($product);
   }
@@ -150,15 +150,15 @@ abstract class UbercartTestBase extends WebTestBase {
    * @return array
    *   Associative array of attribute data.
    */
-  protected function createAttribute($data = [], $save = TRUE) {
-    $attribute = $data + array(
+  protected function createAttribute(array $data = [], $save = TRUE) {
+    $attribute = $data + [
       'name' => $this->randomMachineName(8),
       'label' => $this->randomMachineName(8),
       'description' => $this->randomMachineName(8),
       'required' => mt_rand(0, 1) ? TRUE : FALSE,
       'display' => mt_rand(0, 3),
       'ordering' => mt_rand(-10, 10),
-    );
+    ];
     $attribute = (object) $attribute;
 
     if ($save) {
@@ -177,21 +177,21 @@ abstract class UbercartTestBase extends WebTestBase {
    * @return array
    *   Associative array of attribute option data.
    */
-  protected function createAttributeOption($data = [], $save = TRUE) {
+  protected function createAttributeOption(array $data = [], $save = TRUE) {
     $max_aid = db_select('uc_attributes', 'a')
-      ->fields('a', array('aid'))
+      ->fields('a', ['aid'])
       ->orderBy('aid', 'DESC')
       ->range(0, 1)
       ->execute()
       ->fetchField();
-    $option = $data + array(
+    $option = $data + [
       'aid' => $max_aid,
       'name' => $this->randomMachineName(8),
       'cost' => mt_rand(-500, 500),
       'price' => mt_rand(-500, 500),
       'weight' => mt_rand(-500, 500),
       'ordering' => mt_rand(-10, 10),
-    );
+    ];
     $option = (object) $option;
 
     if ($save) {
@@ -203,7 +203,7 @@ abstract class UbercartTestBase extends WebTestBase {
   /**
    * Adds a product to the cart.
    */
-  protected function addToCart($product, $options = []) {
+  protected function addToCart($product, array $options = []) {
     $this->drupalPostForm('node/' . $product->id(), $options, 'Add to cart');
   }
 
@@ -219,14 +219,14 @@ abstract class UbercartTestBase extends WebTestBase {
    * @return \Drupal\node\NodeInterface
    *   Product node object.
    */
-  protected function createProductClass($data = []) {
+  protected function createProductClass(array $data = []) {
     $class = strtolower($this->randomMachineName(12));
-    $edit = $data + array(
+    $edit = $data + [
       'type' => $class,
       'name' => $class,
       'description' => $this->randomMachineName(32),
       'uc_product[product]' => TRUE,
-    );
+    ];
     $this->drupalPostForm('admin/structure/types/add', $edit, t('Save content type'));
 
     return node_type_load($class);
@@ -241,26 +241,26 @@ abstract class UbercartTestBase extends WebTestBase {
    * @return array
    *   The values array ready to pass to the checkout page.
    */
-  protected function populateCheckoutForm($edit = []) {
-    foreach (array('billing', 'delivery') as $pane) {
+  protected function populateCheckoutForm(array $edit = []) {
+    foreach (['billing', 'delivery'] as $pane) {
       $prefix = 'panes[' . $pane . ']';
-      $key =  $prefix . '[country]';
+      $key = $prefix . '[country]';
       $country_id = isset($edit[$key]) ? $edit[$key] : \Drupal::config('uc_store.settings')->get('address.country');
       $country = \Drupal::service('country_manager')->getCountry($country_id);
 
-      $edit += array(
+      $edit += [
         $prefix . '[first_name]' => $this->randomMachineName(10),
         $prefix . '[last_name]' => $this->randomMachineName(10),
         $prefix . '[street1]' => $this->randomMachineName(10),
         $prefix . '[city]' => $this->randomMachineName(10),
         $prefix . '[postal_code]' => mt_rand(10000, 99999),
-      );
+      ];
 
       // Don't try to set the zone unless the store country has zones!
       if (!empty($country->getZones())) {
-        $edit += array(
+        $edit += [
           $prefix . '[zone]' => array_rand($country->getZones()),
-        );
+        ];
       }
     }
 
@@ -279,7 +279,7 @@ abstract class UbercartTestBase extends WebTestBase {
    * @return \Drupal\uc_order\Entity\Order|false
    *   The created order, or FALSE if the order could not be created.
    */
-  protected function checkout($edit = []) {
+  protected function checkout(array $edit = []) {
     $this->drupalPostForm('cart', [], 'Checkout');
     $this->assertText(
       t('Enter your billing address and information here.'),
@@ -321,7 +321,7 @@ abstract class UbercartTestBase extends WebTestBase {
    * @return \Drupal\uc_order\OrderInterface
    *   Product node object.
    */
-  protected function createOrder($edit = []) {
+  protected function createOrder(array $edit = []) {
     if (empty($edit['primary_email'])) {
       $edit['primary_email'] = $this->randomString() . '@example.org';
     }
@@ -329,7 +329,7 @@ abstract class UbercartTestBase extends WebTestBase {
     $order = Order::create($edit);
 
     if (!isset($edit['products'])) {
-      $order->products[] = OrderProduct::create(array(
+      $order->products[] = OrderProduct::create([
         'nid' => $this->product->nid->target_id,
         'title' => $this->product->title->value,
         'model' => $this->product->model,
@@ -338,7 +338,7 @@ abstract class UbercartTestBase extends WebTestBase {
         'price' => $this->product->price->value,
         'weight' => $this->product->weight,
         'data' => [],
-      ));
+      ]);
     }
 
     $order->save();
@@ -357,7 +357,7 @@ abstract class UbercartTestBase extends WebTestBase {
    *
    * @return array
    */
-  protected function createPaymentMethod($plugin_id, $values = []) {
+  protected function createPaymentMethod($plugin_id, array $values = []) {
     $has_user = $this->loggedInUser;
     if (!$has_user) {
       $this->drupalLogin($this->adminUser);
@@ -401,7 +401,7 @@ abstract class UbercartTestBase extends WebTestBase {
   protected function assertNoMailString($field_name, $string, $email_depth, $message = '', $group = 'Other') {
     $mails = $this->drupalGetMails();
     $string_found = FALSE;
-    for ($i = count($mails) -1; $i >= count($mails) - $email_depth && $i >= 0; $i--) {
+    for ($i = count($mails) - 1; $i >= count($mails) - $email_depth && $i >= 0; $i--) {
       $mail = $mails[$i];
       // Normalize whitespace, as we don't know what the mail system might have
       // done. Any run of whitespace becomes a single space.
@@ -453,22 +453,27 @@ abstract class UbercartTestBase extends WebTestBase {
             case 'replaceWith':
               $wrapperNode->parentNode->replaceChild($newNode, $wrapperNode);
               break;
+
             case 'append':
               $wrapperNode->appendChild($newNode);
               break;
+
             case 'prepend':
               // If no firstChild, insertBefore() falls back to
               // appendChild().
               $wrapperNode->insertBefore($newNode, $wrapperNode->firstChild);
               break;
+
             case 'before':
               $wrapperNode->parentNode->insertBefore($newNode, $wrapperNode);
               break;
+
             case 'after':
               // If no nextSibling, insertBefore() falls back to
               // appendChild().
               $wrapperNode->parentNode->insertBefore($newNode, $wrapperNode->nextSibling);
               break;
+
             case 'html':
               foreach ($wrapperNode->childNodes as $childNode) {
                 $wrapperNode->removeChild($childNode);

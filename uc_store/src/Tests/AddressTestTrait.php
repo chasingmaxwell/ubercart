@@ -19,8 +19,8 @@ trait AddressTestTrait {
    * @return \Drupal\uc_store\AddressInterface
    *   Address object.
    */
-  protected function createAddress($settings = []) {
-    $street = array_flip(array(
+  protected function createAddress(array $settings = []) {
+    $street = array_flip([
       'Street',
       'Avenue',
       'Place',
@@ -28,10 +28,10 @@ trait AddressTestTrait {
       'Road',
       'Boulevard',
       'Court',
-    ));
+    ]);
 
     // Populate any fields that weren't passed in $settings.
-    $values = $settings + array(
+    $values = $settings + [
       'first_name'  => $this->randomMachineName(6),
       'last_name'   => $this->randomMachineName(12),
       'company'     => $this->randomMachineName(10) . ', Inc.',
@@ -45,16 +45,16 @@ trait AddressTestTrait {
                        mt_rand(100, 999) . '-' . mt_rand(0, 9999),
       'email'       => $this->randomMachineName(6) . '@' .
                        $this->randomMachineName(8) . '.com',
-    );
+    ];
 
     // Set the country if it isn't set already.
     $country_id = array_rand(\Drupal::service('country_manager')->getEnabledList());
-    $values += array('country' => $country_id);
+    $values += ['country' => $country_id];
 
     // Don't try to set the zone unless the country has zones!
     $zone_list = \Drupal::service('country_manager')->getZoneList($values['country']);
     if (!empty($zone_list)) {
-      $values += array('zone' => array_rand($zone_list));
+      $values += ['zone' => array_rand($zone_list)];
     }
 
     // Create object.

@@ -5,7 +5,6 @@ namespace Drupal\uc_country\Controller;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\uc_country\Entity\Country;
 
-
 /**
  * Utility functions to enable and disable country configuration entities.
  */
@@ -60,7 +59,8 @@ class CountryController extends ControllerBase {
    * Helper function to return zone options, grouped by country.
    */
   public static function zoneOptionsCallback() {
-    $options = array();
+    $options = [];
+    // Must use \Drupal:: because we're in a static function.
     $countries = \Drupal::entityTypeManager()->getStorage('uc_country')->loadByProperties(['status' => TRUE]);
     foreach ($countries as $country) {
       foreach ($country->getZones() as $id => $zone) {

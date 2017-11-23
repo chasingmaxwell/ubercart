@@ -29,7 +29,7 @@ class AddressTest extends UbercartTestBase {
     $this->test_address[] = $this->createAddress();
 
     // Create a specific address object for use in tests.
-    $settings = array(
+    $settings = [
       'first_name'  => 'Elmo',
       'last_name'   => 'Monster',
       'company'     => 'CTW, Inc.',
@@ -41,7 +41,7 @@ class AddressTest extends UbercartTestBase {
       'postal_code' => '10010',
       'phone'       => '1234567890',
       'email'       => 'elmo@ctw.org',
-    );
+    ];
     $this->test_address[] = $this->createAddress($settings);
   }
 
