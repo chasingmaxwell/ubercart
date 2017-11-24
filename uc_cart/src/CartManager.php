@@ -95,8 +95,7 @@ class CartManager implements CartManagerInterface {
       // Trigger the checkout complete event.
       // rules_invoke_event('uc_checkout_complete', $order);
       $event = new CheckoutCompleteEvent($order);
-      $event_dispatcher = \Drupal::service('event_dispatcher');
-      $event_dispatcher->dispatch(CheckoutCompleteEvent::EVENT_NAME, $event);
+      \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
     }
 
     $type = $order->data->complete_sale;

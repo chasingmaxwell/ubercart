@@ -22,6 +22,7 @@ use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
 use Drupal\node\Entity\Node;
+use Drupal\uc_product\Event\ProductLoadEvent;
 
 /**
  * Implements hook_page_attachments().
@@ -195,6 +196,8 @@ function uc_product_load_variant($nid, $data = FALSE) {
  */
 function uc_product_uc_product_alter(&$node) {
   // rules_invoke_event('uc_product_load', $node);
+  $event = new ProductLoadEvent($node);
+  \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
 }
 
 /**

@@ -108,8 +108,7 @@ class OrderUpdateForm extends FormBase {
       $order = Order::load($form_state->getValue('order_id'));
       // rules_invoke_event('uc_order_status_email_update', $order);
       $event = new OrderStatusEmailUpdateEvent($order);
-      $event_dispatcher = \Drupal::service('event_dispatcher');
-      $event_dispatcher->dispatch(OrderStatusEmailUpdateEvent::EVENT_NAME, $event);
+      \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
     }
 
     drupal_set_message($this->t('Order updated.'));

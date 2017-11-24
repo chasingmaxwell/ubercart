@@ -146,8 +146,7 @@ class Order extends ContentEntityBase implements OrderInterface {
 
       // rules_invoke_event('uc_order_status_update', $this->original, $this);
       $event = new OrderStatusUpdateEvent($this->original, $this);
-      $event_dispatcher = \Drupal::service('event_dispatcher');
-      $event_dispatcher->dispatch(OrderStatusUpdateEvent::EVENT_NAME, $event);
+      \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
     }
   }
 
