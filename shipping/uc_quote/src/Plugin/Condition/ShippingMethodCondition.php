@@ -2,8 +2,7 @@
 
 namespace Drupal\uc_quote\Plugin\Condition;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\rules\Core\RulesConditionBase;
 use Drupal\uc_order\OrderInterface;
@@ -22,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *     ),
  *     "method" = @ContextDefinition("string",
  *       label = @Translation("Shipping method"),
- *       label_options_callback = "shippingMethodOptions"
+ *       list_options_callback = "shippingMethodOptions"
  *     )
  *   }
  * )
@@ -30,18 +29,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ShippingMethodCondition extends RulesConditionBase implements ContainerFactoryPluginInterface {
 
   /**
-   * The module_handler service.
+   * The entity type manager service.
    *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
-  protected $moduleHandler;
-
-  /**
-   * The config.factory service.
-   *
-   * @var \Drupal\Core\Config\ConfigFactoryInterface
-   */
-  protected $configFactory;
+  protected $entityTypeManager;
 
   /**
    * {@inheritdoc}
@@ -59,15 +51,12 @@ class ShippingMethodCondition extends RulesConditionBase implements ContainerFac
    *   The plugin ID for the plugin instance.
    * @param mixed $plugin_definition
    *   The plugin implementation definition.
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
-   *   The core config.factory service.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $moduleHandler
-   *   The core module_handler service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager service.
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $configFactory, ModuleHandlerInterface $moduleHandler) {
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeManagerInterface $entityTypeManager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->configFactory = $configFactory;
-    $this->moduleHandler = $moduleHandler;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -78,8 +67,7 @@ class ShippingMethodCondition extends RulesConditionBase implements ContainerFac
       $configuration,
       $plugin_id,
       $plugin_definition,
-      $container->get('config.factory'),
-      $container->get('module_handler')
+      $container->get('entity_type.manager')
     );
   }
 
@@ -90,15 +78,11 @@ class ShippingMethodCondition extends RulesConditionBase implements ContainerFac
    *   Array of all enabled shipping methods.
    */
   public function shippingMethodOptions() {
-    $methods = $this->moduleHandler->invokeAll('uc_shipping_method');
-    $enabled = $this->configFactory->get('uc_quote.settings')->get('enabled');
-
     $options = [];
-    foreach ($methods as $id => $method) {
-      $options[$id] = $method['title'];
-      if (!isset($enabled[$id]) || !$enabled[$id]) {
-        $options[$id] .= ' ' . t('(disabled)');
-      }
+    $methods = $this->entityTypeManager->getStorage('uc_quote_method')->loadByProperties(['status' => TRUE]);
+    uasort($methods, 'Drupal\uc_quote\Entity\ShippingQuoteMethod::sort');
+    foreach ($methods as $method) {
+      $options[$method->id()] = $method->label();
     }
 
     return $options;
