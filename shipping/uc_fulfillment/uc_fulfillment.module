@@ -34,10 +34,10 @@ function uc_fulfillment_menu_local_tasks_alter(&$data, $router_item, $root_path)
     $order = $router_item['page_arguments'][0];
     $item = menu_get_item('admin/store/orders/' . $order->id() . '/packages/new');
     if ($item['access']) {
-      $data['actions']['output'][] = array(
+      $data['actions']['output'][] = [
         '#theme' => 'menu_local_action',
         '#link' => $item,
-      );
+      ];
     }
   }
 }
@@ -46,22 +46,22 @@ function uc_fulfillment_menu_local_tasks_alter(&$data, $router_item, $root_path)
  * Implements hook_theme().
  */
 function uc_fulfillment_theme() {
-  return array(
-    'uc_packing_slip' => array(
-      'variables' => array(
+  return [
+    'uc_packing_slip' => [
+      'variables' => [
         'order' => NULL,
         'shipment' => NULL,
         'labels' => TRUE,
         'print' => FALSE,
         'business_header' => FALSE,
-      ),
+      ],
       'template' => 'uc-packing-slip',
-    ),
-    'uc_packing_slip_page' => array(
-      'variables' => array('content' => NULL),
+    ],
+    'uc_packing_slip_page' => [
+      'variables' => ['content' => NULL],
       'template' => 'uc-packing-slip-page',
-    ),
-  );
+    ],
+  ];
 }
 
 /**
@@ -84,9 +84,9 @@ function template_preprocess_uc_packing_slip(&$variables) {
   $order = $variables['order'];
   $variables['order_link'] = Link::createFromRoute($order->id(), 'uc_order.user_view', ['user' => $order->getOwnerId(), 'uc_order' => $order->id()], ['absolute' => TRUE])->toString();
   $variables['order_email'] = $order->getEmail();
-  $variables['billing_address'] = array('#markup' => $order->getAddress('billing'));
+  $variables['billing_address'] = ['#markup' => $order->getAddress('billing')];
   $variables['billing_phone'] = $order->getAddress('billing')->phone;
-  $variables['shipping_address'] = array('#markup' => $order->getAddress('delivery'));
+  $variables['shipping_address'] = ['#markup' => $order->getAddress('delivery')];
   $variables['shipping_phone'] = $order->getAddress('delivery')->phone;
 
   if (\Drupal::moduleHandler()->moduleExists('uc_payment')) {
@@ -106,21 +106,21 @@ function template_preprocess_uc_packing_slip(&$variables) {
  * Implements hook_uc_order_actions().
  */
 function uc_fulfillment_uc_order_actions(OrderInterface $order) {
-  $actions = array();
+  $actions = [];
   $account = \Drupal::currentUser();
   if ($account->hasPermission('fulfill orders') && $order->isShippable()) {
-    $actions['package'] = array(
+    $actions['package'] = [
       'title' => t('Package'),
       'url' => Url::fromRoute('uc_fulfillment.packages', ['uc_order' => $order->id()]),
       'weight' => 12,
-    );
+    ];
     $packages = Package::loadByOrder($order->id());
     if (count($packages) != 0) {
-      $actions['ship'] = array(
+      $actions['ship'] = [
         'title' => t('Ship'),
         'url' => Url::fromRoute('uc_fulfillment.shipments', ['uc_order' => $order->id()]),
         'weight' => 13,
-      );
+      ];
     }
   }
 
@@ -187,20 +187,20 @@ function obsolete_uc_fulfillment_shipment_print(array $variables) {
   $shipment = $variables['shipment'];
   $labels = $variables['labels'];
 
-  $output = theme('uc_packing_slip', array('order' => $order, 'shipment' => $shipment));
+  $output = theme('uc_packing_slip', ['order' => $order, 'shipment' => $shipment]);
 
   if ($labels) {
     foreach ($shipment->packages as $id => $package) {
       if (isset($package->label_image) &&
           file_exists($package->label_image->uri)) {
         // TODO: Find a way to store these magic numbers specifically for UPS.
-        list($width, $height) = array(672, 392);
+        list($width, $height) = [672, 392];
         $output .= '<br class="page-break" />' . "\n";
-        $output .= theme('image', array(
+        $output .= theme('image', [
           'uri' => $package->label_image->uri,
-          'attributes' => array('width' => $width, 'height' => $height),
+          'attributes' => ['width' => $width, 'height' => $height],
           'getsize' => FALSE,
-        )) . "\n";
+        ]) . "\n";
       }
     }
   }
@@ -213,20 +213,20 @@ function obsolete_uc_fulfillment_shipment_print(array $variables) {
  */
 function uc_fulfillment_uc_shipping_type() {
   $quote_config = \Drupal::config('uc_quote.settings');
-  $weight = $quote_config->get('type_weight', array('envelope' => -1, 'small_package' => 0));
+  $weight = $quote_config->get('type_weight', ['envelope' => -1, 'small_package' => 0]);
 
-  $types = array(
-    'envelope' => array(
+  $types = [
+    'envelope' => [
       'id' => 'envelope',
       'title' => t('Envelope'),
       'weight' => isset($weight['envelope']) ? $weight['envelope'] : -1,
-    ),
-    'small_package' => array(
+    ],
+    'small_package' => [
       'id' => 'small_package',
       'title' => t('Small package'),
       'weight' => isset($weight['small_package']) ? $weight['small_package'] : 0,
-    ),
-  );
+    ],
+  ];
 
   return $types;
 }

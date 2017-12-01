@@ -11,7 +11,7 @@ class UPSUtilities {
    * Convenience function to get UPS codes for their services.
    */
   public static function services() {
-    return array(
+    return [
       // Domestic services.
       '03' => t('UPS Ground'),
       '01' => t('UPS Next Day Air'),
@@ -32,14 +32,14 @@ class UPSUtilities {
       //'84' => t('UPS Today Intercity'),
       //'85' => t('UPS Today Express'),
       //'86' => t('UPS Today Express Saver'),
-    );
+    ];
   }
 
   /**
    * Convenience function to get UPS codes for their package types.
    */
   public static function packageTypes() {
-    return array(
+    return [
       // Customer Supplied Page is first so it will be the default.
       '02' => t('Customer Supplied Package'),
       '01' => t('UPS Letter'),
@@ -52,7 +52,7 @@ class UPSUtilities {
       '2a' => t('Small Express Box'),
       '2b' => t('Medium Express Box'),
       '2c' => t('Large Express Box'),
-    );
+    ];
   }
 
 }

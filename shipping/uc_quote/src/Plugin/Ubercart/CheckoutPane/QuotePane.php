@@ -27,31 +27,31 @@ class QuotePane extends CheckoutPanePluginBase {
 
     $contents['#attached']['library'][] = 'uc_quote/uc_quote.styles';
 
-    $contents['uid'] = array(
+    $contents['uid'] = [
       '#type' => 'hidden',
       '#value' => \Drupal::currentUser()->id(),
-    );
-    $contents['quote_button'] = array(
+    ];
+    $contents['quote_button'] = [
       '#type' => 'submit',
       '#value' => $this->t('Click to calculate shipping'),
       '#submit' => [[$this, 'paneSubmit']],
       '#weight' => 0,
-      '#ajax' => array(
+      '#ajax' => [
         'effect' => 'slide',
-        'progress' => array(
+        'progress' => [
           'type' => 'bar',
           'message' => $this->t('Receiving quotes...'),
-        ),
-      ),
+        ],
+      ],
       // Shipping quotes can be retrieved even if the form doesn't validate.
-      '#limit_validation_errors' => array(),
-    );
-    $contents['quotes'] = array(
+      '#limit_validation_errors' => [],
+    ];
+    $contents['quotes'] = [
       '#type' => 'container',
-      '#attributes' => array('id' => 'quote'),
+      '#attributes' => ['id' => 'quote'],
       '#tree' => TRUE,
       '#weight' => 1,
-    );
+    ];
 
     // If this was an Ajax request, we reinvoke the 'prepare' op to ensure
     // that we catch any changes in panes heavier than this one.
@@ -60,13 +60,13 @@ class QuotePane extends CheckoutPanePluginBase {
     }
     $contents['quotes'] += $order->quote_form;
 
-    $form_state->set(['uc_ajax', 'uc_quote', 'panes][quotes][quote_button'], array(
+    $form_state->set(['uc_ajax', 'uc_quote', 'panes][quotes][quote_button'], [
       'payment-pane' => '::ajaxReplaceCheckoutPane',
       'quotes-pane' => '::ajaxReplaceCheckoutPane'
-    ));
-    $form_state->set(['uc_ajax', 'uc_quote', 'panes][quotes][quotes][quote_option'], array(
+    ]);
+    $form_state->set(['uc_ajax', 'uc_quote', 'panes][quotes][quotes][quote_option'], [
       'payment-pane' => '::ajaxReplaceCheckoutPane',
-    ));
+    ]);
 
     return $contents;
   }
@@ -146,11 +146,11 @@ class QuotePane extends CheckoutPanePluginBase {
    * {@inheritdoc}
    */
   public function review(OrderInterface $order) {
-    $review = array();
+    $review = [];
 
     $result = db_query("SELECT * FROM {uc_order_line_items} WHERE order_id = :id AND type = :type", [':id' => $order->id(), ':type' => 'shipping']);
     if ($line_item = $result->fetchAssoc()) {
-      $review[] = array('title' => $line_item['title'], 'data' => array('#theme' => 'uc_price', '#price' => $line_item['amount']));
+      $review[] = ['title' => $line_item['title'], 'data' => ['#theme' => 'uc_price', '#price' => $line_item['amount']]];
     }
 
     return $review;

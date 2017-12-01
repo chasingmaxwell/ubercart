@@ -87,7 +87,7 @@ class FulfillmentTest extends UbercartTestBase {
     // Select product and create one package.
     $this->drupalPostForm(
       NULL,
-      array('shipping_types[small_package][table][' . $order->id() . '][checked]' => 1),
+      ['shipping_types[small_package][table][' . $order->id() . '][checked]' => 1],
       t('Create one package')
     );
     // Check that we're now on the package list page.
@@ -120,7 +120,7 @@ class FulfillmentTest extends UbercartTestBase {
     // Select all packages and create shipment using the default "Manual" method..
     $this->drupalPostForm(
       NULL,
-      array('shipping_types[small_package][table][' . $order->id() . '][checked]' => 1),
+      ['shipping_types[small_package][table][' . $order->id() . '][checked]' => 1],
       t('Ship packages')
     );
     // Check that we're now on the shipment details page.
@@ -142,7 +142,7 @@ class FulfillmentTest extends UbercartTestBase {
       'Shipment data pane found.'
     );
 
-    $street = array_flip(array(
+    $street = array_flip([
       'Street',
       'Avenue',
       'Place',
@@ -150,13 +150,13 @@ class FulfillmentTest extends UbercartTestBase {
       'Road',
       'Boulevard',
       'Court',
-    ));
+    ]);
 
     // Fill in the details and make the shipment.
     // If we filled the addresses in when we created the order,
     // those values should already be set here so we wouldn't
     // have to fill them in again.
-    $form_values = array(
+    $form_values = [
       'pickup_address[first_name]' => $this->randomMachineName(6),
       'pickup_address[last_name]' => $this->randomMachineName(12),
       'pickup_address[company]' => $this->randomMachineName(10) . ', Inc.',
@@ -179,12 +179,12 @@ class FulfillmentTest extends UbercartTestBase {
       'packages[1][declared_value]' => '1234.56',
       'packages[1][tracking_number]' => '4-8-15-16-23-42',
       'packages[1][weight][weight]' => '3',
-      'packages[1][weight][units]' => array_rand(array_flip(array('lb', 'kg', 'oz', 'g'))),
+      'packages[1][weight][units]' => array_rand(array_flip(['lb', 'kg', 'oz', 'g'])),
       'packages[1][dimensions][length]' => '1',
       'packages[1][dimensions][width]' => '1',
       'packages[1][dimensions][height]' => '1',
       'packages[1][dimensions][length]' => '1',
-      'packages[1][dimensions][units]' => array_rand(array_flip(array('in', 'ft', 'cm', 'mm'))),
+      'packages[1][dimensions][units]' => array_rand(array_flip(['in', 'ft', 'cm', 'mm'])),
       'carrier' => 'FedEx',
       'accessorials' => 'Standard Overnight',
       'transaction_id' => 'THX1138',
@@ -192,7 +192,7 @@ class FulfillmentTest extends UbercartTestBase {
       'ship_date[date]' => '1985-10-26',
       'expected_delivery[date]' => '2015-10-21',
       'cost' => '12.34',
-    );
+    ];
 
 //@todo fix ajax and uncomment settings country and zone.
     // Find available countries for our select.

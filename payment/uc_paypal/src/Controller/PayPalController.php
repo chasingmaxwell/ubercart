@@ -35,7 +35,7 @@ class PayPalController extends ControllerBase {
    * @param array $ipn
    *   The IPN data.
    */
-  protected function processIpn($ipn) {
+  protected function processIpn(array $ipn) {
     $amount = $ipn['mc_gross'];
     $email = !empty($ipn['business']) ? $ipn['business'] : $ipn['receiver_email'];
     $txn_id = $ipn['txn_id'];
@@ -109,7 +109,7 @@ class PayPalController extends ControllerBase {
     }
 
     db_insert('uc_payment_paypal_ipn')
-      ->fields(array(
+      ->fields([
         'order_id' => $order_id,
         'txn_id' => $txn_id,
         'txn_type' => $ipn['txn_type'],
@@ -118,7 +118,7 @@ class PayPalController extends ControllerBase {
         'receiver_email' => $email,
         'payer_email' => $ipn['payer_email'],
         'received' => REQUEST_TIME,
-      ))
+      ])
       ->execute();
 
     switch ($ipn['payment_status']) {

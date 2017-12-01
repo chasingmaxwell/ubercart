@@ -21,11 +21,11 @@ class WeightQuote extends ShippingQuotePluginBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
+    return [
       'base_rate' => 0,
       'product_rate' => 0,
       'field' => '',
-    );
+    ];
   }
 
   /**
@@ -41,28 +41,28 @@ class WeightQuote extends ShippingQuotePluginBase {
     }
 
     $unit = \Drupal::config('uc_store.settings')->get('weight.units');
-    $form['base_rate'] = array(
+    $form['base_rate'] = [
       '#type' => 'uc_price',
       '#title' => $this->t('Base price'),
       '#description' => $this->t('The starting price for weight-based shipping costs.'),
       '#default_value' => $this->configuration['base_rate'],
       '#required' => TRUE,
-    );
-    $form['product_rate'] = array(
+    ];
+    $form['product_rate'] = [
       '#type' => 'uc_price',
       '#title' => $this->t('Default cost adjustment per @unit', ['@unit' => $unit]),
       '#description' => $this->t('The amount per weight unit to add to the shipping cost for an item.'),
       '#default_value' => $this->configuration['product_rate'],
       '#field_suffix' => $this->t('per @unit', ['@unit' => $unit]),
       '#required' => TRUE,
-    );
-    $form['field'] = array(
+    ];
+    $form['field'] = [
       '#type' => 'select',
       '#title' => $this->t('Product shipping rate override field'),
       '#description' => $this->t('Overrides the default shipping rate per @unit for this shipping method, when the field is attached to a product content type and has a value.', ['@unit' => $unit]),
       '#options' => $fields,
       '#default_value' => $this->configuration['field'],
-    );
+    ];
     return $form;
   }
 

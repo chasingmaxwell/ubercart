@@ -11,7 +11,7 @@ use Drupal\uc_quote\Entity\ShippingQuoteMethod;
  * Pulls the get_quote_from_* triggers and assembles their returned data.
  */
 function uc_quote_assemble_quotes($order) {
-  $shipping_types = array();
+  $shipping_types = [];
   foreach ($order->products as $product) {
     $shipping_types[] = uc_product_get_shipping_type($product);
   }

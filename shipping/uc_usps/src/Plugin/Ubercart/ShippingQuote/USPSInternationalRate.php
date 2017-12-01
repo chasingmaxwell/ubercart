@@ -21,11 +21,11 @@ class USPSInternationalRate extends USPSRateBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
+    return [
       'base_rate' => 0,
       'product_rate' => 0,
       'field' => '',
-    );
+    ];
   }
 
   /**
@@ -40,14 +40,14 @@ class USPSInternationalRate extends USPSRateBase {
       $fields[$field->getName()] = $field->label();
     }
 
-    $form['base_rate'] = array(
+    $form['base_rate'] = [
       '#type' => 'uc_price',
       '#title' => $this->t('Base price'),
       '#description' => $this->t('The starting price for shipping costs.'),
       '#default_value' => $this->configuration['base_rate'],
       '#required' => TRUE,
-    );
-    $form['product_rate'] = array(
+    ];
+    $form['product_rate'] = [
       '#type' => 'number',
       '#title' => $this->t('Default product shipping rate'),
       '#min' => 0,
@@ -56,14 +56,14 @@ class USPSInternationalRate extends USPSRateBase {
       '#default_value' => $this->configuration['product_rate'],
       '#field_suffix' => $this->t('% (percent)'),
       '#required' => TRUE,
-    );
-    $form['field'] = array(
+    ];
+    $form['field'] = [
       '#type' => 'select',
       '#title' => $this->t('Product shipping rate override field'),
       '#description' => $this->t('Overrides the default shipping rate per product for this percentage rate shipping method, when the field is attached to a product content type and has a value.'),
       '#options' => $fields,
       '#default_value' => $this->configuration['field'],
-    );
+    ];
     return $form;
   }
 
@@ -130,26 +130,26 @@ class USPSInternationalRate extends USPSRateBase {
     // Country code is always needed.
     if (empty($destination->country)) {
       // Skip this shipping method.
-      return array();
+      return [];
     }
 
     // Shipments to the US also need zone and postal_code.
     if (($destination->country == 'US') &&
         (empty($destination->zone) || empty($destination->postal_code))) {
       // Skip this shipping method.
-      return array();
+      return [];
     }
 
     // USPS Production server.
     $connection_url = 'http://production.shippingapis.com/ShippingAPI.dll';
 
     // Initialize $debug_data to prevent PHP notices here and in uc_quote.
-    $debug_data = array('debug' => NULL, 'error' => array());
-    $services = array();
-    $addresses = array($quote_config->get('store_default_address'));
+    $debug_data = ['debug' => NULL, 'error' => []];
+    $services = [];
+    $addresses = [$quote_config->get('store_default_address')];
     $packages = $this->packageProducts($products, $addresses);
     if (!count($packages)) {
-      return array();
+      return [];
     }
 
     foreach ($packages as $key => $ship_packages) {
@@ -183,13 +183,13 @@ class USPSInternationalRate extends USPSRateBase {
       $response = new SimpleXMLElement($result->getBody(TRUE));
 
       // Map double-encoded HTML markup in service names to Unicode characters.
-      $service_markup = array(
+      $service_markup = [
         '&lt;sup&gt;&amp;reg;&lt;/sup&gt;'   => '®',
         '&lt;sup&gt;&amp;trade;&lt;/sup&gt;' => '™',
         '&lt;sup&gt;&#174;&lt;/sup&gt;'      => '®',
         '&lt;sup&gt;&#8482;&lt;/sup&gt;'     => '™',
         '**'                                 => '',
-      );
+      ];
       // Use this map to fix USPS service names.
       if (strpos($method['id'], 'intl')) {
         // Find and replace markup in International service names.

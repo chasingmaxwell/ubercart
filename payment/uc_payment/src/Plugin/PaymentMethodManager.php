@@ -52,7 +52,7 @@ class PaymentMethodManager extends DefaultPluginManager {
    *   An array of payment method labels, keyed by ID.
    */
   public function listOptions() {
-    $options = array();
+    $options = [];
     foreach ($this->getDefinitions() as $key => $definition) {
       $options[$key] = $definition['name'];
     }

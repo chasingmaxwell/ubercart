@@ -22,18 +22,18 @@ use Drupal\uc_store\Address;
  * Implements hook_theme().
  */
 function uc_quote_theme() {
-  return array(
-    'uc_cart_pane_quotes' => array(
+  return [
+    'uc_cart_pane_quotes' => [
       'render element' => 'form',
       'file' => 'uc_quote.theme.inc',
       'function' => 'theme_uc_cart_pane_quotes',
-    ),
-    'uc_quote_returned_rates' => array(
+    ],
+    'uc_quote_returned_rates' => [
       'render element' => 'form',
       'file' => 'uc_quote.theme.inc',
       'function' => 'theme_uc_quote_returned_rates',
-    ),
-  );
+    ],
+  ];
 }
 
 /**
@@ -54,8 +54,8 @@ function uc_quote_node_update($node) {
 
     if (!empty($node->shipping_address['street1'])) {
       db_merge('uc_quote_product_locations')
-        ->key(array('nid' => $node->id()))
-        ->fields(array(
+        ->key(['nid' => $node->id()])
+        ->fields([
           'first_name' => $node->shipping_address['first_name'],
           'last_name' => $node->shipping_address['last_name'],
           'company' => $node->shipping_address['company'],
@@ -66,7 +66,7 @@ function uc_quote_node_update($node) {
           'postal_code' => $node->shipping_address['postal_code'],
           'country' => $node->shipping_address['country'],
           'phone' => $node->shipping_address['phone'],
-        ))
+        ])
         ->execute();
     }
     else {
@@ -81,7 +81,7 @@ function uc_quote_node_update($node) {
  * Implements hook_node_load().
  */
 function uc_quote_node_load($nodes) {
-  $nids = array();
+  $nids = [];
   foreach ($nodes as $node) {
     if (uc_product_is_product($node)) {
       $nids[] = $node->id();
@@ -95,7 +95,7 @@ function uc_quote_node_load($nodes) {
   $shipping_type = $quote_config->get('shipping_type');
   $shipping_types = db_query("SELECT id, shipping_type FROM {uc_quote_shipping_types} WHERE id_type = :type AND id IN (:ids[])", [':type' => 'product', ':ids[]' => $nids])->fetchAllKeyed();
 
-  $addresses = db_query("SELECT nid, first_name, last_name, company, street1, street2, city, zone, postal_code, country, phone FROM {uc_quote_product_locations} WHERE nid IN (:nids[])", [':nids[]' => $nids], array('fetch' => 'Address'))->fetchAllAssoc('nid');
+  $addresses = db_query("SELECT nid, first_name, last_name, company, street1, street2, city, zone, postal_code, country, phone FROM {uc_quote_product_locations} WHERE nid IN (:nids[])", [':nids[]' => $nids], ['fetch' => 'Address'])->fetchAllAssoc('nid');
 
   foreach ($nids as $nid) {
     if (isset($shipping_types[$nid])) {
@@ -152,19 +152,19 @@ function uc_quote_form_node_form_alter(&$form, FormStateInterface $form_state) {
 
     // Initialize the shipping fieldset array.
     if (!isset($form['shipping'])) {
-      $form['shipping'] = array();
+      $form['shipping'] = [];
     }
 
-    $form['shipping'] += array(
+    $form['shipping'] += [
       '#type' => 'details',
       '#title' => t('Shipping settings'),
       '#weight' => 150,
-      '#attributes' => array('class' => array('product-shipping')),
+      '#attributes' => ['class' => ['product-shipping']],
       '#group' => 'advanced',
-    );
+    ];
 
     $nid = $form_state->getFormObject()->getEntity()->id();
-    $form['shipping']['shipping_type'] = array(
+    $form['shipping']['shipping_type'] = [
       '#type' => 'select',
       '#title' => t('Default product shipping type'),
       '#empty_value' => '',
@@ -172,21 +172,21 @@ function uc_quote_form_node_form_alter(&$form, FormStateInterface $form_state) {
       '#default_value' => $nid ? uc_quote_get_shipping_type('product', $nid) : '',
       '#options' => uc_quote_shipping_type_options(),
       '#weight' => -7,
-    );
+    ];
 
     // Add the default pickup address fieldset.
-    $form['shipping']['shipping_address'] = array(
+    $form['shipping']['shipping_address'] = [
       '#type' => 'details',
       '#title' => t('Default product pickup address'),
       '#description' => t('When delivering products to customers, the original location of the product must be known in order to accurately quote the shipping cost and set up a delivery. If this pickup address is left blank, this product will default to the <a href=":url">store pickup address</a>.', [':url' => Url::fromRoute('uc_quote.settings')->toString()]),
       '#weight' => -6,
-    );
+    ];
     $form['shipping']['shipping_address']['#tree'] = TRUE;
-    $form['shipping']['shipping_address']['address'] = array(
+    $form['shipping']['shipping_address']['address'] = [
       '#type' => 'uc_address',
       '#default_value' => $form_state->getValue('shipping_address') ?: $address,
       '#required' => FALSE,
-    );
+    ];
   }
 }
 
@@ -199,7 +199,7 @@ function uc_quote_uc_cart_pane($items) {
   if (\Drupal::routeMatch()->getRouteName() == 'uc_cart.cart') {
     $quote_config = \Drupal::config('uc_quote.settings');
     if (!$quote_config->get('quotes_enabled') || ($quote_config->get('panes.delivery.settings.delivery_not_shippable') && !uc_cart_is_shippable())) {
-      return array();
+      return [];
     }
 
     $body = \Drupal::formBuilder()->getForm('uc_cart_pane_quotes', $items);
@@ -208,12 +208,12 @@ function uc_quote_uc_cart_pane($items) {
     $body = '';
   }
 
-  $panes['quotes'] = array(
+  $panes['quotes'] = [
     'title' => t('Shipping quotes'),
     'enabled' => FALSE,
     'weight' => 5,
     'body' => $body,
-  );
+  ];
 
   return $panes;
 }
@@ -235,12 +235,12 @@ function uc_quote_uc_order_load($orders) {
 function uc_quote_uc_order_update(OrderInterface $order) {
   if (isset($order->quote['method'])) {
     db_merge('uc_order_quotes')
-      ->key(array('order_id' => $order->id()))
-      ->fields(array(
+      ->key(['order_id' => $order->id()])
+      ->fields([
         'method' => $order->quote['method'],
         'accessorials' => $order->quote['accessorials'],
         'rate' => $order->quote['rate'],
-      ))
+      ])
       ->execute();
   }
 }
@@ -261,12 +261,12 @@ function uc_quote_uc_shipping_type() {
   $quote_config = \Drupal::config('uc_quote.settings');
   $weight = $quote_config->get('type_weight');
 
-  $types = array();
-  $types['small_package'] = array(
+  $types = [];
+  $types['small_package'] = [
     'id' => 'small_package',
     'title' => t('Small package'),
     'weight' => $weight['small_package'],
-  );
+  ];
 
   return $types;
 }
@@ -287,11 +287,11 @@ function uc_quote_uc_shipping_type() {
 function uc_quote_set_shipping_type($id_type, $id, $shipping_type) {
   if ($shipping_type !== '') {
     db_merge('uc_quote_shipping_types')
-      ->key(array(
+      ->key([
         'id_type' => $id_type,
         'id' => $id,
-      ))
-      ->fields(array('shipping_type' => $shipping_type))
+      ])
+      ->fields(['shipping_type' => $shipping_type])
       ->execute();
   }
   else {
@@ -315,7 +315,7 @@ function uc_quote_set_shipping_type($id_type, $id, $shipping_type) {
  *   The shipping type.
  */
 function uc_quote_get_shipping_type($id_type, $id) {
-  static $types = array();
+  static $types = [];
 
   if (!isset($types[$id_type][$id])) {
     $types[$id_type][$id] = db_query('SELECT shipping_type FROM {uc_quote_shipping_types} WHERE id_type = :type AND id = :id', [':type' => $id_type, ':id' => $id])->fetchField();
@@ -372,9 +372,9 @@ function uc_quote_get_default_shipping_address($nid) {
  * @ingroup forms
  */
 function uc_cart_pane_quotes($form, FormStateInterface $form_state, $items) {
-  $order = Order::create(array(
+  $order = Order::create([
     'uid' => \Drupal::currentUser()->id(),
-  ));
+  ]);
   $order->delivery_country = $form_state->getValue('delivery_country') ?: uc_store_default_country();
   $order->delivery_zone = $form_state->getValue('delivery_zone') ?: '';
   $order->delivery_postal_code = $form_state->getValue('delivery_postal_code') ?: '';
@@ -382,30 +382,30 @@ function uc_cart_pane_quotes($form, FormStateInterface $form_state, $items) {
 
   $form['#attached']['library'][] = 'uc_quote/uc_quote.styles';
 
-  $form['address'] = array(
+  $form['address'] = [
     '#type' => 'uc_address',
-    '#default_value' => array(
+    '#default_value' => [
       'delivery_country' => $order->delivery_country,
       'delivery_zone' => $order->delivery_zone,
       'delivery_postal_code' => $order->delivery_postal_code,
-    ),
+    ],
     '#required' => TRUE,
     '#key_prefix' => 'delivery',
-  );
+  ];
 
-  $form['get_quote'] = array(
+  $form['get_quote'] = [
     '#type' => 'button',
     '#value' => t('Calculate'),
-    '#ajax' => array(
+    '#ajax' => [
       'callback' => 'uc_quote_cart_returned_rates',
       'wrapper' => 'quote',
-    ),
-  );
+    ],
+  ];
 
   module_load_include('inc', 'uc_quote', 'uc_quote.pages');
   $quotes = uc_quote_assemble_quotes($order);
 
-  $quote_options = array();
+  $quote_options = [];
   if (!empty($quotes)) {
     foreach ($quotes as $method => $data) {
       foreach ($data as $accessorial => $quote) {
@@ -418,12 +418,12 @@ function uc_cart_pane_quotes($form, FormStateInterface $form_state, $items) {
     }
   }
 
-  $form['quote'] = array(
+  $form['quote'] = [
     '#theme' => 'item_list',
     '#items' => $quote_options,
     '#prefix' => '<div id="quote">',
     '#suffix' => '</div>',
-  );
+  ];
 
   return $form;
 }
@@ -432,12 +432,12 @@ function uc_cart_pane_quotes($form, FormStateInterface $form_state, $items) {
  * Calculates and returns the shipping quote selection form.
  */
 function uc_quote_build_quote_form($order, $show_errors = TRUE) {
-  $return = array();
+  $return = [];
   $quote_config = \Drupal::config('uc_quote.settings');
 
   module_load_include('inc', 'uc_quote', 'uc_quote.pages');
   $quotes = uc_quote_assemble_quotes($order);
-  $quote_options = array();
+  $quote_options = [];
 
   if (!empty($quotes)) {
     foreach ($quotes as $method => $data) {
@@ -446,36 +446,36 @@ function uc_quote_build_quote_form($order, $show_errors = TRUE) {
 
         if (isset($quote['rate'])) {
           $quote_options[$key] = t('@label: @price', ['@label' => $quote['option_label'], '@price' => $quote['format']]);
-          $return[$key]['rate'] = array(
+          $return[$key]['rate'] = [
             '#type' => 'hidden',
             '#value' => $quote['rate'],
-          );
+          ];
         }
 
         if (!empty($quote['error'])) {
-          $item_list = array(
+          $item_list = [
             '#theme' => 'item_list',
-            '#items' => array('items' => $quote['error']),
-          );
-          $return[$key]['error'] = array(
+            '#items' => ['items' => $quote['error']],
+          ];
+          $return[$key]['error'] = [
             '#type' => 'container',
             '#markup' => drupal_render($item_list),
-            '#attributes' => array('class' => array('quote-error')),
-          );
+            '#attributes' => ['class' => ['quote-error']],
+          ];
         }
 
         if (!empty($quote['notes'])) {
-          $return[$key]['notes'] = array(
+          $return[$key]['notes'] = [
             '#type' => 'container',
             '#markup' => $quote['notes'],
-            '#attributes' => array('class' => array('quote-notes')),
-          );
+            '#attributes' => ['class' => ['quote-notes']],
+          ];
         }
 
         if (!empty($quote['debug'])) {
-          $return[$key]['debug'] = array(
+          $return[$key]['debug'] = [
             '#markup' => '<pre>' . $quote['debug'] . '</pre>',
-          );
+          ];
         }
 
         if (!isset($quote['rate']) && isset($quote['label']) && count($return[$key])) {
@@ -495,23 +495,23 @@ function uc_quote_build_quote_form($order, $show_errors = TRUE) {
       }
     }
 
-    $return['quote_option'] = array(
+    $return['quote_option'] = [
       '#type' => 'radios',
       '#options' => $quote_options,
       '#default_value' => $default,
-    );
+    ];
   }
   elseif ($num_quotes == 1) {
-    $return['quote_option'] = array(
+    $return['quote_option'] = [
       '#type' => 'hidden',
       '#value' => $default,
       '#suffix' => $quote_options[$default],
-    );
+    ];
   }
   elseif ($show_errors) {
-    $return['error'] = array(
+    $return['error'] = [
       '#markup' => t('There were problems getting a shipping quote. Please verify the delivery address and try again.'),
-    );
+    ];
   }
 
   $return['#theme'] = 'uc_quote_returned_rates';
@@ -525,7 +525,7 @@ function uc_quote_build_quote_form($order, $show_errors = TRUE) {
 function uc_quote_cart_returned_rates($form, $form_state) {
   $response = new AjaxResponse();
   $response->addCommand(new ReplaceCommand('#quote', trim(drupal_render($form['quote']))));
-  $status_messages = array('#type' => 'status_messages');
+  $status_messages = ['#type' => 'status_messages'];
   $response->addCommand(new PrependCommand('#quote', drupal_render($status_messages)));
 
   return $response;
@@ -586,7 +586,7 @@ function uc_quote_price_sort($a, $b) {
  * Returns an options array of shipping types.
  */
 function uc_quote_shipping_type_options() {
-  $types = array();
+  $types = [];
 
   $ship_types = uc_quote_get_shipping_types();
   uasort($ship_types, '_uc_quote_type_sort');
@@ -606,9 +606,9 @@ function uc_quote_shipping_type_options() {
  * Returns an array of shipping types.
  */
 function uc_quote_get_shipping_types() {
-  $args = array();
+  $args = [];
   $hook = 'uc_shipping_type';
-  $return = array();
+  $return = [];
   $module_handler = \Drupal::moduleHandler();
   foreach ($module_handler->getImplementations($hook) as $module) {
     $function = $module . '_' . $hook;

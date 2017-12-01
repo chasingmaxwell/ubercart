@@ -11,7 +11,7 @@ class USPSUtilities {
    * Maps envelope shipment services to their IDs.
    */
   public static function envelopeServices() {
-    return array(
+    return [
       'zero' => t('U.S.P.S. First-Class Mail Postcard'),
       'zeroFlat' => t('U.S.P.S. First-Class Mail Letter'),
       12 => t('U.S.P.S. First-Class Postcard Stamped'),
@@ -21,14 +21,14 @@ class USPSUtilities {
       13 => t('U.S.P.S. Express Mail Flat-Rate Envelope'),
       23 => t('U.S.P.S. Express Mail Sunday/Holiday Guarantee'),
       25 => t('U.S.P.S. Express Mail Flat-Rate Envelope Sunday/Holiday Guarantee'),
-    );
+    ];
   }
 
   /**
    * Maps parcel shipment services to their IDs.
    */
   public static function services() {
-    return array(
+    return [
       'zeroFlat' => t('U.S.P.S. First-Class Mail Letter'),
       'zeroParcel' => t('U.S.P.S. First-Class Mail Parcel'),
       1 => t('U.S.P.S. Priority Mail'),
@@ -41,14 +41,14 @@ class USPSUtilities {
       5 => t('U.S.P.S. Bound Printed Matter'),
       6 => t('U.S.P.S. Media Mail'),
       7 => t('U.S.P.S. Library'),
-    );
+    ];
   }
 
   /**
    * Maps international envelope services to their IDs.
    */
   public static function internationalEnvelopeServices() {
-    return array(
+    return [
       13 => t('First Class Mail International Letter'),
       14 => t('First Class Mail International Large Envelope'),
       2 => t('Priority Mail International'),
@@ -57,14 +57,14 @@ class USPSUtilities {
       12 => t('GXG Envelopes'),
       1 => t('Express Mail International (EMS)'),
       10 => t('Express Mail International (EMS) Flat Rate Envelope'),
-    );
+    ];
   }
 
   /**
    * Maps international parcel services to their IDs.
    */
   public static function internationalServices() {
-    return array(
+    return [
       15 => t('First Class Mail International Package'),
       2 => t('Priority Mail International'),
       16 => t('Priority Mail International Small Flat-Rate Box'),
@@ -74,14 +74,14 @@ class USPSUtilities {
       6 => t('Global Express Guaranteed Non-Document Rectangular'),
       7 => t('Global Express Guaranteed Non-Document Non-Rectangular'),
       1 => t('Express Mail International (EMS)'),
-    );
+    ];
   }
 
   /**
    * Convenience function for select form elements.
    */
   public static function packageTypes() {
-    return array(
+    return [
       'VARIABLE' => t('Variable'),
       'FLAT RATE ENVELOPE' => t('Flat rate envelope'),
       'PADDED FLAT RATE ENVELOPE' => t('Padded flat rate envelope'),
@@ -97,7 +97,7 @@ class USPSUtilities {
       'REGIONALRATEBOXB' => t('Regional rate box B'),
       'RECTANGULAR' => t('Rectangular'),
       'NONRECTANGULAR' => t('Non-rectangular'),
-    );
+    ];
   }
 
 }

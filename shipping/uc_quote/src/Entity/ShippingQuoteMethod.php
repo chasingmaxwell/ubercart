@@ -83,7 +83,7 @@ class ShippingQuoteMethod extends ConfigEntityBase implements ShippingQuoteMetho
    *
    * @var array
    */
-  protected $settings = array();
+  protected $settings = [];
 
   /**
    * {@inheritdoc}

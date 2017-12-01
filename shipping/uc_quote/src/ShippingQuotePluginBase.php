@@ -23,7 +23,7 @@ abstract class ShippingQuotePluginBase extends PluginBase implements ShippingQuo
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array();
+    return [];
   }
 
   /**
@@ -50,7 +50,7 @@ abstract class ShippingQuotePluginBase extends PluginBase implements ShippingQuo
    * {@inheritdoc}
    */
   public function calculateDependencies() {
-    return array();
+    return [];
   }
 
   /**

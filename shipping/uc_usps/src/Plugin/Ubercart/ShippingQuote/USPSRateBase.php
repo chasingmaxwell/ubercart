@@ -17,11 +17,11 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
+    return [
       'base_rate' => 0,
       'product_rate' => 0,
       'field' => '',
-    );
+    ];
   }
 
   /**
@@ -36,14 +36,14 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
       $fields[$field->getName()] = $field->label();
     }
 
-    $form['base_rate'] = array(
+    $form['base_rate'] = [
       '#type' => 'uc_price',
       '#title' => $this->t('Base price'),
       '#description' => $this->t('The starting price for shipping costs.'),
       '#default_value' => $this->configuration['base_rate'],
       '#required' => TRUE,
-    );
-    $form['product_rate'] = array(
+    ];
+    $form['product_rate'] = [
       '#type' => 'number',
       '#title' => $this->t('Default product shipping rate'),
       '#min' => 0,
@@ -52,14 +52,14 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
       '#default_value' => $this->configuration['product_rate'],
       '#field_suffix' => $this->t('% (percent)'),
       '#required' => TRUE,
-    );
-    $form['field'] = array(
+    ];
+    $form['field'] = [
       '#type' => 'select',
       '#title' => $this->t('Product shipping rate override field'),
       '#description' => $this->t('Overrides the default shipping rate per product for this percentage rate shipping method, when the field is attached to a product content type and has a value.'),
       '#options' => $fields,
       '#default_value' => $this->configuration['field'],
-    );
+    ];
     return $form;
   }
 
@@ -84,16 +84,16 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
    */
   public function getDisplayLabel($label) {
     // USPS logo.
-    $build['image'] = array(
+    $build['image'] = [
       '#theme' => 'image',
       '#uri' => drupal_get_path('module', 'uc_usps') . '/images/uc_usps_logo.jpg',
       '#alt' => $this->t('U.S.P.S. logo'),
-      '#attributes' => array('class' => ['usps-logo']),
-    );
+      '#attributes' => ['class' => ['usps-logo']],
+    ];
     // Add USPS service name, removing any 'U.S.P.S.' prefix.
-    $build['label'] = array(
+    $build['label'] = [
       '#plain_text' => preg_replace('/^U\.S\.P\.S\./', '', $label),
-    );
+    ];
 
     return $build;
   }
@@ -136,12 +136,12 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
    */
   protected function packageProducts(array $products, array $addresses) {
     $last_key = 0;
-    $packages = array();
+    $packages = [];
     $usps_config = \Drupal::config('uc_usps.settings');
     if ($usps_config->get('all_in_one') && count($products) > 1) {
       // "All in one" packaging strategy.
       // Only need to do this if more than one product line item in order.
-      $packages[$last_key] = array(0 => $this->newPackage());
+      $packages[$last_key] = [0 => $this->newPackage()];
       foreach ($products as $product) {
         if ($product->nid->value) {
           // Packages are grouped by the address from which they will be
@@ -164,7 +164,7 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
             // $addresses.
             $addresses[++$last_key] = $address;
             $key = $last_key;
-            $packages[$key] = array(0 => $this->newPackage());
+            $packages[$key] = [0 => $this->newPackage()];
           }
         }
 
@@ -261,7 +261,7 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
           $package->width = min($product->length, $product->width) * $length_conversion;
           $package->height = $product->height * $length_conversion;
           if ($package->length < $package->height) {
-            list($package->length, $package->height) = array($package->height, $package->length);
+            list($package->length, $package->height) = [$package->height, $package->length];
           }
           $package->girth = 2 * $package->width + 2 * $package->height;
           $package->size = $package->length <= 12 ? 'REGULAR' : 'LARGE';
@@ -304,7 +304,7 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
           $package->width = min($product->length, $product->width) * $length_conversion;
           $package->height = $product->height * $length_conversion;
           if ($package->length < $package->height) {
-            list($package->length, $package->height) = array($package->height, $package->length);
+            list($package->length, $package->height) = [$package->height, $package->length];
           }
           $package->girth = 2 * $package->width + 2 * $package->height;
           $package->size = $package->length <= 12 ? 'REGULAR' : 'LARGE';
@@ -435,26 +435,26 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
     // Country code is always needed.
     if (empty($destination->country)) {
       // Skip this shipping method.
-      return array();
+      return [];
     }
 
     // Shipments to the US also need zone and postal_code.
     if (($destination->country == 'US') &&
         (empty($destination->zone) || empty($destination->postal_code))) {
       // Skip this shipping method.
-      return array();
+      return [];
     }
 
     // USPS Production server.
     $connection_url = 'http://production.shippingapis.com/ShippingAPI.dll';
 
     // Initialize $debug_data to prevent PHP notices here and in uc_quote.
-    $debug_data = array('debug' => NULL, 'error' => array());
-    $services = array();
-    $addresses = array($quote_config->get('store_default_address'));
+    $debug_data = ['debug' => NULL, 'error' => []];
+    $services = [];
+    $addresses = [$quote_config->get('store_default_address')];
     $packages = $this->packageProducts($products, $addresses);
     if (!count($packages)) {
-      return array();
+      return [];
     }
 
     foreach ($packages as $key => $ship_packages) {
@@ -488,13 +488,13 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
       $response = new SimpleXMLElement($result->getBody(TRUE));
 
       // Map double-encoded HTML markup in service names to Unicode characters.
-      $service_markup = array(
+      $service_markup = [
         '&lt;sup&gt;&amp;reg;&lt;/sup&gt;'   => '®',
         '&lt;sup&gt;&amp;trade;&lt;/sup&gt;' => '™',
         '&lt;sup&gt;&#174;&lt;/sup&gt;'      => '®',
         '&lt;sup&gt;&#8482;&lt;/sup&gt;'     => '™',
         '**'                                 => '',
-      );
+      ];
       // Use this map to fix USPS service names.
       if (strpos($method['id'], 'intl')) {
         // Find and replace markup in International service names.

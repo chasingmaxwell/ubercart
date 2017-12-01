@@ -61,16 +61,16 @@ class ShippingQuoteMethodListBuilder extends DraggableListBuilder implements For
    * {@inheritdoc}
    */
   public function buildHeader() {
-    $header['label'] = array(
+    $header['label'] = [
       'data' => $this->t('Shipping quote method'),
-    );
-    $header['description'] = array(
+    ];
+    $header['description'] = [
       'data' => $this->t('Description'),
-      'class' => array(RESPONSIVE_PRIORITY_LOW),
-    );
-    $header['status'] = array(
+      'class' => [RESPONSIVE_PRIORITY_LOW],
+    ];
+    $header['status'] = [
       'data' => $this->t('Status'),
-    );
+    ];
     return $header + parent::buildHeader();
   }
 
@@ -95,37 +95,37 @@ class ShippingQuoteMethodListBuilder extends DraggableListBuilder implements For
     }, $this->shippingQuotePluginManager->getDefinitions());
     uasort($options, 'strnatcasecmp');
 
-    $form['add'] = array(
+    $form['add'] = [
       '#type' => 'details',
       '#title' => $this->t('Add shipping method'),
       '#open' => TRUE,
-      '#attributes' => array(
-        'class' => array('container-inline'),
-      ),
-    );
-    $form['add']['plugin'] = array(
+      '#attributes' => [
+        'class' => ['container-inline'],
+      ],
+    ];
+    $form['add']['plugin'] = [
       '#type' => 'select',
       '#title' => $this->t('Type'),
       '#empty_option' => $this->t('- Choose -'),
       '#options' => $options,
-    );
-    $form['add']['submit'] = array(
+    ];
+    $form['add']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Add shipping method'),
-      '#validate' => array('::validateAddMethod'),
-      '#submit' => array('::submitAddMethod'),
-      '#limit_validation_errors' => array(array('plugin')),
-    );
+      '#validate' => ['::validateAddMethod'],
+      '#submit' => ['::submitAddMethod'],
+      '#limit_validation_errors' => [['plugin']],
+    ];
 
     $form = parent::buildForm($form, $form_state);
     $form[$this->entitiesKey]['#empty'] = $this->t('No shipping methods have been configured yet.');
 
     $form['actions']['#type'] = 'actions';
-    $form['actions']['submit'] = array(
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save configuration'),
       '#button_type' => 'primary',
-    );
+    ];
 
     return $form;
   }
@@ -159,9 +159,9 @@ class ShippingQuoteMethodListBuilder extends DraggableListBuilder implements For
    * {@inheritdoc}
    */
   public function render() {
-    $build['description'] = array(
+    $build['description'] = [
       '#markup' => '<p>' . t('By default, only "Flat rate", "Percentage rate" and "Weight quote" shipping methods are listed here. To see additional shipping methods you must <a href=":install">install additional modules</a>. For more information about shipping methods and settings please read the <a href=":doc">Ubercart Documentation</a>.', [':install' => Url::fromRoute('system.modules_list', [], ['fragment' => 'edit-modules-ubercart-shipping'])->toString(), ':doc' => Url::fromUri('http://www.drupal.org/documentation/modules/ubercart')->toString()]) . '</p><p>' . t('The order of methods shown below is the order those methods will appear on the checkout page. To re-order, drag the method to its desired location using the drag icon then save the configuration using the button at the bottom of the page.') . '</p>',
-    );
+    ];
     $build += parent::render();
 
     return $build;

@@ -31,10 +31,10 @@ class PackageTest extends UbercartTestBase {
     ]);
 
     // Add three more products to use for our tests.
-    $products = array();
+    $products = [];
     for ($i = 1; $i <= 4; $i++) {
-      $product = $this->createProduct(array('uid' => $this->adminUser->id(), 'promote' => 0));
-      $order->products[$i] = OrderProduct::create(array(
+      $product = $this->createProduct(['uid' => $this->adminUser->id(), 'promote' => 0]);
+      $order->products[$i] = OrderProduct::create([
         'nid' => $product->nid->target_id,
         'title' => $product->title->value,
         'model' => $product->model,
@@ -43,7 +43,7 @@ class PackageTest extends UbercartTestBase {
         'price' => $product->price->value,
         'weight' => $product->weight,
         'data' => [],
-      ));
+      ]);
       $order->products[$i]->data->shippable = 1;
     }
     $order->save();
@@ -103,12 +103,12 @@ class PackageTest extends UbercartTestBase {
     // Select all products and test the "Cancel" button.
     $this->drupalPostForm(
       NULL,
-      array(
+      [
         'shipping_types[small_package][table][1][checked]' => 1,
         'shipping_types[small_package][table][2][checked]' => 1,
         'shipping_types[small_package][table][3][checked]' => 1,
         'shipping_types[small_package][table][4][checked]' => 1,
-      ),
+      ],
       t('Cancel')
     );
     // Go back to Packages tab and try something else.
@@ -131,12 +131,12 @@ class PackageTest extends UbercartTestBase {
     // Now test the "Create one package" button with all products selected.
     $this->drupalPostForm(
       NULL,
-      array(
+      [
         'shipping_types[small_package][table][1][checked]' => 1,
         'shipping_types[small_package][table][2][checked]' => 1,
         'shipping_types[small_package][table][3][checked]' => 1,
         'shipping_types[small_package][table][4][checked]' => 1,
-      ),
+      ],
       t('Create one package')
     );
 
@@ -228,10 +228,10 @@ class PackageTest extends UbercartTestBase {
     // Now test the "Create one package" button with all products selected.
     $this->drupalPostForm(
       NULL,
-      array(
+      [
         'shipping_types[small_package][table][1][checked]' => 1,
         'shipping_types[small_package][table][2][checked]' => 1,
-      ),
+      ],
       t('Create one package')
     );
 
@@ -276,10 +276,10 @@ class PackageTest extends UbercartTestBase {
     );
     $this->drupalPostForm(
       NULL,
-      array(
+      [
         'shipping_types[small_package][table][3][checked]' => 1,
         'shipping_types[small_package][table][4][checked]' => 1,
-      ),
+      ],
       t('Create one package')
     );
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/packages');
@@ -313,12 +313,12 @@ class PackageTest extends UbercartTestBase {
     // Back to no packages. Now test "Make packages" button.
     $this->drupalPostForm(
       NULL,
-      array(
+      [
         'shipping_types[small_package][table][1][checked]' => 1,
         'shipping_types[small_package][table][2][checked]' => 1,
         'shipping_types[small_package][table][3][checked]' => 1,
         'shipping_types[small_package][table][4][checked]' => 1,
-      ),
+      ],
       t('Make packages')
     );
 

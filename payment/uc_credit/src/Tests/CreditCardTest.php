@@ -231,12 +231,12 @@ class CreditCardTest extends UbercartTestBase {
     $this->addToCart($this->product);
 
     // Submit the checkout page.
-    $edit = $this->populateCheckoutForm(array(
+    $edit = $this->populateCheckoutForm([
       'panes[payment][details][cc_number]' => array_rand(array_flip(self::$test_cards)),
       'panes[payment][details][cc_cvv]' => mt_rand(100, 999),
       'panes[payment][details][cc_exp_month]' => mt_rand(1, 12),
       'panes[payment][details][cc_exp_year]' => mt_rand(date('Y') + 1, 2022),
-    ));
+    ]);
     $this->drupalPostForm('cart/checkout', $edit, 'Review order');
     $this->assertText('(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4), 'Truncated credit card number found.');
     $this->assertText($edit['panes[payment][details][cc_exp_year]'], 'Expiry date found.');
@@ -249,10 +249,10 @@ class CreditCardTest extends UbercartTestBase {
     $this->assertFieldByName('panes[payment][details][cc_exp_year]', $edit['panes[payment][details][cc_exp_year]'], 'Expiry year found.');
 
     // Change the number and fail with a known-bad CVV.
-    $edit = array(
+    $edit = [
       'panes[payment][details][cc_number]' => array_rand(array_flip(self::$test_cards)),
       'panes[payment][details][cc_cvv]' => '000',
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, 'Review order');
     $this->assertText('(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4), 'Truncated updated credit card number found.');
 
@@ -266,9 +266,9 @@ class CreditCardTest extends UbercartTestBase {
     $this->assertFieldByName('panes[payment][details][cc_cvv]', '---', 'Masked CVV found.');
 
     // Fix the CVV.
-    $edit = array(
+    $edit = [
       'panes[payment][details][cc_cvv]' => mt_rand(100, 999),
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, 'Review order');
 
     // Check for success.
@@ -280,19 +280,19 @@ class CreditCardTest extends UbercartTestBase {
    * Tests that expiry date validation functions correctly.
    */
   public function testExpiryDate() {
-    $order = $this->createOrder(array('payment_method' => $this->paymentMethod['id']));
+    $order = $this->createOrder(['payment_method' => $this->paymentMethod['id']]);
 
     $year = date('Y');
     $month = date('n');
     for ($y = $year; $y <= $year + 2; $y++) {
       for ($m = 1; $m <= 12; $m++) {
-        $edit = array(
+        $edit = [
           'amount' => 1,
           'cc_data[cc_number]' => '4111111111111111',
           'cc_data[cc_cvv]' => '123',
           'cc_data[cc_exp_month]' => $m,
           'cc_data[cc_exp_year]' => $y,
-        );
+        ];
         $this->drupalPostForm('admin/store/orders/' . $order->id() . '/credit/' . $this->paymentMethod['id'], $edit, 'Charge amount');
 
         if ($y > $year || $m >= $month) {

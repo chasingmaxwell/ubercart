@@ -20,7 +20,7 @@
  * @see http://pe.usps.gov/text/imm/immctry.htm
  */
 function uc_usps_country_map($code = NULL) {
-  $countries = array(
+  $countries = [
     'AX' => 'Aland Island (Finland)',
     'AU' => 'Australia', // Heard Island and McDonald Islands
     'BO' => 'Bolivia',
@@ -67,7 +67,7 @@ function uc_usps_country_map($code = NULL) {
     'VA' => 'Vatican City',
     'VE' => 'Venezuela',
     'WF' => 'Wallis and Futuna Islands',
-  );
+  ];
 
   if ($code) {
     if (isset($countries[$code])) {

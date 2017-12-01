@@ -62,7 +62,7 @@ class QuoteTest extends UbercartTestBase {
     //   $name = 'get_quote_from_flatrate_' . $method->mid;
     //   $condition['LABEL'] = $edit['label'] . ' conditions';
     //   $oldconfig = rules_config_load($name);
-    //   $newconfig = rules_import(array($name => $condition));
+    //   $newconfig = rules_import([$name => $condition]);
     //   $newconfig->id = $oldconfig->id;
     //   unset($newconfig->is_new);
     //   $newconfig->status = ENTITY_CUSTOM;
@@ -107,7 +107,7 @@ class QuoteTest extends UbercartTestBase {
     // Get the list of available quotes.
     $xpath = '//*[@name="panes[quotes][quotes][quote_option]"]';
     $elements = $this->xpath($xpath);
-    $vals = array();
+    $vals = [];
     foreach ($elements as $element) {
       $vals[(string) $element['id']] = (string) $element['value'];
     }
@@ -130,7 +130,7 @@ class QuoteTest extends UbercartTestBase {
     $this->setRawContent($dom->saveHTML());
 
     // Post the selection via Ajax.
-    $option = array('panes[quotes][quotes][quote_option]' => $selected);
+    $option = ['panes[quotes][quotes][quote_option]' => $selected];
     return $this->drupalPostAjaxForm(NULL, [], $option);
   }
 
@@ -138,10 +138,10 @@ class QuoteTest extends UbercartTestBase {
    * Verifies shipping pane is hidden when there are no shippable items.
    */
   public function testNoQuote() {
-    $product = $this->createProduct(array('shippable' => 0));
+    $product = $this->createProduct(['shippable' => 0]);
     $quote = $this->createQuote();
     $this->addToCart($product);
-    $this->drupalPostForm('cart', array('items[0][qty]' => 1), t('Checkout'));
+    $this->drupalPostForm('cart', ['items[0][qty]' => 1], t('Checkout'));
     $this->assertNoText(t('Calculate shipping cost'), 'Shipping pane is not present with no shippable item.');
   }
 
@@ -152,23 +152,23 @@ class QuoteTest extends UbercartTestBase {
     // Create product and quotes.
     $product = $this->createProduct();
     $quote1 = $this->createQuote();
-    $quote2 = $this->createQuote(['weight' => 1], array(
+    $quote2 = $this->createQuote(['weight' => 1], [
       'LABEL' => 'quote_conditions',
       'PLUGIN' => 'and',
-      'REQUIRES' => array('rules'),
-      'USES VARIABLES' => array(
-        'order' => array(
+      'REQUIRES' => ['rules'],
+      'USES VARIABLES' => [
+        'order' => [
           'type' => 'uc_order',
           'label' => 'Order'
-        ),
-      ),
-      'AND' => array( array(
-        'data_is' => array(
-          'data' => array('order:delivery-address:country'),
+        ],
+      ],
+      'AND' => [[
+        'data_is' => [
+          'data' => ['order:delivery-address:country'],
           'value' => 'US',
-        ),
-      )),
-    ));
+        ],
+      ]],
+    ]);
     // Define strings to test for.
     $qty = mt_rand(2, 100);
     foreach ([$quote1, $quote2] as $quote) {
@@ -180,7 +180,7 @@ class QuoteTest extends UbercartTestBase {
 
     // Add product to cart, update qty, and go to checkout page.
     $this->addToCart($product);
-    $this->drupalPostForm('cart', array('items[0][qty]' => $qty), t('Checkout'));
+    $this->drupalPostForm('cart', ['items[0][qty]' => $qty], t('Checkout'));
     $this->assertText($quote1->label(), 'The default quote option is available');
     $this->assertText($quote2->label(), 'The second quote option is available');
     $this->assertText($quote1->total, 'Order total includes the default quote.');
@@ -188,7 +188,7 @@ class QuoteTest extends UbercartTestBase {
     // Select a different quote and ensure the total updates correctly.  Currently, we have to do this
     // by examining the ajax return value directly (rather than the page contents) because drupalPostAjaxForm() can
     // only handle replacements via the 'wrapper' property, and the ajax callback may use a command with a selector.
-    $edit = array('panes[quotes][quotes][quote_option]' => $quote2->id() . '---0');
+    $edit = ['panes[quotes][quotes][quote_option]' => $quote2->id() . '---0'];
     $edit = $this->populateCheckoutForm($edit);
     $result = $this->ucPostAjax(NULL, $edit, $edit);
     $this->assertText($quote2->total, 'The order total includes the selected quote.');
