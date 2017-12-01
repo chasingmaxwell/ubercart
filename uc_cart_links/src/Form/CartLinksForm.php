@@ -4,11 +4,15 @@ namespace Drupal\uc_cart_links\Form;
 
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\UrlHelper;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
+use Drupal\uc_cart\CartManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Preprocesses a cart link, confirming with the user for destructive actions.
@@ -23,6 +27,61 @@ class CartLinksForm extends ConfirmFormBase {
   protected $actions;
 
   /**
+   * The cart manager.
+   *
+   * @var \Drupal\uc_cart\CartManagerInterface
+   */
+  protected $cartManager;
+
+  /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
+   * The session.
+   *
+   * @var \Symfony\Component\HttpFoundation\Session\SessionInterface
+   */
+  protected $session;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Drupal\uc_cart\CartManagerInterface $cart_manager
+   *   The cart manager.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler.
+   * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
+   *   The session.
+   */
+  public function __construct(CartManagerInterface $cart_manager, ModuleHandlerInterface $module_handler, SessionInterface $session) {
+    $this->cartManager = $cart_manager;
+    $this->moduleHandler = $module_handler;
+    $this->session = $session;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('uc_cart.manager'),
+      $container->get('module_handler'),
+      $container->get('session')
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFormId() {
+    return 'uc_cart_links_form';
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function getQuestion() {
@@ -34,13 +93,6 @@ class CartLinksForm extends ConfirmFormBase {
    */
   public function getCancelUrl() {
     return [];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function getFormId() {
-    return 'uc_cart_links_form';
   }
 
   /**
@@ -77,7 +129,7 @@ class CartLinksForm extends ConfirmFormBase {
     }
 
     // Confirm with the user if the form contains a destructive action.
-    $cart = \Drupal::service('uc_cart.manager')->get();
+    $cart = $this->cartManager->get();
     $items = $cart->getContents();
     if ($cart_links_config->get('empty') && !empty($items)) {
       $actions = explode('-', urldecode($this->actions));
@@ -114,7 +166,7 @@ class CartLinksForm extends ConfirmFormBase {
     $messages = [];
     $id = $this->t('(not specified)');
 
-    $cart = \Drupal::service('uc_cart.manager')->get();
+    $cart = $this->cartManager->get();
     foreach ($actions as $action) {
       switch (Unicode::substr($action, 0, 1)) {
         // Set the ID of the Cart Link.
@@ -139,11 +191,13 @@ class CartLinksForm extends ConfirmFormBase {
               case 'P':
                 $p['nid'] = intval(Unicode::substr($part, 1));
                 break;
+
               // Set the quantity to add to cart: _q2
               case 'q':
               case 'Q':
                 $p['qty'] = intval(Unicode::substr($part, 1));
                 break;
+
               // Set an attribute/option for the product: _a3o6
               case 'a':
               case 'A':
@@ -164,11 +218,12 @@ class CartLinksForm extends ConfirmFormBase {
                     // option, so put that into an array with this new option.
                     $p['attributes'][$attribute] = [
                       $p['attributes'][$attribute] => $p['attributes'][$attribute],
-                      $option => $option
+                      $option => $option,
                     ];
                   }
                 }
                 break;
+
               // Suppress the add to cart message: _s
               case 's':
               case 'S':
@@ -179,8 +234,9 @@ class CartLinksForm extends ConfirmFormBase {
 
           // Add the item to the cart, suppressing the default redirect.
           if ($p['nid'] > 0 && $p['qty'] > 0) {
-            // If it's a product kit, we need black magic to make everything work
-            // right. In other words, we have to simulate FAPI's form values.
+            // If it's a product kit, we need black magic to make everything
+            // work right. In other words, we have to simulate FAPI's form
+            // values.
             $node = Node::load($p['nid']);
             if ($node->status) {
               if (isset($node->products) && is_array($node->products)) {
@@ -191,7 +247,7 @@ class CartLinksForm extends ConfirmFormBase {
                   ];
                 }
               }
-              $cart->addItem($p['nid'], $p['qty'], $p['data'] + \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', [$p]), $msg);
+              $cart->addItem($p['nid'], $p['qty'], $p['data'] + $this->moduleHandler->invokeAll('uc_add_to_cart_data', [$p]), $msg);
             }
             else {
               $this->logger('uc_cart_link')->error('Cart Link on %url tried to add an unpublished product to the cart.', ['%url' => $this->getRequest()->server->get('HTTP_REFERER')]);
@@ -243,7 +299,7 @@ class CartLinksForm extends ConfirmFormBase {
         ->execute();
     }
 
-    \Drupal::service('session')->set('uc_cart_last_url', $this->getRequest()->server->get('HTTP_REFERER'));
+    $this->session->set('uc_cart_last_url', $this->getRequest()->server->get('HTTP_REFERER'));
 
     $query = $this->getRequest()->query;
     if ($query->has('destination')) {

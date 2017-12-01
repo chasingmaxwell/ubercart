@@ -8,11 +8,39 @@ use Drupal\uc_order\Entity\Order;
 use Drupal\uc_order\Entity\OrderStatus;
 use Drupal\uc_order\Event\OrderStatusEmailUpdateEvent;
 use Drupal\uc_order\OrderInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * Updates an order's status and optionally adds comments.
  */
 class OrderUpdateForm extends FormBase {
+
+  /**
+   * The event_dispatcher service.
+   *
+   * @var \Symfony\Component\EventDispatcher\EventDispatcherInterface
+   */
+  protected $eventDispatcher;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $event_dispatcher
+   *   The event_dispatcher service.
+   */
+  public function __construct(EventDispatcherInterface $event_dispatcher) {
+    $this->eventDispatcher = $event_dispatcher;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('event_dispatcher')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -108,7 +136,7 @@ class OrderUpdateForm extends FormBase {
       $order = Order::load($form_state->getValue('order_id'));
       // rules_invoke_event('uc_order_status_email_update', $order);
       $event = new OrderStatusEmailUpdateEvent($order);
-      \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
+      $this->eventDispatcher->dispatch($event::EVENT_NAME, $event);
     }
 
     drupal_set_message($this->t('Order updated.'));

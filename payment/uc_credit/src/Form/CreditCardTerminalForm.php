@@ -2,10 +2,12 @@
 
 namespace Drupal\uc_credit\Form;
 
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\uc_order\OrderInterface;
 use Drupal\uc_payment\PaymentMethodInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Displays the credit card terminal form for administrators.
@@ -25,6 +27,32 @@ class CreditCardTerminalForm extends FormBase {
    * @var \Drupal\uc_payment\PaymentMethodInterface
    */
   protected $paymentMethod;
+
+  /**
+   * The date.formatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatterInterface
+   */
+  protected $dateFormatter;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
+   *   The date.formatter service.
+   */
+  public function __construct(DateFormatterInterface $date_formatter) {
+    $this->dateFormatter = $date_formatter;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('date.formatter')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -118,7 +146,7 @@ class CreditCardTerminalForm extends FormBase {
     if (isset($this->order->data->cc_txns['authorizations'])) {
       foreach ($this->order->data->cc_txns['authorizations'] as $auth_id => $data) {
         if (empty($data['captured'])) {
-          $options[$auth_id] = $this->t('@auth_id - @date - @amount authorized', ['@auth_id' => strtoupper($auth_id), '@date' => \Drupal::service('date.formatter')->format($data['authorized'], 'short'), '@amount' => uc_currency_format($data['amount'])]);
+          $options[$auth_id] = $this->t('@auth_id - @date - @amount authorized', ['@auth_id' => strtoupper($auth_id), '@date' => $this->dateFormatter->format($data['authorized'], 'short'), '@amount' => uc_currency_format($data['amount'])]);
         }
       }
     }
@@ -171,13 +199,13 @@ class CreditCardTerminalForm extends FormBase {
 
     if (isset($this->order->data->cc_txns['references'])) {
       foreach ($this->order->data->cc_txns['references'] as $ref_id => $data) {
-        $options[$ref_id] = $this->t('@ref_id - @date - (Last 4) @card', ['@ref_id' => strtoupper($ref_id), '@date' => \Drupal::service('date.formatter')->format($data['created'], 'short'), '@card' => $data['card']]);
+        $options[$ref_id] = $this->t('@ref_id - @date - (Last 4) @card', ['@ref_id' => strtoupper($ref_id), '@date' => $this->dateFormatter->format($data['created'], 'short'), '@card' => $data['card']]);
       }
     }
 
     // If any references existed...
     if (!empty($options)) {
-      // Display a fieldset with the authorizations and available action buttons.
+      // Display fieldset with the authorizations and available action buttons.
       $form['references'] = [
         '#type' => 'details',
         '#title' => $this->t('Customer references'),

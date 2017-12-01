@@ -2,6 +2,7 @@
 
 namespace Drupal\uc_payment\Form;
 
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -16,6 +17,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class OrderPaymentsForm extends FormBase {
 
   /**
+   * The order that is being viewed.
+   *
+   * @var \Drupal\uc_order\OrderInterface
+   */
+  protected $order;
+
+  /**
    * The payment method manager.
    *
    * @var \Drupal\uc_payment\Plugin\PaymentMethodManager
@@ -23,13 +31,23 @@ class OrderPaymentsForm extends FormBase {
   protected $paymentMethodManager;
 
   /**
+   * The date.formatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatterInterface
+   */
+  protected $dateFormatter;
+
+  /**
    * Constructs an OrderPaymentsForm object.
    *
    * @param \Drupal\uc_payment\Plugin\PaymentMethodManager $payment_method_manager
    *   The payment method plugin manager.
+   * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
+   *   The date.formatter service.
    */
-  public function __construct(PaymentMethodManager $payment_method_manager) {
+  public function __construct(PaymentMethodManager $payment_method_manager, DateFormatterInterface $date_formatter) {
     $this->paymentMethodManager = $payment_method_manager;
+    $this->dateFormatter = $date_formatter;
   }
 
   /**
@@ -37,16 +55,10 @@ class OrderPaymentsForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
-      $container->get('plugin.manager.uc_payment.method')
+      $container->get('plugin.manager.uc_payment.method'),
+      $container->get('date.formatter')
     );
   }
-
-  /**
-   * The order that is being viewed.
-   *
-   * @var \Drupal\uc_order\OrderInterface
-   */
-  protected $order;
 
   /**
    * {@inheritdoc}
@@ -86,10 +98,9 @@ class OrderPaymentsForm extends FormBase {
       '#weight' => 10,
     ];
 
-    $account = $this->currentUser();
     foreach ($payments as $id => $payment) {
       $form['payments'][$id]['received'] = [
-        '#markup' => \Drupal::service('date.formatter')->format($payment->getReceived(), 'short'),
+        '#markup' => $this->dateFormatter->format($payment->getReceived(), 'short'),
       ];
       $form['payments'][$id]['user'] = [
         '#theme' => 'username',
@@ -118,7 +129,7 @@ class OrderPaymentsForm extends FormBase {
             'url' => Url::fromRoute('uc_payments.delete', ['uc_order' => $this->order->id(), 'uc_payment_receipt' => $id]),
           ],
         ],
-        '#access' => $account->hasPermission('delete payments'),
+        '#access' => $this->currentUser()->hasPermission('delete payments'),
       ];
     }
 
@@ -129,7 +140,7 @@ class OrderPaymentsForm extends FormBase {
       '#price' => $total,
     ];
 
-    if ($account->hasPermission('manual payments')) {
+    if ($this->currentUser()->hasPermission('manual payments')) {
       $form['new'] = [
         '#type' => 'details',
         '#title' => $this->t('Add payment'),
@@ -178,7 +189,7 @@ class OrderPaymentsForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $payment = $form_state->getValues();
-    uc_payment_enter($this->order->id(), $payment['method'], $payment['amount'], \Drupal::currentUser()->id(), '', $payment['comment'], $payment['received']->getTimestamp());
+    uc_payment_enter($this->order->id(), $payment['method'], $payment['amount'], $this->currentUser()->id(), '', $payment['comment'], $payment['received']->getTimestamp());
     drupal_set_message($this->t('Payment entered.'));
   }
 

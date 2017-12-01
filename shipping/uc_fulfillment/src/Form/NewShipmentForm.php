@@ -29,7 +29,7 @@ class NewShipmentForm extends FormBase {
     $form['#tree'] = TRUE;
     $form['#attached']['library'][] = 'uc_fulfillment/uc_fulfillment.scripts';
 
-    $units = \Drupal::config('uc_store.settings')->get('weight.units');
+    $units = $this->config('uc_store.settings')->get('weight.units');
 
     $header = [
       // Fake out tableselect JavaScript into operating on our table.

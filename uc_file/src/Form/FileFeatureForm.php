@@ -2,16 +2,44 @@
 
 namespace Drupal\uc_file\Form;
 
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 use Drupal\node\NodeInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Creates or edits a file feature for a product.
  */
 class FileFeatureForm extends FormBase {
+
+  /**
+   * The file system service.
+   *
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The file system service.
+   */
+  public function __construct(FileSystemInterface $file_system) {
+    $this->fileSystem = $file_system;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('file_system')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -37,10 +65,10 @@ class FileFeatureForm extends FormBase {
     uc_file_refresh();
 
     if (!db_query_range('SELECT 1 FROM {uc_files}', 0, 1)->fetchField()) {
-      $form['file']['file_message'] = array(
+      $form['file']['file_message'] = [
         '#markup' => $this->t('You must add files at the <a href=":url">Ubercart file download administration page</a> in order to attach them to a model.', [':url' => Url::fromRoute('uc_file.downloads', [], ['query' => ['destination' => 'node/' . $node->id() . '/edit/features/file/add']])->toString()]
         ),
-      );
+      ];
 
       return $form;
     }
@@ -89,22 +117,22 @@ class FileFeatureForm extends FormBase {
     }
 
     $form['#attached']['library'][] = 'uc_file/uc_file.styles';
-    $form['nid'] = array(
+    $form['nid'] = [
       '#type' => 'value',
       '#value' => $node->id(),
-    );
-    $form['pfid'] = array(
+    ];
+    $form['pfid'] = [
       '#type' => 'value',
       '#value' => $default_feature,
-    );
-    $form['uc_file_model'] = array(
+    ];
+    $form['uc_file_model'] = [
       '#type' => 'select',
       '#title' => $this->t('SKU'),
       '#default_value' => $default_model,
       '#description' => $this->t('This is the SKU that will need to be purchased to obtain the file download.'),
       '#options' => $models,
-    );
-    $form['uc_file_filename'] = array(
+    ];
+    $form['uc_file_filename'] = [
       '#type' => 'textfield',
       '#title' => $this->t('File download'),
       '#default_value' => $default_filename,
@@ -112,103 +140,103 @@ class FileFeatureForm extends FormBase {
       '#description' => $this->t('The file that can be downloaded when product is purchased (enter a path relative to the %dir directory).', ['%dir' => $file_config->get('base_dir')]),
       '#maxlength' => 255,
       '#required' => TRUE,
-    );
-    $form['uc_file_description'] = array(
+    ];
+    $form['uc_file_description'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Description'),
       '#default_value' => $default_description,
       '#maxlength' => 255,
       '#description' => $this->t('A description of the download associated with the product.'),
-    );
-    $form['uc_file_shippable'] = array(
+    ];
+    $form['uc_file_shippable'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Shippable product'),
       '#default_value' => $default_shippable,
       '#description' => $this->t('Check if this product model/SKU file download is also associated with a shippable product.'),
-    );
+    ];
 
-    $form['uc_file_limits'] = array(
+    $form['uc_file_limits'] = [
       '#type' => 'fieldset',
       '#description' => $this->t('Use these options to override any global download limits set at the :url.', [':url' => Link::createFromRoute($this->t('Ubercart product settings page'), 'uc_product.settings', [], ['query' => ['destination' => 'node/' . $node->id() . '/edit/features/file/add']])->toString()]),
       '#title' => $this->t('File limitations'),
-    );
+    ];
 
-    $form['uc_file_limits']['download_override'] = array(
+    $form['uc_file_limits']['download_override'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Override download limit'),
       '#default_value' => $download_status,
-    );
-    $form['uc_file_limits']['download_limit_number'] = array(
+    ];
+    $form['uc_file_limits']['download_limit_number'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Downloads'),
       '#default_value' => $download_value,
       '#description' => $this->t('The number of times this file can be downloaded.'),
       '#maxlength' => 4,
       '#size' => 4,
-      '#states' => array(
-        'visible' => array('input[name="download_override"]' => array('checked' => TRUE)),
-      ),
-    );
+      '#states' => [
+        'visible' => ['input[name="download_override"]' => ['checked' => TRUE]],
+      ],
+    ];
 
-    $form['uc_file_limits']['location_override'] = array(
+    $form['uc_file_limits']['location_override'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Override IP address limit'),
       '#default_value' => $address_status,
-    );
-    $form['uc_file_limits']['download_limit_addresses'] = array(
+    ];
+    $form['uc_file_limits']['download_limit_addresses'] = [
       '#type' => 'textfield',
       '#title' => $this->t('IP addresses'),
       '#default_value' => $address_value,
       '#description' => $this->t('The number of unique IPs that a file can be downloaded from.'),
       '#maxlength' => 4,
       '#size' => 4,
-      '#states' => array(
-        'visible' => array('input[name="location_override"]' => array('checked' => TRUE)),
-      ),
-    );
+      '#states' => [
+        'visible' => ['input[name="location_override"]' => ['checked' => TRUE]],
+      ],
+    ];
 
-    $form['uc_file_limits']['time_override'] = array(
+    $form['uc_file_limits']['time_override'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Override time limit'),
       '#default_value' => $time_status,
-    );
+    ];
 
-    $form['uc_file_limits']['download_limit_duration'] = array(
+    $form['uc_file_limits']['download_limit_duration'] = [
       '#type' => 'container',
-      '#attributes' => array('class' => array('duration')),
-    );
-    $form['uc_file_limits']['download_limit_duration']['duration_qty'] = array(
+      '#attributes' => ['class' => ['duration']],
+    ];
+    $form['uc_file_limits']['download_limit_duration']['duration_qty'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Time'),
       '#default_value' => $quantity_value,
       '#size' => 4,
       '#maxlength' => 4,
-      '#states' => array(
-        'disabled' => array('select[name="duration_granularity"]' => array('value' => 'never')),
-        'visible' => array('input[name="time_override"]' => array('checked' => TRUE)),
-      ),
-    );
-    $form['uc_file_limits']['download_limit_duration']['duration_granularity'] = array(
+      '#states' => [
+        'disabled' => ['select[name="duration_granularity"]' => ['value' => 'never']],
+        'visible' => ['input[name="time_override"]' => ['checked' => TRUE]],
+      ],
+    ];
+    $form['uc_file_limits']['download_limit_duration']['duration_granularity'] = [
       '#type' => 'select',
       '#default_value' => $granularity_value,
-      '#options' => array(
+      '#options' => [
         'never' => $this->t('never'),
         'day' => $this->t('day(s)'),
         'week' => $this->t('week(s)'),
         'month' => $this->t('month(s)'),
-        'year' => $this->t('year(s)')
-      ),
+        'year' => $this->t('year(s)'),
+      ],
       '#description' => $this->t('How long after this product has been purchased until this file download expires.'),
-      '#states' => array(
-        'visible' => array('input[name="time_override"]' => array('checked' => TRUE)),
-      ),
-    );
+      '#states' => [
+        'visible' => ['input[name="time_override"]' => ['checked' => TRUE]],
+      ],
+    ];
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save feature'),
-    );
+    ];
 
     return $form;
   }
@@ -244,7 +272,7 @@ class FileFeatureForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // Build the file_product object from the form values.
     $file = uc_file_get_by_name($form_state->getValue('uc_file_filename'));
-    $file_product = array(
+    $file_product = [
       'fid'         => $file->fid,
       'filename'    => $file->filename,
       'pfid'        => $form_state->getValue('pfid'),
@@ -257,7 +285,7 @@ class FileFeatureForm extends FormBase {
       'address_limit'    => $form_state->getValue('download_limit_addresses') ?: UC_FILE_LIMIT_SENTINEL,
       'time_granularity' => $form_state->getValue('duration_granularity') ?: UC_FILE_LIMIT_SENTINEL,
       'time_quantity'    => $form_state->getValue('duration_qty') ?: UC_FILE_LIMIT_SENTINEL,
-    );
+    ];
 
     // Build product feature descriptions.
     $file_config = $this->config('uc_file.settings');
@@ -266,16 +294,16 @@ class FileFeatureForm extends FormBase {
       $description .= $this->t('<strong>Directory:</strong> @dir<br />', ['@dir' => $file_product['filename']]);
     }
     else {
-      $description .= $this->t('<strong>File:</strong> @file<br />', ['@file' => \Drupal::service('file_system')->basename($file_product['filename'])]);
+      $description .= $this->t('<strong>File:</strong> @file<br />', ['@file' => $this->fileSystem->basename($file_product['filename'])]);
     }
     $description .= $file_product['shippable'] ? $this->t('<strong>Shippable:</strong> Yes') : $this->t('<strong>Shippable:</strong> No');
 
-    $data = array(
+    $data = [
       'pfid' => $file_product['pfid'],
       'nid' => $form_state->getValue('nid'),
       'fid' => 'file',
       'description' => $description,
-    );
+    ];
 
     uc_product_feature_save($data);
     $file_product['pfid'] = $data['pfid'];

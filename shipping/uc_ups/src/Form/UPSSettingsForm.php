@@ -2,10 +2,12 @@
 
 namespace Drupal\uc_ups\Form;
 
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\uc_ups\UPSUtilities;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Configures UPS settings.
@@ -14,6 +16,32 @@ use Drupal\uc_ups\UPSUtilities;
  * or production mode. Configures which UPS services are quoted to customers.
  */
 class UPSSettingsForm extends ConfigFormBase {
+
+  /**
+   * The date.formatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatterInterface
+   */
+  protected $dateFormatter;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
+   *   The date.formatter service.
+   */
+  public function __construct(DateFormatterInterface $date_formatter) {
+    $this->dateFormatter = $date_formatter;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('date.formatter')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -38,125 +66,125 @@ class UPSSettingsForm extends ConfigFormBase {
     $ups_config = $this->config('uc_ups.settings');
 
     // Put fieldsets into vertical tabs.
-    $form['ups-settings'] = array(
+    $form['ups-settings'] = [
       '#type' => 'vertical_tabs',
-      '#attached' => array(
-        'library' => array(
+      '#attached' => [
+        'library' => [
           'uc_ups/uc_ups.scripts',
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
 
     // Container for credential forms.
-    $form['credentials'] = array(
+    $form['credentials'] = [
       '#type'          => 'details',
       '#title'         => $this->t('Credentials'),
       '#description'   => $this->t('Account number and authorization information.'),
       '#group'         => 'ups-settings',
-    );
+    ];
 
-    $form['credentials']['access_license'] = array(
+    $form['credentials']['access_license'] = [
       '#type' => 'textfield',
       '#title' => $this->t('UPS OnLine Tools XML Access Key'),
       '#default_value' => $ups_config->get('access_license'),
       '#required' => TRUE,
-    );
-    $form['credentials']['shipper_number'] = array(
+    ];
+    $form['credentials']['shipper_number'] = [
       '#type' => 'textfield',
       '#title' => $this->t('UPS Shipper #'),
       '#description' => $this->t('The 6-character string identifying your UPS account as a shipper.'),
       '#default_value' => $ups_config->get('shipper_number'),
       '#required' => TRUE,
-    );
-    $form['credentials']['user_id'] = array(
+    ];
+    $form['credentials']['user_id'] = [
       '#type' => 'textfield',
       '#title' => $this->t('UPS.com user ID'),
       '#default_value' => $ups_config->get('user_id'),
       '#required' => TRUE,
-    );
-    $form['credentials']['password'] = array(
+    ];
+    $form['credentials']['password'] = [
       '#type' => 'password',
       '#title' => $this->t('Password'),
       '#default_value' => $ups_config->get('password'),
-    );
-    $form['credentials']['connection_address'] = array(
+    ];
+    $form['credentials']['connection_address'] = [
       '#type' => 'select',
       '#title' => $this->t('Server mode'),
       '#description' => $this->t('Use the Testing server while developing and configuring your site. Switch to the Production server only after you have demonstrated that transactions on the Testing server are working and you are ready to go live.'),
-      '#options' => array(
+      '#options' => [
         'https://wwwcie.ups.com/ups.app/xml/' => $this->t('Testing'),
         'https://onlinetools.ups.com/ups.app/xml/' => $this->t('Production'),
-      ),
+      ],
       '#default_value' => $ups_config->get('connection_address'),
-    );
+    ];
 
-    $form['services'] = array(
+    $form['services'] = [
       '#type' => 'details',
       '#title' => $this->t('Service options'),
       '#description' => $this->t('Set the conditions that will return a UPS quote.'),
       '#group'         => 'ups-settings',
-    );
+    ];
 
-    $form['services']['uc_ups_services'] = array(
+    $form['services']['uc_ups_services'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('UPS services'),
       '#default_value' => $ups_config->get('services'),
       '#options' => UPSUtilities::services(),
       '#description' => $this->t('Select the UPS services that are available to customers.'),
-    );
+    ];
 
     // Container for quote options.
-    $form['quote_options'] = array(
+    $form['quote_options'] = [
       '#type'          => 'details',
       '#title'         => $this->t('Quote options'),
       '#description'   => $this->t('Preferences that affect computation of quote.'),
       '#group'         => 'ups-settings',
-    );
+    ];
 
-    $form['quote_options']['all_in_one'] = array(
+    $form['quote_options']['all_in_one'] = [
       '#type' => 'radios',
       '#title' => $this->t('Product packages'),
       '#default_value' => $ups_config->get('all_in_one'),
-      '#options' => array(
+      '#options' => [
         0 => $this->t('Each product in its own package'),
         1 => $this->t('All products in one package'),
-      ),
+      ],
       '#description' => $this->t('Indicate whether each product is quoted as shipping separately or all in one package. Orders with one kind of product will still use the package quantity to determine the number of packages needed, however.'),
-    );
+    ];
 
     // Form to select package types.
-    $form['quote_options']['package_type'] = array(
+    $form['quote_options']['package_type'] = [
       '#type' => 'select',
       '#title' => $this->t('Default Package Type'),
       '#default_value' => $ups_config->get('package_type'),
       '#options' => UPSUtilities::packageTypes(),
       '#description' => $this->t('Type of packaging to be used.  May be overridden on a per-product basis via the product node edit form.'),
-    );
-    $form['quote_options']['classification'] = array(
+    ];
+    $form['quote_options']['classification'] = [
       '#type' => 'select',
       '#title' => $this->t('UPS Customer classification'),
-      '#options' => array(
+      '#options' => [
         '01' => $this->t('Wholesale'),
         '03' => $this->t('Occasional'),
         '04' => $this->t('Retail'),
-      ),
+      ],
       '#default_value' => $ups_config->get('classification'),
       '#description' => $this->t('The kind of customer you are to UPS. For daily pickups the default is wholesale; for customer counter pickups the default is retail; for other pickups the default is occasional.'),
-    );
+    ];
 
-    $form['quote_options']['negotiated_rates'] = array(
+    $form['quote_options']['negotiated_rates'] = [
       '#type' => 'radios',
       '#title' => $this->t('Negotiated rates'),
       '#default_value' => $ups_config->get('negotiated_rates'),
-      '#options' => array(1 => $this->t('Yes'), 0 => $this->t('No')),
+      '#options' => [1 => $this->t('Yes'), 0 => $this->t('No')],
       '#description' => $this->t('Is your UPS account receiving negotiated rates on shipments?'),
-    );
+    ];
 
     // Form to select pickup type.
-    $form['quote_options']['pickup_type'] = array(
+    $form['quote_options']['pickup_type'] = [
       '#type' => 'select',
       '#title' => $this->t('Pickup type'),
-      '#options' => array(
+      '#options' => [
         '01' => 'Daily Pickup',
         '03' => 'Customer Counter',
         '06' => 'One Time Pickup',
@@ -164,120 +192,120 @@ class UPSSettingsForm extends ConfigFormBase {
         '11' => 'Suggested Retail Rates',
         '19' => 'Letter Center',
         '20' => 'Air Service Center',
-      ),
+      ],
       '#default_value' => $ups_config->get('pickup_type'),
-    );
+    ];
 
-    $form['quote_options']['residential_quotes'] = array(
+    $form['quote_options']['residential_quotes'] = [
       '#type' => 'radios',
       '#title' => $this->t('Assume UPS shipping quotes will be delivered to'),
       '#default_value' => $ups_config->get('residential_quotes'),
-      '#options' => array(
+      '#options' => [
         0 => $this->t('Business locations'),
         1 => $this->t('Residential locations (extra fees)'),
-      ),
-    );
+      ],
+    ];
 
-    $form['quote_options']['unit_system'] = array(
+    $form['quote_options']['unit_system'] = [
       '#type' => 'select',
       '#title' => $this->t('System of measurement'),
-      '#default_value' => $ups_config->get('unit_system', \Drupal::config('uc_store.settings')->get('length.units')),
-      '#options' => array(
+      '#default_value' => $ups_config->get('unit_system', $this->config('uc_store.settings')->get('length.units')),
+      '#options' => [
         'in' => $this->t('Imperial'),
         'cm' => $this->t('Metric'),
-      ),
+      ],
       '#description' => $this->t('Choose the standard system of measurement for your country.'),
-    );
+    ];
 
-    $form['quote_options']['insurance'] = array(
+    $form['quote_options']['insurance'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Package insurance'),
       '#default_value' => $ups_config->get('insurance'),
       '#description' => $this->t('When enabled, the quotes presented to the customer will include the cost of insurance for the full sales price of all products in the order.'),
-    );
+    ];
 
     // Container for markup forms.
-    $form['markups'] = array(
-      '#type'          => 'details',
-      '#title'         => $this->t('Markups'),
-      '#description'   => $this->t('Modifiers to the shipping weight and quoted rate.'),
-      '#group'         => 'ups-settings',
-    );
+    $form['markups'] = [
+      '#type'        => 'details',
+      '#title'       => $this->t('Markups'),
+      '#description' => $this->t('Modifiers to the shipping weight and quoted rate.'),
+      '#group'       => 'ups-settings',
+    ];
 
     // Form to select type of rate markup.
-    $form['markups']['rate_markup_type'] = array(
+    $form['markups']['rate_markup_type'] = [
       '#type' => 'select',
       '#title' => $this->t('Rate markup type'),
       '#default_value' => $ups_config->get('rate_markup_type'),
-      '#options' => array(
+      '#options' => [
         'percentage' => $this->t('Percentage (%)'),
         'multiplier' => $this->t('Multiplier (×)'),
-        'currency' => $this->t('Addition (@currency)', ['@currency' => \Drupal::config('uc_store.settings')->get('currency.symbol')]),
-      ),
-    );
+        'currency' => $this->t('Addition (@currency)', ['@currency' => $this->config('uc_store.settings')->get('currency.symbol')]),
+      ],
+    ];
 
     // Form to select rate markup amount.
-    $form['markups']['rate_markup'] = array(
+    $form['markups']['rate_markup'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Shipping rate markup'),
       '#default_value' => $ups_config->get('rate_markup'),
       '#description' => $this->t('Markup shipping rate quote by currency amount, percentage, or multiplier.'),
-    );
+    ];
 
     // Form to select type of weight markup.
-    $form['markups']['weight_markup_type'] = array(
+    $form['markups']['weight_markup_type'] = [
       '#type'          => 'select',
       '#title'         => $this->t('Weight markup type'),
       '#default_value' => $ups_config->get('weight_markup_type'),
-      '#options'       => array(
+      '#options'       => [
         'percentage' => $this->t('Percentage (%)'),
         'multiplier' => $this->t('Multiplier (×)'),
         'mass'       => $this->t('Addition (@mass)', ['@mass' => '#']),
-      ),
+      ],
       '#disabled' => TRUE,
-    );
+    ];
 
     // Form to select weight markup amount.
-    $form['markups']['weight_markup'] = array(
+    $form['markups']['weight_markup'] = [
       '#type'          => 'textfield',
       '#title'         => $this->t('Shipping weight markup'),
       '#default_value' => $ups_config->get('weight_markup'),
       '#description'   => $this->t('Markup UPS shipping weight on a per-package basis before quote, by weight amount, percentage, or multiplier.'),
       '#disabled' => TRUE,
-    );
+    ];
 
     // Container for label printing.
-    $form['labels'] = array(
+    $form['labels'] = [
       '#type'          => 'details',
       '#title'         => $this->t('Label Printing'),
       '#description'   => $this->t('Preferences for UPS Shipping Label Printing.  Additional permissions from UPS are required to use this feature.'),
       '#group'         => 'ups-settings',
-    );
+    ];
 
-    $intervals = array(86400, 302400, 604800, 1209600, 2419200, 0);
-    $period = array_map(array(\Drupal::service('date.formatter'), 'formatInterval'), array_combine($intervals, $intervals));
+    $intervals = [86400, 302400, 604800, 1209600, 2419200, 0];
+    $period = array_map([$this->dateFormatter, 'formatInterval'], array_combine($intervals, $intervals));
     $period[0] = $this->t('Forever');
 
     // Form to select how long labels stay on server.
-    $form['labels']['label_lifetime'] = array(
+    $form['labels']['label_lifetime'] = [
       '#type'          => 'select',
       '#title'         => $this->t('Label lifetime'),
       '#default_value' => $ups_config->get('label_lifetime'),
       '#options'       => $period,
       '#description'   => $this->t('Controls how long labels are stored on the server before being automatically deleted. Cron must be enabled for automatic deletion. Default is never delete the labels, keep them forever.'),
-    );
+    ];
 
     // Taken from system_settings_form(). Only, don't use its submit handler.
     $form['actions']['#type'] = 'actions';
-    $form['actions']['submit'] = array(
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save configuration'),
-    );
-    $form['actions']['cancel'] = array(
+    ];
+    $form['actions']['cancel'] = [
       '#type' => 'link',
       '#title' => $this->t('Cancel'),
       '#url' => Url::fromRoute('entity.uc_quote_method.collection'),
-    );
+    ];
 
     if (!empty($_POST) && $form_state->getErrors()) {
       drupal_set_message($this->t('The settings have not been saved because of the errors.'), 'error');

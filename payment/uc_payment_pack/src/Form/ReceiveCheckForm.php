@@ -2,15 +2,43 @@
 
 namespace Drupal\uc_payment_pack\Form;
 
+use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\uc_order\OrderInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Form for recording a received check and expected clearance date.
  */
 class ReceiveCheckForm extends FormBase {
+
+  /**
+   * The date.formatter service.
+   *
+   * @var \Drupal\Core\Datetime\DateFormatterInterface
+   */
+  protected $dateFormatter;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
+   *   The date.formatter service.
+   */
+  public function __construct(DateFormatterInterface $date_formatter) {
+    $this->dateFormatter = $date_formatter;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('date.formatter')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -74,7 +102,7 @@ class ReceiveCheckForm extends FormBase {
         'clear_date' => $clear_date,
       ])
       ->execute();
-    drupal_set_message($this->t('Check received, expected clear date of @date.', ['@date' => \Drupal::service('date.formatter')->format($clear_date, 'uc_store')]));
+    drupal_set_message($this->t('Check received, expected clear date of @date.', ['@date' => $this->dateFormatter->format($clear_date, 'uc_store')]));
 
     $form_state->setRedirect('entity.uc_order.canonical', ['uc_order' => $form_state->getValue('order_id')]);
   }

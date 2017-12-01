@@ -4,7 +4,9 @@ namespace Drupal\uc_order\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Mail\MailManagerInterface;
 use Drupal\uc_order\OrderInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Defines a form to set the recipient of an invoice, then mails it.
@@ -17,6 +19,32 @@ class MailInvoiceForm extends FormBase {
    * @var \Drupal\uc_order\OrderInterface
    */
   protected $order;
+
+  /**
+   * The mail manager service.
+   *
+   * @var \Drupal\Core\Mail\MailManagerInterface
+   */
+  protected $mailManager;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Drupal\Core\Mail\MailManagerInterface $mail_manager
+   *   The mail manager service.
+   */
+  public function __construct(MailManagerInterface $mail_manager) {
+    $this->mailManager = $mailManager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('plugin.manager.mail')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -52,7 +80,7 @@ class MailInvoiceForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $recipient = $form_state->getValue('email');
     $params = ['order' => $this->order];
-    \Drupal::service('plugin.manager.mail')->mail('uc_order', 'invoice', $recipient, uc_store_mail_recipient_langcode($recipient), $params, uc_store_email_from());
+    $this->mailManager->mail('uc_order', 'invoice', $recipient, uc_store_mail_recipient_langcode($recipient), $params, uc_store_email_from());
 
     $message = $this->t('Invoice e-mailed to @email.', ['@email' => $recipient]);
     drupal_set_message($message);

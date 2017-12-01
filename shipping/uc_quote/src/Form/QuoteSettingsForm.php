@@ -2,8 +2,10 @@
 
 namespace Drupal\uc_quote\Form;
 
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Default shipping settings form.
@@ -14,6 +16,32 @@ use Drupal\Core\Form\FormStateInterface;
  * in the store. Individual products may be configured differently.
  */
 class QuoteSettingsForm extends ConfigFormBase {
+
+  /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler.
+   */
+  public function __construct(ModuleHandlerInterface $module_handler) {
+    $this->moduleHandler = $module_handler;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('module_handler')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -37,42 +65,42 @@ class QuoteSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $quote_config = $this->config('uc_quote.settings');
 
-    $form['display_debug'] = array(
+    $form['display_debug'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Display debug information to administrators.'),
       '#default_value' => $quote_config->get('display_debug'),
-    );
-    $form['require_quote'] = array(
+    ];
+    $form['require_quote'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Prevent the customer from completing an order if a shipping quote is not selected.'),
       '#default_value' => $quote_config->get('require_quote'),
-    );
+    ];
 
-    $form['default_address'] = array(
+    $form['default_address'] = [
       '#type' => 'details',
       '#title' => $this->t('Default pickup address'),
       '#description' => $this->t("When delivering products to customers, the original location of the product must be known in order to accurately quote the shipping cost and set up a delivery. This form provides the default location for all products in the store. If a product's individual pickup address is blank, Ubercart uses the store's default pickup address specified here."),
-    );
-    $form['default_address']['address'] = array(
-//      '#tree' => TRUE,
+    ];
+    $form['default_address']['address'] = [
+//    '#tree' => TRUE,
       '#type' => 'uc_address',
       '#default_value' => $quote_config->get('ship_from_address'),
       '#required' => FALSE,
-    );
+    ];
 
     $shipping_types = uc_quote_shipping_type_options();
     if (is_array($shipping_types)) {
-      $form['type_weight'] = array(
+      $form['type_weight'] = [
         '#type' => 'details',
         '#title' => $this->t('List position'),
         '#description' => $this->t('Determines which shipping methods are quoted at checkout when products of different shipping types are ordered. Larger values take precedence.'),
         '#tree' => TRUE,
-      );
+      ];
       $weight = $quote_config->get('type_weight');
-      $shipping_methods = \Drupal::moduleHandler()->invokeAll('uc_shipping_method');
-      $method_types = array();
+      $shipping_methods = $this->moduleHandler->invokeAll('uc_shipping_method');
+      $method_types = [];
       foreach ($shipping_methods as $method) {
-        // Get shipping method types from shipping methods that provide quotes
+        // Get shipping method types from shipping methods that provide quotes.
         if (isset($method['quote'])) {
           $method_types[$method['quote']['type']][] = $method['title'];
         }
@@ -82,20 +110,20 @@ class QuoteSettingsForm extends ConfigFormBase {
         $form['type_weight']['#description'] .= $this->formatPlural($count, '<br />The %list method is compatible with any shipping type.', '<br />The %list methods are compatible with any shipping type.', ['%list' => implode(', ', $method_types['order'])]);
       }
       foreach ($shipping_types as $id => $title) {
-        $form['type_weight'][$id] = array(
+        $form['type_weight'][$id] = [
           '#type' => 'weight',
           '#title' => $title . (isset($method_types[$id]) && is_array($method_types[$id]) ? ' (' . implode(', ', $method_types[$id]) . ')' : ''),
           '#delta' => 5,
           '#default_value' => isset($weight[$id]) ? $weight[$id] : 0,
-        );
+        ];
       }
     }
-    $form['uc_store_shipping_type'] = array(
+    $form['uc_store_shipping_type'] = [
       '#type' => 'select',
       '#title' => $this->t('Default order fulfillment type for products'),
       '#options' => $shipping_types,
       '#default_value' => $quote_config->get('shipping_type'),
-    );
+    ];
 
     return parent::buildForm($form, $form_state);
   }

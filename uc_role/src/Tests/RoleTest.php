@@ -16,18 +16,21 @@ class RoleTest extends UbercartTestBase {
   // @see https://www.drupal.org/node/2695639
   public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_role', 'editor'];
 
+  /**
+   * Tests purchase of role.
+   */
   public function testRolePurchaseCheckout() {
     // Add role assignment to a free, non-shippable product.
-    $product = $this->createProduct(array('price' => 0, 'shippable' => 0));
-    $rid = $this->drupalCreateRole(array('access content'));
+    $product = $this->createProduct(['price' => 0, 'shippable' => 0]);
+    $rid = $this->drupalCreateRole(['access content']);
     $this->drupalLogin($this->adminUser);
-    $this->drupalPostForm('node/' . $product->id() . '/edit/features', array('feature' => 'role'), t('Add'));
-    $edit = array(
+    $this->drupalPostForm('node/' . $product->id() . '/edit/features', ['feature' => 'role'], t('Add'));
+    $edit = [
       'role' => $rid,
       'end_override' => TRUE,
       'expire_relative_duration' => 1,
       'expire_relative_granularity' => 'day',
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, t('Save feature'));
 
     // Check out with the test product.
@@ -53,7 +56,7 @@ class RoleTest extends UbercartTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function populateCheckoutForm($edit = []) {
+  protected function populateCheckoutForm(array $edit = []) {
     $edit = parent::populateCheckoutForm($edit);
     foreach (array_keys($edit) as $key) {
       if (substr($key, 0, 15) == 'panes[delivery]') {
@@ -62,4 +65,5 @@ class RoleTest extends UbercartTestBase {
     }
     return $edit;
   }
+
 }

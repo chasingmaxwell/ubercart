@@ -5,13 +5,16 @@ namespace Drupal\uc_report\Form;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Generates yearly sales report.
+ */
 class YearlySalesReport extends FormBase {
 
   /**
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $year) {
-    $form['year'] = array(
+    $form['year'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Sales year'),
       '#default_value' => $year,
@@ -19,15 +22,15 @@ class YearlySalesReport extends FormBase {
       '#size' => 4,
       '#prefix' => '<div class="sales-year">',
       '#suffix' => '</div>',
-    );
+    ];
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('View'),
       '#prefix' => '<div class="sales-year">',
       '#suffix' => '</div>',
-    );
+    ];
 
     return $form;
   }

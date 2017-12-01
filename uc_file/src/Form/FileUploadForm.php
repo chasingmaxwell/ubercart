@@ -2,14 +2,49 @@
 
 namespace Drupal\uc_file\Form;
 
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Performs a file upload action.
  */
 class FileUploadForm extends ConfirmFormBase {
+
+  /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler.
+   */
+  public function __construct(ModuleHandlerInterface $module_handler) {
+    $this->moduleHandler = $module_handler;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('module_handler')
+    );
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getFormId() {
+    return 'uc_file_upload_form';
+  }
 
   /**
    * {@inheritdoc}
@@ -49,17 +84,10 @@ class FileUploadForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormId() {
-    return 'uc_file_upload_form';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function buildForm(array $form, FormStateInterface $form_state) {
     // Calculate the max size of uploaded files, in bytes.
     $max_bytes = trim(ini_get('post_max_size'));
-    switch (strtolower($max_bytes{strlen($max_bytes)-1})) {
+    switch (strtolower($max_bytes{strlen($max_bytes) - 1})) {
       case 'g':
         $max_bytes *= 1024;
       case 'm':
@@ -70,7 +98,7 @@ class FileUploadForm extends ConfirmFormBase {
 
     // Gather list of directories under the selected one(s).
     // '/' is always available.
-    $directories = array('' => '/');
+    $directories = ['' => '/'];
     $files = db_query('SELECT * FROM {uc_files}');
     foreach ($files as $file) {
       if (is_dir($this->config('uc_file.settings')->get('base_dir') . '/' . $file->filename)) {
@@ -78,22 +106,22 @@ class FileUploadForm extends ConfirmFormBase {
       }
     }
 
-    $form['upload_dir'] = array(
+    $form['upload_dir'] = [
       '#type' => 'select',
       '#title' => $this->t('Directory'),
       '#description' => $this->t('The directory on the server where the file should be put. The default directory is the root of the file downloads directory.'),
       '#options' => $directories,
-    );
+    ];
 
-    $form['upload'] = array(
+    $form['upload'] = [
       '#type' => 'file',
       '#title' => $this->t('File'),
       '#multiple' => TRUE,
       '#description' => $this->t('You may select more than one file by holding down the Cntrl key when you click the file name. The maximum file size that can be uploaded is %size bytes. You will need to use a different method to upload the file to the directory (e.g. (S)FTP, SCP) if your file exceeds this size. Files you upload using one of these alternate methods will be automatically detected.', ['%size' => number_format($max_bytes)]),
-    );
+    ];
 
-    //$form['#attributes']['class'][] = 'foo';
-    //$form['#attributes']['enctype'] = 'multipart/form-data';
+    // $form['#attributes']['class'][] = 'foo';
+    // $form['#attributes']['enctype'] = 'multipart/form-data';
 
     return parent::buildForm($form, $form_state);
   }
@@ -102,16 +130,15 @@ class FileUploadForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $module_handler = \Drupal::moduleHandler();
-    $hooks = $module_handler->getImplementations('uc_file_action');
+    $hooks = $this->moduleHandler->getImplementations('uc_file_action');
 
     // Upload the files and get their objects.
-    $temp_files = file_save_upload('upload', array('file_validate_extensions' => array()));
+    $temp_files = file_save_upload('upload', ['file_validate_extensions' => []]);
     foreach ($temp_files as $temp_file) {
       // Invoke any implemented hook_uc_file_action('upload_validate', $args).
       foreach ($hooks as $module) {
         $name = $module . '_uc_file_action';
-        $name('upload_validate', array('file_object' => $temp_file, 'form_id' => $form_id, 'form_state' => $form_state));
+        $name('upload_validate', ['file_object' => $temp_file, 'form_id' => $form_id, 'form_state' => $form_state]);
       }
     }
 
@@ -135,14 +162,13 @@ class FileUploadForm extends ConfirmFormBase {
         // Copy the file to its final location.
         if (copy($file_object->getFileUri(), $dir . '/' . $file_object->getFilename())) {
 
-          // Check if any hook_uc_file_action('upload', $args) are implemented
-          $module_handler = \Drupal::moduleHandler();
-          foreach ($module_handler->getImplementations('uc_file_action') as $module) {
+          // Check if any hook_uc_file_action('upload', $args) are implemented.
+          foreach ($this->moduleHandler->getImplementations('uc_file_action') as $module) {
             $name = $module . '_uc_file_action';
-            $name('upload', array('file_object' => $file_object, 'form_id' => $form_id, 'form_state' => $form_state));
+            $name('upload', ['file_object' => $file_object, 'form_id' => $form_id, 'form_state' => $form_state]);
           }
 
-          // Update the file list
+          // Update the file list.
           uc_file_refresh();
 
           drupal_set_message($this->t('The file %file has been uploaded to %dir', ['%file' => $file_object->getFilename(), '%dir' => $dir]));

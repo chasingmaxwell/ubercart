@@ -2,14 +2,42 @@
 
 namespace Drupal\uc_file\Form;
 
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Component\Serialization\Json;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Performs file action (upload, delete, hooked in actions).
  */
 class ActionForm extends FormBase {
+
+  /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler.
+   */
+  public function __construct(ModuleHandlerInterface $module_handler) {
+    $this->moduleHandler = $module_handler;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('module_handler')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -24,8 +52,8 @@ class ActionForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $file_ids = array_filter($form_state->getValue('file_select'));
 
-    $form['file_ids'] = array('#type' => 'value', '#value' => $file_ids);
-    $form['action'] = array('#type' => 'value', '#value' => $form_state->getValue(['uc_file_action', 'action']));
+    $form['file_ids'] = ['#type' => 'value', '#value' => $file_ids];
+    $form['action'] = ['#type' => 'value', '#value' => $form_state->getValue(['uc_file_action', 'action'])];
 
     $file_ids = _uc_file_sort_names(_uc_file_get_dir_file_ids($file_ids, FALSE));
 
@@ -49,13 +77,13 @@ class ActionForm extends FormBase {
         }
 
         // Base files/dirs the user selected.
-        $form['selected_files'] = array(
+        $form['selected_files'] = [
           '#theme' => 'item_list',
           '#items' => $file_list,
-          '#attributes' => array(
-            'class' => array('selected-file-name'),
-          ),
-        );
+          '#attributes' => [
+            'class' => ['selected-file-name'],
+          ],
+        ];
 
         $form = confirm_form(
           $form, $this->t('Delete file(s)'),
@@ -64,31 +92,32 @@ class ActionForm extends FormBase {
           $this->t('Delete affected files'), $this->t('Cancel')
         );
 
-        // Don't even show the recursion checkbox unless we have any directories.
-        if ($has_directory && $affected_list[TRUE] !== FALSE ) {
-          $form['recurse_directories'] = array(
+        // Don't show the recursion checkbox unless we have any directories.
+        if ($has_directory && $affected_list[TRUE] !== FALSE) {
+          $form['recurse_directories'] = [
             '#type' => 'checkbox',
             '#title' => $this->t('Delete selected directories and their sub directories'),
-          );
+          ];
 
-          // Default to FALSE. Although we have the JS behavior to update with the
-          // state of the checkbox on load, this should improve the experience of
-          // users who don't have JS enabled over not defaulting to any info.
-          $form['affected_files'] = array(
+          // Default to FALSE. Although we have the JS behavior to update with
+          // the state of the checkbox on load, this should improve the
+          // experience of users who don't have JS enabled over not defaulting
+          // to any info.
+          $form['affected_files'] = [
             '#theme' => 'item_list',
             '#items' => $affected_list[FALSE],
             '#title' => $this->t('Affected files'),
-            '#attributes' => array(
-              'class' => array('affected-file-name'),
-            ),
-          );
+            '#attributes' => [
+              'class' => ['affected-file-name'],
+            ],
+          ];
         }
         break;
 
       case 'uc_file_upload':
         // Calculate the max size of uploaded files, in bytes.
         $max_bytes = trim(ini_get('post_max_size'));
-        switch (strtolower($max_bytes{strlen($max_bytes)-1})) {
+        switch (strtolower($max_bytes{strlen($max_bytes) - 1})) {
           case 'g':
             $max_bytes *= 1024;
           case 'm':
@@ -99,7 +128,7 @@ class ActionForm extends FormBase {
 
         // Gather list of directories under the selected one(s).
         // '/' is always available.
-        $directories = array('' => '/');
+        $directories = ['' => '/'];
         $files = db_query("SELECT * FROM {uc_files}");
         foreach ($files as $file) {
           if (is_dir($this->config('uc_file.settings')->get('base_dir') . "/" . $file->filename)) {
@@ -107,17 +136,17 @@ class ActionForm extends FormBase {
           }
         }
 
-        $form['upload_dir'] = array(
+        $form['upload_dir'] = [
           '#type' => 'select',
           '#title' => $this->t('Directory'),
           '#description' => $this->t('The directory on the server where the file should be put. The default directory is the root of the file downloads directory.'),
           '#options' => $directories,
-        );
-        $form['upload'] = array(
+        ];
+        $form['upload'] = [
           '#type' => 'file',
           '#title' => $this->t('File'),
           '#description' => $this->t('The maximum file size that can be uploaded is %size bytes. You will need to use a different method to upload the file to the directory (e.g. (S)FTP, SCP) if your file exceeds this size. Files you upload using one of these alternate methods will be automatically detected.', ['%size' => number_format($max_bytes)]),
-        );
+        ];
 
         $form['#attributes']['class'][] = 'foo';
         $form = confirm_form(
@@ -127,18 +156,17 @@ class ActionForm extends FormBase {
           $this->t('Upload file'), $this->t('Cancel')
         );
 
-        // Must add this after confirm_form, as it runs over $form['#attributes'].
-        // Issue logged at d#319723
+        // Must add this after confirm_form, as it runs over
+        // $form['#attributes']. Issue logged at d#319723.
         $form['#attributes']['enctype'] = 'multipart/form-data';
         break;
 
       default:
         // This action isn't handled by us, so check if any
         // hook_uc_file_action('form', $args) are implemented.
-        $module_handler = \Drupal::moduleHandler();
-        foreach ($module_handler->getImplementations('uc_file_action') as $module) {
+        foreach ($this->moduleHandler->getImplementations('uc_file_action') as $module) {
           $name = $module . '_uc_file_action';
-          $result = $name('form', array('action' => $form_state->getValue(['uc_file_action', 'action']), 'file_ids' => $file_ids));
+          $result = $name('form', ['action' => $form_state->getValue(['uc_file_action', 'action']), 'file_ids' => $file_ids]);
           $form = (is_array($result)) ? array_merge($form, $result) : $form;
         }
         break;
@@ -157,14 +185,13 @@ class ActionForm extends FormBase {
       case 'uc_file_upload':
 
         // Upload the file and get its object.
-        if ($temp_file = file_save_upload('upload', array('file_validate_extensions' => array()))) {
+        if ($temp_file = file_save_upload('upload', ['file_validate_extensions' => []])) {
 
           // Check if any hook_uc_file_action('upload_validate', $args)
           // are implemented.
-          $module_handler = \Drupal::moduleHandler();
-          foreach ($module_handler->getImplementations('uc_file_action') as $module) {
+          foreach ($this->moduleHandler->getImplementations('uc_file_action') as $module) {
             $name = $module . '_uc_file_action';
-            $name('upload_validate', array('file_object' => $temp_file, 'form_id' => $form_id, 'form_state' => $form_state));
+            $name('upload_validate', ['file_object' => $temp_file, 'form_id' => $form_id, 'form_state' => $form_state]);
           }
 
           // Save the uploaded file for later processing.
@@ -177,13 +204,11 @@ class ActionForm extends FormBase {
         break;
 
       default:
-
         // This action isn't handled by us, so check if any
-        // hook_uc_file_action('validate', $args) are implemented
-        $module_handler = \Drupal::moduleHandler();
-        foreach ($module_handler->getImplementations('uc_file_action') as $module) {
+        // hook_uc_file_action('validate', $args) are implemented.
+        foreach ($this->moduleHandler->getImplementations('uc_file_action') as $module) {
           $name = $module . '_uc_file_action';
-          $name('validate', array('form_id' => $form_id, 'form_state' => $form_state));
+          $name('validate', ['form_id' => $form_id, 'form_state' => $form_state]);
         }
 
         break;
@@ -227,14 +252,13 @@ class ActionForm extends FormBase {
           // Copy the file to its final location.
           if (copy($file_object->uri, $dir . '/' . $file_object->filename)) {
 
-            // Check if any hook_uc_file_action('upload', $args) are implemented
-            $module_handler = \Drupal::moduleHandler();
-            foreach ($module_handler->getImplementations('uc_file_action') as $module) {
+            // Check if any hook_uc_file_action('upload', $args) are implemented.
+            foreach ($this->moduleHandler->getImplementations('uc_file_action') as $module) {
               $name = $module . '_uc_file_action';
-              $name('upload', array('file_object' => $file_object, 'form_id' => $form_id, 'form_state' => $form_state));
+              $name('upload', ['file_object' => $file_object, 'form_id' => $form_id, 'form_state' => $form_state]);
             }
 
-            // Update the file list
+            // Update the file list.
             uc_file_refresh();
 
             drupal_set_message($this->t('The file %file has been uploaded to %dir', ['%file' => $file_object->filename, '%dir' => $dir]));
@@ -250,13 +274,11 @@ class ActionForm extends FormBase {
         break;
 
       default:
-
         // This action isn't handled by us, so check if any
-        // hook_uc_file_action('submit', $args) are implemented
-        $module_handler = \Drupal::moduleHandler();
-        foreach ($module_handler->getImplementations('uc_file_action') as $module) {
+        // hook_uc_file_action('submit', $args) are implemented.
+        foreach ($this->moduleHandler->getImplementations('uc_file_action') as $module) {
           $name = $module . '_uc_file_action';
-          $name('submit', array('form_id' => $form_id, 'form_state' => $form_state));
+          $name('submit', ['form_id' => $form_id, 'form_state' => $form_state]);
         }
         break;
     }

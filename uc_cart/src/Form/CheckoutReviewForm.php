@@ -4,11 +4,39 @@ namespace Drupal\uc_cart\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Gives customers the option to finish checkout or revise their information.
  */
 class CheckoutReviewForm extends FormBase {
+
+  /**
+   * The session.
+   *
+   * @var \Symfony\Component\HttpFoundation\Session\SessionInterface
+   */
+  protected $session;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
+   *   The session.
+   */
+  public function __construct(SessionInterface $session) {
+    $this->session = $session;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('session')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -25,18 +53,18 @@ class CheckoutReviewForm extends FormBase {
       $form_state->set('uc_order', $order);
     }
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['back'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['back'] = [
       '#type' => 'submit',
       '#value' => $this->t('Back'),
-      '#validate' => array('::skipValidation'),
-      '#submit' => array(array($this, 'back')),
-    );
-    $form['actions']['submit'] = array(
+      '#validate' => ['::skipValidation'],
+      '#submit' => [[$this, 'back']],
+    ];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Submit order'),
       '#button_type' => 'primary',
-    );
+    ];
 
     return $form;
   }
@@ -46,9 +74,8 @@ class CheckoutReviewForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $order = $form_state->get('uc_order');
-    $session = \Drupal::service('session');
-    $session->remove('uc_checkout_review_' . $order->id());
-    $session->set('uc_checkout_complete_' . $order->id(), TRUE);
+    $this->session->remove('uc_checkout_review_' . $order->id());
+    $this->session->set('uc_checkout_complete_' . $order->id(), TRUE);
     $form_state->setRedirect('uc_cart.checkout_complete');
   }
 

@@ -2,11 +2,13 @@
 
 namespace Drupal\uc_fulfillment\Form;
 
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\uc_fulfillment\ShipmentInterface;
 use Drupal\uc_order\OrderInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Decides to release packages to be put on another shipment.
@@ -26,6 +28,32 @@ class ShipmentDeleteForm extends ConfirmFormBase {
    * @var \Drupal\uc_fulfillment\Shipment
    */
   protected $shipment;
+
+  /**
+   * The module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  protected $moduleHandler;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler.
+   */
+  public function __construct(ModuleHandlerInterface $module_handler) {
+    $this->moduleHandler = $module_handler;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('module_handler')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -83,7 +111,7 @@ class ShipmentDeleteForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $methods = \Drupal::moduleHandler()->invokeAll('uc_fulfillment_method');
+    $methods = $this->moduleHandler->invokeAll('uc_fulfillment_method');
     if ($this->shipment->getTrackingNumber() &&
         isset($methods[$this->shipment->getShippingMethod()]['cancel']) &&
         function_exists($methods[$this->shipment->getShippingMethod()]['cancel'])) {

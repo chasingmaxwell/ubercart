@@ -79,7 +79,7 @@ class AddressForm extends FormBase {
    * Chooses an address to fill out a form.
    */
   protected function selectAddress(array $addresses = []) {
-    $quote_config = \Drupal::config('uc_quote.settings');
+    $quote_config = $this->config('uc_quote.settings');
     $ship_from_address = Address::create($quote_config->get('ship_from_address'));
     if (!in_array($ship_from_address, $addresses)) {
       $addresses[] = $ship_from_address;

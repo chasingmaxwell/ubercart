@@ -13,36 +13,38 @@ use Drupal\user\Entity\User;
 class RoleDeleteForm extends ConfirmFormBase {
 
   /**
-   * The attribute to be deleted.
+   * {@inheritdoc}
    */
-  protected $attribute;
+  public function getFormId() {
+    return 'uc_role_deletion_form';
+  }
 
   /**
    * {@inheritdoc}
    */
   public function getQuestion() {
-    $username = array(
+    $username = [
       '#theme' => 'username',
       '#account' => $account,
-    );
-    return $this->t('Delete expiration of %role_name role for the user @user?', array(
+    ];
+    return $this->t('Delete expiration of %role_name role for the user @user?', [
       '@user' => drupal_render($username),
       '%role_name' => $role_name,
-    ));
+    ]);
   }
 
   /**
    * {@inheritdoc}
    */
   public function getDescription() {
-    $username = array(
+    $username = [
       '#theme' => 'username',
       '#account' => $account,
-    );
-    return $this->t('Deleting the expiration will give @user privileges set by the %role_name role indefinitely unless manually removed.', array(
+    ];
+    return $this->t('Deleting the expiration will give @user privileges set by the %role_name role indefinitely unless manually removed.', [
       '@user' => drupal_render($username),
       '%role_name' => $role_name,
-    ));
+    ]);
   }
 
   /**
@@ -69,23 +71,16 @@ class RoleDeleteForm extends ConfirmFormBase {
   /**
    * {@inheritdoc}
    */
-  public function getFormId() {
-    return 'uc_role_deletion_form';
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function buildForm(array $form, FormStateInterface $form_state, $user = NULL, $role = NULL) {
     $expiration = db_query('SELECT expiration FROM {uc_roles_expirations} WHERE uid = :uid AND rid = :rid', [':uid' => $user->id(), ':rid' => $role])->fetchField();
     if ($expiration) {
 
       $role_name = _uc_role_get_name($role);
 
-      $form['user'] = array('#type' => 'value', '#value' => $user->getUsername());
-      $form['uid'] = array('#type' => 'value', '#value' => $user->id());
-      $form['role'] = array('#type' => 'value', '#value' => $role_name);
-      $form['rid'] = array('#type' => 'value', '#value' => $role);
+      $form['user'] = ['#type' => 'value', '#value' => $user->getUsername()];
+      $form['uid'] = ['#type' => 'value', '#value' => $user->id()];
+      $form['role'] = ['#type' => 'value', '#value' => $role_name];
+      $form['rid'] = ['#type' => 'value', '#value' => $role];
     }
 
     return parent::buildForm($form, $form_state);

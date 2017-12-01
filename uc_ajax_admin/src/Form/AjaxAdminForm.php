@@ -4,7 +4,9 @@ namespace Drupal\uc_ajax_admin\Form;
 
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\uc_cart\Plugin\CheckoutPaneManager;
 use Drupal\uc_store\AjaxAttachTrait;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
@@ -15,10 +17,36 @@ class AjaxAdminForm extends FormBase {
   use AjaxAttachTrait;
 
   /**
+   * The checkout pane manager.
+   *
+   * @var \Drupal\uc_cart\Plugin\CheckoutPaneManager
+   */
+  protected $checkoutPaneManager;
+
+  /**
    * {@inheritdoc}
    */
   public function getFormId() {
     return 'uc_ajax_admin_form';
+  }
+
+  /**
+   * Form constructor.
+   *
+   * @param \Drupal\uc_cart\Plugin\CheckoutPaneManager $checkout_pane_manager
+   *   The checkout pane manager.
+   */
+  public function __construct(CheckoutPanePluginInterface $checkout_pane_manager) {
+    $this->checkoutPaneManager = $checkout_pane_manager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('plugin.manager.uc_cart.checkout_pane')
+    );
   }
 
   /**
@@ -32,8 +60,8 @@ class AjaxAdminForm extends FormBase {
     switch ($target_form) {
       case 'checkout':
         $triggers = _uc_ajax_admin_checkout_trigger_options(_uc_ajax_admin_build_checkout_form());
-        $panes = \Drupal::service('plugin.manager.uc_cart.checkout_pane')->getDefinitions();
-        $wrappers = array();
+        $panes = $this->checkoutPaneManager->getDefinitions();
+        $wrappers = [];
         foreach ($panes as $id => $pane) {
           $wrappers["$id-pane"] = $pane['title'];
         }
@@ -46,13 +74,13 @@ class AjaxAdminForm extends FormBase {
     $form['#uc_ajax_config'] = $this->config('uc_cart.settings')->get('ajax.' . $target_form) ?: [];
 
     $form['table'] = uc_ajax_admin_table($triggers, $wrappers, $form['#uc_ajax_config']);
-    $form['actions'] = array(
+    $form['actions'] = [
       '#type' => 'actions',
-      'submit' => array(
+      'submit' => [
         '#type' => 'submit',
         '#value' => $this->t('Submit'),
-      ),
-    );
+      ],
+    ];
     return $form;
   }
 
