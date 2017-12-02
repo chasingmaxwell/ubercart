@@ -45,26 +45,26 @@ class AjaxTest extends UbercartTestBase {
     $not = $negate ? 'NOT ' : '';
     $name = 'uc_payment_method_' . $method;
     $label = ucfirst($method) . ' conditions';
-    $condition = array(
+    $condition = [
       'LABEL' => $label,
       'PLUGIN' => 'and',
-      'REQUIRES' => array('rules'),
-      'USES VARIABLES' => array(
-        'order' => array(
+      'REQUIRES' => ['rules'],
+      'USES VARIABLES' => [
+        'order' => [
           'label' => 'Order',
           'type' => 'uc_order',
-        ),
-      ),
-      'AND' => array(
-        array(
-          $not . 'data_is' => array(
-            'data' => array('order:billing-address:zone'),
+        ],
+      ],
+      'AND' => [
+        [
+          $not . 'data_is' => [
+            'data' => ['order:billing-address:zone'],
             'value' => $zone,
-          ),
-        ),
-      ),
-    );
-    $newconfig = rules_import(array($name => $condition));
+          ],
+        ],
+      ],
+    ];
+    $newconfig = rules_import([$name => $condition]);
     $oldconfig = rules_config_load($name);
     if ($oldconfig) {
       $newconfig->id = $oldconfig->id;
@@ -94,14 +94,14 @@ class AjaxTest extends UbercartTestBase {
 
     // Go to the checkout page, verify that the conditional payment method is
     // not available.
-    $product = $this->createProduct(array('shippable' => 0));
+    $product = $this->createProduct(['shippable' => 0]);
     $this->addToCart($product);
-    $this->drupalPostForm('cart', array('items[0][qty]' => 1), t('Checkout'));
+    $this->drupalPostForm('cart', ['items[0][qty]' => 1], t('Checkout'));
     // @todo Re-enable when shipping quote conditions are available.
     // $this->assertNoEscaped($other['label']);
 
     // Change the billing zone and verify that payment pane updates.
-    $edit = array();
+    $edit = [];
     $edit['panes[billing][zone]'] = 'KS';
     $this->ucPostAjax(NULL, $edit, 'panes[billing][zone]');
     $this->assertEscaped($other['label']);
@@ -145,14 +145,14 @@ class AjaxTest extends UbercartTestBase {
     //
 
     // Change the payment method to payment 1.
-    $edit = array('panes[payment][payment_method]' => $payment1['id']);
+    $edit = ['panes[payment][payment_method]' => $payment1['id']];
     // Update page via an Ajax call.
     $this->ucPostAjax(NULL, $edit, $edit);
     // Check that the payment method detail div changes.
     $this->assertText($policy1, 'After changing the payment method, the payment method policy string is updated.');
 
     // Change the payment method to payment 2.
-    $edit = array('panes[payment][payment_method]' => $payment2['id']);
+    $edit = ['panes[payment][payment_method]' => $payment2['id']];
     // Update page via an Ajax call.
     $this->ucPostAjax(NULL, $edit, $edit);
     // Check that the payment method detail div changes.
@@ -163,7 +163,7 @@ class AjaxTest extends UbercartTestBase {
     //
 
     // Change the shipping method to quote 1.
-    $edit = array('panes[quotes][quotes][quote_option]' => $quote1->id() . '---0');
+    $edit = ['panes[quotes][quotes][quote_option]' => $quote1->id() . '---0'];
     // Update page via an Ajax call.
     $commands = $this->ucPostAjax(NULL, $edit, $edit);
 

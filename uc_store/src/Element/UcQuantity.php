@@ -17,23 +17,23 @@ class UcQuantity extends Element\FormElement {
    */
   public function getInfo() {
     $class = get_class($this);
-    return array(
+    return [
       '#input' => TRUE,
       '#size' => 5,
       '#maxlength' => 6,
-      '#process' => array(
-        array($class, 'processAjaxForm'),
-      ),
-      '#element_validate' => array(
-        array($class, 'validateQuantity'),
-      ),
-      '#pre_render' => array(
-        array($class, 'preRenderQuantity'),
-      ),
+      '#process' => [
+        [$class, 'processAjaxForm'],
+      ],
+      '#element_validate' => [
+        [$class, 'validateQuantity'],
+      ],
+      '#pre_render' => [
+        [$class, 'preRenderQuantity'],
+      ],
       '#theme' => 'input__textfield',
-      '#theme_wrappers' => array('form_element'),
+      '#theme_wrappers' => ['form_element'],
       '#allow_zero' => FALSE,
-    );
+    ];
   }
 
   /**
@@ -61,12 +61,12 @@ class UcQuantity extends Element\FormElement {
    * @return array
    *   The $element with prepared variables ready for theme_input().
    */
-  public static function preRenderQuantity($element) {
+  public static function preRenderQuantity(array $element) {
     $element['#attributes']['type'] = 'number';
     $element['#attributes']['min'] = 0;
     $element['#attributes']['step'] = 1;
-    Element::setAttributes($element, array('id', 'name', 'value', 'size', 'maxlength', 'placeholder', 'min', 'max', 'step'));
-    static::setAttributes($element, array('form-uc-quantity'));
+    Element::setAttributes($element, ['id', 'name', 'value', 'size', 'maxlength', 'placeholder', 'min', 'max', 'step']);
+    static::setAttributes($element, ['form-uc-quantity']);
 
     return $element;
   }

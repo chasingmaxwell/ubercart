@@ -17,7 +17,7 @@ class AddressTest extends UbercartTestBase {
    *
    * @var \Drupal\uc_store\Address[]
    */
-  protected $test_address = [];
+  protected $testAddresses = [];
 
   /**
    * {@inheritdoc}
@@ -26,7 +26,7 @@ class AddressTest extends UbercartTestBase {
     parent::setUp();
 
     // Create a random address object for use in tests.
-    $this->test_address[] = $this->createAddress();
+    $this->testAddresses[] = $this->createAddress();
 
     // Create a specific address object for use in tests.
     $settings = [
@@ -42,7 +42,7 @@ class AddressTest extends UbercartTestBase {
       'phone'       => '1234567890',
       'email'       => 'elmo@ctw.org',
     ];
-    $this->test_address[] = $this->createAddress($settings);
+    $this->testAddresses[] = $this->createAddress($settings);
   }
 
   /**
@@ -55,7 +55,7 @@ class AddressTest extends UbercartTestBase {
     $expected = '';
     $this->assertEqual($formatted, $expected, 'Formatted empty address is an empty string.');
 
-    $address = $this->test_address[1];
+    $address = $this->testAddresses[1];
 
     // Expected format depends on the store country.
     $store_country = \Drupal::config('uc_store.settings')->get('address.country');
@@ -86,33 +86,33 @@ class AddressTest extends UbercartTestBase {
    * Tests comparison of addresses.
    */
   public function testAddressComparison() {
-    $this->pass((string) $this->test_address[0]);
-    $this->pass((string) $this->test_address[1]);
+    $this->pass((string) $this->testAddresses[0]);
+    $this->pass((string) $this->testAddresses[1]);
 
     // Use randomly generated address first.
-    $address = clone($this->test_address[0]);
+    $address = clone($this->testAddresses[0]);
 
     // Modify phone number and test equality.
     $address->phone = 'this is not a valid phone number';
     $this->assertTrue(
-      $this->test_address[0]->isSamePhysicalLocation($address),
+      $this->testAddresses[0]->isSamePhysicalLocation($address),
       'Physical address comparison ignores non-physical fields.'
     );
 
     // Use specific address.
-    $address = clone($this->test_address[1]);
+    $address = clone($this->testAddresses[1]);
 
     // Modify city and test equality.
     $address->city = 'vIcToRia';
     $this->assertTrue(
-      $this->test_address[1]->isSamePhysicalLocation($address),
+      $this->testAddresses[1]->isSamePhysicalLocation($address),
       'Case-insensitive address comparison works.'
     );
 
     // Modify city and test equality.
     $address->city = '		vic toria ';
     $this->assertTrue(
-      $this->test_address[1]->isSamePhysicalLocation($address),
+      $this->testAddresses[1]->isSamePhysicalLocation($address),
       'Whitespace-insensitive address comparison works.'
     );
 

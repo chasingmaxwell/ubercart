@@ -33,29 +33,29 @@ class ParametersForm extends FormBase {
       $args['statuses'] = uc_report_order_statuses();
     }
 
-    $form['params'] = array(
+    $form['params'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Customize tax report parameters'),
       '#description' => $this->t('Adjust these values and update the report to build your sales tax report. Once submitted, the report may be bookmarked for easy reference in the future.'),
-    );
+    ];
 
-    $form['params']['start_date'] = array(
+    $form['params']['start_date'] = [
       '#type' => 'datetime',
       '#title' => $this->t('Start date'),
       '#date_date_element' => 'date',
       '#date_time_element' => 'none',
       '#default_value' => DrupalDateTime::createFromTimestamp($args['start_date']),
-    );
+    ];
 
-    $form['params']['end_date'] = array(
+    $form['params']['end_date'] = [
       '#type' => 'datetime',
       '#title' => $this->t('End date'),
       '#date_date_element' => 'date',
       '#date_time_element' => 'none',
       '#default_value' => DrupalDateTime::createFromTimestamp($args['end_date']),
-    );
+    ];
 
-    $form['params']['statuses'] = array(
+    $form['params']['statuses'] = [
       '#type' => 'select',
       '#title' => $this->t('Order statuses'),
       '#description' => $this->t('Only orders with selected statuses will be included in the report.') . '<br />' . $this->t('Hold Ctrl + click to select multiple statuses.'),
@@ -63,13 +63,13 @@ class ParametersForm extends FormBase {
       '#default_value' => $args['statuses'],
       '#multiple' => TRUE,
       '#size' => 5,
-    );
+    ];
 
-    $form['params']['actions'] = array('#type' => 'actions');
-    $form['params']['actions']['submit'] = array(
+    $form['params']['actions'] = ['#type' => 'actions'];
+    $form['params']['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Update report'),
-    );
+    ];
 
     return $form;
   }
@@ -91,11 +91,11 @@ class ParametersForm extends FormBase {
     $start_date = $form_state->getValue('start_date')->setTime(0, 0, 0)->getTimestamp();
     $end_date = $form_state->getValue('end_date')->setTime(23, 59, 59)->getTimestamp();
 
-    $args = array(
+    $args = [
       'start_date' => $start_date,
       'end_date' => $end_date,
       'statuses' => implode(',', array_keys($form_state->getValue('statuses'))),
-    );
+    ];
 
     $form_state->setRedirect('uc_tax_report.reports', $args);
   }

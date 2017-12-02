@@ -38,16 +38,16 @@ class RoleCheckoutTest extends UbercartTestBase {
   }
 
   /**
-   *
+   * Tests that roles are properly assigned after checkout.
    */
   public function testCheckoutRoleAssignment() {
     $this->drupalLogin($this->adminUser);
     $method = $this->createPaymentMethod('other');
 
     // Add role assignment to the test product.
-    $rid = $this->drupalCreateRole(array('access content'));
-    $this->drupalPostForm('node/' . $this->product->id() . '/edit/features', array('feature' => 'role'), t('Add'));
-    $this->drupalPostForm(NULL, array('role' => $rid), t('Save feature'));
+    $rid = $this->drupalCreateRole(['access content']);
+    $this->drupalPostForm('node/' . $this->product->id() . '/edit/features', ['feature' => 'role'], t('Add'));
+    $this->drupalPostForm(NULL, ['role' => $rid], t('Save feature'));
 
     // Process an anonymous, shippable order.
     $order = $this->createOrder([
@@ -76,11 +76,11 @@ class RoleCheckoutTest extends UbercartTestBase {
     \Drupal::state()->set('system.test_email_collector', []);
 
     // Test again with an existing authenticated user and a non-shippable order.
-    $order = $this->createOrder(array(
+    $order = $this->createOrder([
       'uid' => 0,
       'primary_email' => $this->customer->getEmail(),
       'payment_method' => $method['id'],
-    ));
+    ]);
     $order->products[2]->data->shippable = 0;
     $order->save();
     uc_payment_enter($order->id(), 'other', $order->getTotal());
@@ -90,7 +90,7 @@ class RoleCheckoutTest extends UbercartTestBase {
     $order = Order::load($order->id());
     $this->assertEqual($order->getStatusId(), 'completed', 'Non-shippable order was set to completed.');
 
-    // 3 e-mails: customer invoice, admin invoice, role assignment
+    // 3 e-mails: customer invoice, admin invoice, role assignment.
     $this->assertNoMailString('subject', 'Account details', 4, 'New account email was sent');
     $this->assertMailString('subject', 'Your Order at Ubercart', 4, 'Customer invoice was sent');
     $this->assertMailString('subject', 'New Order at Ubercart', 4, 'Admin notification was sent');

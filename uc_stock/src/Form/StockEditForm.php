@@ -25,52 +25,52 @@ class StockEditForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state, NodeInterface $node = NULL) {
     $form['#title'] = $this->t('<em>Edit @type stock</em> @title', ['@type' => node_get_type_label($node), '@title' => $node->label()]);
 
-    $form['stock'] = array(
+    $form['stock'] = [
       '#type' => 'table',
-      '#header' => array(
-        array('data' => ' ' . $this->t('Active'), 'class' => array('select-all', 'nowrap')),
+      '#header' => [
+        ['data' => ' ' . $this->t('Active'), 'class' => ['select-all', 'nowrap']],
         $this->t('SKU'),
         $this->t('Stock'),
         $this->t('Threshold'),
-      ),
-    );
+      ],
+    ];
     $form['#attached']['library'][] = 'core/drupal.tableselect';
 
     $skus = uc_product_get_models($node->id(), FALSE);
     foreach ($skus as $sku) {
       $stock = db_query("SELECT * FROM {uc_product_stock} WHERE sku = :sku", [':sku' => $sku])->fetchAssoc();
 
-      $form['stock'][$sku]['active'] = array(
+      $form['stock'][$sku]['active'] = [
         '#type' => 'checkbox',
         '#default_value' => !empty($stock['active']) ? $stock['active'] : 0,
-      );
-      $form['stock'][$sku]['sku'] = array(
+      ];
+      $form['stock'][$sku]['sku'] = [
         '#markup' => $sku,
-      );
-      $form['stock'][$sku]['stock'] = array(
+      ];
+      $form['stock'][$sku]['stock'] = [
         '#type' => 'textfield',
         '#default_value' => !empty($stock['stock']) ? $stock['stock'] : 0,
         '#maxlength' => 9,
         '#size' => 9,
-      );
-      $form['stock'][$sku]['threshold'] = array(
+      ];
+      $form['stock'][$sku]['threshold'] = [
         '#type' => 'textfield',
         '#default_value' => !empty($stock['threshold']) ? $stock['threshold'] : 0,
         '#maxlength' => 9,
         '#size' => 9,
-      );
+      ];
     }
 
-    $form['nid'] = array(
+    $form['nid'] = [
       '#type' => 'value',
       '#value' => $node->id(),
-    );
+    ];
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['save'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['save'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save changes'),
-    );
+    ];
 
     return $form;
   }
@@ -83,19 +83,19 @@ class StockEditForm extends FormBase {
       $stock = $form_state->getValue(['stock', $sku]);
 
       db_merge('uc_product_stock')
-        ->key(array('sku' => $sku))
-        ->updateFields(array(
+        ->key(['sku' => $sku])
+        ->updateFields([
           'active' => $stock['active'],
           'stock' => $stock['stock'],
           'threshold' => $stock['threshold'],
-        ))
-        ->insertFields(array(
+        ])
+        ->insertFields([
           'sku' => $sku,
           'active' => $stock['active'],
           'stock' => $stock['stock'],
           'threshold' => $stock['threshold'],
           'nid' => $form_state->getValue('nid'),
-        ))
+        ])
         ->execute();
     }
 

@@ -46,7 +46,7 @@ function uc_role_schema() {
         'default' => 0,
       ],
 
-      // Start of expiration period
+      // Start of expiration period.
       // Not actually implemented yet, this is a placeholder.
       'start_override' => [
         'description' => 'Override the store default start time? 1 => Yes. 0 => No.',
@@ -62,7 +62,7 @@ function uc_role_schema() {
         'default' => 0,
       ],
 
-      // End of expiration period
+      // End of expiration period.
       'end_override' => [
         'description' => 'Override the default end time? 1 => Yes. 0 => No.',
         'type' => 'int',

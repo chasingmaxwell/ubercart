@@ -20,16 +20,16 @@ class UcAddress extends Element\FormElement {
    */
   public function getInfo() {
     $class = get_class($this);
-    return array(
+    return [
       '#input' => TRUE,
       '#required' => TRUE,
-      '#process' => array(
-        array($class, 'processAddress'),
-      ),
-      '#attributes' => array('class' => array('uc-store-address-field')),
-      '#theme_wrappers' => array('container'),
+      '#process' => [
+        [$class, 'processAddress'],
+      ],
+      '#attributes' => ['class' => ['uc-store-address-field']],
+      '#theme_wrappers' => ['container'],
       '#hidden' => FALSE,
-    );
+    ];
   }
 
   /**
@@ -47,7 +47,7 @@ class UcAddress extends Element\FormElement {
    *   The processed element.
    */
   public static function processAddress(&$element, FormStateInterface $form_state, &$complete_form) {
-    $labels = array(
+    $labels = [
       'first_name' => t('First name'),
       'last_name' => t('Last name'),
       'company' => t('Company'),
@@ -59,7 +59,7 @@ class UcAddress extends Element\FormElement {
       'postal_code' => t('Postal code'),
       'phone' => t('Phone number'),
       'email' => t('E-mail'),
-    );
+    ];
 
     $element['#tree'] = TRUE;
     $config = \Drupal::config('uc_store.settings')->get('address_fields');
@@ -81,72 +81,72 @@ class UcAddress extends Element\FormElement {
       switch ($field) {
         case 'country':
           if ($country_names) {
-            $subelement = array(
+            $subelement = [
               '#type' => 'select',
               '#options' => $country_names,
-              '#ajax' => array(
-                'callback' => array(get_class(), 'updateZone'),
+              '#ajax' => [
+                'callback' => [get_class(), 'updateZone'],
                 'wrapper' => $wrapper,
-                'progress' => array(
+                'progress' => [
                   'type' => 'throbber',
-                ),
-              ),
-            );
+                ],
+              ],
+            ];
           }
           else {
-            $subelement = array(
+            $subelement = [
               '#type' => 'hidden',
               '#required' => FALSE,
-            );
+            ];
           }
           break;
 
         case 'zone':
-          $subelement = array(
+          $subelement = [
             '#prefix' => '<div id="' . $wrapper . '">',
             '#suffix' => '</div>',
-          );
+          ];
 
           $zones = $value->country ? \Drupal::service('country_manager')->getZoneList($value->country) : [];
           if ($zones) {
             natcasesort($zones);
-            $subelement += array(
+            $subelement += [
               '#type' => 'select',
               '#options' => $zones,
               '#empty_value' => '',
               '#after_build' => [[get_class(), 'resetZone']],
-            );
+            ];
           }
           else {
-            $subelement += array(
+            $subelement += [
               '#type' => 'hidden',
               '#value' => '',
               '#required' => FALSE,
-            );
+            ];
           }
           break;
 
         case 'postal_code':
-          $subelement = array(
+          $subelement = [
             '#type' => 'textfield',
             '#size' => 10,
             '#maxlength' => 10,
-          );
+          ];
           break;
 
         case 'phone':
-          $subelement = array(
+          $subelement = [
             '#type' => 'tel',
             '#size' => 16,
             '#maxlength' => 32,
-          );
+          ];
           break;
 
         default:
-          $subelement = array(
+          $subelement = [
             '#type' => 'textfield',
             '#size' => 32,
-          );
+          ];
       }
 
       // Copy JavaScript states from the parent element.
@@ -155,13 +155,13 @@ class UcAddress extends Element\FormElement {
       }
 
       // Set common values for all address fields.
-      $element[$field] = $subelement + array(
+      $element[$field] = $subelement + [
         '#title' => $labels[$field],
         '#default_value' => $value->$field,
         '#access' => !$element['#hidden'] && !empty($config[$field]['status']),
         '#required' => $element['#required'] && !empty($config[$field]['required']),
         '#weight' => isset($config[$field]['weight']) ? $config[$field]['weight'] : 0,
-      );
+      ];
     }
     return $element;
   }

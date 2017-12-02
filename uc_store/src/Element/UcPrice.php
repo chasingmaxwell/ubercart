@@ -20,26 +20,26 @@ class UcPrice extends Element\FormElement {
     $config = \Drupal::config('uc_store.settings')->get('currency');
     $sign_flag = $config['symbol_after'];
     $currency_sign = $config['symbol'];
-    return array(
+    return [
       '#input' => TRUE,
       '#size' => 15,
       '#maxlength' => 15,
-      '#process' => array(
-        array($class, 'processAjaxForm'),
-      ),
-      '#element_validate' => array(
-        array($class, 'validatePrice'),
-      ),
-      '#pre_render' => array(
-        array($class, 'preRenderPrice'),
-      ),
+      '#process' => [
+        [$class, 'processAjaxForm'],
+      ],
+      '#element_validate' => [
+        [$class, 'validatePrice'],
+      ],
+      '#pre_render' => [
+        [$class, 'preRenderPrice'],
+      ],
       '#theme' => 'input__textfield',
-      '#theme_wrappers' => array('form_element'),
+      '#theme_wrappers' => ['form_element'],
       '#field_prefix' => $sign_flag ? '' : $currency_sign,
       '#field_suffix' => $sign_flag ? $currency_sign : '',
       '#allow_negative' => FALSE,
       '#empty_zero' => TRUE,
-    );
+    ];
   }
 
   /**
@@ -93,14 +93,14 @@ class UcPrice extends Element\FormElement {
    * @return array
    *   The $element with prepared variables ready for theme_input().
    */
-  public static function preRenderPrice($element) {
+  public static function preRenderPrice(array $element) {
     $element['#attributes']['type'] = 'number';
     $element['#attributes']['step'] = 'any';
     if (empty($element['#allow_negative'])) {
       $element['#attributes']['min'] = 0;
     }
-    Element::setAttributes($element, array('id', 'name', 'value', 'size', 'maxlength', 'placeholder'));
-    static::setAttributes($element, array('form-uc-price'));
+    Element::setAttributes($element, ['id', 'name', 'value', 'size', 'maxlength', 'placeholder']);
+    static::setAttributes($element, ['form-uc-price']);
 
     return $element;
   }

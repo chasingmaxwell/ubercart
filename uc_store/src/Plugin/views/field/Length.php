@@ -32,18 +32,18 @@ class Length extends NumericField {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
-    $form['format'] = array(
+    $form['format'] = [
       '#title' => $this->t('Format'),
       '#type' => 'radios',
-      '#options' => array(
+      '#options' => [
         'uc_weight' => $this->t('Ubercart length'),
         'numeric' => $this->t('Numeric'),
-      ),
+      ],
       '#default_value' => $this->options['format'],
       '#weight' => -1,
-    );
+    ];
 
-    foreach (array('separator', 'format_plural', 'prefix', 'suffix') as $field) {
+    foreach (['separator', 'format_plural', 'prefix', 'suffix'] as $field) {
       $form[$field]['#states']['visible']['input[name="options[format]"]']['value'] = 'numeric';
     }
   }

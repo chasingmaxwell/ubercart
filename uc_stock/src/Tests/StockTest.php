@@ -20,7 +20,7 @@ class StockTest extends UbercartTestBase {
   protected function setUp() {
     parent::setUp();
 
-    // Need page_title_block because we test page titles
+    // Need page_title_block because we test page titles.
     $this->drupalPlaceBlock('page_title_block');
 
     // Ensure test mails are logged.
@@ -47,11 +47,11 @@ class StockTest extends UbercartTestBase {
     $this->assertFieldByName($prefix . '[threshold]', '0', 'Default stock threshold found.');
 
     $stock = rand(1, 1000);
-    $edit = array(
+    $edit = [
       $prefix . '[active]' => 1,
       $prefix . '[stock]' => $stock,
       $prefix . '[threshold]' => rand(1, 100),
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, t('Save changes'));
     $this->assertText(t('Stock settings saved.'));
     $this->assertTrue(uc_stock_is_active($sku));
@@ -60,7 +60,7 @@ class StockTest extends UbercartTestBase {
     $stock = rand(1, 1000);
     uc_stock_set($sku, $stock);
     $this->drupalGet('node/' . $this->product->id() . '/edit/stock');
-    $this->assertFieldByName($prefix . '[stock]', (string)$stock, 'Set stock level found.');
+    $this->assertFieldByName($prefix . '[stock]', (string) $stock, 'Set stock level found.');
   }
 
   /**
@@ -69,19 +69,19 @@ class StockTest extends UbercartTestBase {
   public function testStockDecrement() {
     $prefix = 'stock[' . $this->product->model->value . ']';
     $stock = rand(100, 1000);
-    $edit = array(
+    $edit = [
       $prefix . '[active]' => 1,
       $prefix . '[stock]' => $stock,
-    );
+    ];
     $this->drupalPostForm('node/' . $this->product->id() . '/edit/stock', $edit, t('Save changes'));
     $this->assertText(t('Stock settings saved.'));
 
     // Enable product quantity field.
-    $edit = array('uc_product_add_to_cart_qty' => TRUE);
+    $edit = ['uc_product_add_to_cart_qty' => TRUE];
     $this->drupalPostForm('admin/store/config/products', $edit, 'Save configuration');
 
     $qty = rand(1, 100);
-    $edit = array('qty' => $qty);
+    $edit = ['qty' => $qty];
     $this->addToCart($this->product, $edit);
     $this->checkout();
 
@@ -94,15 +94,15 @@ class StockTest extends UbercartTestBase {
   public function testStockThresholdMail() {
     $prefix = 'stock[' . $this->product->model->value . ']';
 
-    $edit = array('uc_stock_threshold_notification' => 1);
+    $edit = ['uc_stock_threshold_notification' => 1];
     $this->drupalPostForm('admin/store/config/stock', $edit, 'Save configuration');
 
     $qty = rand(10, 100);
-    $edit = array(
+    $edit = [
       $prefix . '[active]' => 1,
       $prefix . '[stock]' => $qty + 1,
       $prefix . '[threshold]' => $qty,
-    );
+    ];
     $this->drupalPostForm('node/' . $this->product->id() . '/edit/stock', $edit, 'Save changes');
 
     $this->addToCart($this->product);

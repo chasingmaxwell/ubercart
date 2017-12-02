@@ -305,7 +305,7 @@ class PayPalPaymentsStandard extends PayPalPaymentMethodPluginBase implements Of
           $o = 0;
           foreach ($item->data->attributes as $name => $setting) {
             $data['on' . $o . '_' . $i] = $name;
-            $data['os' . $o . '_' . $i] = implode(', ', (array)$setting);
+            $data['os' . $o . '_' . $i] = implode(', ', (array) $setting);
             $o++;
           }
         }

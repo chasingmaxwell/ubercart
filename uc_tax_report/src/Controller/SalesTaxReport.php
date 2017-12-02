@@ -19,32 +19,38 @@ class SalesTaxReport {
   public function report($start_date = NULL, $end_date = NULL, $statuses = NULL) {
     // Use default report parameters if we don't detect values in the URL.
     if ($start_date == '') {
-      $args = array(
+      $args = [
         'start_date' => mktime(0, 0, 0, date('n'), 1, date('Y')),
         'end_date' => REQUEST_TIME,
         'statuses' => uc_report_order_statuses(),
-      );
+      ];
     }
     else {
-      $args = array(
+      $args = [
         'start_date' => $start_date,
         'end_date' => $end_date,
         'statuses' => explode(',', $statuses),
-      );
+      ];
     }
 
     // Build the header for the report table.
-    $header = array(t('Tax Name'), t('Jurisdiction'), t('Tax rate'), t('Total taxable amount'), t('Total tax collected'));
-    $rows = array();
-    $csv_rows = array();
+    $header = [
+      t('Tax Name'),
+      t('Jurisdiction'),
+      t('Tax rate'),
+      t('Total taxable amount'),
+      t('Total tax collected'),
+    ];
+    $rows = [];
+    $csv_rows = [];
     $csv_rows[] = $header;
 
     // Query to get the tax line items in this date range.
     $result = db_query("SELECT li.amount, li.title, li.data FROM {uc_orders} o LEFT JOIN {uc_order_line_items} li ON o.order_id = li.order_id WHERE :start <= created AND created <= :end AND order_status IN (:statuses[]) AND li.type = :type", [':start' => $args['start_date'], ':end' => $args['end_date'], ':statuses[]' => $args['statuses'], ':type' => 'tax']);
 
     // Add up the amounts by jurisdiction.
-    $totals = array();
-    $no_meta_totals = array();
+    $totals = [];
+    $no_meta_totals = [];
 
     foreach ($result as $item) {
       $name = trim($item->title);
@@ -62,13 +68,13 @@ class SalesTaxReport {
       if (!empty($jurisdiction) && $amount && $taxable_amount) {
         // We have meta-data.
         if (empty($totals[$key])) {
-          $totals[$key] = array(
+          $totals[$key] = [
             'name' => $name,
             'jurisdiction' => $jurisdiction,
             'rate' => $rate,
             'taxable_amount' => $taxable_amount,
             'amount' => $amount,
-          );
+          ];
         }
         else {
           $totals[$key]['taxable_amount'] += $taxable_amount;
@@ -78,10 +84,10 @@ class SalesTaxReport {
       elseif ($amount) {
         // Old data: no meta-data was stored. Just report the amount collected.
         if (empty($no_meta_totals[$key])) {
-          $no_meta_totals[$key] = array(
+          $no_meta_totals[$key] = [
             'name' => $name,
             'amount' => $amount,
-          );
+          ];
         }
         else {
           $no_meta_totals[$key]['amount'] += $amount;
@@ -98,13 +104,13 @@ class SalesTaxReport {
     $star_legend = '';
 
     foreach ($totals as $line) {
-      $row = array(
+      $row = [
         $line['name'],
         $line['jurisdiction'],
         number_format($line['rate'] * 100, 3) . '%',
-        array('#theme' => 'uc_price', '#price' => $line['taxable_amount']),
-        array('#theme' => 'uc_price', '#price' => $line['amount']),
-      );
+        ['#theme' => 'uc_price', '#price' => $line['taxable_amount']],
+        ['#theme' => 'uc_price', '#price' => $line['amount']],
+      ];
       $rows[] = $row;
       // Remove HTML for CSV files.
       $row[3] = $line['taxable_amount'];
@@ -115,13 +121,13 @@ class SalesTaxReport {
     }
 
     foreach ($no_meta_totals as $line) {
-      $row = array(
+      $row = [
         $line['name'],
         '*',
         '*',
         '*',
-        array('#theme' => 'uc_price', '#price' => $line['amount']),
-      );
+        ['#theme' => 'uc_price', '#price' => $line['amount']],
+      ];
       $rows[] = $row;
       // Remove HTML for CSV files.
       $row[4] = $line['amount'];
@@ -132,13 +138,13 @@ class SalesTaxReport {
     }
 
     // Add a totals line.
-    $row = array(
+    $row = [
       t('Total'),
       '',
       '',
-      array('#theme' => 'uc_price', '#price' => $taxable_amount),
-      array('#theme' => 'uc_price', '#price' => $amount),
-    );
+      ['#theme' => 'uc_price', '#price' => $taxable_amount],
+      ['#theme' => 'uc_price', '#price' => $amount],
+    ];
     $rows[] = $row;
     // Removes HTML for CSV files.
     $row[3] = $taxable_amount;
@@ -151,28 +157,28 @@ class SalesTaxReport {
 
     // Build the page output holding the form, table, and CSV export link.
     $build['form'] = \Drupal::formBuilder()->getForm('\Drupal\uc_tax_report\Form\ParametersForm', $args);
-    $build['report'] = array(
+    $build['report'] = [
       '#theme' => 'table',
       '#header' => $header,
       '#rows' => $rows,
-      '#attributes' => array('width' => '100%', 'class' => array('uc-sales-table')),
-    );
+      '#attributes' => ['width' => '100%', 'class' => ['uc-sales-table']],
+    ];
 
     if ($star_legend) {
-      $build['legend'] = array(
+      $build['legend'] = [
         '#prefix' => '<div class="uc-reports-note"><p>',
         '#markup' => $star_legend,
         '#suffix' => '</p></div>',
-      );
+      ];
     }
 
-    $build['export_csv'] = array(
+    $build['export_csv'] = [
       '#type' => 'link',
       '#prefix' => '<div class="uc-reports-links">',
       '#title' => t('Export to CSV file.'),
       '#url' => Url::fromRoute('uc_report.getcsv', ['report_id' => $csv_data['report'], 'user_id' => $csv_data['user']]),
       '#suffix' => '</div>',
-    );
+    ];
 
     return $build;
   }
