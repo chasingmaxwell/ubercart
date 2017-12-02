@@ -56,7 +56,7 @@ class OrderSubtotalCondition extends OrderConditionBase {
       foreach ($order->line_items as $line_item) {
         if ($line_item['type'] == 'subtotal') {
           $subtotal = $line_item['amount'];
-          return compareComparisonOptions($subtotal, $op, $value);
+          return $this->compareComparisonOptions($subtotal, $op, $value);
         }
       }
     }

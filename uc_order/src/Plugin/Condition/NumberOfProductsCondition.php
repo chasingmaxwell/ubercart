@@ -89,7 +89,7 @@ class NumberOfProductsCondition extends OrderConditionBase {
         }
       }
     }
-    return compareComparisonOptions($total, $operation, $count);
+    return $this->compareComparisonOptions($total, $operation, $count);
   }
 
 }

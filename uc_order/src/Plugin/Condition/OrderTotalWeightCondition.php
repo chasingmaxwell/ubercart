@@ -104,7 +104,7 @@ class OrderTotalWeightCondition extends OrderConditionBase {
         }
       }
     }
-    return compareComparisonOptions($total, $operator, $weight_value);
+    return $this->compareComparisonOptions($total, $operator, $weight_value);
   }
 
 }

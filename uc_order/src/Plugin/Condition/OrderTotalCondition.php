@@ -52,7 +52,7 @@ class OrderTotalCondition extends OrderConditionBase {
    *   TRUE if the order total meets the specified condition.
    */
   protected function doEvaluate(OrderInterface $order, $operator, $value) {
-    return compareComparisonOptions($order->getTotal(), $operator, $value);
+    return $this->compareComparisonOptions($order->getTotal(), $operator, $value);
   }
 
 }
