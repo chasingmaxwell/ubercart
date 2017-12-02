@@ -32,14 +32,14 @@ Live sites directory:
 http://www.ubercart.org/site
 
 Report a bug or feature request:
-http://drupal.org/project/issues/ubercart
+https://www.drupal.org/project/issues/ubercart
 
 Thanks for checking out Ubercart!  We would love to hear your feedback.
 We particularly want to know how we can make Ubercart better and easier to use.
 Feel free to post your thoughts in the forums at Ubercart.org!  We will make a
 survey available for more targeted feedback in the near future.
 
-Releases may be downloaded at http://drupal.org/project/ubercart.
+Releases may be downloaded at https://www.drupal.org/project/ubercart.
 
 Kind regards,
 The UberDudes

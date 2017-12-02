@@ -55,7 +55,7 @@ class USPSSettingsForm extends ConfigFormBase {
     $form['credentials']['user_id'] = [
       '#type' => 'textfield',
       '#title' => $this->t('USPS user ID'),
-      '#description' => $this->t('To acquire or locate your user ID, refer to the <a href=":url">USPS documentation</a>.', [':url' => Url::fromUri('http://drupal.org/node/1308256')->toString()]),
+      '#description' => $this->t('To acquire or locate your user ID, refer to the <a href=":url">USPS documentation</a>.', [':url' => Url::fromUri('https://www.drupal.org/node/1308256')->toString()]),
       '#default_value' => $usps_config->get('user_id'),
     ];
 
