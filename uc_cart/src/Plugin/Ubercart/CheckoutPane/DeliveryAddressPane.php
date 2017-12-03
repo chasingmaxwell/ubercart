@@ -41,11 +41,11 @@ class DeliveryAddressPane extends AddressPaneBase {
    * {@inheritdoc}
    */
   public function settingsForm() {
-    $form['delivery_not_shippable'] = array(
+    $form['delivery_not_shippable'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Hide delivery information when carts have no shippable items.'),
       '#default_value' => $this->configuration['delivery_not_shippable'],
-    );
+    ];
     return $form;
   }
 

@@ -11,112 +11,112 @@ use Drupal\Core\Render\BubbleableMetadata;
  * Implements hook_token_info().
  */
 function uc_product_token_info() {
-  $node['product'] = array(
+  $node['product'] = [
     'name' => t('Product'),
     'description' => t('Ubercart product data of the node.'),
     'type' => 'uc_product',
-  );
+  ];
 
-  $types['uc_product'] = array(
+  $types['uc_product'] = [
     'name' => t('Product'),
     'description' => t('Tokens for Ubercart products.'),
     'needs-data' => 'node',
-  );
-  $product['model'] = array(
+  ];
+  $product['model'] = [
     'name' => t('SKU / Model'),
     'description' => t("The product's SKU or model number."),
-  );
-  $product['cost'] = array(
+  ];
+  $product['cost'] = [
     'name' => t('Cost'),
     'description' => t("The product's cost."),
     'type' => 'uc_price',
-  );
-  $product['price'] = array(
+  ];
+  $product['price'] = [
     'name' => t('Price'),
     'description' => t("The product's price."),
     'type' => 'uc_price',
-  );
-  $product['weight'] = array(
+  ];
+  $product['weight'] = [
     'name' => t('Weight'),
     'description' => t("The product's weight."),
     'type' => 'uc_weight',
-  );
-  $product['length'] = array(
+  ];
+  $product['length'] = [
     'name' => t('Length'),
     'description' => t("The product's length."),
     'type' => 'uc_dimension',
-  );
-  $product['width'] = array(
+  ];
+  $product['width'] = [
     'name' => t('Width'),
     'description' => t("The product's width."),
     'type' => 'uc_dimension',
-  );
-  $product['height'] = array(
+  ];
+  $product['height'] = [
     'name' => t('Height'),
     'description' => t("The product's height."),
     'type' => 'uc_dimension',
-  );
+  ];
 
-  $types['uc_price'] = array(
+  $types['uc_price'] = [
     'name' => t('Price'),
     'description' => 'Tokens for price formats.',
     'needs-data' => 'uc_price',
-  );
-  $price['formatted'] = array(
+  ];
+  $price['formatted'] = [
     'name' => t('Formatted'),
     'description' => t('A formatted price.'),
-  );
-  $price['raw'] = array(
+  ];
+  $price['raw'] = [
     'name' => t('Raw value'),
     'description' => t('A decimal price.'),
-  );
+  ];
 
-  $types['uc_weight'] = array(
+  $types['uc_weight'] = [
     'name' => t('Weight'),
     'description' => 'Tokens for weight formats.',
     'needs-data' => 'uc_weight',
-  );
-  $weight['formatted'] = array(
+  ];
+  $weight['formatted'] = [
     'name' => t('Formatted'),
     'description' => t('A formatted weight.'),
-  );
-  $weight['raw'] = array(
+  ];
+  $weight['raw'] = [
     'name' => t('Raw value'),
     'description' => t('A decimal weight.'),
-  );
-  $weight['units'] = array(
+  ];
+  $weight['units'] = [
     'name' => t('Units'),
     'description' => t('The unit of measurement.'),
-  );
+  ];
 
-  $types['uc_dimension'] = array(
+  $types['uc_dimension'] = [
     'name' => t('Dimension'),
     'description' => 'Tokens for length, width, and height.',
     'needs-data' => 'uc_dimension',
-  );
-  $dimension['formatted'] = array(
+  ];
+  $dimension['formatted'] = [
     'name' => t('Formatted'),
     'description' => t('A formatted dimension.'),
-  );
-  $dimension['raw'] = array(
+  ];
+  $dimension['raw'] = [
     'name' => t('Raw value'),
     'description' => t('A decimal dimension.'),
-  );
-  $dimension['units'] = array(
+  ];
+  $dimension['units'] = [
     'name' => t('Units'),
     'description' => t('The unit of measurement.'),
-  );
+  ];
 
-  return array(
+  return [
     'types' => $types,
-    'tokens' => array(
+    'tokens' => [
       'node' => $node,
       'uc_product' => $product,
       'uc_price' => $price,
       'uc_weight' => $weight,
       'uc_dimension' => $dimension,
-    ),
-  );
+    ],
+  ];
 }
 
 /**

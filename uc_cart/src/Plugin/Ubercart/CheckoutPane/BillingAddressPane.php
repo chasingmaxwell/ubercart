@@ -40,11 +40,11 @@ class BillingAddressPane extends AddressPaneBase {
    * {@inheritdoc}
    */
   public function settingsForm() {
-    $form['default_same_address'] = array(
+    $form['default_same_address'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Use the same address for billing and delivery by default.'),
       '#default_value' => $this->configuration['default_same_address'],
-    );
+    ];
     return $form;
   }
 

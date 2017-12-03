@@ -17,6 +17,8 @@ abstract class AddressPaneBase extends CheckoutPanePluginBase {
 
   /**
    * Source pane for "copy address" checkbox.
+   *
+   * @var string
    */
   protected static $sourcePaneId;
 
@@ -47,47 +49,47 @@ abstract class AddressPaneBase extends CheckoutPanePluginBase {
     $contents['#description'] = $this->getDescription();
 
     if ($source != $pane) {
-      $contents['copy_address'] = array(
+      $contents['copy_address'] = [
         '#type' => 'checkbox',
         '#title' => $this->getCopyAddressText(),
         '#default_value' => $this->configuration['default_same_address'],
-        '#ajax' => array(
-          'callback' => array($this, 'ajaxRender'),
+        '#ajax' => [
+          'callback' => [$this, 'ajaxRender'],
           'wrapper' => $pane . '-address-pane',
-          'progress' => array(
+          'progress' => [
             'type' => 'throbber',
-          ),
-        ),
-      );
+          ],
+        ],
+      ];
     }
 
     if ($user->isAuthenticated() && $addresses = uc_select_addresses($user->id(), $pane)) {
-      $contents['select_address'] = array(
+      $contents['select_address'] = [
         '#type' => 'select',
         '#title' => $this->t('Saved addresses'),
         '#options' => $addresses['#options'],
-        '#ajax' => array(
-          'callback' => array($this, 'ajaxRender'),
+        '#ajax' => [
+          'callback' => [$this, 'ajaxRender'],
           'wrapper' => $pane . '-address-pane',
-          'progress' => array(
+          'progress' => [
             'type' => 'throbber',
-          ),
-        ),
-        '#states' => array(
-          'invisible' => array(
-            'input[name="panes[' . $pane . '][copy_address]"]' => array('checked' => TRUE),
-          ),
-        ),
-      );
+          ],
+        ],
+        '#states' => [
+          'invisible' => [
+            'input[name="panes[' . $pane . '][copy_address]"]' => ['checked' => TRUE],
+          ],
+        ],
+      ];
     }
 
-    $contents['address'] = array(
+    $contents['address'] = [
       '#type' => 'uc_address',
       '#default_value' => $order->getAddress($pane),
       '#parents' => ['panes', $pane],
       '#prefix' => '<div id="' . $pane . '-address-pane">',
       '#suffix' => '</div>',
-    );
+    ];
 
     if ($form_state->hasValue(['panes', $pane, 'copy_address'])) {
       $contents['address']['#hidden'] = !$form_state->isValueEmpty(['panes', $pane, 'copy_address']);
@@ -157,9 +159,9 @@ abstract class AddressPaneBase extends CheckoutPanePluginBase {
   public function review(OrderInterface $order) {
     $pane = $this->pluginDefinition['id'];
     $address = $order->getAddress($pane);
-    $review[] = array('title' => $this->t('Address'), 'data' => array('#markup' => $address));
+    $review[] = ['title' => $this->t('Address'), 'data' => ['#markup' => $address]];
     if (uc_address_field_enabled('phone') && !empty($address->phone)) {
-      $review[] = array('title' => $this->t('Phone'), 'data' => array('#plain_text' => $address->phone));
+      $review[] = ['title' => $this->t('Phone'), 'data' => ['#plain_text' => $address->phone]];
     }
     return $review;
   }
@@ -185,9 +187,9 @@ abstract class AddressPaneBase extends CheckoutPanePluginBase {
     }
 
     $response = new AjaxResponse();
-    $id = $this->pluginDefinition['id']  . '-address-pane';
+    $id = $this->pluginDefinition['id'] . '-address-pane';
     $response->addCommand(new ReplaceCommand('#' . $id, trim(drupal_render($element['address']))));
-    $status_messages = array('#type' => 'status_messages');
+    $status_messages = ['#type' => 'status_messages'];
     $response->addCommand(new PrependCommand('#' . $id, drupal_render($status_messages)));
     return $response;
   }

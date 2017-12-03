@@ -19,7 +19,7 @@ class AttributeEditForm extends AttributeFormBase {
 
     $form['#title'] = $this->t('Edit attribute: %name', ['%name' => $attribute->name]);
 
-    $form['aid'] = array('#type' => 'value', '#value' => $attribute->aid);
+    $form['aid'] = ['#type' => 'value', '#value' => $attribute->aid];
     $form['name']['#default_value'] = $attribute->name;
     $form['label']['#default_value'] = $attribute->label ?: $attribute->name;
     $form['description']['#default_value'] = $attribute->description;
@@ -34,10 +34,10 @@ class AttributeEditForm extends AttributeFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // Remove Form API elements from $form_state
+    // Remove Form API elements from $form_state.
     $form_state->cleanValues();
     db_merge('uc_attributes')
-      ->key(array('aid' => $form_state->getValue('aid')))
+      ->key(['aid' => $form_state->getValue('aid')])
       ->fields($form_state->getValues())
       ->execute();
     $form_state->setRedirect('uc_attribute.overview');

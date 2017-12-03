@@ -14,30 +14,30 @@ class AttributeController extends ControllerBase {
    * Displays a paged list and overview of existing product attributes.
    */
   public function overview() {
-    $header = array(
-      array('data' => $this->t('Name'), 'field' => 'a.name', 'sort' => 'asc'),
-      array('data' => $this->t('Label'), 'field' => 'a.label'),
+    $header = [
+      ['data' => $this->t('Name'), 'field' => 'a.name', 'sort' => 'asc'],
+      ['data' => $this->t('Label'), 'field' => 'a.label'],
       $this->t('Required'),
-      array('data' => $this->t('List position'), 'field' => 'a.ordering'),
+      ['data' => $this->t('List position'), 'field' => 'a.ordering'],
       $this->t('Number of options'),
       $this->t('Display type'),
-      array('data' => $this->t('Operations'), 'colspan' => 1),
-    );
+      ['data' => $this->t('Operations'), 'colspan' => 1],
+    ];
 
     $display_types = _uc_attribute_display_types();
 
     $query = db_select('uc_attributes', 'a')
       ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
       ->extend('Drupal\Core\Database\Query\TableSortExtender')
-      ->fields('a', array('aid', 'name', 'label', 'required', 'ordering', 'display'))
+      ->fields('a', ['aid', 'name', 'label', 'required', 'ordering', 'display'])
       ->orderByHeader($header)
       ->limit(30);
 
-    $build['attributes'] = array(
+    $build['attributes'] = [
       '#type' => 'table',
       '#header' => $header,
       '#empty' => $this->t('No product attributes have been added yet.'),
-    );
+    ];
 
     $result = $query->execute();
     foreach ($result as $attr) {
@@ -45,38 +45,38 @@ class AttributeController extends ControllerBase {
       if (empty($attr->label)) {
         $attr->label = $attr->name;
       }
-      $build['attributes'][] = array(
-        'name' => array('#plain_text' => $attr->name),
-        'label' => array('#plain_text' => $attr->label),
-        'required' => array(
+      $build['attributes'][] = [
+        'name' => ['#plain_text' => $attr->name],
+        'label' => ['#plain_text' => $attr->label],
+        'required' => [
           '#plain_text' => $attr->required == 1 ? $this->t('Yes') : $this->t('No'),
-        ),
-        'ordering' => array('#markup' => $attr->ordering),
-        'options' => array('#markup' => $attr->options),
-        'display' => array('#markup' => $display_types[$attr->display]),
-        'operations' => array(
+        ],
+        'ordering' => ['#markup' => $attr->ordering],
+        'options' => ['#markup' => $attr->options],
+        'display' => ['#markup' => $display_types[$attr->display]],
+        'operations' => [
           '#type' => 'operations',
-          '#links' => array(
-            'edit' => array(
+          '#links' => [
+            'edit' => [
               'title' => $this->t('Edit'),
               'url' => Url::fromRoute('uc_attribute.edit', ['aid' => $attr->aid]),
-            ),
-            'options' => array(
+            ],
+            'options' => [
               'title' => $this->t('Options'),
               'url' => Url::fromRoute('uc_attribute.options', ['aid' => $attr->aid]),
-            ),
-            'delete' => array(
+            ],
+            'delete' => [
               'title' => $this->t('Delete'),
               'url' => Url::fromRoute('uc_attribute.delete', ['aid' => $attr->aid]),
-            ),
-          ),
-        ),
-      );
+            ],
+          ],
+        ],
+      ];
     }
 
-    $build['pager'] = array(
+    $build['pager'] = [
       '#type' => 'pager',
-    );
+    ];
 
     return $build;
   }

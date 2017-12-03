@@ -4,7 +4,6 @@ namespace Drupal\uc_cart\Annotation;
 
 use Drupal\Component\Annotation\Plugin;
 
-
 /**
  * Defines a checkout pane annotation object.
  *
@@ -22,9 +21,9 @@ class CheckoutPane extends Plugin {
   /**
    * The administrative label of the checkout pane.
    *
-   * @ingroup plugin_translatable
-   *
    * @var \Drupal\Core\Annotation\Translation
+   *
+   * @ingroup plugin_translatable
    */
   public $title;
 

@@ -21,7 +21,7 @@ class CheckoutSettingsTest extends UbercartTestBase {
 
     $this->drupalPostForm(
       'admin/store/config/checkout',
-      array('uc_checkout_enabled' => FALSE),
+      ['uc_checkout_enabled' => FALSE],
       t('Save configuration')
     );
 
@@ -48,7 +48,7 @@ class CheckoutSettingsTest extends UbercartTestBase {
 
     $this->drupalPostForm(
       'admin/store/config/checkout',
-      array('uc_checkout_anonymous' => FALSE),
+      ['uc_checkout_anonymous' => FALSE],
       t('Save configuration')
     );
 
@@ -68,4 +68,5 @@ class CheckoutSettingsTest extends UbercartTestBase {
       'The checkout page is not displayed.'
     );
   }
+
 }

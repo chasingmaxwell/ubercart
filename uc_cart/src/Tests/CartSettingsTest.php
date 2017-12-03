@@ -46,7 +46,7 @@ class CartSettingsTest extends UbercartTestBase {
     $redirect = 'admin/store';
     $this->drupalPostForm(
       'admin/store/config/cart',
-      array('uc_add_item_redirect' => $redirect),
+      ['uc_add_item_redirect' => $redirect],
       t('Save configuration')
     );
 
@@ -66,7 +66,7 @@ class CartSettingsTest extends UbercartTestBase {
     $this->drupalLogin($this->adminUser);
     $this->drupalPostForm(
       'admin/store/config/cart',
-      array('uc_add_item_redirect' => '<none>'),
+      ['uc_add_item_redirect' => '<none>'],
       t('Save configuration')
     );
 
@@ -86,16 +86,16 @@ class CartSettingsTest extends UbercartTestBase {
     $minimum_subtotal = mt_rand(2, 9999);
     $this->drupalPostForm(
       NULL,
-      array('uc_minimum_subtotal' => $minimum_subtotal),
+      ['uc_minimum_subtotal' => $minimum_subtotal],
       t('Save configuration')
     );
 
-    // Create two products, one below the minimum price, and one above the minimum price.
-    $product_below_limit = $this->createProduct(array('price' => $minimum_subtotal - 1));
-    $product_above_limit = $this->createProduct(array('price' => $minimum_subtotal + 1));
+    // Create two products, one below the minimum price and one above.
+    $product_below_limit = $this->createProduct(['price' => $minimum_subtotal - 1]);
+    $product_above_limit = $this->createProduct(['price' => $minimum_subtotal + 1]);
     $this->drupalLogout();
 
-    // Check to see if the lower priced product triggers the minimum price logic.
+    // Check to see if the lower-priced product triggers the minimum price logic.
     $this->drupalPostForm(
       'node/' . $product_below_limit->id(),
       [],
@@ -110,7 +110,8 @@ class CartSettingsTest extends UbercartTestBase {
       'Prevented checkout below the minimum order total.'
     );
 
-    // Add another product to the cart, and verify that we land on the checkout page.
+    // Add another product to the cart and verify that we end up on the
+    // checkout page.
     $this->drupalPostForm(
       'node/' . $product_above_limit->id(),
       [],
@@ -154,11 +155,11 @@ class CartSettingsTest extends UbercartTestBase {
     );
 
     // Test continue shopping button that sends users to a fixed URL.
-    $settings = array(
+    $settings = [
       'uc_continue_shopping_type' => 'button',
       'uc_continue_shopping_use_last_url' => FALSE,
       'uc_continue_shopping_url' => 'admin/store',
-    );
+    ];
     $this->drupalPostForm(
       NULL,
       $settings,
@@ -189,10 +190,10 @@ class CartSettingsTest extends UbercartTestBase {
       'Custom cart breadcrumb URL'
     );
 
-    $settings = array(
+    $settings = [
       'uc_cart_breadcrumb_text' => $this->randomMachineName(8),
       'uc_cart_breadcrumb_url' => $this->randomMachineName(8),
-    );
+    ];
     $this->drupalPostForm(
       NULL,
       $settings,

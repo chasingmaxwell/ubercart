@@ -12,21 +12,29 @@ abstract class ObjectAttributesAddFormBase extends FormBase {
 
   /**
    * The attribute table that this form will write to.
+   *
+   * @var string
    */
   protected $attributeTable;
 
   /**
    * The option table that this form will write to.
+   *
+   * @var string
    */
   protected $optionTable;
 
   /**
    * The identifier field that this form will use.
+   *
+   * @var string
    */
   protected $idField;
 
   /**
    * The identifier value that this form will use.
+   *
+   * @var string
    */
   protected $idValue;
 
@@ -41,7 +49,7 @@ abstract class ObjectAttributesAddFormBase extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $attributes = NULL) {
-    $used_aids = array();
+    $used_aids = [];
     foreach ($attributes as $attribute) {
       $used_aids[] = $attribute->aid;
     }
@@ -54,17 +62,17 @@ abstract class ObjectAttributesAddFormBase extends FormBase {
       }
     }
 
-    $form['add_attributes'] = array(
+    $form['add_attributes'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Attributes'),
-      '#options' => $unused_attributes ?: array($this->t('No attributes left to add.')),
+      '#options' => $unused_attributes ?: [$this->t('No attributes left to add.')],
       '#disabled' => empty($unused_attributes),
-    );
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['add'] = array(
+    ];
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['add'] = [
       '#type' => 'submit',
       '#value' => $this->t('Add attributes'),
-    );
+    ];
 
     return $form;
   }
@@ -84,7 +92,7 @@ abstract class ObjectAttributesAddFormBase extends FormBase {
           unset($option->name);
           unset($option->aid);
           db_insert($this->optionTable)
-            ->fields((array)$option)
+            ->fields((array) $option)
             ->execute();
         }
         // Make the first option (if any) the default.
@@ -95,11 +103,11 @@ abstract class ObjectAttributesAddFormBase extends FormBase {
 
       $select = db_select('uc_attributes', 'a')
         ->condition('aid', $aid);
-      $select->addExpression(':id', $this->idField, array(':id' => $this->idValue));
+      $select->addExpression(':id', $this->idField, [':id' => $this->idValue]);
       $select->addField('a', 'aid');
       $select->addField('a', 'label');
       $select->addField('a', 'ordering');
-      $select->addExpression(':oid', 'default_option', array(':oid' => $oid));
+      $select->addExpression(':oid', 'default_option', [':oid' => $oid]);
       $select->addField('a', 'required');
       $select->addField('a', 'display');
 

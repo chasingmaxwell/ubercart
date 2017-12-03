@@ -29,11 +29,11 @@ class OrderCommentsPane extends CheckoutPanePluginBase {
     else {
       $default = NULL;
     }
-    $build['comments'] = array(
+    $build['comments'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Order comments'),
       '#default_value' => $default,
-    );
+    ];
 
     return $build;
   }
@@ -60,7 +60,7 @@ class OrderCommentsPane extends CheckoutPanePluginBase {
     $review = NULL;
     $result = db_query('SELECT message FROM {uc_order_comments} WHERE order_id = :id', [':id' => $order->id()]);
     if ($comment = $result->fetchObject()) {
-      $review[] = array('title' => $this->t('Comment'), 'data' => array('#markup' => $comment->message));
+      $review[] = ['title' => $this->t('Comment'), 'data' => ['#markup' => $comment->message]];
     }
     return $review;
   }

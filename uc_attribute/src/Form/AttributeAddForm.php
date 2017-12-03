@@ -14,7 +14,7 @@ class AttributeAddForm extends AttributeFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
-    // Remove Form API elements from $form_state
+    // Remove Form API elements from $form_state.
     $form_state->cleanValues();
     $aid = db_insert('uc_attributes')->fields($form_state->getValues())->execute();
 

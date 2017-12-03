@@ -74,9 +74,9 @@ class CheckoutForm extends FormBase {
 
     $form['#attributes']['class'][] = 'uc-cart-checkout-form';
     $form['#attached']['library'][] = 'uc_cart/uc_cart.styles';
-    $form['panes'] = array('#tree' => TRUE);
+    $form['panes'] = ['#tree' => TRUE];
 
-    $filter = array('enabled' => FALSE);
+    $filter = ['enabled' => FALSE];
 
     // If the order isn't shippable, remove panes with shippable == TRUE.
     if (!$order->isShippable() && $this->config('uc_cart.settings')->get('panes.delivery.settings.delivery_not_shippable')) {
@@ -105,29 +105,29 @@ class CheckoutForm extends FormBase {
 
     foreach ($panes as $id => $pane) {
       $form['panes'][$id] = $pane->view($order, $form, $form_state);
-      $form['panes'][$id] += array(
+      $form['panes'][$id] += [
         '#type' => 'details',
         '#title' => $pane->getTitle(),
         '#id' => $id . '-pane',
         '#open' => TRUE,
-      );
+      ];
     }
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['cancel'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['cancel'] = [
       '#type' => 'submit',
       '#value' => $this->t('Cancel'),
-      '#validate' => array(),
-      '#limit_validation_errors' => array(),
-      '#submit' => array(array($this, 'cancel')),
-    );
-    $form['actions']['continue'] = array(
+      '#validate' => [],
+      '#limit_validation_errors' => [],
+      '#submit' => [[$this, 'cancel']],
+    ];
+    $form['actions']['continue'] = [
       '#type' => 'submit',
       '#value' => $this->t('Review order'),
       '#button_type' => 'primary',
-    );
+    ];
 
-    $form['#process'][] = array($this, 'ajaxProcessForm');
+    $form['#process'][] = [$this, 'ajaxProcessForm'];
 
     $this->session->remove('uc_checkout_review_' . $order->id());
     $this->session->remove('uc_checkout_complete_' . $order->id());

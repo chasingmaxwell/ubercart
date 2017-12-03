@@ -15,16 +15,18 @@ class CheckoutPaneManager extends DefaultPluginManager {
 
   /**
    * Configuration for the checkout panes.
+   *
+   * @var array
    */
   protected $paneConfig;
 
   /**
    * {@inheritdoc}
    */
-  protected $defaults = array(
+  protected $defaults = [
     'status' => TRUE,
     'weight' => 0,
-  );
+  ];
 
   /**
    * Constructs a CheckoutPaneManager object.
@@ -54,8 +56,8 @@ class CheckoutPaneManager extends DefaultPluginManager {
    * @return array
    *   An array of checkout pane plugin instances.
    */
-  public function getPanes($filter = array()) {
-    $instances = array();
+  public function getPanes(array $filter = []) {
+    $instances = [];
     foreach ($this->getDefinitions() as $id => $definition) {
       foreach ($filter as $key => $value) {
         if (isset($definition[$key]) && $definition[$key] == $value) {
@@ -63,13 +65,13 @@ class CheckoutPaneManager extends DefaultPluginManager {
         }
       }
 
-      $instance = $this->createInstance($id, $this->paneConfig[$id] ?: array());
+      $instance = $this->createInstance($id, $this->paneConfig[$id] ?: []);
       if (!isset($filter['enabled']) || $filter['enabled'] != $instance->isEnabled()) {
         $instances[$id] = $instance;
       }
     }
 
-    uasort($instances, array($this, 'sortHelper'));
+    uasort($instances, [$this, 'sortHelper']);
 
     return $instances;
   }

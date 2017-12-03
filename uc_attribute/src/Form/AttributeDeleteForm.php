@@ -13,6 +13,8 @@ class AttributeDeleteForm extends ConfirmFormBase {
 
   /**
    * The attribute to be deleted.
+   *
+   * @var object
    */
   protected $attribute;
 

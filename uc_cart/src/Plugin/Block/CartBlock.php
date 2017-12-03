@@ -21,17 +21,17 @@ class CartBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
+    return [
       'hide_empty' => FALSE,
       'show_image' => TRUE,
       'collapsible' => TRUE,
       'collapsed' => TRUE,
-      'cache' => array(
-        'max_age' => array(
+      'cache' => [
+        'max_age' => [
           '#value' => 0,
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
   }
 
   /**
@@ -43,31 +43,30 @@ class CartBlock extends BlockBase {
     return 0;
   }
 
-
   /**
    * {@inheritdoc}
    */
   public function blockForm($form, FormStateInterface $form_state) {
-    $form['hide_empty'] = array(
+    $form['hide_empty'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Hide block if cart is empty.'),
       '#default_value' => $this->configuration['hide_empty'],
-    );
-    $form['show_image'] = array(
+    ];
+    $form['show_image'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Display the shopping cart icon in the block title.'),
       '#default_value' => $this->configuration['show_image'],
-    );
-    $form['collapsible'] = array(
+    ];
+    $form['collapsible'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Make the shopping cart block collapsible by clicking the name or arrow.'),
       '#default_value' => $this->configuration['collapsible'],
-    );
-    $form['collapsed'] = array(
+    ];
+    $form['collapsed'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Display the shopping cart block collapsed by default.'),
       '#default_value' => $this->configuration['collapsed'],
-    );
+    ];
     return $form;
   }
 
@@ -87,28 +86,29 @@ class CartBlock extends BlockBase {
   public function build() {
     $cart = \Drupal::service('uc_cart.manager')->get();
     $product_count = count($cart->getContents());
-    $build = array();
+    $build = [];
 
     // Fill build array with block contents if there are items in the cart or
     // if the block is configured to display when empty.
     if ($product_count || !$this->configuration['hide_empty']) {
-      $items = array();
+      $items = [];
       $item_count = 0;
       $total = 0;
       if ($product_count) {
         /** @var \Drupal\uc_cart\CartItemInterface $item */
         foreach ($cart->getContents() as $item) {
-          $display_item = \Drupal::moduleHandler()->invoke($item->data->module, 'uc_cart_display', array($item));
+          $display_item = \Drupal::moduleHandler()->invoke($item->data->module, 'uc_cart_display', [$item]);
 
           if (count(Element::children($display_item))) {
-            $items[] = array(
+            $items[] = [
               'nid' => $display_item['nid']['#value'],
               'qty' => $display_item['qty']['#default_value'],
-              // $display_item['title'] can be either #markup or #type => 'link', so render it.
+              // $display_item['title'] can be either #markup or
+              // #type => 'link', so render it.
               'title' => drupal_render($display_item['title']),
               'price' => $display_item['#total'],
               'desc' => isset($display_item['description']['#markup']) ? $display_item['description']['#markup'] : FALSE,
-            );
+            ];
             $total += $display_item['#total'];
             $item_count += $display_item['qty']['#default_value'];
           }
@@ -117,29 +117,29 @@ class CartBlock extends BlockBase {
       }
 
       // Build the cart links.
-      $summary_links['view-cart'] = array(
+      $summary_links['view-cart'] = [
         'title' => $this->t('View cart'),
         'url' => Url::fromRoute('uc_cart.cart'),
-        'attributes' => array('rel' => ['nofollow']),
-      );
+        'attributes' => ['rel' => ['nofollow']],
+      ];
 
       // Only add the checkout link if checkout is enabled.
       if (\Drupal::config('uc_cart.settings')->get('checkout_enabled')) {
-        $summary_links['checkout'] = array(
+        $summary_links['checkout'] = [
           'title' => $this->t('Checkout'),
           'url' => Url::fromRoute('uc_cart.checkout'),
-          'attributes' => array('rel' => ['nofollow']),
-        );
+          'attributes' => ['rel' => ['nofollow']],
+        ];
       }
 
-      $build['block'] = array(
+      $build['block'] = [
         '#theme' => 'uc_cart_block',
         '#items' => $items,
         '#item_count' => $item_count,
         '#total' => $total,
         '#summary_links' => $summary_links,
         '#collapsed' => $this->configuration['collapsed'],
-      );
+      ];
 
       // Add the cart block CSS.
       $build['#attached']['library'][] = 'uc_cart/uc_cart.block.styles';

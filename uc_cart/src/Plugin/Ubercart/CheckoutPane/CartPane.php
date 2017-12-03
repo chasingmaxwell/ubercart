@@ -21,10 +21,10 @@ class CartPane extends CheckoutPanePluginBase {
    * {@inheritdoc}
    */
   public function view(OrderInterface $order, array $form, FormStateInterface $form_state) {
-    $build = array(
+    $build = [
       '#theme' => 'uc_cart_review_table',
       '#items' => $order->products,
-    );
+    ];
     return $build;
   }
 
@@ -32,11 +32,11 @@ class CartPane extends CheckoutPanePluginBase {
    * {@inheritdoc}
    */
   public function review(OrderInterface $order) {
-    $review[] = array(
+    $review[] = [
       '#theme' => 'uc_cart_review_table',
       '#items' => $order->products,
       '#show_subtotal' => FALSE,
-    );
+    ];
     return $review;
   }
 

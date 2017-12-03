@@ -31,64 +31,64 @@ class CustomerInfoPane extends CheckoutPanePluginBase {
     if ($user->isAuthenticated()) {
       $email = $user->getEmail();
       $contents['#description'] = $this->t('Order information will be sent to your account e-mail listed below.');
-      $contents['primary_email'] = array('#type' => 'hidden', '#value' => $email);
-      $contents['email_text'] = array(
+      $contents['primary_email'] = ['#type' => 'hidden', '#value' => $email];
+      $contents['email_text'] = [
         '#markup' => '<div>' . $this->t('<b>E-mail address:</b> @email (<a href=":url">edit</a>)', ['@email' => $email, ':url' => Url::fromRoute('entity.user.edit_form', ['user' => $user->id()], ['query' => $this->getDestinationArray()])->toString()]) . '</div>',
-      );
+      ];
     }
     else {
       $email = $order->getEmail();
       $contents['#description'] = $this->t('Enter a valid email address for this order or <a href=":url">click here</a> to login with an existing account and return to checkout.', [':url' => Url::fromRoute('user.login', [], ['query' => $this->getDestinationArray()])->toString()]);
-      $contents['primary_email'] = array(
+      $contents['primary_email'] = [
         '#type' => 'email',
         '#title' => $this->t('E-mail address'),
         '#default_value' => $email,
         '#required' => TRUE,
-      );
+      ];
 
       if ($cart_config->get('email_validation')) {
-        $contents['primary_email_confirm'] = array(
+        $contents['primary_email_confirm'] = [
           '#type' => 'email',
           '#title' => $this->t('Confirm e-mail address'),
           '#default_value' => $email,
           '#required' => TRUE,
-        );
+        ];
       }
 
-      $contents['new_account'] = array();
+      $contents['new_account'] = [];
 
       if ($cart_config->get('new_account_name')) {
-        $contents['new_account']['name'] = array(
+        $contents['new_account']['name'] = [
           '#type' => 'textfield',
           '#title' => $this->t('Username'),
           '#default_value' => isset($order->data->new_user_name) ? $order->data->new_user_name : '',
           '#maxlength' => 60,
           '#size' => 32,
-        );
+        ];
       }
       if ($cart_config->get('new_account_password')) {
-        $contents['new_account']['pass'] = array(
+        $contents['new_account']['pass'] = [
           '#type' => 'password',
           '#title' => $this->t('Password'),
           '#maxlength' => 32,
           '#size' => 32,
-        );
-        $contents['new_account']['pass_confirm'] = array(
+        ];
+        $contents['new_account']['pass_confirm'] = [
           '#type' => 'password',
           '#title' => $this->t('Confirm password'),
           '#description' => $this->t('Passwords must match to proceed.'),
           '#maxlength' => 32,
           '#size' => 32,
-        );
+        ];
       }
 
       if (!empty($contents['new_account'])) {
-        $contents['new_account'] += array(
+        $contents['new_account'] += [
           '#type' => 'details',
           '#title' => $this->t('New account details'),
           '#description' => $this->t('<b>Optional.</b> New customers may supply custom account details.<br />We will create these for you if no values are entered.'),
           '#open' => TRUE,
-        );
+        ];
       }
     }
 
@@ -116,7 +116,8 @@ class CustomerInfoPane extends CheckoutPanePluginBase {
         $form_state->setErrorByName('panes][customer][primary_email_confirm', $this->t('The e-mail address did not match.'));
       }
 
-      // Invalidate if an account already exists for this e-mail address, and the user is not logged into that account
+      // Invalidate if an account already exists for this e-mail address,
+      // and the user is not logged into that account.
       if (!$cart_config->get('mail_existing') && !empty($pane['primary_email']) && $mail_taken) {
         $form_state->setErrorByName('panes][customer][primary_email', $this->t('An account already exists for your e-mail address. You will either need to login with this e-mail address or use a different e-mail address.'));
       }
@@ -168,7 +169,7 @@ class CustomerInfoPane extends CheckoutPanePluginBase {
    * {@inheritdoc}
    */
   public function review(OrderInterface $order) {
-    $review[] = array('title' => $this->t('E-mail'), 'data' => array('#plain_text' => $order->getEmail()));
+    $review[] = ['title' => $this->t('E-mail'), 'data' => ['#plain_text' => $order->getEmail()]];
     return $review;
   }
 

@@ -57,7 +57,10 @@ class CartCheckoutTest extends UbercartTestBase {
       ->save();
   }
 
-  public function testCartAPI() {
+  /**
+   * Tests cart API.
+   */
+  public function testCartApi() {
     // Test the empty cart.
     $items = $this->cart->getContents();
     $this->assertEqual($items, [], 'Cart is an empty array.');
@@ -92,7 +95,7 @@ class CartCheckoutTest extends UbercartTestBase {
     $this->assertTrue($item->data->updated, 'Set cart item data is correct.');
 
     // Add an item with different data to the cart.
-    $this->cart->addItem($this->product->id(), 1, array('test' => TRUE));
+    $this->cart->addItem($this->product->id(), 1, ['test' => TRUE]);
 
     $items = $this->cart->getContents();
     $this->assertEqual(count($items), 2, 'Updated cart contains two items.');
@@ -113,8 +116,11 @@ class CartCheckoutTest extends UbercartTestBase {
     $this->assertEqual($items, [], 'Cart is emptied correctly.');
   }
 
+  /**
+   * Tests basic cart functionality.
+   */
   public function testCart() {
-    \Drupal::service('module_installer')->install(array('uc_cart_entity_test'), FALSE);
+    \Drupal::service('module_installer')->install(['uc_cart_entity_test'], FALSE);
 
     // Test the empty cart.
     $this->drupalGet('cart');
@@ -141,13 +147,13 @@ class CartCheckoutTest extends UbercartTestBase {
 
     // Update the quantity.
     $qty = mt_rand(3, 100);
-    $this->drupalPostForm('cart', array('items[0][qty]' => $qty), t('Update cart'));
+    $this->drupalPostForm('cart', ['items[0][qty]' => $qty], t('Update cart'));
     $this->assertText(t('Your cart has been updated.'));
     $this->assertFieldByName('items[0][qty]', $qty, 'The product quantity was updated.');
     $this->assertText(t('hook_uc_cart_item_update fired'));
 
     // Update the quantity to zero.
-    $this->drupalPostForm('cart', array('items[0][qty]' => 0), t('Update cart'));
+    $this->drupalPostForm('cart', ['items[0][qty]' => 0], t('Update cart'));
     $this->assertText(t('Your cart has been updated.'));
     $this->assertText(t('There are no products in your shopping cart.'));
     $this->assertText(t('hook_uc_cart_item_delete fired'));
@@ -170,6 +176,9 @@ class CartCheckoutTest extends UbercartTestBase {
     $this->assertText(t('hook_uc_cart_item_delete fired'));
   }
 
+  /**
+   * Tests that anonymous cart is merged into authenticated cart upon login.
+   */
   public function testCartMerge() {
     // Add an item to the cart as an anonymous user.
     $this->drupalLogin($this->customer);
@@ -188,6 +197,9 @@ class CartCheckoutTest extends UbercartTestBase {
     $this->assertFieldByName('items[0][qty]', 2, 'The product quantity is 2.');
   }
 
+  /**
+   * Tests that cart automatically removes products that have been deleted.
+   */
   public function testDeletedCartItem() {
     // Add a product to the cart, then delete the node.
     $this->addToCart($this->product);
@@ -199,6 +211,9 @@ class CartCheckoutTest extends UbercartTestBase {
     $this->assertIdentical($this->cart->getContents(), [], 'There are no items in the cart.');
   }
 
+  /**
+   * Tests cart pane on checkout page.
+   */
   public function testCheckoutCartPane() {
     // Add a product to the cart.
     $this->addToCart($this->product);
@@ -221,6 +236,9 @@ class CartCheckoutTest extends UbercartTestBase {
     $this->assertText(uc_currency_format($qty * $this->product->price->value), 'The updated product price is displayed.');
   }
 
+  // /**
+  //  * Tests Rule integration for uc_cart_maximum_product_qty reaction rule.
+  //  */
   // public function testMaximumQuantityRule() {
   //   // Enable the example maximum quantity rule.
   //   $rule = rules_config_load('uc_cart_maximum_product_qty');
@@ -229,13 +247,16 @@ class CartCheckoutTest extends UbercartTestBase {
 
   //   // Try to add more items than allowed to the cart.
   //   $this->addToCart($this->product);
-  //   $this->drupalPostForm('cart', array('items[0][qty]' => 11), t('Update cart'));
+  //   $this->drupalPostForm('cart', ['items[0][qty]' => 11], t('Update cart'));
 
   //   // Test the restriction was applied.
   //   $this->assertText(t('You are only allowed to order a maximum of 10 of @label.', ['@label' => $this->product->label()]));
   //   $this->assertFieldByName('items[0][qty]', 10);
   // }
-
+ 
+  /**
+   * Tests authenticated user checkout.
+   */
   public function testAuthenticatedCheckout() {
     $this->drupalLogin($this->customer);
     $this->addToCart($this->product);
@@ -250,13 +271,16 @@ class CartCheckoutTest extends UbercartTestBase {
     $this->assertText(t('There are no products in your shopping cart.'));
   }
 
+  /**
+   * Tests generating a user account upon anonymous checkout.
+   */
   public function testAnonymousCheckoutAccountGenerated() {
     $this->addToCart($this->product);
     $this->checkout();
     $this->assertRaw(t('Your order is complete!'));
 
     // Test new account email.
-    $mails = $this->drupalGetMails(array('id' => 'user_register_no_approval_required'));
+    $mails = $this->drupalGetMails(['id' => 'user_register_no_approval_required']);
     $mail = array_pop($mails);
     $account = $mail['params']['account'];
     $this->assertTrue(!empty($account->name->value), 'New username is not empty.');
@@ -264,7 +288,7 @@ class CartCheckoutTest extends UbercartTestBase {
     $this->assertTrue(strpos($mail['body'], $account->name->value) !== FALSE, 'Mail body contains username.');
 
     // Test invoice email.
-    $mails = $this->drupalGetMails(array('subject' => 'Your Order at Ubercart'));
+    $mails = $this->drupalGetMails(['subject' => 'Your Order at Ubercart']);
     $mail = array_pop($mails);
     $this->assertTrue(strpos($mail['body'], $account->name->value) !== FALSE, 'Invoice body contains username.');
     $this->assertTrue(strpos($mail['body'], $account->password) !== FALSE, 'Invoice body contains password.');
@@ -278,19 +302,22 @@ class CartCheckoutTest extends UbercartTestBase {
     $this->assertText(t('There are no products in your shopping cart.'));
 
     // Check that the password works.
-    $edit = array(
+    $edit = [
       'name' => $account->name->value,
       'pass' => $account->password,
-    );
+    ];
     $this->drupalPostForm('user', $edit, t('Log in'));
   }
 
+  /**
+   * Tests anonymous checkout with an existing account.
+   */
   public function testAnonymousCheckoutAccountProvided() {
-    $settings = array(
+    $settings = [
       // Allow customer to specify username and password.
       'uc_cart_new_account_name' => TRUE,
       'uc_cart_new_account_password' => TRUE,
-    );
+    ];
     $this->drupalLogin($this->adminUser);
     $this->drupalPostForm('admin/store/config/checkout', $settings, t('Save configuration'));
     $this->drupalLogout();
@@ -299,22 +326,22 @@ class CartCheckoutTest extends UbercartTestBase {
     $password = $this->randomMachineName(20);
 
     $this->addToCart($this->product);
-    $this->checkout(array(
+    $this->checkout([
       'panes[customer][new_account][name]' => $username,
       'panes[customer][new_account][pass]' => $password,
       'panes[customer][new_account][pass_confirm]' => $password,
-    ));
+    ]);
     $this->assertRaw(t('Your order is complete!'));
     $this->assertText($username, 'Username is shown on screen.');
     $this->assertNoText($password, 'Password is not shown on screen.');
 
     // Test new account email.
-    $mails = $this->drupalGetMails(array('id' => 'user_register_no_approval_required'));
+    $mails = $this->drupalGetMails(['id' => 'user_register_no_approval_required']);
     $mail = array_pop($mails);
     $this->assertTrue(strpos($mail['body'], $username) !== FALSE, 'Mail body contains username.');
 
     // Test invoice email.
-    $mails = $this->drupalGetMails(array('subject' => 'Your Order at Ubercart'));
+    $mails = $this->drupalGetMails(['subject' => 'Your Order at Ubercart']);
     $mail = array_pop($mails);
     $this->assertTrue(strpos($mail['body'], $username) !== FALSE, 'Invoice body contains username.');
     $this->assertFalse(strpos($mail['body'], $password) !== FALSE, 'Invoice body does not contain password.');
@@ -324,16 +351,19 @@ class CartCheckoutTest extends UbercartTestBase {
     $this->assertText(t('There are no products in your shopping cart.'));
 
     // Check that the password works.
-    $edit = array(
+    $edit = [
       'name' => $username,
       'pass' => $password,
-    );
+    ];
     $this->drupalPostForm('user', $edit, t('Log in'));
   }
 
+  /**
+   * Tests associating an anonymous order with an existing account.
+   */
   public function testAnonymousCheckoutAccountExists() {
     $this->addToCart($this->product);
-    $this->checkout(array('panes[customer][primary_email]' => $this->customer->getEmail()));
+    $this->checkout(['panes[customer][primary_email]' => $this->customer->getEmail()]);
     $this->assertRaw(t('Your order is complete!'));
     $this->assertRaw(t('order has been attached to the account we found'));
 
@@ -342,44 +372,50 @@ class CartCheckoutTest extends UbercartTestBase {
     $this->assertText(t('There are no products in your shopping cart.'));
   }
 
+  /**
+   * Tests generating a new account at checkout.
+   */
   public function testCheckoutNewUsername() {
     // Configure the checkout for this test.
     $this->drupalLogin($this->adminUser);
-    $settings = array(
+    $settings = [
       // Allow customer to specify username.
       'uc_cart_new_account_name' => TRUE,
       // Disable address panes.
       'panes[delivery][status]' => FALSE,
       'panes[billing][status]' => FALSE,
-    );
+    ];
     $this->drupalPostForm('admin/store/config/checkout', $settings, t('Save configuration'));
     $this->drupalLogout();
 
     // Test with an account that already exists.
     $this->addToCart($this->product);
-    $edit = array(
+    $edit = [
       'panes[customer][primary_email]' => $this->randomMachineName(8) . '@example.com',
       'panes[customer][new_account][name]' => $this->adminUser->name->value,
-    );
+    ];
     $this->drupalPostForm('cart/checkout', $edit, 'Review order');
     $this->assertText(t('The username @username is already taken.', ['@username' => $this->adminUser->name->value]));
 
     // Let the account be automatically created instead.
-    $edit = array(
+    $edit = [
       'panes[customer][primary_email]' => $this->randomMachineName(8) . '@example.com',
       'panes[customer][new_account][name]' => '',
-    );
+    ];
     $this->drupalPostForm('cart/checkout', $edit, 'Review order');
     $this->drupalPostForm(NULL, [], 'Submit order');
     $this->assertText(t('Your order is complete!'));
     $this->assertText(t('A new account has been created'));
   }
 
+  /**
+   * Tests blocked user checkout.
+   */
   public function testCheckoutBlockedUser() {
     // Block user after checkout.
-    $settings = array(
+    $settings = [
       'uc_new_customer_status_active' => FALSE,
-    );
+    ];
     $this->drupalLogin($this->adminUser);
     $this->drupalPostForm('admin/store/config/checkout', $settings, t('Save configuration'));
     $this->drupalLogout();
@@ -390,17 +426,20 @@ class CartCheckoutTest extends UbercartTestBase {
     $this->assertRaw(t('Your order is complete!'));
 
     // Test new account email.
-    $mails = $this->drupalGetMails(array('id' => 'user_register_pending_approval'));
+    $mails = $this->drupalGetMails(['id' => 'user_register_pending_approval']);
     $this->assertTrue(!empty($mails), 'Blocked user email found.');
-    $mails = $this->drupalGetMails(array('id' => 'user_register_no_approval_required'));
+    $mails = $this->drupalGetMails(['id' => 'user_register_no_approval_required']);
     $this->assertTrue(empty($mails), 'No unblocked user email found.');
   }
 
+  /**
+   * Tests logging in the customer after checkout.
+   */
   public function testCheckoutLogin() {
     // Log in after checkout.
-    $settings = array(
+    $settings = [
       'uc_new_customer_login' => TRUE,
-    );
+    ];
     $this->drupalLogin($this->adminUser);
     $this->drupalPostForm('admin/store/config/checkout', $settings, t('Save configuration'));
     $this->drupalLogout();
@@ -420,6 +459,9 @@ class CartCheckoutTest extends UbercartTestBase {
     $this->assertText(t('There are no products in your shopping cart.'));
   }
 
+  /**
+   * Tests checkout complete functioning.
+   */
   public function testCheckoutComplete() {
     // Payment notification is received first.
     $order_data = [
@@ -433,7 +475,7 @@ class CartCheckoutTest extends UbercartTestBase {
     // Check that a new account was created.
     $this->assertTrue(strpos($output['#message']['#markup'], 'new account has been created') !== FALSE, 'Checkout message mentions new account.');
 
-    // 3 e-mails: new account, customer invoice, admin invoice
+    // 3 e-mails: new account, customer invoice, admin invoice.
     $this->assertMailString('subject', 'Account details', 3, 'New account email was sent');
     $this->assertMailString('subject', 'Your Order at Ubercart', 3, 'Customer invoice was sent');
     $this->assertMailString('subject', 'New Order at Ubercart', 3, 'Admin notification was sent');
@@ -453,7 +495,7 @@ class CartCheckoutTest extends UbercartTestBase {
     $output = $this->cartManager->completeSale($order);
     uc_payment_enter($order->id(), 'other', $order->getTotal());
 
-    // 3 e-mails: new account, customer invoice, admin invoice
+    // 3 e-mails: new account, customer invoice, admin invoice.
     $this->assertMailString('subject', 'Account details', 3, 'New account email was sent');
     $this->assertMailString('subject', 'Your Order at Ubercart', 3, 'Customer invoice was sent');
     $this->assertMailString('subject', 'New Order at Ubercart', 3, 'Admin notification was sent');
@@ -472,7 +514,7 @@ class CartCheckoutTest extends UbercartTestBase {
     // Check that no new account was created.
     $this->assertTrue(strpos($output['#message']['#markup'], 'order has been attached to the account') !== FALSE, 'Checkout message mentions existing account.');
 
-    // 2 e-mails: customer invoice, admin invoice
+    // 2 e-mails: customer invoice, admin invoice.
     $this->assertNoMailString('subject', 'Account details', 3, 'New account email was sent');
     $this->assertMailString('subject', 'Your Order at Ubercart', 3, 'Customer invoice was sent');
     $this->assertMailString('subject', 'New Order at Ubercart', 3, 'Admin notification was sent');
@@ -499,7 +541,8 @@ class CartCheckoutTest extends UbercartTestBase {
       ->execute();
     $order_id = reset($order_ids);
     if ($order_id) {
-      // Go to a different page, then back to order - make sure order_id is the same.
+      // Go to a different page, then back to order to make sure
+      // order_id is the same.
       $this->drupalGet('<front>');
       $this->addToCart($this->product);
       $this->drupalPostForm('cart', [], 'Checkout');
@@ -514,13 +557,14 @@ class CartCheckoutTest extends UbercartTestBase {
       // Jump 10 minutes into the future.
       // @todo: Can we set changed through the Entity API rather than DBTNG?
       db_update('uc_orders')
-        ->fields(array(
+        ->fields([
             'changed' => time() - CartInterface::ORDER_TIMEOUT - 1,
-          ))
+          ])
         ->condition('order_id', $order_id)
         ->execute();
 
-      // Go to a different page, then back to order - verify that we are using a new order.
+      // Go to a different page, then back to order to verify that we are
+      // using a new order.
       $this->drupalGet('<front>');
       $this->drupalPostForm('cart', [], 'Checkout');
       $this->assertNoRaw($oldname, 'Customer name was cleared after timeout.');
@@ -544,6 +588,9 @@ class CartCheckoutTest extends UbercartTestBase {
     }
   }
 
+  /**
+   * Tests functioning of customer information pane on checkout page.
+   */
   public function testCustomerInformationCheckoutPane() {
     // Log in as a customer and add an item to the cart.
     $this->drupalLogin($this->customer);
@@ -559,10 +606,10 @@ class CartCheckoutTest extends UbercartTestBase {
     // Use the 'edit' link to change the email address on the account.
     $new_mail = $this->randomMachineName() . '@example.com';
     $this->clickLink('edit');
-    $data = array(
+    $data = [
       'current_pass' => $this->customer->pass_raw,
       'mail' => $new_mail,
-    );
+    ];
     $this->drupalPostForm(NULL, $data, 'Save');
 
     // Test the updated email address.
