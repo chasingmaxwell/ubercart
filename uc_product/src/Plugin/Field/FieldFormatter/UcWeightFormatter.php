@@ -26,7 +26,7 @@ class UcWeightFormatter extends FormatterBase {
 
     foreach ($items as $delta => $item) {
       if ((float) $item->value) {
-        $elements[$delta] = array('#markup' => uc_weight_format($item->value, $item->units));
+        $elements[$delta] = ['#markup' => uc_weight_format($item->value, $item->units)];
       }
     }
 

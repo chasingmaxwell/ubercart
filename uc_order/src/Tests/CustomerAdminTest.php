@@ -40,10 +40,10 @@ class CustomerAdminTest extends UbercartTestBase {
   protected function setUp() {
     parent::setUp();
 
-    $this->adminUser = $this->drupalCreateUser(array(
+    $this->adminUser = $this->drupalCreateUser([
       'access user profiles',
       'view customers',
-    ));
+    ]);
     $this->customer = $this->drupalCreateUser();
   }
 
@@ -54,11 +54,11 @@ class CustomerAdminTest extends UbercartTestBase {
     $this->drupalLogin($this->adminUser);
 
     $country = Country::load('US');
-    Order::create(array(
+    Order::create([
       'uid' => $this->customer->id(),
       'billing_country' => $country->id(),
       'billing_zone' => 'AK',
-    ))->save();
+    ])->save();
 
     $this->drupalGet('admin/store/customers/view');
     $this->assertResponse(200);

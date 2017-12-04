@@ -44,17 +44,17 @@ class OrderController extends ControllerBase {
    *   A render array or HTML markup in a form suitable for printing.
    */
   public function invoice(OrderInterface $uc_order, $print = FALSE) {
-    $invoice = array(
+    $invoice = [
       '#theme' => 'uc_order_invoice',
       '#order' => $uc_order,
       '#op' => $print ? 'print' : 'view',
-    );
+    ];
 
     if ($print) {
-      $build = array(
+      $build = [
         '#theme' => 'uc_order_invoice_page',
         '#content' => $invoice,
-      );
+      ];
       $markup = \Drupal::service('renderer')->renderPlain($build);
       $response = new Response($markup);
       $response->headers->set('Content-Type', 'text/html; charset=utf-8');
@@ -76,22 +76,22 @@ class OrderController extends ControllerBase {
   public function log(OrderInterface $uc_order) {
     $result = db_query('SELECT order_log_id, uid, changes, created FROM {uc_order_log} WHERE order_id = :id ORDER BY order_log_id DESC', [':id' => $uc_order->id()]);
 
-    $header = array($this->t('Time'), $this->t('User'), $this->t('Changes'));
-    $rows = array();
+    $header = [$this->t('Time'), $this->t('User'), $this->t('Changes')];
+    $rows = [];
     foreach ($result as $change) {
-      $rows[] = array(
+      $rows[] = [
         \Drupal::service('date.formatter')->format($change->created, 'short'),
-        array('data' => array('#theme' => 'username', '#account' => User::load($change->uid))),
-        array('data' => array('#markup' => $change->changes)),
-      );
+        ['data' => ['#theme' => 'username', '#account' => User::load($change->uid)]],
+        ['data' => ['#markup' => $change->changes]],
+      ];
     }
 
-    $build['log'] = array(
+    $build['log'] = [
       '#theme' => 'table',
       '#header' => $header,
       '#rows' => $rows,
       '#empty' => $this->t('No changes have been logged for this order.'),
-    );
+    ];
 
     return $build;
   }

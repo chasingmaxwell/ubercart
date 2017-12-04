@@ -22,98 +22,98 @@ class SelectCustomerForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, $operation = NULL, $options = NULL) {
     if ($operation == '' && is_null($options)) {
-      $form['desc'] = array(
+      $form['desc'] = [
         '#type' => 'container',
         '#markup' => $this->t('Search for a customer based on these fields.') . '<br />' .
                      $this->t('Use * as a wildcard to match any character.') . '<br />' .
                      '(<em>' . $this->t('Leave a field empty to ignore it in the search.') . '</em>)',
-      );
+      ];
 
-      $form['first_name'] = array(
+      $form['first_name'] = [
         '#type' => 'textfield',
         '#title' => $this->t('First name'),
         '#size' => 24,
         '#maxlength' => 32,
-      );
+      ];
 
-      $form['last_name'] = array(
+      $form['last_name'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Last name'),
         '#size' => 24,
         '#maxlength' => 32,
-      );
+      ];
 
-      $form['email'] = array(
+      $form['email'] = [
         '#type' => 'email',
         '#title' => $this->t('E-mail'),
         '#size' => 24,
         '#maxlength' => 96,
-      );
+      ];
     }
     elseif ($operation == 'search' && !is_null($options)) {
-      $form['cust_select'] = array(
+      $form['cust_select'] = [
         '#type' => 'select',
         '#title' => $this->t('Select a customer'),
         '#size' => 7,
         '#options' => $options,
         '#default_value' => key($options),
-        '#attributes' => array('ondblclick' => 'return select_customer_search();'),
-      );
+        '#attributes' => ['ondblclick' => 'return select_customer_search();'],
+      ];
     }
     elseif ($operation == 'new') {
-      $form['desc'] = array(
+      $form['desc'] = [
         '#type' => 'container',
         '#markup' => $this->t('Enter an e-mail address for the new customer.'),
-      );
+      ];
 
-      $form['email'] = array(
+      $form['email'] = [
         '#type' => 'email',
         '#title' => $this->t('E-mail'),
         '#size' => 24,
         '#maxlength' => 96,
         '#required' => TRUE,
-      );
+      ];
     }
 
-    $form['actions'] = array('#type' => 'actions');
+    $form['actions'] = ['#type' => 'actions'];
     if (is_null($operation)) {
-      $form['actions']['search'] = array(
+      $form['actions']['search'] = [
         '#type' => 'submit',
         '#value' => $this->t('Search'),
-        '#attributes' => array('id' => 'load-customer-search-results'),
-      );
+        '#attributes' => ['id' => 'load-customer-search-results'],
+      ];
     }
     elseif ($operation == 'search') {
       if (!is_null($options)) {
-        $form['actions']['select'] = array(
+        $form['actions']['select'] = [
           '#type' => 'submit',
           '#value' => $this->t('Select'),
-          '#attributes' => array('id' => 'select-customer-search'),
-        );
+          '#attributes' => ['id' => 'select-customer-search'],
+        ];
       }
-      $form['actions']['back'] = array(
+      $form['actions']['back'] = [
         '#type' => 'submit',
         '#value' => $this->t('Back'),
-        '#attributes' => array('id' => 'load-customer-search'),
-      );
+        '#attributes' => ['id' => 'load-customer-search'],
+      ];
     }
     elseif ($operation == 'new') {
-      $form['sendmail'] = array(
+      $form['sendmail'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('E-mail customer account details.'),
-      );
-      $form['actions']['submit'] = array(
+      ];
+      $form['actions']['submit'] = [
         '#type' => 'submit',
         '#value' => $this->t('Submit'),
-        '#attributes' => array('id' => 'check-new-customer-address'),
-      );
+        '#attributes' => ['id' => 'check-new-customer-address'],
+      ];
     }
 
-    $form['actions']['close'] = array(
+    $form['actions']['close'] = [
       '#type' => 'submit',
       '#value' => $this->t('Close'),
-      '#attributes' => array('id' => 'close-customer-select'),
-    );
+      '#attributes' => ['id' => 'close-customer-select'],
+    ];
 
     return $form;
   }

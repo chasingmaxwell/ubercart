@@ -45,10 +45,10 @@ class OrderTest extends UbercartTestBase {
     $this->assertEqual($order->getOwnerId(), 0, 'New order is anonymous.');
     $this->assertEqual($order->getStatusId(), 'in_checkout', 'New order is in checkout.');
 
-    $order = Order::create(array(
+    $order = Order::create([
       'uid' => $this->customer->id(),
       'order_status' => uc_order_state_default('completed'),
-    ));
+    ]);
     $order->save();
     $this->assertEqual($order->getOwnerId(), $this->customer->id(), 'New order has correct uid.');
     $this->assertEqual($order->getStatusId(), 'completed', 'New order is marked completed.');
@@ -68,12 +68,12 @@ class OrderTest extends UbercartTestBase {
     $this->assertEqual($order->getStatusId(), 'in_checkout', 'New order is in checkout.');
 
     $name = $this->randomMachineName();
-    $order = Order::create(array(
+    $order = Order::create([
       'uid' => $this->customer->id(),
       'order_status' => 'completed',
       'billing_first_name' => $name,
       'billing_last_name' => $name,
-    ));
+    ]);
     $this->assertEqual($order->getOwnerId(), $this->customer->id(), 'New order has correct uid.');
     $this->assertEqual($order->getStatusId(), 'completed', 'New order is marked completed.');
     $this->assertEqual($order->getAddress('billing')->first_name, $name, 'New order has correct name.');
@@ -82,10 +82,10 @@ class OrderTest extends UbercartTestBase {
     // Test deletion.
     $order->save();
     $storage = \Drupal::entityTypeManager()->getStorage('uc_order');
-    $entities = $storage->loadMultiple(array($order->id()));
+    $entities = $storage->loadMultiple([$order->id()]);
     $storage->delete($entities);
 
-    $storage->resetCache(array($order->id()));
+    $storage->resetCache([$order->id()]);
     $deleted_order = Order::load($order->id());
     $this->assertFalse($deleted_order, 'Order was successfully deleted');
   }
@@ -94,7 +94,7 @@ class OrderTest extends UbercartTestBase {
    *
    */
   public function testEntityHooks() {
-    \Drupal::service('module_installer')->install(array('entity_crud_hook_test'));
+    \Drupal::service('module_installer')->install(['entity_crud_hook_test']);
 
     $GLOBALS['entity_crud_hook_test'] = [];
     $order = Order::create();
@@ -126,10 +126,10 @@ class OrderTest extends UbercartTestBase {
   public function testOrderCreation() {
     $this->drupalLogin($this->adminUser);
 
-    $edit = array(
+    $edit = [
       'customer_type' => 'search',
       'customer[email]' => $this->customer->mail->value,
-    );
+    ];
     $this->drupalPostForm('admin/store/orders/create', $edit, t('Search'));
 
     $edit['customer[uid]'] = $this->customer->id();
@@ -217,10 +217,10 @@ class OrderTest extends UbercartTestBase {
     $order = $this->ucCreateOrder($this->customer);
 
     $this->drupalLogin($this->adminUser);
-    $edit = array(
+    $edit = [
       'billing[first_name]' => $this->randomMachineName(8),
       'billing[last_name]' => $this->randomMachineName(15),
-    );
+    ];
     $this->drupalPostForm('admin/store/orders/' . $order->id() . '/edit', $edit, t('Save changes'));
     $this->assertText(t('Order changes saved.'));
     $this->assertFieldByName('billing[first_name]', $edit['billing[first_name]'], 'Billing first name changed.');
@@ -244,17 +244,17 @@ class OrderTest extends UbercartTestBase {
     // Create a custom "in checkout" order status with a lower weight.
     $this->drupalGet('admin/store/config/orders');
     $this->clickLink('Create custom order status');
-    $edit = array(
+    $edit = [
       'id' => strtolower($this->randomMachineName()),
       'name' => $this->randomMachineName(),
       'state' => 'in_checkout',
       'weight' => -15,
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, 'Create');
     $this->assertEqual(uc_order_state_default('in_checkout'), $edit['id'], 'uc_order_state_default() returns lowest weight status.');
 
     // Set "in checkout" state to default to the new status.
-    $this->drupalPostForm(NULL, array('order_states[in_checkout][default]' => $edit['id']), 'Save configuration');
+    $this->drupalPostForm(NULL, ['order_states[in_checkout][default]' => $edit['id']], 'Save configuration');
     $this->assertFieldByName('order_states[in_checkout][default]', $edit['id'], 'State defaults to custom status.');
     $order = $this->ucCreateOrder($this->customer);
     $this->assertEqual($order->getStatusId(), $edit['id'], 'Order has correct custom status.');
@@ -268,9 +268,9 @@ class OrderTest extends UbercartTestBase {
     // Update an order status label.
     $this->drupalGet('admin/store/config/orders');
     $title = $this->randomMachineName();
-    $edit = array(
+    $edit = [
       'order_statuses[in_checkout][name]' => $title,
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, 'Save configuration');
     $this->assertFieldByName('order_statuses[in_checkout][name]', $title, 'Updated status title found.');
 
@@ -281,19 +281,19 @@ class OrderTest extends UbercartTestBase {
     // Create a custom order status.
     $this->drupalGet('admin/store/config/orders');
     $this->clickLink('Create custom order status');
-    $edit = array(
+    $edit = [
       'id' => strtolower($this->randomMachineName()),
       'name' => $this->randomMachineName(),
       'state' => array_rand(uc_order_state_options_list()),
       'weight' => mt_rand(-10, 10),
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, 'Create');
     $this->assertText($edit['id'], 'Custom status ID found.');
     $this->assertFieldByName('order_statuses[' . $edit['id'] . '][name]', $edit['name'], 'Custom status title found.');
     $this->assertFieldByName('order_statuses[' . $edit['id'] . '][weight]', $edit['weight'], 'Custom status weight found.');
 
     // Set an order to the custom status.
-    $this->drupalPostForm('admin/store/orders/' . $order->id(), array('status' => $edit['id']), 'Update');
+    $this->drupalPostForm('admin/store/orders/' . $order->id(), ['status' => $edit['id']], 'Update');
     $this->drupalGet('admin/store/orders/view');
     $this->assertText($edit['name'], 'Order displays custom status title.');
 
@@ -306,9 +306,9 @@ class OrderTest extends UbercartTestBase {
    *
    */
   protected function ucCreateOrder($customer) {
-    $order = Order::create(array(
+    $order = Order::create([
       'uid' => $customer->id(),
-    ));
+    ]);
     $order->save();
     uc_order_comment_save($order->id(), 0, t('Order created programmatically.'), 'admin');
 

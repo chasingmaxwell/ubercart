@@ -22,7 +22,7 @@ class CurrentUserOrPermission extends ArgumentValidatorPluginBase {
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    $options['perm'] = array('default' => 'view all orders');
+    $options['perm'] = ['default' => 'view all orders'];
     return $options;
   }
 
@@ -36,13 +36,13 @@ class CurrentUserOrPermission extends ArgumentValidatorPluginBase {
       $options[$permission['provider']][$name] = $permission['title'];
     }
 
-    $form['perm'] = array(
+    $form['perm'] = [
       '#type' => 'select',
       '#options' => $options,
       '#title' => $this->t('Permission'),
       '#default_value' => $this->options['perm'],
       '#description' => $this->t('Users with the selected permission flag will be able to bypass validation.'),
-    );
+    ];
   }
 
   /**

@@ -33,7 +33,7 @@ class ProductTest extends UbercartTestBase {
   public function testProductNodeForm() {
     $this->drupalGet('node/add/product');
 
-    $fields = array(
+    $fields = [
       'model[0][value]',
       'price[0][value]',
       'shippable[value]',
@@ -44,7 +44,7 @@ class ProductTest extends UbercartTestBase {
       'dimensions[0][height]',
       'dimensions[0][units]',
       'files[uc_product_image_0][]',
-    );
+    ];
     foreach ($fields as $field) {
       $this->assertFieldByName($field, NULL);
     }
@@ -53,29 +53,29 @@ class ProductTest extends UbercartTestBase {
     $body_key = 'body[0][value]';
 
     // Make a node with those fields.
-    $edit = array(
+    $edit = [
       $title_key => $this->randomMachineName(32),
       $body_key => $this->randomMachineName(64),
       'model[0][value]' => $this->randomMachineName(8),
       'price[0][value]' => mt_rand(1, 150),
       'shippable[value]' => mt_rand(0, 1),
       'weight[0][value]' => mt_rand(1, 50),
-      'weight[0][units]' => array_rand(array(
+      'weight[0][units]' => array_rand([
         'lb' => t('Pounds'),
         'kg' => t('Kilograms'),
         'oz' => t('Ounces'),
         'g'  => t('Grams'),
-      )),
+      ]),
       'dimensions[0][length]' => mt_rand(1, 50),
       'dimensions[0][width]' => mt_rand(1, 50),
       'dimensions[0][height]' => mt_rand(1, 50),
-      'dimensions[0][units]' => array_rand(array(
+      'dimensions[0][units]' => array_rand([
         'in' => t('Inches'),
         'ft' => t('Feet'),
         'cm' => t('Centimeters'),
         'mm' => t('Millimeters'),
-      )),
-    );
+      ]),
+    ];
     $this->drupalPostForm('node/add/product', $edit, 'Save');
 
     $this->assertText(t('Product @title has been created.', ['@title' => $edit[$title_key]]), 'Product created.');
@@ -91,29 +91,29 @@ class ProductTest extends UbercartTestBase {
     $this->assertEqual(count($elements), 1, 'Product page contains body CSS class.');
 
     // Update the node fields.
-    $edit = array(
+    $edit = [
       $title_key => $this->randomMachineName(32),
       $body_key => $this->randomMachineName(64),
       'model[0][value]' => $this->randomMachineName(8),
       'price[0][value]' => mt_rand(1, 150),
       'shippable[value]' => mt_rand(0, 1),
       'weight[0][value]' => mt_rand(1, 50),
-      'weight[0][units]' => array_rand(array(
+      'weight[0][units]' => array_rand([
         'lb' => t('Pounds'),
         'kg' => t('Kilograms'),
         'oz' => t('Ounces'),
         'g'  => t('Grams'),
-      )),
+      ]),
       'dimensions[0][length]' => mt_rand(1, 50),
       'dimensions[0][width]' => mt_rand(1, 50),
       'dimensions[0][height]' => mt_rand(1, 50),
-      'dimensions[0][units]' => array_rand(array(
+      'dimensions[0][units]' => array_rand([
         'in' => t('Inches'),
         'ft' => t('Feet'),
         'cm' => t('Centimeters'),
         'mm' => t('Millimeters'),
-      )),
-    );
+      ]),
+    ];
     $this->clickLink('Edit');
     $this->drupalPostForm(NULL, $edit, 'Save');
 
@@ -132,28 +132,28 @@ class ProductTest extends UbercartTestBase {
   }
 
   public function testZeroProductWeightAndDimensions() {
-    $edit = array(
+    $edit = [
       'title[0][value]' => $this->randomMachineName(32),
       'model[0][value]' => $this->randomMachineName(8),
       'price[0][value]' => mt_rand(1, 150),
       'shippable[value]' => mt_rand(0, 1),
       'weight[0][value]' => 0,
-      'weight[0][units]' => array_rand(array(
+      'weight[0][units]' => array_rand([
         'lb' => t('Pounds'),
         'kg' => t('Kilograms'),
         'oz' => t('Ounces'),
         'g'  => t('Grams'),
-      )),
+      ]),
       'dimensions[0][length]' => 0,
       'dimensions[0][width]' => 0,
       'dimensions[0][height]' => 0,
-      'dimensions[0][units]' => array_rand(array(
+      'dimensions[0][units]' => array_rand([
         'in' => t('Inches'),
         'ft' => t('Feet'),
         'cm' => t('Centimeters'),
         'mm' => t('Millimeters'),
-      )),
-    );
+      ]),
+    ];
     $this->drupalPostForm('node/add/product', $edit, 'Save');
 
     $this->assertText(t('Product @title has been created.', ['@title' => $edit['title[0][value]']]), 'Product created.');
@@ -164,22 +164,22 @@ class ProductTest extends UbercartTestBase {
   public function testProductClassForm() {
     // Try making a new product class.
     $class = strtolower($this->randomMachineName(12));
-    $edit = array(
+    $edit = [
       'type' => $class,
       'name' => $class,
       'description' => $this->randomMachineName(32),
       'uc_product[product]' => 1,
-    );
+    ];
     $this->drupalPostForm('admin/structure/types/add', $edit, 'Save content type');
     $this->assertTrue(uc_product_is_product($class), 'The new content type is a product class.');
 
     // Make an existing node type a product class.
-    $type = $this->drupalCreateContentType(array(
+    $type = $this->drupalCreateContentType([
       'description' => $this->randomMachineName(),
-    ));
-    $edit = array(
+    ]);
+    $edit = [
       'uc_product[product]' => 1,
-    );
+    ];
 
     $this->drupalPostForm('admin/structure/types/manage/' . $type->getOriginalId(), $edit, 'Save content type');
     $this->assertTrue(uc_product_is_product($type->getOriginalId()), 'The updated content type is a product class.');
@@ -192,35 +192,35 @@ class ProductTest extends UbercartTestBase {
     $this->assertLinkByHref('admin/structure/types/manage/' . $type->getOriginalId() . '/delete', 0, 'Product class delete link is shown.');
 
     // Remove the product class again.
-    $edit = array(
+    $edit = [
       'uc_product[product]' => 0,
-    );
+    ];
 
     $this->drupalPostForm('admin/structure/types/manage/' . $class, $edit, 'Save content type');
     $this->assertTrue(uc_product_is_product($class), 'The updated content type is no longer a product class.');
   }
 
   public function testProductQuantity() {
-    $edit = array('uc_product_add_to_cart_qty' => TRUE);
+    $edit = ['uc_product_add_to_cart_qty' => TRUE];
     $this->drupalPostForm('admin/store/config/products', $edit, 'Save configuration');
 
     // Check zero quantity message.
-    $this->addToCart($this->product, array('qty' => 0));
+    $this->addToCart($this->product, ['qty' => 0]);
     $this->assertText(t('The quantity cannot be zero.'));
 
     // Check invalid quantity messages.
-    $this->addToCart($this->product, array('qty' => 'x'));
+    $this->addToCart($this->product, ['qty' => 'x']);
     $this->assertText(t('The quantity must be an integer.'));
 
-    $this->addToCart($this->product, array('qty' => '1a'));
+    $this->addToCart($this->product, ['qty' => '1a']);
     $this->assertText(t('The quantity must be an integer.'));
 
     // Check cart add message.
-    $this->addToCart($this->product, array('qty' => 1));
+    $this->addToCart($this->product, ['qty' => 1]);
     $this->assertText($this->product->getTitle() . ' added to your shopping cart.');
 
     // Check cart update message.
-    $this->addToCart($this->product, array('qty' => 1));
+    $this->addToCart($this->product, ['qty' => 1]);
     $this->assertText(t('Your item(s) have been updated.'));
   }
 

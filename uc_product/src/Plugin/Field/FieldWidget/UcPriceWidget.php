@@ -26,13 +26,13 @@ class UcPriceWidget extends WidgetBase {
   public function formElement(FieldItemListInterface $items, $delta, array $element, array &$form, FormStateInterface $form_state) {
     $value = isset($items[$delta]->value) ? $items[$delta]->value : NULL;
 
-    $element += array(
+    $element += [
       '#type' => 'uc_price',
       '#default_value' => $value,
       '#empty_zero' => FALSE,
-    );
+    ];
 
-    return array('value' => $element);
+    return ['value' => $element];
   }
 
   /**

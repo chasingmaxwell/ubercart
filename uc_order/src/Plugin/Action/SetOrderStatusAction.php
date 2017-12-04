@@ -30,27 +30,27 @@ class SetOrderStatusAction extends ConfigurableActionBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
+    return [
       'status' => '',
       'notify' => FALSE,
-    );
+    ];
   }
 
   /**
    * {@inheritdoc}
    */
   public function buildConfigurationForm(array $form, FormStateInterface $form_state) {
-    $form['status'] = array(
+    $form['status'] = [
       '#type' => 'select',
       '#title' => $this->t('Order status'),
       '#default_value' => $this->configuration['status'],
       '#options' => OrderStatus::getOptionsList(),
-    );
-    $form['notify'] = array(
+    ];
+    $form['notify'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Send e-mail notification on update.'),
       '#default_value' => $this->configuration['notify'],
-    );
+    ];
     return $form;
   }
 

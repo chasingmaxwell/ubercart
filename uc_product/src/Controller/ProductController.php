@@ -14,48 +14,43 @@ class ProductController extends ControllerBase {
    * Displays a list of product classes.
    */
   public function classOverview() {
-    $classes = $this->entityTypeManager()->getStorage('node_type')->loadByProperties(array(
+    $classes = $this->entityTypeManager()->getStorage('node_type')->loadByProperties([
       'third_party_settings.uc_product.product' => TRUE,
-    ));
-    $header = array($this->t('Class ID'), $this->t('Name'), $this->t('Description'), $this->t('Operations'));
+    ]);
+    $header = [$this->t('Class ID'), $this->t('Name'), $this->t('Description'), $this->t('Operations')];
     $rows = [];
     foreach ($classes as $class) {
       $links = [];
-      $links['edit'] = array(
+      $links['edit'] = [
         'title' => $this->t('Edit'),
-        'url' => Url::fromRoute('entity.node_type.edit_form', ['node_type' =>$class->id()]),
-        'query' => array(
+        'url' => Url::fromRoute('entity.node_type.edit_form', ['node_type' => $class->id()]),
+        'query' => [
           'destination' => 'admin/store/products/classes',
-        ),
-      );
+        ],
+      ];
       if (!$class->isLocked()) {
-        $links['delete'] = array(
+        $links['delete'] = [
           'title' => $this->t('Delete'),
           'url' => Url::fromRoute('entity.node_type.delete_form', ['node_type' => $class->id()]),
-          'query' => array(
+          'query' => [
             'destination' => 'admin/store/products/classes',
-          ),
-        );
+          ],
+        ];
       }
-      $rows[] = array(
+      $rows[] = [
         $class->id(),
         $class->label(),
-        array('data' => array('#markup' => $class->getDescription())),
-        array(
-          'data' => array(
-            '#type' => 'operations',
-            '#links' => $links,
-          )
-        ),
-      );
+        ['data' => ['#markup' => $class->getDescription()]],
+        ['data' => ['#type' => 'operations', '#links' => $links]],
+      ];
     }
 
-    return array(
+    return [
       '#theme' => 'table',
       '#header' => $header,
       '#rows' => $rows,
       '#empty' => $this->t('No product classes have been defined yet.'),
-    );
+    ];
   }
 
   /**

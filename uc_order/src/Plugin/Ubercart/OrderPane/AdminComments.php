@@ -23,24 +23,24 @@ class AdminComments extends EditableOrderPanePluginBase {
    */
   public function view(OrderInterface $order, $view_mode) {
     if ($view_mode != 'customer') {
-      $build = array(
+      $build = [
         '#theme' => 'table',
-        '#header' => array(
-          array('data' => $this->t('Date'), 'class' => array('date')),
-          array('data' => $this->t('User'), 'class' => array('user')),
-          array('data' => $this->t('Comment'), 'class' => array('message')),
-        ),
-        '#rows' => array(),
-        '#attributes' => array('class' => array('order-pane-table uc-order-comments')),
+        '#header' => [
+          ['data' => $this->t('Date'), 'class' => ['date']],
+          ['data' => $this->t('User'), 'class' => ['user']],
+          ['data' => $this->t('Comment'), 'class' => ['message']],
+        ],
+        '#rows' => [],
+        '#attributes' => ['class' => ['order-pane-table uc-order-comments']],
         '#empty' => $this->t('This order has no admin comments associated with it.'),
-      );
+      ];
       $comments = uc_order_comments_load($order->id(), TRUE);
       foreach ($comments as $comment) {
-        $build['#rows'][] = array(
-          array('data' => \Drupal::service('date.formatter')->format($comment->created, 'short'), 'class' => array('date')),
-          array('data' => array('#theme' => 'username', '#account' => User::load($comment->uid)), 'class' => array('user')),
-          array('data' => array('#markup' => $comment->message), 'class' => array('message')),
-        );
+        $build['#rows'][] = [
+          ['data' => \Drupal::service('date.formatter')->format($comment->created, 'short'), 'class' => ['date']],
+          ['data' => ['#theme' => 'username', '#account' => User::load($comment->uid)], 'class' => ['user']],
+          ['data' => ['#markup' => $comment->message], 'class' => ['message']],
+        ];
       }
       return $build;
     }
@@ -50,7 +50,7 @@ class AdminComments extends EditableOrderPanePluginBase {
    * {@inheritdoc}
    */
   public function buildForm(OrderInterface $order, array $form, FormStateInterface $form_state) {
-    $items = array();
+    $items = [];
     $comments = uc_order_comments_load($order->id(), TRUE);
     foreach ($comments as $comment) {
       $items[] = [
@@ -65,20 +65,20 @@ class AdminComments extends EditableOrderPanePluginBase {
         ],
       ];
     }
-    $form['comments'] = array(
+    $form['comments'] = [
       '#theme' => 'item_list',
       '#items' => $items,
       '#empty' => $this->t('No admin comments have been entered for this order.'),
-    );
+    ];
 
-    $form['admin_comment_field'] = array(
+    $form['admin_comment_field'] = [
       '#type' => 'details',
       '#title' => $this->t('Add an admin comment'),
-    );
-    $form['admin_comment_field']['admin_comment'] = array(
+    ];
+    $form['admin_comment_field']['admin_comment'] = [
       '#type' => 'textarea',
       '#description' => $this->t('Admin comments are only seen by store administrators.'),
-    );
+    ];
 
     return $form;
   }

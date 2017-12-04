@@ -36,19 +36,19 @@ class UcWeightItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
-    return array(
-      'columns' => array(
-        'value' => array(
+    return [
+      'columns' => [
+        'value' => [
           'type' => 'float',
           'not null' => FALSE,
-        ),
-        'units' => array(
+        ],
+        'units' => [
           'type' => 'char',
           'length' => 2,
           'not null' => FALSE,
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
   }
 
   /**

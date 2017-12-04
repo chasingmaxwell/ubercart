@@ -18,7 +18,7 @@ class OrderPaneManager extends DefaultPluginManager {
    *
    * @param \Traversable $namespaces
    *   An object that implements \Traversable which contains the root paths
-   *   keyed by the corresponding namespace to look for plugin implementations,
+   *   keyed by the corresponding namespace to look for plugin implementations.
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache_backend
    *   Cache backend instance to use.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
@@ -37,7 +37,7 @@ class OrderPaneManager extends DefaultPluginManager {
    *   An array of order pane plugin instances.
    */
   public function getPanes() {
-    $instances = array();
+    $instances = [];
     foreach ($this->getDefinitions() as $id => $definition) {
       $instances[$id] = $this->createInstance($id);
     }

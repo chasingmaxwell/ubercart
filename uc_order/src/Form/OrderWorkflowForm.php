@@ -34,80 +34,80 @@ class OrderWorkflowForm extends ConfigFormBase {
     $states = uc_order_state_options_list();
     $statuses = OrderStatus::loadMultiple();
 
-    $form['order_states'] = array(
+    $form['order_states'] = [
       '#type' => 'details',
       '#title' => $this->t('Order states'),
-    );
-    $form['order_states']['order_states'] = array(
+    ];
+    $form['order_states']['order_states'] = [
       '#type' => 'table',
-      '#header' => array($this->t('State'), $this->t('Default order status')),
-    );
+      '#header' => [$this->t('State'), $this->t('Default order status')],
+    ];
 
     foreach ($states as $state_id => $title) {
-      $form['order_states']['order_states'][$state_id]['title'] = array(
+      $form['order_states']['order_states'][$state_id]['title'] = [
         '#markup' => $title,
-      );
+      ];
 
       // Create the select box for specifying a default status per order state.
-      $options = array();
+      $options = [];
       foreach ($statuses as $status) {
         if ($state_id == $status->getState()) {
           $options[$status->id()] = $status->getName();
         }
       }
       if (empty($options)) {
-        $form['order_states']['order_states'][$state_id]['default'] = array(
+        $form['order_states']['order_states'][$state_id]['default'] = [
           '#markup' => $this->t('- N/A -'),
-        );
+        ];
       }
       else {
-        $form['order_states']['order_states'][$state_id]['default'] = array(
+        $form['order_states']['order_states'][$state_id]['default'] = [
           '#type' => 'select',
           '#options' => $options,
           '#default_value' => uc_order_state_default($state_id),
-        );
+        ];
       }
     }
 
-    $form['order_statuses'] = array(
+    $form['order_statuses'] = [
       '#type' => 'details',
       '#title' => $this->t('Order statuses'),
       '#open' => TRUE,
-    );
-    $form['order_statuses']['order_statuses'] = array(
+    ];
+    $form['order_statuses']['order_statuses'] = [
       '#type' => 'table',
-      '#header' => array($this->t('ID'), $this->t('Title'), $this->t('List position'), $this->t('State'), $this->t('Remove')),
-    );
+      '#header' => [$this->t('ID'), $this->t('Title'), $this->t('List position'), $this->t('State'), $this->t('Remove')],
+    ];
 
     foreach ($statuses as $status) {
-      $form['order_statuses']['order_statuses'][$status->id()]['id'] = array(
+      $form['order_statuses']['order_statuses'][$status->id()]['id'] = [
         '#markup' => $status->id(),
-      );
-      $form['order_statuses']['order_statuses'][$status->id()]['name'] = array(
+      ];
+      $form['order_statuses']['order_statuses'][$status->id()]['name'] = [
         '#type' => 'textfield',
         '#default_value' => $status->getName(),
         '#size' => 32,
         '#required' => TRUE,
-      );
-      $form['order_statuses']['order_statuses'][$status->id()]['weight'] = array(
+      ];
+      $form['order_statuses']['order_statuses'][$status->id()]['weight'] = [
         '#type' => 'weight',
         '#delta' => 20,
         '#default_value' => $status->getWeight(),
-      );
+      ];
       if ($status->isLocked()) {
-        $form['order_statuses']['order_statuses'][$status->id()]['state'] = array(
+        $form['order_statuses']['order_statuses'][$status->id()]['state'] = [
           '#markup' => $states[$status->getState()],
-        );
+        ];
       }
       else {
-        $form['order_statuses']['order_statuses'][$status->id()]['state'] = array(
+        $form['order_statuses']['order_statuses'][$status->id()]['state'] = [
           '#type' => 'select',
           '#options' => $states,
           '#default_value' => $status->getState(),
-        );
-        $form['order_statuses']['order_statuses'][$status->id()]['remove'] = array(
+        ];
+        $form['order_statuses']['order_statuses'][$status->id()]['remove'] = [
           '#type' => 'checkbox',
-        );
+        ];
       }
     }
 

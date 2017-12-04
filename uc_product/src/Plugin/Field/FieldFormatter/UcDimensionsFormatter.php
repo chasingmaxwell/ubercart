@@ -32,7 +32,7 @@ class UcDimensionsFormatter extends FormatterBase {
         }
       }
       if ($dimensions) {
-        $elements[$delta] = array('#markup' => implode(' × ', $dimensions));
+        $elements[$delta] = ['#markup' => implode(' × ', $dimensions)];
       }
     }
 

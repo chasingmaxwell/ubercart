@@ -47,27 +47,27 @@ class UcDimensionsItem extends FieldItemBase {
    * {@inheritdoc}
    */
   public static function schema(FieldStorageDefinitionInterface $field_definition) {
-    return array(
-      'columns' => array(
-        'length' => array(
+    return [
+      'columns' => [
+        'length' => [
           'type' => 'float',
           'not null' => FALSE,
-        ),
-        'width' => array(
+        ],
+        'width' => [
           'type' => 'float',
           'not null' => FALSE,
-        ),
-        'height' => array(
+        ],
+        'height' => [
           'type' => 'float',
           'not null' => FALSE,
-        ),
-        'units' => array(
+        ],
+        'units' => [
           'type' => 'char',
           'length' => 2,
           'not null' => FALSE,
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
   }
 
   /**

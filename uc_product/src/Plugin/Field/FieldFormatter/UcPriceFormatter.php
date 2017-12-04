@@ -25,7 +25,7 @@ class UcPriceFormatter extends FormatterBase {
     $elements = [];
 
     foreach ($items as $delta => $item) {
-      $elements[$delta] = array('#markup' => uc_currency_format($item->value));
+      $elements[$delta] = ['#markup' => uc_currency_format($item->value)];
     }
 
     return $elements;
