@@ -16,9 +16,10 @@ use Drupal\uc_order\OrderInterface;
  *     "order" = @ContextDefinition("entity:uc_order",
  *       label = @Translation("Order")
  *     ),
- *     "products" = @ContextDefinition("list",
+ *     "products" = @ContextDefinition("string",
  *       label = @Translation("Products"),
  *       list_options_callback = "productsOptions",
+ *       multiple = TRUE,
  *       restriction = "input"
  *     ),
  *     "weight_units" = @ContextDefinition("string",
@@ -74,7 +75,7 @@ class OrderTotalWeightCondition extends OrderConditionBase {
    *
    * @param \Drupal\uc_order\OrderInterface $order
    *   The order.
-   * @param \Drupal\node\NodeInterface[] $products
+   * @param string[] $products
    *   The order products.
    * @param string $weight_units
    *   The weight units.

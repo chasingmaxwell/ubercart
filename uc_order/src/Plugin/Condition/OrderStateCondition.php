@@ -4,6 +4,7 @@ namespace Drupal\uc_order\Plugin\Condition;
 
 use Drupal\rules\Core\RulesConditionBase;
 use Drupal\uc_order\OrderInterface;
+use Drupal\uc_order\OrderStatusInterface;
 
 /**
  * Provides 'Check order's workflow state' condition.
@@ -48,13 +49,13 @@ class OrderStateCondition extends RulesConditionBase {
    *
    * @param \Drupal\uc_order\OrderInterface $order
    *   The order.
-   * @param string $order_state
+   * @param \Drupal\uc_order\OrderStateInterface $order_state
    *   The order state.
    *
    * @return bool
    *   TRUE if the order has one of the given order states.
    */
-  protected function doEvaluate(OrderInterface $order, $order_state) {
+  protected function doEvaluate(OrderInterface $order, OrderStatusInterface $order_state) {
     return ($order->getStateId() == $order_state);
   }
 

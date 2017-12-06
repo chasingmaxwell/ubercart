@@ -2,8 +2,11 @@
 
 namespace Drupal\uc_order\Plugin\Condition;
 
+use Drupal\Core\Entity\EntityTypeBundleInfoInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Drupal\rules\Core\RulesConditionBase;
 use Drupal\uc_order\OrderInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides 'Order has a product with a selected product classes' condition.
@@ -24,7 +27,7 @@ use Drupal\uc_order\OrderInterface;
  *     ),
  *     "required" = @ContextDefinition("boolean",
  *       label = @Translation("Require all selected product classes"),
- *       description = @Translation("Select to require that order must contain all selected product classes.  Otherwise, order must contain at least one of the selected product classes."),
+ *       description = @Translation("Select to require that order must contain all selected product classes. Otherwise, order must contain at least one of the selected product classes."),
  *       list_options_callback = "booleanOptions"
  *     ),
  *     "forbidden" = @ContextDefinition("boolean",
@@ -34,7 +37,14 @@ use Drupal\uc_order\OrderInterface;
  *   }
  * )
  */
-class OrderHasProductClassCondition extends RulesConditionBase {
+class OrderHasProductClassCondition extends RulesConditionBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * The entity_type.bundle.info service.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeBundleInfoInterface
+   */
+  protected $entityTypeBundleInfo;
 
   /**
    * {@inheritdoc}
@@ -44,17 +54,47 @@ class OrderHasProductClassCondition extends RulesConditionBase {
   }
 
   /**
+   * Constructs a OrderHasProductClassCondition object.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin ID for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Entity\EntityTypeBundleInfoInterface $entity_type_bundle_info
+   *   The core entity_type.bundle.info service.
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, EntityTypeBundleInfoInterface $entity_type_bundle_info) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->entityTypeBundleInfo = $entity_type_bundle_info;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('entity_type.bundle.info')
+    );
+  }
+
+  /**
    * Options callback.
    *
    * @return array
    *   Associative array of all Ubercart product classes indexed by class ID.
    */
   public function productClassOptions() {
-    $options = [];
+    $types = uc_product_types();
+    $bundle_info = $this->entityTypeBundleInfo->getAllBundleInfo();
 
-    $result = db_query('SELECT * FROM {uc_product_classes}');
-    foreach ($result as $class) {
-      $options += [$class->pcid => $class->name];
+    $options = [];
+    foreach ($types as $machine_id) {
+      $options[$machine_id] = $bundle_info['node'][$machine_id]['label'];
     }
 
     return $options;
@@ -82,10 +122,10 @@ class OrderHasProductClassCondition extends RulesConditionBase {
    *   An array of strings containing the product classes (node content
    *   types) to check against.
    * @param bool $required
-   *   TRUE to require all product classes be present in the order.  FALSE
+   *   TRUE to require all product classes be present in the order. FALSE
    *   to require at least one be present.
    * @param bool $forbidden
-   *   TRUE to require that only the listed product classes be present.  FALSE
+   *   TRUE to require that only the listed product classes be present. FALSE
    *   to allow products with other classes.
    *
    * @return bool
@@ -99,7 +139,7 @@ class OrderHasProductClassCondition extends RulesConditionBase {
         $order_product_classes[] = $product->type;
       }
       else {
-        // Otherwise, use the node type.  If the node can't be loaded, ignore
+        // Otherwise, use the node type. If the node can't be loaded, ignore
         // this product.
         $node = Node::load($product->nid);
         if (!empty($node)) {

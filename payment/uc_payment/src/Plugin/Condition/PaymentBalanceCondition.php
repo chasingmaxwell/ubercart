@@ -44,12 +44,12 @@ class PaymentBalanceCondition extends RulesConditionBase {
    * Returns balance options.
    */
   public function balanceOptions() {
-    $zero = ['!zero' => uc_currency_format(0)];
+    $zero = ['@zero' => uc_currency_format(0)];
     $options = [
-      'less' => $this->t('Balance is less than !zero.', $zero),
-      'less_equal' => $this->t('Balance is less than or equal to !zero.', $zero),
-      'equal' => $this->t('Balance is equal to !zero.', $zero),
-      'greater' => $this->t('Balance is greater than !zero.', $zero),
+      'less' => $this->t('Balance is less than @zero.', $zero),
+      'less_equal' => $this->t('Balance is less than or equal to @zero.', $zero),
+      'equal' => $this->t('Balance is equal to @zero.', $zero),
+      'greater' => $this->t('Balance is greater than @zero.', $zero),
     ];
 
     return $options;
@@ -63,8 +63,8 @@ class PaymentBalanceCondition extends RulesConditionBase {
    */
   public function booleanOptions() {
     return [
-      0 => $this->t('False'),
-      1 => $this->t('True'),
+      0 => $this->t('No'),
+      1 => $this->t('Yes'),
     ];
   }
 
