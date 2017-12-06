@@ -171,10 +171,10 @@ function uc_order_mail($key, &$message, $params) {
 
       // Apply an input format to the message body if specified.
       if (isset($params['format'])) {
-        $message['body'] = explode("\n", check_markup($body, $params['format'], $langcode));
+        $message['body'][] = check_markup($body, $params['format'], $langcode);
       }
       else {
-        $message['body'] = explode("\n", $body);
+        $message['body'][] = $body;
       }
 
       break;
