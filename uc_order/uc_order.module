@@ -150,12 +150,12 @@ function uc_order_mail($key, &$message, $params) {
       $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
       $message['subject'] = t('Your Order Invoice', [], ['langcode' => $langcode]);
       $message['from'] = uc_store_email_from();
-      $body = array('#theme' => 'uc_order_invoice', '#order' => $params['order'], '#op' => 'admin-mail');
-      $message['body'][] = drupal_render($body);
+      $body = ['#theme' => 'uc_order_invoice', '#order' => $params['order'], '#op' => 'admin-mail'];
+      $message['body'][] = \Drupal::service('renderer')->render($body);
       break;
 
     // Setup a custom e-mail defined by an action on a predicate.
-    case 'action-mail':
+    case 'rules-action-email':
       // Assemble an email message from the conditional actions settings.
       $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
       $message['from'] = $params['from'];
@@ -308,7 +308,7 @@ function uc_order_product_is_shippable($product) {
   }
 
   // See if any other modules have a say in the matter...
-  $result = \Drupal::moduleHandler()->invokeAll('uc_order_product_can_ship', array($product));
+  $result = \Drupal::moduleHandler()->invokeAll('uc_order_product_can_ship', [$product]);
 
   // Return TRUE by default.
   if (empty($result) || in_array(TRUE, $result)) {
@@ -452,7 +452,7 @@ function uc_order_state_options_list() {
   }
   uasort($states, 'Drupal\Component\Utility\SortArray::sortByWeightElement');
 
-  $options = array();
+  $options = [];
   foreach ($states as $id => $state) {
     $options[$id] = $state['label'];
   }
@@ -462,10 +462,10 @@ function uc_order_state_options_list() {
 /**
  * Returns the default order status for a particular order state.
  *
- * @param $state_id
+ * @param string $state_id
  *   The ID of the order state whose default status you want to find.
  *
- * @return
+ * @return string
  *   A string containing the default order status ID for the specified state.
  */
 function uc_order_state_default($state_id) {
@@ -487,70 +487,70 @@ function uc_order_state_default($state_id) {
 /**
  * Returns the actions a user may perform on an order.
  *
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   The order to return the actions for.
  *
- * @return
+ * @return array
  *   A renderable set of operation links.
  */
 function uc_order_actions(OrderInterface $order, $icon_html = FALSE) {
   $user = \Drupal::currentUser();
 
-  $actions = array();
+  $actions = [];
 
   if ($user->hasPermission('view all orders')) {
-    $actions['view'] = array(
+    $actions['view'] = [
       'title' => t('View'),
       'url' => $order->toUrl(),
       'weight' => 0,
-    );
-    $actions['print'] = array(
+    ];
+    $actions['print'] = [
       'title' => t('Print'),
       'url' => Url::fromRoute('uc_order.admin_invoice_print', ['uc_order' => $order->id()]),
       'weight' => 5,
-    );
+    ];
   }
   else {
     if ($order->access('view')) {
-      $actions['view'] = array(
+      $actions['view'] = [
         'title' => t('View'),
         'url' => Url::fromRoute('uc_order.user_view', ['user' => $user->id(), 'uc_order' => $order->id()]),
         'weight' => 0,
-      );
+      ];
     }
     if ($order->access('invoice')) {
-      $actions['print'] = array(
+      $actions['print'] = [
         'title' => t('Print'),
         'url' => Url::fromRoute('uc_order.user_invoice_print', ['user' => $user->id(), 'uc_order' => $order->id()]),
         'weight' => 5,
-      );
+      ];
     }
   }
 
   if ($order->access('update')) {
-    $actions['edit'] = array(
+    $actions['edit'] = [
       'title' => t('Edit'),
       'url' => $order->toUrl('edit-form'),
       'weight' => 10,
-    );
+    ];
   }
 
   if ($order->access('delete')) {
-    $actions['delete'] = array(
+    $actions['delete'] = [
       'title' => t('Delete'),
       'url' => $order->toUrl('delete-form'),
       'weight' => 20,
-    );
+    ];
   }
 
-  $extra = \Drupal::moduleHandler()->invokeAll('uc_order_actions', array($order));
+  $extra = \Drupal::moduleHandler()->invokeAll('uc_order_actions', [$order]);
   if (count($extra)) {
     $actions = array_merge($actions, $extra);
   }
   \Drupal::moduleHandler()->alter('uc_order_actions', $actions, $order);
 
-  return array(
+  return [
     '#type' => 'operations',
     '#links' => $actions,
-  );
+  ];
 }

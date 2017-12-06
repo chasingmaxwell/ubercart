@@ -35,50 +35,6 @@ function uc_order_rules_data_info() {
 }
 
 /**
- * Implements hook_rules_event_info().
- */
-function uc_order_rules_event_info() {
-  $events['uc_order_status_update'] = array(
-    'label' => t('Order status gets updated'),
-    'group' => t('Order'),
-    'variables' => array(
-      'order' => array(
-        'type' => 'uc_order',
-        'label' => t('Original order'),
-      ),
-      'updated_order' => array(
-        'type' => 'uc_order',
-        'label' => t('Updated order'),
-      ),
-    ),
-  );
-
-  $events['uc_order_status_email_update'] = array(
-    'label' => t('E-mail requested for order status update'),
-    'group' => t('Order'),
-    'variables' => array(
-      'order' => array(
-        'type' => 'uc_order',
-        'label' => t('Order'),
-      ),
-    ),
-  );
-
-  $events['uc_order_delete'] = array(
-    'label' => t('An order is being deleted'),
-    'group' => t('Order'),
-    'variables' => array(
-      'order' => array(
-        'type' => 'uc_order',
-        'label' => t('Order'),
-      ),
-    ),
-  );
-
-  return $events;
-}
-
-/**
  * Implements hook_rules_condition_info().
  */
 function uc_order_rules_condition_info() {
@@ -739,7 +695,7 @@ function uc_order_action_email($order, $from, $addresses, $subject, $message, $f
   }
 
   foreach ($recipients as $email) {
-    $sent = \Drupal::service('plugin.manager.mail')->mail('uc_order', 'action-mail', $email, uc_store_mail_recipient_langcode($email), $settings, $from);
+    $sent = \Drupal::service('plugin.manager.mail')->mail('uc_order', 'rules-action-email', $email, uc_store_mail_recipient_langcode($email), $settings, $from);
 
     if (!$sent['result']) {
       \Drupal::logger('uc_order')->error('Attempt to e-mail @email concerning order @order_id failed.', array('@email' => $email, '@order_id' => $order->id()));
@@ -809,7 +765,7 @@ function uc_order_action_email_invoice($order, $from, $addresses, $subject, $tem
   $settings['message'] = \Drupal::service('renderer')->renderPlain($message);
 
   foreach ($recipients as $email) {
-    $sent = \Drupal::service('plugin.manager.mail')->mail('uc_order', 'action-mail', $email, uc_store_mail_recipient_langcode($email), $settings, $from);
+    $sent = \Drupal::service('plugin.manager.mail')->mail('uc_order', 'rules-action-email', $email, uc_store_mail_recipient_langcode($email), $settings, $from);
 
     if (!$sent['result']) {
       \Drupal::logger('uc_order')->error('Attempt to e-mail invoice for order @order_id to @email failed.', array('@email' => $email, '@order_id' => $order->id()));
