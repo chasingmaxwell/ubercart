@@ -31,7 +31,7 @@ class CatalogController extends ControllerBase {
     }
     else {
       $topics = '';
-      $header = array();
+      $header = [];
     }
     return $this->build($taxonomy_term->forums, $taxonomy_term, $topics, $taxonomy_term->parents, $header);
   }

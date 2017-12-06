@@ -120,7 +120,6 @@ abstract class UPSRateBase extends ShippingQuotePluginBase {
       $rate += $product->price->value * floatval($product_rate) / 100;
     }
 
-
     return [$rate];
   }
 
@@ -135,8 +134,8 @@ abstract class UPSRateBase extends ShippingQuotePluginBase {
    *   component products.
    *
    * @return array
-   *   Array of packaged products. Packages are separated by shipping address and
-   *   weight or quantity limits imposed by the shipping method or the products.
+   *   Packaged products. Packages are separated by shipping address and weight
+   *   or quantity limits imposed by the shipping method or the products.
    */
   protected function packageProducts(array $products, array $addresses) {
     $last_key = 0;
@@ -203,7 +202,8 @@ abstract class UPSRateBase extends ShippingQuotePluginBase {
     }
     else {
       // !$ups_config->get('all_in_one') || count($products) = 1
-      // "Each in own" packaging strategy, or only one product line item in order.
+      // This is the "Each in own" packaging strategy, or
+      // there is only one product line item in order.
       foreach ($products as $product) {
         if ($product->nid) {
           $address = uc_quote_get_default_shipping_address($product->nid);
@@ -225,7 +225,7 @@ abstract class UPSRateBase extends ShippingQuotePluginBase {
         if (!isset($product->pkg_qty) || !$product->pkg_qty) {
           $product->pkg_qty = 1;
         }
-        $num_of_pkgs = (int)($product->qty / $product->pkg_qty);
+        $num_of_pkgs = (int) ($product->qty / $product->pkg_qty);
         if ($num_of_pkgs) {
           $package = clone $product;
           $package->description = $product->model;
@@ -241,6 +241,7 @@ abstract class UPSRateBase extends ShippingQuotePluginBase {
               $package->pounds = floor($weight);
               $package->ounces = LB_TO_OZ * ($weight - $package->pounds);
               break;
+
             case 'oz':
               $package->pounds = floor($weight * OZ_TO_LB);
               $package->ounces = $weight - $package->pounds * LB_TO_OZ;
@@ -382,16 +383,16 @@ abstract class UPSRateBase extends ShippingQuotePluginBase {
   /**
    * Modifies the weight of shipment before sending to UPS for a quote.
    *
-   * @param $weight
+   * @param float $weight
    *   Shipping weight without any weight markup.
    *
-   * @return
+   * @return float
    *   Shipping weight after markup.
    */
   protected function weightMarkup($weight) {
     $ups_config = \Drupal::config('uc_ups.settings');
     $markup = trim($ups_config->get('weight_markup'));
-    $type   = $ups_config->get('weight_markup_type');
+    $type = $ups_config->get('weight_markup_type');
 
     if (is_numeric($markup)) {
       switch ($type) {

@@ -22,19 +22,19 @@ class StockReportForm extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, NodeInterface $node = NULL) {
-    $form['threshold'] = array(
+    $form['threshold'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Only show SKUs that are below their threshold.'),
       '#default_value' => /* @todo remove arg(): arg(4) == 'threshold' ? TRUE :*/ FALSE,
-      '#attributes' => array('onchange' => 'this.form.submit();'),
-    );
+      '#attributes' => ['onchange' => 'this.form.submit();'],
+    ];
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Update'),
-      '#attributes' => array('style' => "display:none;"),
-    );
+      '#attributes' => ['style' => "display:none;"],
+    ];
 
     return $form;
   }

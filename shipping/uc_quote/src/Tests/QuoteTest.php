@@ -44,7 +44,7 @@ class QuoteTest extends UbercartTestBase {
    * @return \Drupal\uc_quote\Entity\ShippingQuoteMethod
    *   The shipping quote configuration entity.
    */
-  protected function createQuote($edit = [], $condition = FALSE) {
+  protected function createQuote(array $edit = [], $condition = FALSE) {
     $edit += [
       'id' => $this->randomMachineName(),
       'label' => $this->randomMachineName(),
@@ -75,7 +75,7 @@ class QuoteTest extends UbercartTestBase {
   /**
    * Simulates selection of a delivery country on the checkout page.
    *
-   * @param $country_id
+   * @param string $country_id
    *   The ISO 3166 2-character country code to select. Country must
    *   be enabled for this to work.
    */
@@ -100,7 +100,7 @@ class QuoteTest extends UbercartTestBase {
   /**
    * Simulates selection of a quote on the checkout page.
    *
-   * @param $n
+   * @param int $n
    *   The index of the quote to select.
    */
   protected function selectQuote($n) {
@@ -159,7 +159,7 @@ class QuoteTest extends UbercartTestBase {
       'USES VARIABLES' => [
         'order' => [
           'type' => 'uc_order',
-          'label' => 'Order'
+          'label' => 'Order',
         ],
       ],
       'AND' => [[
@@ -185,9 +185,11 @@ class QuoteTest extends UbercartTestBase {
     $this->assertText($quote2->label(), 'The second quote option is available');
     $this->assertText($quote1->total, 'Order total includes the default quote.');
 
-    // Select a different quote and ensure the total updates correctly.  Currently, we have to do this
-    // by examining the ajax return value directly (rather than the page contents) because drupalPostAjaxForm() can
-    // only handle replacements via the 'wrapper' property, and the ajax callback may use a command with a selector.
+    // Select a different quote and ensure the total updates correctly.
+    // Currently, we have to do this by examining the ajax return value
+    // directly (rather than the page contents) because drupalPostAjaxForm()
+    // can only handle replacements via the 'wrapper' property, and the ajax
+    // callback may use a command with a selector.
     $edit = ['panes[quotes][quotes][quote_option]' => $quote2->id() . '---0'];
     $edit = $this->populateCheckoutForm($edit);
     $result = $this->ucPostAjax(NULL, $edit, $edit);

@@ -16,7 +16,10 @@ class ShipmentTest extends UbercartTestBase {
   public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_fulfillment'];
   public static $adminPermissions = ['fulfill orders'];
 
-  public function testShipmentsUI() {
+  /**
+   * Tests the UI for creating new shipments.
+   */
+  public function testShipmentsUi() {
     $this->drupalLogin($this->adminUser);
     $method = $this->createPaymentMethod('other');
 
@@ -70,7 +73,7 @@ class ShipmentTest extends UbercartTestBase {
         $item->qty->value . ' x ' . $item->model->value,
         'Product quantity x SKU found.'
       );
-// Test for weight here too? How do we compute this?
+      // @todo Test for weight here too? How do we compute this?
     }
     // We're shipping a specific package, so it should already be checked.
     foreach ($order->products as $sequence => $item) {
@@ -111,7 +114,8 @@ class ShipmentTest extends UbercartTestBase {
 
     // Test reaching this through the shipments tab too ...
 
-    // Select all packages and create shipment using the default "Manual" method..
+    // Select all packages and create shipment using
+    // the default "Manual" method.
     $this->drupalPostForm(
       NULL,
       ['shipping_types[small_package][table][' . $order->id() . '][checked]' => 1],
@@ -188,7 +192,8 @@ class ShipmentTest extends UbercartTestBase {
       'cost' => '12.34',
     ];
 
-//@todo fix ajax and uncomment settings country and zone.
+    // @todo Fix ajax and uncomment settings country and zone.
+
     // Find available countries for our select.
     $country_ids = \Drupal::service('country_manager')->getEnabledList();
     $pickup_country = array_rand($country_ids);

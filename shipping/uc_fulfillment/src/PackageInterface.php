@@ -11,6 +11,7 @@ interface PackageInterface {
    * Sets the shipment ID.
    *
    * @param int $sid
+   *   The shipment ID.
    *
    * @return $this
    */
@@ -28,6 +29,7 @@ interface PackageInterface {
    * Sets the order ID of this shipment.
    *
    * @param int $order_id
+   *   The Order ID.
    *
    * @return $this
    */
@@ -81,6 +83,7 @@ interface PackageInterface {
    * Sets the package length.
    *
    * @param float $length
+   *   The package length.
    *
    * @return $this
    */
@@ -98,6 +101,7 @@ interface PackageInterface {
    * Sets the package width.
    *
    * @param float $width
+   *   The package width.
    *
    * @return $this
    */
@@ -115,6 +119,7 @@ interface PackageInterface {
    * Sets the package height.
    *
    * @param float $height
+   *   The package height.
    *
    * @return $this
    */
@@ -122,8 +127,6 @@ interface PackageInterface {
 
   /**
    * Returns the package height.
-   *
-   * @param float $height
    *
    * @return float
    *   The package height.
@@ -134,6 +137,7 @@ interface PackageInterface {
    * Sets the package units of length.
    *
    * @param string $length_units
+   *   The units used to measure package dimensions.
    *
    * @return $this
    */
@@ -151,6 +155,7 @@ interface PackageInterface {
    * Sets the package weight.
    *
    * @param float $weight
+   *   The package weight.
    *
    * @return $this
    */
@@ -158,8 +163,6 @@ interface PackageInterface {
 
   /**
    * Returns the package weight.
-   *
-   * @param float $weight
    *
    * @return float
    *   The package weight.
@@ -170,6 +173,7 @@ interface PackageInterface {
    * Sets the package units of weight.
    *
    * @param string $weight_units
+   *   The units used to measure package weight.
    *
    * @return $this
    */
@@ -187,6 +191,7 @@ interface PackageInterface {
    * Sets the package monetary value.
    *
    * @param float $value
+   *   The monetary value.
    *
    * @return $this
    */
@@ -222,6 +227,7 @@ interface PackageInterface {
    * Sets the package tracking number.
    *
    * @param string $tracking_number
+   *   The tracking number.
    *
    * @return $this
    */
@@ -239,6 +245,7 @@ interface PackageInterface {
    * Sets package label image.
    *
    * @param string $label_image
+   *   The label image.
    *
    * @return $this
    */
@@ -256,6 +263,7 @@ interface PackageInterface {
    * Adds products to this package.
    *
    * @param \Drupal\uc_order\OrderProductInterface[] $products
+   *   The products to add.
    *
    * @return $this
    */
@@ -265,6 +273,7 @@ interface PackageInterface {
    * Sets all the products in this package.
    *
    * @param \Drupal\uc_order\OrderProductInterface[] $products
+   *   The package's products.
    *
    * @return $this
    */
@@ -282,6 +291,7 @@ interface PackageInterface {
    * Sets the list of ship-from addresses for this package.
    *
    * @param \Drupal\uc_store\AddressInterface[] $addresses
+   *   The package's addresses.
    *
    * @return $this
    */
@@ -299,6 +309,7 @@ interface PackageInterface {
    * Sets the package description.
    *
    * @param string $description
+   *   The package description.
    *
    * @return $this
    */
@@ -308,7 +319,7 @@ interface PackageInterface {
    * Returns the package description.
    *
    * @return string
-   *   The description.
+   *   The package description.
    */
   public function getDescription();
 

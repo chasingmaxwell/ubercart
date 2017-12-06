@@ -53,54 +53,54 @@ function uc_cart_cron() {
  * Implements hook_theme().
  */
 function uc_cart_theme() {
-  return array(
-    'uc_cart_block_title' => array(
-      'variables' => array(
+  return [
+    'uc_cart_block_title' => [
+      'variables' => [
         'title' => NULL,
         'show_icon' => FALSE,
         'cart_empty' => NULL,
         'collapsible' => TRUE,
         'collapsed' => TRUE,
-      ),
+      ],
       'template' => 'uc-cart-block-title',
-    ),
-    'uc_cart_block' => array(
-      'variables' => array(
+    ],
+    'uc_cart_block' => [
+      'variables' => [
         'items' => NULL,
         'item_count' => NULL,
         'total' => NULL,
         'summary_links' => NULL,
         'collapsed' => TRUE,
-      ),
+      ],
       'template' => 'uc-cart-block',
-    ),
-    'uc_cart_view_form' => array(
+    ],
+    'uc_cart_view_form' => [
       'render element' => 'form',
       'template' => 'uc-cart-form',
-    ),
-    'uc_cart_checkout_buttons' => array(
+    ],
+    'uc_cart_checkout_buttons' => [
       'render element' => 'buttons',
       'template' => 'uc-cart-checkout-buttons',
-    ),
-    'uc_cart_empty' => array(
-      'variables' => array(),
+    ],
+    'uc_cart_empty' => [
+      'variables' => [],
       'template' => 'uc-cart-empty',
-    ),
-    'uc_cart_review_table' => array(
-      'variables' => array('items' => array(), 'show_subtotal' => TRUE),
+    ],
+    'uc_cart_review_table' => [
+      'variables' => ['items' => [], 'show_subtotal' => TRUE],
       'file' => 'uc_cart.theme.inc',
       'function' => 'theme_uc_cart_review_table',
-    ),
-    'uc_cart_checkout_review' => array(
-      'variables' => array('panes' => NULL, 'form' => NULL),
+    ],
+    'uc_cart_checkout_review' => [
+      'variables' => ['panes' => NULL, 'form' => NULL],
       'file' => 'uc_cart.theme.inc',
       'function' => 'theme_uc_cart_checkout_review',
-    ),
-    'uc_cart_complete_sale' => array(
-      'variables' => array('message' => '', 'order' => NULL),
+    ],
+    'uc_cart_complete_sale' => [
+      'variables' => ['message' => '', 'order' => NULL],
       'template' => 'uc-cart-complete-sale',
-    ),
-  );
+    ],
+  ];
 }
 
 /**
@@ -129,11 +129,11 @@ function template_preprocess_uc_cart_block(&$variables) {
     $variables['items'][$key]['price'] = uc_currency_format($item['price']);
   }
 
-  $variables['summary_links'] = array(
+  $variables['summary_links'] = [
     '#theme' => 'links',
     '#links' => $variables['summary_links'],
-    '#attributes' => array('class' => ['cart-block-summary-links']),
-  );
+    '#attributes' => ['class' => ['cart-block-summary-links']],
+  ];
 }
 
 /**
@@ -151,7 +151,7 @@ function template_preprocess_uc_cart_complete_sale(&$variables) {
  * Default template: uc-cart-checkout-buttons.html.twig.
  */
 function template_preprocess_uc_cart_checkout_buttons(&$variables) {
-  $buttons = array();
+  $buttons = [];
   foreach (Element::children($variables['buttons']) as $button) {
     $buttons[] = $variables['buttons'][$button];
   }
@@ -164,14 +164,14 @@ function template_preprocess_uc_cart_checkout_buttons(&$variables) {
 function uc_cart_preprocess_block(&$variables) {
   $cart = \Drupal::service('uc_cart.manager')->get();
   if ($variables['plugin_id'] == 'uc_cart' && $variables['label']) {
-    $variables['label'] = array(
+    $variables['label'] = [
       '#theme' => 'uc_cart_block_title',
       '#title' => $variables['label'],
       '#show_icon' => $variables['configuration']['show_image'],
       '#cart_empty' => !$cart->getContents(),
       '#collapsible' => $variables['configuration']['collapsible'],
       '#collapsed' => $variables['configuration']['collapsed'],
-    );
+    ];
   }
 }
 

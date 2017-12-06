@@ -17,7 +17,7 @@ class CatalogBreadcrumbTest extends UbercartTestBase {
   public static $adminPermissions = ['view catalog'];
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   protected function setUp() {
     parent::setUp();
@@ -33,9 +33,9 @@ class CatalogBreadcrumbTest extends UbercartTestBase {
     $grandparent = $this->createTerm();
     $parent = $this->createTerm(['parent' => $grandparent->id()]);
     $term = $this->createTerm(['parent' => $parent->id()]);
-    $product = $this->createProduct(array(
-      'taxonomy_catalog' => array($term->id()),
-    ));
+    $product = $this->createProduct([
+      'taxonomy_catalog' => [$term->id()],
+    ]);
 
     $this->drupalGet($product->toUrl());
 
@@ -59,9 +59,9 @@ class CatalogBreadcrumbTest extends UbercartTestBase {
     $grandparent = $this->createTerm();
     $parent = $this->createTerm(['parent' => $grandparent->id()]);
     $term = $this->createTerm(['parent' => $parent->id()]);
-    $product = $this->createProduct(array(
-      'taxonomy_catalog' => array($term->id()),
-    ));
+    $product = $this->createProduct([
+      'taxonomy_catalog' => [$term->id()],
+    ]);
 
     $this->drupalGet('catalog');
     $this->clickLink($grandparent->label());
@@ -84,10 +84,10 @@ class CatalogBreadcrumbTest extends UbercartTestBase {
   protected function createTerm($values = []) {
     $term = Term::create($values + [
       'name' => $this->randomMachineName(),
-      'description' => array(
+      'description' => [
         'value' => $this->randomMachineName(),
         'format' => 'plain_text',
-      ),
+      ],
       'vid' => 'catalog',
       'langcode' => Language::LANGCODE_NOT_SPECIFIED,
     ]);

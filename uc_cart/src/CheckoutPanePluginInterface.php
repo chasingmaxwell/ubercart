@@ -103,4 +103,5 @@ interface CheckoutPanePluginInterface extends PluginInspectionInterface, Configu
    *   The integer weight of the checkout pane.
    */
   public function getWeight();
+
 }

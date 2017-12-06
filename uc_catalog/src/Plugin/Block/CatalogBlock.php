@@ -22,16 +22,16 @@ class CatalogBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
+    return [
       'link_title' => FALSE,
       'expanded' => FALSE,
       'product_count' => TRUE,
-      'visibility' => array(
-        'path' => array(
+      'visibility' => [
+        'path' => [
           'pages' => 'admin*',
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
   }
 
   /**
@@ -45,21 +45,21 @@ class CatalogBlock extends BlockBase {
    * {@inheritdoc}
    */
   public function blockForm($form, FormStateInterface $form_state) {
-    $form['link_title'] = array(
+    $form['link_title'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Make the block title a link to the top-level catalog page.'),
       '#default_value' => $this->configuration['link_title'],
-    );
-    $form['expanded'] = array(
+    ];
+    $form['expanded'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Always expand categories.'),
       '#default_value' => $this->configuration['expanded'],
-    );
-    $form['product_count'] = array(
+    ];
+    $form['product_count'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Display product counts.'),
       '#default_value' => $this->configuration['product_count'],
-    );
+    ];
     return $form;
   }
 
@@ -99,10 +99,10 @@ class CatalogBlock extends BlockBase {
       $menu_tree->add_child($knothole);
     }
 
-    $build['content'] = array(
+    $build['content'] = [
       '#theme' => 'uc_catalog_block',
       '#menu_tree' => $menu_tree,
-    );
+    ];
 
     $build['#attached']['library'][] = 'uc_catalog/uc_catalog.styles';
 

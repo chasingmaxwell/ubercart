@@ -17,72 +17,72 @@ class CartItemViewsData extends EntityViewsData {
 
     // Cart items table.
     $data['uc_cart_products']['table']['group'] = $this->t('Cart item');
-    $data['uc_cart_products']['table']['base'] = array(
+    $data['uc_cart_products']['table']['base'] = [
       'field' => 'cart_item_id',
       'title' => $this->t('Cart items'),
       'help' => $this->t('Products in customer carts.'),
-    );
+    ];
 
-    $data['uc_cart_products']['nid'] = array(
+    $data['uc_cart_products']['nid'] = [
       'title' => $this->t('Nid'),
       'help' => $this->t('The node ID of a product in the cart.'),
-      'field' => array(
+      'field' => [
         'id' => 'node',
         'click sortable' => TRUE,
-      ),
-      'relationship' => array(
+      ],
+      'relationship' => [
         'title' => $this->t('Node'),
         'help' => $this->t('Relate cart item to node.'),
         'id' => 'standard',
         'base' => 'node',
         'field' => 'nid',
         'label' => $this->t('node'),
-      ),
-      'argument' => array(
+      ],
+      'argument' => [
         'id' => 'node_nid',
         'name field' => 'title',
-      ),
-      'sort' => array(
+      ],
+      'sort' => [
         'id' => 'standard',
-      ),
-      'filter' => array(
+      ],
+      'filter' => [
         'id' => 'numeric',
-      ),
-    );
+      ],
+    ];
 
-    $data['uc_cart_products']['cart_id'] = array(
+    $data['uc_cart_products']['cart_id'] = [
       'title' => $this->t('Cart ID'),
       'help' => $this->t('The ID of the cart (user ID for authenticated users, session ID for anonymous users).'),
-      'field' => array(
+      'field' => [
         'id' => 'standard',
         'click sortable' => TRUE,
-      ),
-      'argument' => array(
+      ],
+      'argument' => [
         'id' => 'user_uid',
         'name field' => 'name',
-      ),
-      'sort' => array(
+      ],
+      'sort' => [
         'id' => 'standard',
-      ),
-      'filter' => array(
+      ],
+      'filter' => [
         'id' => 'standard',
-      ),
-    );
+      ],
+    ];
 
-    $data['uc_cart_products']['qty'] = array(
+    $data['uc_cart_products']['qty'] = [
       'title' => $this->t('Quantity'),
       'help' => $this->t('The quantity to be ordered.'),
-      'field' => array(
+      'field' => [
         'id' => 'numeric',
         'click sortable' => TRUE,
-      ),
-      'sort' => array(
+      ],
+      'sort' => [
         'id' => 'standard',
-      ),
-      'filter' => array(
+      ],
+      'filter' => [
         'id' => 'numeric',
-      ),
-    );
+      ],
+    ];
 
     return $data;
   }

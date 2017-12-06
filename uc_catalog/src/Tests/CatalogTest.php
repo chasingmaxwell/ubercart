@@ -23,9 +23,9 @@ class CatalogTest extends UbercartTestBase {
     $this->drupalLogin($this->adminUser);
 
     $term = $this->createTerm();
-    $product = $this->createProduct(array(
-      'taxonomy_catalog' => array($term->id()),
-    ));
+    $product = $this->createProduct([
+      'taxonomy_catalog' => [$term->id()],
+    ]);
 
     $this->drupalGet('catalog');
     $this->assertTitle('Catalog | Drupal');
@@ -37,7 +37,7 @@ class CatalogTest extends UbercartTestBase {
     $this->assertText($product->model->value, 'The product SKU is shown in the catalog.');
     $this->assertText(uc_currency_format($product->price->value), 'The product price is shown in the catalog.');
 
-    $this->drupalPostForm(NULL, array(), 'Add to cart');
+    $this->drupalPostForm(NULL, [], 'Add to cart');
     $this->assertText($product->label() . ' added to your shopping cart.');
   }
 
@@ -48,14 +48,14 @@ class CatalogTest extends UbercartTestBase {
     $this->drupalLogin($this->adminUser);
 
     $term = $this->createTerm();
-    $product = $this->createProduct(array(
-      'taxonomy_catalog' => array($term->id()),
-    ));
-    $attribute = $this->createAttribute(array('display' => 0));
+    $product = $this->createProduct([
+      'taxonomy_catalog' => [$term->id()],
+    ]);
+    $attribute = $this->createAttribute(['display' => 0]);
     uc_attribute_subject_save($attribute, 'product', $product->id());
 
     $this->drupalGet('catalog/' . $term->id());
-    $this->drupalPostForm(NULL, array(), 'Add to cart');
+    $this->drupalPostForm(NULL, [], 'Add to cart');
     $this->assertNoText($product->label() . ' added to your shopping cart.');
     $this->assertText(t('This product has options that need to be selected before purchase. Please select them in the form below.'));
   }
@@ -67,15 +67,18 @@ class CatalogTest extends UbercartTestBase {
     $this->drupalLogin($this->adminUser);
 
     $term = $this->createTerm();
-    $product = $this->createProduct(array(
-      'taxonomy_catalog' => array($term->id()),
-    ));
+    $product = $this->createProduct([
+      'taxonomy_catalog' => [$term->id()],
+    ]);
 
     $this->drupalGet('node/' . $product->id());
     $this->assertLink($term->label(), 0, 'The product links back to the catalog term.');
     $this->assertLinkByHref('/catalog/' . $term->id(), 0, 'The product links back to the catalog view.');
   }
 
+  /**
+   * Tests the catalog taxonomy field.
+   */
   public function testCatalogField() {
     $this->drupalLogin($this->adminUser);
 
@@ -89,16 +92,19 @@ class CatalogTest extends UbercartTestBase {
     $this->assertFieldByName('taxonomy_catalog', NULL, 'Catalog taxonomy field is shown on product node form.');
 
     // Check that product kits get the catalog taxonomy.
-    \Drupal::service('module_installer')->install(array('uc_product_kit'), FALSE);
+    \Drupal::service('module_installer')->install(['uc_product_kit'], FALSE);
 
     $this->drupalGet('admin/structure/types/manage/product_kit/fields');
     $this->assertText('taxonomy_catalog', 'Catalog taxonomy term reference field exists for product kits.');
   }
 
+  /**
+   * Tests the catalog repair function.
+   */
   public function testCatalogRepair() {
     $this->drupalLogin($this->adminUser);
 
-    $this->drupalPostForm('admin/structure/types/manage/product/fields/node.product.taxonomy_catalog/delete', array(), t('Delete'));
+    $this->drupalPostForm('admin/structure/types/manage/product/fields/node.product.taxonomy_catalog/delete', [], t('Delete'));
     $this->assertText(t('The field Catalog has been deleted from the Product content type.'), 'Catalog taxonomy term reference field deleted.');
 
     $this->drupalGet('admin/structure/types/manage/product/fields');
@@ -120,10 +126,10 @@ class CatalogTest extends UbercartTestBase {
   protected function createTerm() {
     $term = Term::create([
       'name' => $this->randomMachineName(),
-      'description' => array(
+      'description' => [
         'value' => $this->randomMachineName(),
         'format' => 'plain_text',
-      ),
+      ],
       'vid' => 'catalog',
       'langcode' => Language::LANGCODE_NOT_SPECIFIED,
     ]);
