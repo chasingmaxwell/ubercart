@@ -49,7 +49,7 @@ class OrderStateCondition extends RulesConditionBase {
    *
    * @param \Drupal\uc_order\OrderInterface $order
    *   The order.
-   * @param \Drupal\uc_order\OrderStateInterface $order_state
+   * @param \Drupal\uc_order\OrderStatusInterface $order_state
    *   The order state.
    *
    * @return bool
