@@ -68,7 +68,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
   }
 
   /**
-   * Displays the cart checkout page built of checkout panes from enabled modules.
+   * Builds the cart checkout page from available checkout pane plugins.
    */
   public function checkout() {
     $cart_config = $this->config('uc_cart.settings');
@@ -246,7 +246,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
     $order = $this->loadOrder();
 
     if (empty($order)) {
-      // Display messages to customers and the administrator if the order was lost.
+      // If order was lost, display customer message and log the occurrence.
       drupal_set_message($this->t("We're sorry.  An error occurred while processing your order that prevents us from completing it at this time. Please contact us and we will resolve the issue as soon as possible."), 'error');
       $this->logger('uc_cart')->error('An empty order made it to checkout! Cart order ID: @cart_order', ['@cart_order' => $this->session->get('cart_order')]);
       return $this->redirect('uc_cart.cart');

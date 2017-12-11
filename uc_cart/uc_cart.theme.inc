@@ -30,72 +30,72 @@ function theme_uc_cart_review_table(array $variables) {
   $subtotal = 0;
 
   // Set up table header.
-  $header = array(
-    array('data' => t('Quantity'), 'class' => array('qty')),
-    array('data' => t('Products'), 'class' => array('products')),
-    array('data' => t('Price'), 'class' => array('price')),
-  );
+  $header = [
+    ['data' => t('Quantity'), 'class' => ['qty']],
+    ['data' => t('Products'), 'class' => ['products']],
+    ['data' => t('Price'), 'class' => ['price']],
+  ];
 
   // Set up table rows.
   // @todo Replace with Views.
   foreach ($items as $item) {
     $subtotal += $item->price->value * $item->qty->value;
-    $rows[] = array(
-      'data' => array(
-        array(
-          'data' => array(
+    $rows[] = [
+      'data' => [
+        [
+          'data' => [
             '#theme' => 'uc_qty',
             '#qty' => $item->qty->value,
-          ),
-          'class' => array('qty'),
-        ),
-        array(
-          'data' => array('#markup' => $item->title->value . uc_product_get_description($item)),
-          'class' => array('products'),
-        ),
-        array(
-          'data' => array(
+          ],
+          'class' => ['qty'],
+        ],
+        [
+          'data' => ['#markup' => $item->title->value . uc_product_get_description($item)],
+          'class' => ['products'],
+        ],
+        [
+          'data' => [
             '#theme' => 'uc_price',
             '#price' => $item->price->value * $item->qty->value,
-          ),
-          'class' => array('price'),
-        ),
-      ),
+          ],
+          'class' => ['price'],
+        ],
+      ],
       'no_striping' => TRUE,
-    );
+    ];
   }
 
   // Add the subtotal in the table footer.
-  $footer = array();
+  $footer = [];
   if ($show_subtotal) {
-    $footer[] = array(
-      'data' => array(
+    $footer[] = [
+      'data' => [
         // Cells.
-        array(
-          'data' => array('#markup' => t('Subtotal:')),
+        [
+          'data' => ['#markup' => t('Subtotal:')],
           'colspan' => 2,
-          'class' => array('subtotal-title'),
-        ),
-        array(
-          'data' => array(
+          'class' => ['subtotal-title'],
+        ],
+        [
+          'data' => [
             '#theme' => 'uc_price',
             '#price' => $subtotal,
-          ),
-          'class' => array('price'),
-        ),
-      ),
+          ],
+          'class' => ['price'],
+        ],
+      ],
       // Row attributes.
       'no_striping' => TRUE,
-    );
+    ];
   }
 
-  $table = array(
+  $table = [
     '#theme' => 'table',
     '#header' => $header,
     '#rows' => $rows,
     '#footer' => $footer,
-    '#attributes' => array('class' => array('cart-review')),
-  );
+    '#attributes' => ['class' => ['cart-review']],
+  ];
 
   return drupal_render($table);
 }
@@ -112,7 +112,7 @@ function theme_uc_cart_review_table(array $variables) {
  *     - <pane title>: The data returned for that pane or an array of returned
  *       data.
  *
- * @return
+ * @return string
  *   A string of HTML for the page contents.
  *
  * @ingroup themeable
@@ -121,22 +121,22 @@ function theme_uc_cart_checkout_review(array $variables) {
   $panes = $variables['panes'];
   $form = $variables['form'];
 
-  $build['instructions'] = array(
+  $build['instructions'] = [
     '#prefix' => '<p>',
     '#markup' => t("Your order is almost complete. Please review the details below and click 'Submit order' if all the information is correct.  You may use the 'Back' button to make changes to your order if necessary."),
     '#suffix' => '</p>',
-  );
+  ];
 
-  $rows = array();
+  $rows = [];
   foreach ($panes as $title => $data) {
     // First pane row is the pane title.
-    $rows[] = array(
-      'data' => array(
-        array('data' => $title, 'colspan' => '2'),
-      ),
+    $rows[] = [
+      'data' => [
+        ['data' => $title, 'colspan' => '2'],
+      ],
       'no_striping' => TRUE,
-      'class' => array('pane-title-row'),
-    );
+      'class' => ['pane-title-row'],
+    ];
     // Subsequent pane rows may be subtitles or subtitle-data pairs.
     foreach ($data as $row) {
       if (isset($row['data'])) {
@@ -146,35 +146,35 @@ function theme_uc_cart_checkout_review(array $variables) {
         else {
           $border = '';
         }
-        $rows[] = array(
-          'data' => array(
-            array('data' => $row['title'] . ':', 'class' => array('title-col')),
-            array('data' => $row['data'], 'class' => array('data-col')),
-          ),
+        $rows[] = [
+          'data' => [
+            ['data' => $row['title'] . ':', 'class' => ['title-col']],
+            ['data' => $row['data'], 'class' => ['data-col']],
+          ],
           'no_striping' => TRUE,
-          'class' => array($border),
-        );
+          'class' => [$border],
+        ];
       }
       else {
         // Row is the cart review table.
-        $rows[] = array('data' => array(array('data' => $row, 'colspan' => '2')));
+        $rows[] = ['data' => [['data' => $row, 'colspan' => '2']]];
       }
     }
   }
 
-  $rows[] = array(
-    'data' => array(
-      array('data' => $form, 'colspan' => '2'),
-    ),
+  $rows[] = [
+    'data' => [
+      ['data' => $form, 'colspan' => '2'],
+    ],
     'no_striping' => TRUE,
-    'class' => array('review-button-row')
-  );
+    'class' => ['review-button-row'],
+  ];
 
-  $build['review-table'] = array(
+  $build['review-table'] = [
     '#type' => 'table',
     '#rows' => $rows,
-    '#attributes' => array('class' => array('order-review-table')),
-  );
+    '#attributes' => ['class' => ['order-review-table']],
+  ];
 
   return drupal_render($build);
 }

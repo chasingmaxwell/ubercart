@@ -13,11 +13,11 @@ class FileTest extends FileTestBase {
     // Add file download feature to the test product.
     $filename = $this->getTestFile();
     $this->drupalLogin($this->adminUser);
-    $this->drupalPostForm('node/' . $this->product->id() . '/edit/features', array('feature' => 'file'), t('Add'));
-    $edit = array(
+    $this->drupalPostForm('node/' . $this->product->id() . '/edit/features', ['feature' => 'file'], t('Add'));
+    $edit = [
       'uc_file_model' => '',
       'uc_file_filename' => $filename,
-    );
+    ];
     $this->drupalPostForm(NULL, $edit, t('Save feature'));
 
     // Check out with the test product.

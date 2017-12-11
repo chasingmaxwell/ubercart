@@ -37,66 +37,66 @@ class FeatureSettingsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $file_config = $this->config('uc_file.settings');
     $form['#attached']['library'][] = 'uc_file/uc_file.styles';
-    $form['base_dir'] = array(
+    $form['base_dir'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Files path'),
       '#description' => $this->t('The absolute path (or relative to Drupal root) where files used for file downloads are located. For security reasons, it is recommended to choose a path outside the web root.'),
       '#default_value' => $file_config->get('base_dir'),
       '#required' => TRUE,
-    );
-    $form['duplicate_warning'] = array(
+    ];
+    $form['duplicate_warning'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Warn about purchasing duplicate files'),
       '#description' => $this->t('If a customer attempts to purchase a product containing a file download, warn them and notify them that the download limits will be added onto their current limits.'),
       '#default_value' => $file_config->get('duplicate_warning'),
-    );
-    $form['download_limit'] = array(
+    ];
+    $form['download_limit'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Default download limits'),
-    );
-    $form['download_limit']['download_limit_number'] = array(
+    ];
+    $form['download_limit']['download_limit_number'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Downloads'),
       '#description' => $this->t('The number of times a file can be downloaded. Leave empty to set no limit.'),
       '#default_value' => $file_config->get('download_limit_number'),
       '#maxlength' => 4,
       '#size' => 4,
-    );
-    $form['download_limit']['download_limit_addresses'] = array(
+    ];
+    $form['download_limit']['download_limit_addresses'] = [
       '#type' => 'textfield',
       '#title' => $this->t('IP addresses'),
       '#description' => $this->t('The number of unique IPs that a file can be downloaded from. Leave empty to set no limit.'),
       '#default_value' => $file_config->get('download_limit_addresses'),
       '#maxlength' => 4,
       '#size' => 4,
-    );
+    ];
 
-    $form['download_limit']['download_limit_duration'] = array(
+    $form['download_limit']['download_limit_duration'] = [
       '#type' => 'container',
-      '#attributes' => array('class' => array('duration')),
-    );
-    $form['download_limit']['download_limit_duration']['duration_qty'] = array(
+      '#attributes' => ['class' => ['duration']],
+    ];
+    $form['download_limit']['download_limit_duration']['duration_qty'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Time'),
       '#default_value' => $file_config->get('duration_qty'),
       '#size' => 4,
       '#maxlength' => 4,
-      '#states' => array(
-        'disabled' => array('select[name="duration_granularity"]' => array('value' => 'never')),
-      ),
-    );
-    $form['download_limit']['download_limit_duration']['duration_granularity'] = array(
+      '#states' => [
+        'disabled' => ['select[name="duration_granularity"]' => ['value' => 'never']],
+      ],
+    ];
+    $form['download_limit']['download_limit_duration']['duration_granularity'] = [
       '#type' => 'select',
-      '#options' => array(
+      '#options' => [
         'never' => $this->t('never'),
         'day' => $this->t('day(s)'),
         'week' => $this->t('week(s)'),
         'month' => $this->t('month(s)'),
         'year' => $this->t('year(s)'),
-      ),
+      ],
       '#default_value' => $file_config->get('duration_granularity'),
       '#description' => $this->t('How long after a product has been purchased until its file download expires.'),
-    );
+    ];
 
     return parent::buildForm($form, $form_state);
   }

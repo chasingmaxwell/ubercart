@@ -19,7 +19,7 @@ class FileAutocompleteController {
    *   A JSON response.
    */
   public function autocompleteFilename(Request $request) {
-    $matches = array();
+    $matches = [];
     // Get the typed string from the URL, if it exists.
     if ($input = $request->query->get('q')) {
       $typed_string = Tags::explode($input);
@@ -31,7 +31,7 @@ class FileAutocompleteController {
         ->execute();
 
       while ($name = $filenames->fetchField()) {
-        $matches[] = array('value' => $name);
+        $matches[] = ['value' => $name];
       }
     }
 

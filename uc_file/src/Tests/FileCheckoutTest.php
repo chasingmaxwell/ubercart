@@ -40,8 +40,8 @@ class FileCheckoutTest extends FileTestBase {
 
     // Add file download to the test product.
     $filename = $this->getTestFile();
-    $this->drupalPostForm('node/' . $this->product->id() . '/edit/features', array('feature' => 'file'), t('Add'));
-    $this->drupalPostForm(NULL, array('uc_file_filename' => $filename), t('Save feature'));
+    $this->drupalPostForm('node/' . $this->product->id() . '/edit/features', ['feature' => 'file'], t('Add'));
+    $this->drupalPostForm(NULL, ['uc_file_filename' => $filename], t('Save feature'));
 
     // Process an anonymous, shippable order.
     $order = $this->createOrder([
@@ -75,11 +75,11 @@ class FileCheckoutTest extends FileTestBase {
     \Drupal::state()->set('system.test_email_collector', []);
 
     // Test again with an existing authenticated user and a non-shippable order.
-    $order = $this->createOrder(array(
+    $order = $this->createOrder([
       'uid' => 0,
       'primary_email' => $this->customer->getEmail(),
       'payment_method' => $method['id'],
-    ));
+    ]);
     $order->products[2]->data->shippable = 0;
     $order->save();
     uc_payment_enter($order->id(), 'other', $order->getTotal());

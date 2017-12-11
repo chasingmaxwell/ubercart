@@ -9,13 +9,17 @@ interface CartInterface {
 
   /**
    * Time in seconds after which a cart order is deemed abandoned.
+   *
+   * Default is 86400 seconds / 24 hours.
    */
-  const ORDER_TIMEOUT = 86400; // 24 hours
+  const ORDER_TIMEOUT = 86400;
 
   /**
    * Time in seconds after which the checkout page is deemed abandoned.
+   *
+   * Default is 1800 seconds / 30 minutes.
    */
-  const CHECKOUT_TIMEOUT = 1800; // 30 minutes
+  const CHECKOUT_TIMEOUT = 1800;
 
   /**
    * Returns the unique ID for the cart.

@@ -8,6 +8,9 @@ use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
 use Drupal\uc_cart\Entity\CartItem;
 
+/**
+ * Utility class providing methods for the manangement of shopping carts.
+ */
 class Cart implements CartInterface {
 
   /**
@@ -91,8 +94,8 @@ class Cart implements CartInterface {
     }
 
     // Now we can go ahead and add the item because either:
-    //   1) No modules implemented hook_uc_add_to_cart(), or
-    //   2) All modules implementing that hook want this item added.
+    // 1) No modules implemented hook_uc_add_to_cart(), or
+    // 2) All modules implementing that hook want this item added.
     $result = \Drupal::entityQuery('uc_cart_item')
       ->condition('cart_id', $this->id)
       ->condition('nid', $nid)
@@ -137,14 +140,14 @@ class Cart implements CartInterface {
    * Computes the destination Url for an add-to-cart action.
    *
    * Redirect Url is chosen in the following order:
-   *  - Query parameter "destination"
-   *  - Cart config variable "uc_cart.settings.add_item_redirect"
+   * - Query parameter "destination"
+   * - Cart config variable "uc_cart.settings.add_item_redirect"
    *
    * @return \Drupal\Core\Url
    *   A Url destination for redirection.
    */
   protected function getAddItemRedirect() {
-    // Check for destination= query string
+    // Check for 'destination=' query string.
     $query = \Drupal::request()->query;
     $destination = $query->get('destination');
     if (!empty($destination)) {

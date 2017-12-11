@@ -91,7 +91,8 @@ class CheckoutForm extends FormBase {
       if (!$form_state->get(['panes', $id, 'prepared'])) {
         $pane->prepare($order, $form, $form_state);
         $form_state->set(['panes', $id, 'prepared'], TRUE);
-        $processed = FALSE; // Make sure we save the updated order.
+        // Make sure we save the updated order.
+        $processed = FALSE;
       }
     }
 
@@ -144,7 +145,8 @@ class CheckoutForm extends FormBase {
     // Update the order "changed" time to prevent timeout on ajax requests.
     $order->setChangedTime(REQUEST_TIME);
 
-    // Validate/process the cart panes.  A FALSE value results in failed checkout.
+    // Validate/process each cart pane. If one of the process() functions
+    // returns FALSE, checkout fails.
     $form_state->set('checkout_valid', TRUE);
     foreach (Element::children($form_state->getValue('panes')) as $id) {
       $pane = $this->checkoutPaneManager->createInstance($id);

@@ -39,10 +39,10 @@ class CatalogAdminController extends ControllerBase {
       $product_types = uc_product_types();
       $field = FieldStorageConfig::loadByName('node', 'taxonomy_catalog');
 
-      //@todo - figure this out
+      // @todo - figure this out.
       // $field is a config object, not an array, so this doesn't work.
-      //$types = array_intersect($product_types, $field['bundles']['node']);
-      $types = $product_types; //temporary to get this to work at all
+      // $types = array_intersect($product_types, $field['bundles']['node']);
+      $types = $product_types; // Temporary, to get this to work at all.
 
       $result = db_query('SELECT DISTINCT n.nid, n.title FROM {node_field_data} n LEFT JOIN (SELECT ti.nid, td.vid FROM {taxonomy_index} ti LEFT JOIN {taxonomy_term_data} td ON ti.tid = td.tid WHERE td.vid = :vid) txnome ON n.nid = txnome.nid WHERE n.type IN (:types[]) AND txnome.vid IS NULL', [':vid' => $vid, ':types[]' => $types]);
 

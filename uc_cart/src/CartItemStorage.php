@@ -38,7 +38,7 @@ class CartItemStorage extends SqlContentEntityStorage {
     $schema['uc_cart_products']['fields']['cart_id']['not null'] = TRUE;
 
     $schema['uc_cart_products']['indexes'] += [
-     'cart_id' => ['cart_id'],
+      'cart_id' => ['cart_id'],
     ];
 
     $schema['uc_cart_products']['foreign keys'] += [

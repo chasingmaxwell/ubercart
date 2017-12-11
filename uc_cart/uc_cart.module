@@ -13,6 +13,7 @@
 use Drupal\Core\Render\Element;
 use Drupal\Core\Url;
 use Drupal\uc_cart\CartInterface;
+use Drupal\uc_order\Entity\Order;
 use Drupal\uc_payment\PaymentReceiptInterface;
 
 /**
@@ -43,7 +44,7 @@ function uc_cart_cron() {
   $result = db_query('SELECT order_id FROM {uc_orders} WHERE order_status = :status AND changed < :time',
     [':status' => 'in_checkout', ':time' => REQUEST_TIME - CartInterface::ORDER_TIMEOUT])->fetchCol();
   foreach ($result as $order_id) {
-    \Drupal\uc_order\Entity\Order::load($order_id)
+    Order::load($order_id)
       ->setStatusId('abandoned')
       ->save();
   }

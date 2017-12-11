@@ -83,7 +83,7 @@ class CartItem extends ContentEntityBase implements CartItemInterface {
    * {@inheritdoc}
    */
   public function toOrderProduct() {
-    $order_product = OrderProduct::create(array(
+    $order_product = OrderProduct::create([
       'nid' => $this->nid->target_id,
       'title' => $this->title,
       'model' => $this->model,
@@ -92,7 +92,7 @@ class CartItem extends ContentEntityBase implements CartItemInterface {
       'price' => $this->price,
       'weight' => $this->weight,
       'data' => $this->data,
-    ));
+    ]);
     $order_product->weight->units = $this->weight_units;
     return $order_product;
   }
