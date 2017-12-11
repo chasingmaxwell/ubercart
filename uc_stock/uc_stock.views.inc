@@ -12,84 +12,84 @@ function uc_stock_views_data() {
   $data['uc_product_stock']['table']['group'] = t('Stock');
 
   // Attach stock data to nodes.
-  $data['uc_product_stock']['table']['join']['node'] = array(
+  $data['uc_product_stock']['table']['join']['node'] = [
     'left_field' => 'nid',
     'field' => 'nid',
-  );
+  ];
 
-  $data['uc_product_stock']['sku'] = array(
+  $data['uc_product_stock']['sku'] = [
     'title' => t('SKU'),
     'help' => t('The model or SKU of the stock level.'),
-    'field' => array(
+    'field' => [
       'click sortable' => TRUE,
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'string',
-    ),
-    'sort' => array(
+    ],
+    'sort' => [
       'id' => 'standard',
-    ),
-    'argument' => array(
+    ],
+    'argument' => [
       'id' => 'string',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_product_stock']['active'] = array(
+  $data['uc_product_stock']['active'] = [
     'title' => t('Active'),
     'help' => t('Whether or not stock is currently being tracked.'),
-    'field' => array(
+    'field' => [
       'id' => 'boolean',
       'click sortable' => TRUE,
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'boolean',
       'label' => t('Active'),
       'type' => 'yes-no',
-    ),
-    'sort' => array(
+    ],
+    'sort' => [
       'id' => 'standard',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_product_stock']['stock'] = array(
+  $data['uc_product_stock']['stock'] = [
     'title' => t('Level'),
     'help' => t('The current stock level.'),
-    'field' => array(
+    'field' => [
       'id' => 'numeric',
       'click sortable' => TRUE,
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'numeric',
-    ),
-    'sort' => array(
+    ],
+    'sort' => [
       'id' => 'standard',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_product_stock']['threshold'] = array(
+  $data['uc_product_stock']['threshold'] = [
     'title' => t('Threshold'),
     'help' => t('The level at which a stock warning can be sent.'),
-    'field' => array(
+    'field' => [
       'id' => 'numeric',
       'click sortable' => TRUE,
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'numeric',
-    ),
-    'sort' => array(
+    ],
+    'sort' => [
       'id' => 'standard',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_product_stock']['below_threshold'] = array(
+  $data['uc_product_stock']['below_threshold'] = [
     'title' => t('Is below threshold'),
     'help' => t('Filter the node based on whether its stock level is below the threshold for the SKU.'),
-    'filter' => array(
+    'filter' => [
       'id' => 'uc_stock_below_threshold',
       'label' => t('Is below threshold'),
       'type' => 'yes-no',
-    ),
-  );
+    ],
+  ];
 
   return $data;
 }

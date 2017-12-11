@@ -12,19 +12,19 @@ function uc_product_kit_views_data() {
   $data['uc_product_kits']['table']['group'] = t('Product kit');
 
   // Explain how to link product kit nodes to back to their parents.
-  $data['node']['table']['join']['uc_product_kits'] = array(
+  $data['node']['table']['join']['uc_product_kits'] = [
     'left_field' => 'vid',
     'field' => 'vid',
-  );
-  $data['uc_products']['table']['join']['uc_product_kits'] = array(
+  ];
+  $data['uc_products']['table']['join']['uc_product_kits'] = [
     'left_field' => 'vid',
     'field' => 'vid',
-  );
+  ];
 
   // Relate components to their parent kits.
-  $data['uc_products']['product_kit'] = array(
+  $data['uc_products']['product_kit'] = [
     'group' => t('Product kit'),
-    'relationship' => array(
+    'relationship' => [
       'title' => t('Parent'),
       'help' => t('Relate product kit components to their parent kits.'),
       'id' => 'standard',
@@ -32,20 +32,20 @@ function uc_product_kit_views_data() {
       'base field' => 'product_id',
       'relationship field' => 'nid',
       'label' => t('kit'),
-    ),
-  );
+    ],
+  ];
 
   // Explain how to link parents back to their components.
-  $data['uc_product_kit_parents']['table']['join']['node'] = array(
+  $data['uc_product_kit_parents']['table']['join']['node'] = [
     'left_field' => 'vid',
     'field' => 'vid',
     'table' => 'uc_product_kits',
-  );
+  ];
 
   // Relate kits to their components.
-  $data['uc_products']['product_kit_component'] = array(
+  $data['uc_products']['product_kit_component'] = [
     'group' => t('Product kit'),
-    'relationship' => array(
+    'relationship' => [
       'title' => t('Component'),
       'help' => t('Relate product kits to their components. This relationship will create one record for each component of the kit.'),
       'id' => 'standard',
@@ -54,117 +54,117 @@ function uc_product_kit_views_data() {
       'relationship table' => 'uc_product_kit_parents',
       'relationship field' => 'product_id',
       'label' => t('component'),
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_product_kits']['mutable'] = array(
+  $data['uc_product_kits']['mutable'] = [
     'title' => t('Mutable'),
     'help' => t('A flag indicating whether the contents of the kit can be changed by the customer.'),
-    'field' => array(
+    'field' => [
       'id' => 'boolean',
       'click sortable' => TRUE,
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'boolean',
       'type' => 'yes-no',
-    ),
-    'sort' => array(
+    ],
+    'sort' => [
       'id' => 'standard',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_product_kits']['qty'] = array(
+  $data['uc_product_kits']['qty'] = [
     'title' => t('Quantity'),
     'help' => t('The number of this product contained in the kit.'),
-    'field' => array(
+    'field' => [
       'id' => 'numeric',
       'click sortable' => TRUE,
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'numeric',
       'allow empty' => TRUE,
-    ),
-    'argument' => array(
+    ],
+    'argument' => [
       'id' => 'numeric',
-    ),
-    'sort' => array(
+    ],
+    'sort' => [
       'id' => 'standard',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_product_kits']['discount'] = array(
+  $data['uc_product_kits']['discount'] = [
     'title' => t('Discount'),
     'help' => t('The adjustment to the price of the product.'),
-    'field' => array(
+    'field' => [
       'id' => 'numeric',
       'click sortable' => TRUE,
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'numeric',
       'allow empty' => TRUE,
-    ),
-    'argument' => array(
+    ],
+    'argument' => [
       'id' => 'numeric',
-    ),
-    'sort' => array(
+    ],
+    'sort' => [
       'id' => 'standard',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_product_kits']['ordering'] = array(
+  $data['uc_product_kits']['ordering'] = [
     'title' => t('Weight'),
     'help' => ('The weight of this product in relation to other products in the kit.'),
-    'field' => array(
+    'field' => [
       'id' => 'numeric',
       'click sortable' => TRUE,
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'numeric',
       'allow empty' => TRUE,
-    ),
-    'argument' => array(
+    ],
+    'argument' => [
       'id' => 'numeric',
-    ),
-    'sort' => array(
+    ],
+    'sort' => [
       'id' => 'standard',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_product_kits']['synchronized'] = array(
+  $data['uc_product_kits']['synchronized'] = [
     'title' => t('Synchronized'),
     'help' => t('A flag indicating that changes to the price of this product will change the total price of the kit. 1 => Yes. 0 => No.'),
-    'field' => array(
+    'field' => [
       'id' => 'boolean',
       'click sortable' => TRUE,
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'boolean',
       'type' => 'yes-no',
-    ),
-    'sort' => array(
+    ],
+    'sort' => [
       'id' => 'standard',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_product_kits']['is_kit_item'] = array(
+  $data['uc_product_kits']['is_kit_item'] = [
     'title' => t('Is part of a product kit'),
     'help' => t('Check for the fields provided by the Ubercart product_kit module.'),
     'group' => t('Node'),
-    'filter' => array(
+    'filter' => [
       'handler' => 'uc_product_kit_handler_filter_product_kit_item',
       'label' => t('Is part of a product kit'),
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_product_kits']['is_kit'] = array(
+  $data['uc_product_kits']['is_kit'] = [
     'title' => t('Is a product kit'),
     'help' => t('Check for the fields provided by the Ubercart product_kit module.'),
     'group' => t('Node'),
-    'filter' => array(
+    'filter' => [
       'handler' => 'uc_product_kit_handler_filter_product_kit',
       'label' => t('Is a product kit'),
-    ),
-  );
+    ],
+  ];
 
   return $data;
 }

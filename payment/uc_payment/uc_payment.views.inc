@@ -9,23 +9,23 @@
  * Implements hook_views_data().
  */
 function uc_payment_views_data() {
-  $data['uc_orders']['payment_method'] = array(
+  $data['uc_orders']['payment_method'] = [
     'title' => t('Payment method'),
     'help' => t('The method of payment.'),
-    'field' => array(
+    'field' => [
       'id' => 'uc_payment_method',
       'click sortable' => TRUE,
-    ),
-    'sort' => array(
+    ],
+    'sort' => [
       'id' => 'standard',
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'uc_payment_method',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_orders']['payments'] = array(
-    'relationship' => array(
+  $data['uc_orders']['payments'] = [
+    'relationship' => [
       'title' => t('Payments'),
       'help' => t('Relate payments to an order. This relationship will create one record for each payment received.'),
       'id' => 'standard',
@@ -33,77 +33,77 @@ function uc_payment_views_data() {
       'base field' => 'order_id',
       'relationship field' => 'order_id',
       'label' => t('payments'),
-    ),
-  );
+    ],
+  ];
 
   $data['uc_payment_receipts']['table']['group'] = t('Payment');
 
-  $data['uc_payment_receipts']['method'] = array(
+  $data['uc_payment_receipts']['method'] = [
     'title' => t('Payment method'),
     'help' => t('The method of payment.'),
-    'field' => array(
+    'field' => [
       'id' => 'standard',
       'click sortable' => TRUE,
-    ),
-    'sort' => array(
+    ],
+    'sort' => [
       'id' => 'standard',
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'string',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_payment_receipts']['amount'] = array(
+  $data['uc_payment_receipts']['amount'] = [
     'title' => t('Amount'),
     'help' => t('The amount paid.'),
-    'field' => array(
+    'field' => [
       'id' => 'uc_price',
       'click sortable' => TRUE,
-    ),
-    'sort' => array(
+    ],
+    'sort' => [
       'id' => 'standard',
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'numeric',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_payment_receipts']['uid'] = array(
+  $data['uc_payment_receipts']['uid'] = [
     'title' => t('User'),
     'help' => t('Relate a payment to the user who made it.'),
-    'relationship' => array(
+    'relationship' => [
       'base' => 'users',
       'field' => 'uid',
       'id' => 'standard',
       'label' => t('user'),
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_payment_receipts']['comment'] = array(
+  $data['uc_payment_receipts']['comment'] = [
     'title' => t('Comment'),
     'help' => t('Any remarks that were included with the payment.'),
-    'field' => array(
+    'field' => [
       'id' => 'xss',
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'string',
-    ),
-  );
+    ],
+  ];
 
-  $data['uc_payment_receipts']['received'] = array(
+  $data['uc_payment_receipts']['received'] = [
     'title' => t('Receipt date'),
     'help' => t('The date and time the payment was received.'),
-    'field' => array(
+    'field' => [
       'id' => 'date',
       'click sortable' => TRUE,
-    ),
-    'sort' => array(
+    ],
+    'sort' => [
       'id' => 'date',
-    ),
-    'filter' => array(
+    ],
+    'filter' => [
       'id' => 'date',
-    ),
-  );
+    ],
+  ];
 
   return $data;
 }
