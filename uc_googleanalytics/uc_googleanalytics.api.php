@@ -10,6 +10,9 @@
  * @{
  */
 
+use Drupal\uc_order\OrderInterface;
+use Drupal\uc_order\OrderProductInterface;
+
 /**
  * Determines whether e-commerce tracking code should be added to the page.
  *
@@ -30,7 +33,7 @@
  * The implementation below comes from the 2Checkout.com module which uses an
  * alternate checkout completion page.
  *
- * @return
+ * @return bool
  *   TRUE if e-commerce tracking code should be added to the current page.
  */
 function hook_ucga_display() {
@@ -51,22 +54,22 @@ function hook_ucga_display() {
  * to Google Analytics.  Additional arguments passed to implementations of this
  * hook are provided for context.
  *
- * @param $item
+ * @param array $item
  *   An array of arguments being passed to Google Analytics representing an item
  *   on the order, including order_id, sku, name, category, price, and qty.
- * @param $product
+ * @param \Drupal\uc_order\OrderProductInterface $product
  *   The product object as found in the $order object.
- * @param $trans
+ * @param array $trans
  *   The array of arguments that were passed to Google Analytics to represent
  *   the transaction.
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   The order object being reported to Google Analytics.
  *
  * @return
  *   Nothing should be returned. Hook implementations should receive the $item
  *   array by reference and alter it directly.
  */
-function hook_ucga_item_alter(&$item, $product, $trans, $order) {
+function hook_ucga_item_alter(array &$item, OrderProductInterface $product, array $trans, OrderInterface $order) {
   // Example implementation: always set the category to "UBERCART".
   $item['category'] = 'UBERCART';
 }
@@ -80,18 +83,17 @@ function hook_ucga_item_alter(&$item, $product, $trans, $order) {
  * and uses this hook to give other modules a chance to alter what gets reported
  * to Google Analytics.
  *
- * @param $trans
+ * Nothing should be returned. Hook implementations should receive the $trans
+ * array by reference and alter it directly.
+ *
+ * @param array $trans
  *   An array of arguments being passed to Google Analytics representing the
  *   transaction, including order_id, store, total, tax, shipping, city,
  *   state, and country.
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   The order object being reported to Google Analytics.
- *
- * @return
- *   Nothing should be returned. Hook implementations should receive the $trans
- *   array by reference and alter it directly.
  */
-function hook_ucga_trans_alter(&$trans, $order) {
+function hook_ucga_trans_alter(array &$trans, OrderInterface $order) {
   // Example implementation: prefix all orders with "UC-".
   $trans['order_id'] = 'UC-' . $trans['order_id'];
 }

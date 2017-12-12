@@ -2,6 +2,8 @@
 
 /**
  * @file
+ * Adds Google Analytics Javascript to the checkout completion page.
+ *
  * Adds the required Javascript to the checkout completion page to allow
  * e-commerce statistics tracking through Google Analytics.
  *
@@ -16,24 +18,9 @@ use Drupal\uc_order\OrderInterface;
 use Drupal\node\Entity\Node;
 
 /**
- * Implements hook_enable().
+ * Implements hook_page_attachments_alter().
  */
-function uc_googleanalytics_enable() {
-  // Get the weight of the Google Analytics module.
-  $weight = db_query("SELECT weight FROM {system} WHERE name = :module", array(':module' => 'googleanalytics'))->fetchField();
-
-  // Update the weight of the UC Google Analytics module so its hooks get called
-  // after the actual Google Analytics module.
-  db_update('system')
-    ->fields(array('weight' => max(1000, $weight + 1)))
-    ->condition('name', 'uc_googleanalytics')
-    ->execute();
-}
-
-/**
- * Implements hook_page_alter().
- */
-function uc_googleanalytics_page_alter(&$page) {
+function uc_googleanalytics_page_attachments_alter(&$page) {
   // Check to see if we are at the order completion page.
   if (uc_googleanalytics_display()) {
     // If so, then if we can load the order...
@@ -42,7 +29,7 @@ function uc_googleanalytics_page_alter(&$page) {
       $script = uc_googleanalytics_ecommerce_js($order);
 
       // Add the code to the footer.
-      drupal_add_js($script, array('type' => 'inline', 'scope' => 'footer', 'preprocess' => FALSE));
+      drupal_add_js($script, ['type' => 'inline', 'scope' => 'footer', 'preprocess' => FALSE]);
     }
 
     // Clean out the session variable.
@@ -62,14 +49,15 @@ function uc_googleanalytics_uc_order_create(OrderInterface $order) {
 }
 
 /**
- * Determine whether or not to display the e-commerce related JS through GA.
+ * Determines whether or not to display the e-commerce related JS through GA.
  *
- * @return
+ * @return bool
  *   TRUE or FALSE indicating whether or not to display the GA e-commerce JS.
  */
 function uc_googleanalytics_display() {
   // Display the GA e-commerce JS if the URL is cart/checkout/complete...
-  if (arg(0) == 'cart' && arg(1) == 'checkout' && arg(2) == 'complete') {
+  $route_match = \Drupal::routeMatch();
+  if ($route_match->getRouteName() == 'uc_cart.checkout_complete') {
     return TRUE;
   }
 
@@ -85,15 +73,15 @@ function uc_googleanalytics_display() {
 }
 
 /**
- * Build the e-commerce JS passed to Google Analytics for order tracking.
+ * Builds the e-commerce JS passed to Google Analytics for order tracking.
  *
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   The fully loaded order object to convert into GA JS.
  *
- * @return
+ * @return string
  *   The JS that should be added to the page footer.
  */
-function uc_googleanalytics_ecommerce_js($order) {
+function uc_googleanalytics_ecommerce_js(OrderInterface $order) {
   $script = '';
 
   // Calculate order tax and shipping totals.
@@ -111,7 +99,7 @@ function uc_googleanalytics_ecommerce_js($order) {
 
   // Build the transaction arguments.
   $country = \Drupal::service('country_manager')->getCountry($order->billing_country);
-  $trans = array(
+  $trans = [
     'order_id' => $order->id(),
     'store' => uc_store_name(),
     'total' => $order->getTotal(),
@@ -120,13 +108,13 @@ function uc_googleanalytics_ecommerce_js($order) {
     'city' => $order->billing_city,
     'state' => $country->zones[$order->billing_zone_name],
     'country' => $country->name,
-  );
+  ];
 
   // Allow modules to alter the transaction arguments.
   \Drupal::moduleHandler()->alter('ucga_trans', $trans, $order);
 
   // Put the arguments into an array that is safe to implode directly.
-  $args = array(
+  $args = [
     '"' . $trans['order_id'] . '"',
     Json::encode($trans['store']),
     '"' . $trans['total'] . '"',
@@ -135,7 +123,7 @@ function uc_googleanalytics_ecommerce_js($order) {
     Json::encode($trans['city']),
     Json::encode($trans['state']),
     Json::encode($trans['country']),
-  );
+  ];
 
   // Add the transaction line to the JS.
   $script .= '_gaq.push(["_addTrans", ' . implode(', ', $args) . ']);';
@@ -159,27 +147,27 @@ function uc_googleanalytics_ecommerce_js($order) {
     }
 
     // Build the item arguments.
-    $item = array(
+    $item = [
       'order_id' => $order->id(),
       'sku' => $product->model,
       'name' => $product->title,
       'category' => $product->category,
       'price' => $product->price,
       'qty' => $product->qty,
-    );
+    ];
 
     // Allow modules to alter the item arguments.
     \Drupal::moduleHandler()->alter('ucga_item', $item, $product, $trans, $order);
 
     // Put the arguments into an array that is safe to implode directly.
-    $args = array(
+    $args = [
       '"' . $item['order_id'] . '"',
       Json::encode($item['sku']),
       Json::encode($item['name']),
       Json::encode((string) $item['category']),
       '"' . $item['price'] . '"',
       '"' . $item['qty'] . '"',
-    );
+    ];
 
     // Add the item line to the JS.
     $script .= '_gaq.push(["_addItem", ' . implode(', ', $args) . ']);';
