@@ -18,7 +18,7 @@
  *     - price: Item price.
  *     - desc: Item description.
  *
- * @return
+ * @return string
  *   The HTML output for the cart review table.
  *
  * @ingroup themeable

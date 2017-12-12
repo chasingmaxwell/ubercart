@@ -22,62 +22,62 @@ abstract class OptionFormBase extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $aid = NULL) {
-    $form['aid'] = array('#type' => 'value', '#value' => $aid);
+    $form['aid'] = ['#type' => 'value', '#value' => $aid];
 
-    $form['name'] = array(
+    $form['name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Name'),
       '#description' => $this->t('This name will appear to customers on product add to cart forms.'),
       '#default_value' => '',
       '#required' => TRUE,
       '#weight' => 0,
-    );
-    $form['ordering'] = array(
+    ];
+    $form['ordering'] = [
       '#type' => 'weight',
       '#delta' => 50,
       '#title' => $this->t('List position'),
       '#description' => $this->t('Options will be listed sorted by this value and then by their name.<br />May be overridden at the product level.'),
       '#default_value' => 0,
       '#weight' => 4,
-    );
-    $form['adjustments'] = array(
+    ];
+    $form['adjustments'] = [
       '#type' => 'fieldset',
       '#title' => $this->t('Default adjustments'),
       '#description' => $this->t('Enter a positive or negative value for each adjustment applied when this option is selected.<br />Any of these may be overridden at the product level.'),
       '#weight' => 8,
-    );
-    $form['adjustments']['cost'] = array(
+    ];
+    $form['adjustments']['cost'] = [
       '#type' => 'uc_price',
       '#title' => $this->t('Cost'),
       '#default_value' => 0,
       '#weight' => 1,
       '#allow_negative' => TRUE,
-    );
-    $form['adjustments']['price'] = array(
+    ];
+    $form['adjustments']['price'] = [
       '#type' => 'uc_price',
       '#title' => $this->t('Price'),
       '#default_value' => 0,
       '#weight' => 2,
       '#allow_negative' => TRUE,
-    );
-    $form['adjustments']['weight'] = array(
+    ];
+    $form['adjustments']['weight'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Weight'),
       '#default_value' => 0,
       '#weight' => 3,
-    );
+    ];
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Submit'),
       '#weight' => 10,
-    );
-    $form['actions']['cancel'] = array(
+    ];
+    $form['actions']['cancel'] = [
       '#type' => 'link',
       '#title' => $this->t('Cancel'),
       '#url' => Url::fromRoute('uc_attribute.options', ['aid' => $aid]),
-    );
+    ];
 
     return $form;
   }

@@ -6,8 +6,7 @@
  */
 
 /**
- * Theme function to format the USPS service name and rate amount line-item
- * shown to the customer.
+ * Theming of the customer-facing USPS service name and rate amount line-item.
  *
  * @param array $variables
  *   Associative array containing information needed to theme a quote.

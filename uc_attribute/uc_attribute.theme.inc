@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Attribute administration menu items.
+ * Attribute theme functions.
  */
 
 use Drupal\Core\Render\Element;
@@ -18,7 +18,7 @@ use Drupal\Core\Render\Element;
  *       - #attribute_name: Attribute name.
  *       - #options: Array of option names.
  *
- * @return
+ * @return string
  *   Themed set of attribute options.
  *
  * @ingroup themeable
@@ -26,7 +26,7 @@ use Drupal\Core\Render\Element;
 function theme_uc_product_attributes(array $variables) {
   $attributes = $variables['attributes'];
 
-  $option_rows = array();
+  $option_rows = [];
 
   foreach (Element::children($attributes) as $key) {
     $optionstr = '';
@@ -47,13 +47,13 @@ function theme_uc_product_attributes(array $variables) {
   }
 
   if (!empty($option_rows)) {
-    $item_list = array(
+    $item_list = [
       '#theme' => 'item_list',
       '#items' => array_values($option_rows),
-      '#attributes' => array(
-        'class' => array('product-description'),
-      ),
-    );
+      '#attributes' => [
+        'class' => ['product-description'],
+      ],
+    ];
     return \Drupal::service('renderer')->render($item_list);
   }
 

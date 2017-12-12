@@ -37,7 +37,7 @@ class CartLinksHelp {
         t('Track the click for display on a store report.'),
         t("Empty the customer's shopping cart."),
         t('Redirect to any page on the site.'),
-      ]
+      ],
     ];
 
     $build['suggestions'] = [

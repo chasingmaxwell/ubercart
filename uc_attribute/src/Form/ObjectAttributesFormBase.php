@@ -41,9 +41,9 @@ abstract class ObjectAttributesFormBase extends FormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, $attributes = NULL) {
-    $form['attributes'] = array(
+    $form['attributes'] = [
       '#type' => 'table',
-      '#header' => array(
+      '#header' => [
         $this->t('Remove'),
         $this->t('Name'),
         $this->t('Label'),
@@ -51,66 +51,66 @@ abstract class ObjectAttributesFormBase extends FormBase {
         $this->t('Required'),
         $this->t('List position'),
         $this->t('Display'),
-      ),
+      ],
       '#empty' => $this->t('No attributes available.'),
-      '#tabledrag' => array(
-        array(
+      '#tabledrag' => [
+        [
           'action' => 'order',
           'relationship' => 'sibling',
           'group' => 'uc-attribute-table-ordering',
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
 
     foreach ($attributes as $aid => $attribute) {
       $option = isset($attribute->options[$attribute->default_option]) ? $attribute->options[$attribute->default_option] : NULL;
       $form['attributes'][$aid]['#attributes']['class'][] = 'draggable';
-      $form['attributes'][$aid]['remove'] = array(
+      $form['attributes'][$aid]['remove'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('Remove'),
         '#title_display' => 'invisible',
-      );
-      $form['attributes'][$aid]['name'] = array(
+      ];
+      $form['attributes'][$aid]['name'] = [
         '#markup' => $attribute->name,
-      );
-      $form['attributes'][$aid]['label'] = array(
+      ];
+      $form['attributes'][$aid]['label'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Label'),
         '#title_display' => 'invisible',
         '#default_value' => empty($attribute->label) ? $attribute->name : $attribute->label,
         '#size' => 20,
         '#maxlength' => 255,
-      );
-      $form['attributes'][$aid]['option'] = array(
+      ];
+      $form['attributes'][$aid]['option'] = [
         '#markup' => $option ? ($option->name . ' (' . uc_currency_format($option->price) . ')' ) : $this->t('n/a'),
-      );
-      $form['attributes'][$aid]['required'] = array(
+      ];
+      $form['attributes'][$aid]['required'] = [
         '#type' => 'checkbox',
         '#title' => $this->t('Required'),
         '#title_display' => 'invisible',
         '#default_value' => $attribute->required,
-      );
-      $form['attributes'][$aid]['ordering'] = array(
+      ];
+      $form['attributes'][$aid]['ordering'] = [
         '#type' => 'weight',
         '#title' => $this->t('List position'),
         '#title_display' => 'invisible',
         '#default_value' => $attribute->ordering,
-        '#attributes' => array('class' => array('uc-attribute-table-ordering')),
-      );
-      $form['attributes'][$aid]['display'] = array(
+        '#attributes' => ['class' => ['uc-attribute-table-ordering']],
+      ];
+      $form['attributes'][$aid]['display'] = [
         '#type' => 'select',
         '#title' => $this->t('Display'),
         '#title_display' => 'invisible',
         '#default_value' => $attribute->display,
         '#options' => _uc_attribute_display_types(),
-      );
+      ];
     }
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['save'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['save'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save changes'),
-    );
+    ];
 
     return $form;
   }
@@ -137,7 +137,7 @@ abstract class ObjectAttributesFormBase extends FormBase {
 
     if (isset($remove_aids)) {
       $select = db_select('uc_attribute_options', 'ao')
-        ->fields('ao', array('oid'))
+        ->fields('ao', ['oid'])
         ->condition('ao.aid', $remove_aids, 'IN');
       db_delete($this->optionTable)
         ->condition('oid', $select, 'IN')

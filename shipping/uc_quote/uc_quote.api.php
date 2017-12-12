@@ -13,10 +13,10 @@
 /**
  * Alter shipping quote methods.
  *
- * @param $methods
+ * @param array $methods
  *   Array of shipping quote plugins passed by reference.
  */
-function hook_uc_quote_method_alter(&$methods) {
+function hook_uc_quote_method_alter(array &$methods) {
   // Change the label of the flat rate shipping quote plugin.
   $methods['flatrate']['admin_label'] = t('Simple');
 }
@@ -32,18 +32,18 @@ function hook_uc_quote_method_alter(&$methods) {
  * (i.e., FedEx and UPS both operate on "small package" shipments). Modules that
  * do not fulfill orders may not need to implement this hook.
  *
- * @return
+ * @return array
  *   An array of shipping types keyed by a machine-readable name.
  */
 function hook_uc_shipping_type() {
   $weight = \Drupal::config('uc_quote.settings')->get('type_weight');
 
-  $types = array();
-  $types['small_package'] = array(
+  $types = [];
+  $types['small_package'] = [
     'id' => 'small_package',
     'title' => t('Small package'),
     'weight' => $weight['small_package'],
-  );
+  ];
 
   return $types;
 }

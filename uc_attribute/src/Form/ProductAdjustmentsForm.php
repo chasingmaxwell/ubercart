@@ -30,10 +30,10 @@ class ProductAdjustmentsForm extends FormBase {
     $query = db_select('uc_product_attributes', 'pa');
     $query->leftJoin('uc_attributes', 'a', 'pa.aid = a.aid');
     $query->leftJoin('uc_attribute_options', 'ao', 'a.aid = ao.aid');
-    $query->leftJoin('uc_product_options', 'po', 'ao.oid = po.oid AND po.nid = :po_nid', array(':po_nid' => $nid));
-    $result = $query->fields('pa', array('nid', 'aid', 'ordering', 'display'))
-      ->fields('a', array('name', 'ordering', 'aid'))
-      ->fields('ao', array('aid'))
+    $query->leftJoin('uc_product_options', 'po', 'ao.oid = po.oid AND po.nid = :po_nid', [':po_nid' => $nid]);
+    $result = $query->fields('pa', ['nid', 'aid', 'ordering', 'display'])
+      ->fields('a', ['name', 'ordering', 'aid'])
+      ->fields('ao', ['aid'])
       ->condition('pa.nid', $nid)
       ->having('COUNT(po.oid) > 0')
       ->groupBy('ao.aid')
@@ -59,7 +59,7 @@ class ProductAdjustmentsForm extends FormBase {
       if ($i > 1) {
         $query->join('uc_product_options', "po$i");
       }
-      $query->leftJoin('uc_attribute_options', "ao$i", "po$i.oid = ao$i.oid AND po$i.nid = :nid", array(':nid' => $nid));
+      $query->leftJoin('uc_attribute_options', "ao$i", "po$i.oid = ao$i.oid AND po$i.nid = :nid", [':nid' => $nid]);
       $query->addField("ao$i", 'aid', "aid$i");
       $query->addField("ao$i", 'name', "name$i");
       $query->addField("ao$i", 'oid', "oid$i");
@@ -81,27 +81,27 @@ class ProductAdjustmentsForm extends FormBase {
 
       $result = $query->execute();
 
-      $form['original'] = array(
+      $form['original'] = [
         '#markup' => '<p><b>' . $this->t('Default product SKU: @sku', ['@sku' => $model]) . '</b></p>',
-      );
-      $form['default'] = array(
+      ];
+      $form['default'] = [
         '#type' => 'value',
         '#value' => $model,
-      );
-      $form['table'] = array(
+      ];
+      $form['table'] = [
         '#prefix' => '<table class="combinations">',
         '#suffix' => '</table>',
-      );
-      $form['table']['head'] = array(
+      ];
+      $form['table']['head'] = [
         '#markup' => '<thead><tr>' . $attribute_names . '<th>' . $this->t('Alternate SKU') . '</th></tr></thead>',
         '#weight' => 0,
-      );
-      $form['table']['body'] = array(
+      ];
+      $form['table']['body'] = [
         '#prefix' => '<tbody>',
         '#suffix' => '</tbody>',
         '#weight' => 1,
         '#tree' => TRUE,
-      );
+      ];
 
       $i = 0;
       while ($combo = $result->fetchObject()) {
@@ -123,45 +123,45 @@ class ProductAdjustmentsForm extends FormBase {
           }
         }
 
-        $form['table']['body'][$i] = array(
+        $form['table']['body'][$i] = [
           '#prefix' => '<tr title="' . $row_title . '">',
           '#suffix' => '</tr>',
-        );
-        $form['table']['body'][$i]['combo'] = array(
+        ];
+        $form['table']['body'][$i]['combo'] = [
           '#markup' => $cells,
-        );
-        $form['table']['body'][$i]['combo_array'] = array(
+        ];
+        $form['table']['body'][$i]['combo_array'] = [
           '#type' => 'value',
           '#value' => serialize($comb_array),
-        );
-        $form['table']['body'][$i]['model'] = array(
+        ];
+        $form['table']['body'][$i]['model'] = [
           '#type' => 'textfield',
           '#default_value' => $default_model,
           '#prefix' => '<td>',
           '#suffix' => '</td>',
-        );
+        ];
         ++$i;
       }
 
-      $form['nid'] = array(
+      $form['nid'] = [
         '#type' => 'hidden',
         '#value' => $nid,
-      );
-      $form['actions'] = array('#type' => 'actions');
-      $form['actions']['submit'] = array(
+      ];
+      $form['actions'] = ['#type' => 'actions'];
+      $form['actions']['submit'] = [
         '#type' => 'submit',
         '#value' => $this->t('Submit'),
-      );
+      ];
     }
     else {
-      $form['error'] = array(
+      $form['error'] = [
         '#markup' => '<div><br />' . $this->t('This product does not have any attributes that can be used for SKU adjustments.') . '</div>',
-      );
+      ];
     }
 
-    $form['pager'] = array(
+    $form['pager'] = [
       '#type' => 'pager',
-    );
+    ];
 
     return $form;
   }
@@ -173,13 +173,13 @@ class ProductAdjustmentsForm extends FormBase {
     foreach ($form_state->getValue('body') as $value) {
       if (!empty($value['model']) && $value['model'] != $form_state->getValue('default')) {
         db_merge('uc_product_adjustments')
-          ->key(array(
+          ->key([
             'nid' => $form_state->getValue('nid'),
             'combination' => $value['combo_array'],
-          ))
-          ->fields(array(
+          ])
+          ->fields([
             'model' => $value['model'],
-          ))
+          ])
           ->execute();
       }
       else {

@@ -66,7 +66,7 @@ function uc_attribute_theme() {
     ),
     'uc_product_attributes' => array(
       'render element' => 'attributes',
-      'file' => 'uc_attribute.admin.inc',
+      'file' => 'uc_attribute.theme.inc',
       'function' => 'theme_uc_product_attributes',
     ),
   );
