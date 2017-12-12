@@ -39,7 +39,8 @@ use Drupal\uc_order\OrderProductInterface;
 function hook_ucga_display() {
   // Tell UC Google Analytics to display the e-commerce JS on the custom
   // order completion page for this module.
-  if (arg(0) == 'cart' && arg(1) == '2checkout' && arg(2) == 'complete') {
+  $route_match = \Drupal::routeMatch();
+  if ($route_match->getRouteName() == 'uc_2checkout.complete') {
     return TRUE;
   }
 }
@@ -54,6 +55,9 @@ function hook_ucga_display() {
  * to Google Analytics.  Additional arguments passed to implementations of this
  * hook are provided for context.
  *
+ *   Nothing should be returned. Hook implementations should receive the $item
+ *   array by reference and alter it directly.
+ *
  * @param array $item
  *   An array of arguments being passed to Google Analytics representing an item
  *   on the order, including order_id, sku, name, category, price, and qty.
@@ -64,10 +68,6 @@ function hook_ucga_display() {
  *   the transaction.
  * @param \Drupal\uc_order\OrderInterface $order
  *   The order object being reported to Google Analytics.
- *
- * @return
- *   Nothing should be returned. Hook implementations should receive the $item
- *   array by reference and alter it directly.
  */
 function hook_ucga_item_alter(array &$item, OrderProductInterface $product, array $trans, OrderInterface $order) {
   // Example implementation: always set the category to "UBERCART".

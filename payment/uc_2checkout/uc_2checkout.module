@@ -27,14 +27,10 @@ function uc_2checkout_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_ucga_display().
  */
 function uc_2checkout_ucga_display() {
-  /*
-   * Tell UC Google Analytics to display the e-commerce JS on the custom
-   * order completion page for this module.
-   */
-
-  // @todo, inject $route_name so we can do
-  // if ($route_name == 'uc_2checkout.complete')
-  if (arg(0) == 'cart' && arg(1) == '2checkout' && arg(2) == 'complete') {
+  // Tell UC Google Analytics to display the e-commerce JS on the custom
+  // order completion page for this module.
+  $route_match = \Drupal::routeMatch();
+  if ($route_match->getRouteName() == 'uc_2checkout.complete') {
     return TRUE;
   }
 }
