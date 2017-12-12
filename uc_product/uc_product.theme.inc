@@ -33,10 +33,10 @@ function theme_uc_product_price(array $variables) {
   if ($label) {
     $output .= '<span class="uc-price-label">' . $label . '</span> ';
   }
-  $vars = array(
+  $vars = [
     '#theme' => 'uc_price',
     '#price' => $price,
-  );
+  ];
   if (!empty($element['#suffixes'])) {
     $vars['#suffixes'] = $element['#suffixes'];
   }

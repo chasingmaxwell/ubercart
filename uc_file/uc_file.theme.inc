@@ -22,14 +22,14 @@ use Drupal\Core\Render\Element;
 function theme_uc_file_hook_user_file_downloads(array $variables) {
   $form = $variables['form'];
 
-  $header = array(
-    array('data' => t('Remove')),
-    array('data' => t('Filename')),
-    array('data' => t('Expiration')),
-    array('data' => t('Downloads')),
-    array('data' => t('Addresses')),
-  );
-  $rows = array();
+  $header = [
+    ['data' => t('Remove')],
+    ['data' => t('Filename')],
+    ['data' => t('Expiration')],
+    ['data' => t('Downloads')],
+    ['data' => t('Addresses')],
+  ];
+  $rows = [];
 
   foreach (Element::children($form['file_download']) as $key) {
 
@@ -39,50 +39,50 @@ function theme_uc_file_hook_user_file_downloads(array $variables) {
 
     $file_download = &$form['file_download'][$key];
 
-    $rows[] = array(
-      'data' => array(
-        array('data' => $file_download['remove']),
-        array('data' => $file_download['filename']),
-        array(
-          'data' => array(
+    $rows[] = [
+      'data' => [
+        ['data' => $file_download['remove']],
+        ['data' => $file_download['filename']],
+        [
+          'data' => [
             '#type' => 'container',
             '#prefix' => drupal_render($file_download['expires']) . ' <br />',
-            'time' => array(
+            'time' => [
               'polarity' => $file_download['time_polarity'],
               'quantity' => $file_download['time_quantity'],
               'granularity' => $file_download['time_granularity'],
-            ),
-          ),
-          'class' => array('duration'),
-        ),
-        array(
-          'data' => array(
+            ],
+          ],
+          'class' => ['duration'],
+        ],
+        [
+          'data' => [
             '#type' => 'container',
             '#markup' => drupal_render($file_download['downloads_in']) . '/',
             'limit' =>  $file_download['download_limit'],
-          ),
-          'class' => array('download-table-index'),
-        ),
-        array(
-          'data' => array(
+          ],
+          'class' => ['download-table-index'],
+        ],
+        [
+          'data' => [
             '#type' => 'container',
             '#markup' => drupal_render($file_download['addresses_in']) . '/',
             'limit' => $file_download['address_limit'],
-          ),
-          'class' => array('download-table-index'),
-        ),
-      ),
-      'class' => array('download-table-row'),
-    );
+          ],
+          'class' => ['download-table-index'],
+        ],
+      ],
+      'class' => ['download-table-row'],
+    ];
   }
 
-  $build = array(
+  $build = [
     '#type' => 'table',
     '#header' => $header,
     '#rows' => $rows,
-    '#attributes' => array('id' => 'download-table'),
+    '#attributes' => ['id' => 'download-table'],
     '#empty' => t('No files can be downloaded by this user.'),
-  );
+  ];
 
   return drupal_render($build);
 }

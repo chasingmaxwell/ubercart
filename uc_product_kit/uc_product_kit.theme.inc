@@ -38,9 +38,10 @@ function theme_uc_product_kit_list_item(array $variables) {
     $qty = $product->qty->value;
   }
 
-  $build = array(
+  $build = [
     '#theme' => 'uc_qty',
     '#qty' => $qty,
-  );
+  ];
+
   return drupal_render($build) . ' ' . $title;
 }

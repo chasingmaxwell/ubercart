@@ -51,14 +51,14 @@ function theme_uc_role_user_new(array $variables) {
 function theme_uc_role_user_expiration(array $variables) {
   $form = $variables['form'];
 
-  $header = array(
-    array('data' => t('Make permanent')),
-    array('data' => t('Role')),
-    array('data' => t('Expiration')),
-    array('data' => t('Add/remove time')),
-  );
+  $header = [
+    ['data' => t('Make permanent')],
+    ['data' => t('Role')],
+    ['data' => t('Expiration')],
+    ['data' => t('Add/remove time')],
+  ];
 
-  $rows = array();
+  $rows = [];
   // The expiration table.
   foreach ((array)$form['table'] as $rid => $expiration) {
     // We only want numeric rid's
@@ -69,26 +69,26 @@ function theme_uc_role_user_expiration(array $variables) {
     // Make sure the renders actually touch the elements.
     $data = &$form['table'][$rid];
 
-    $rows[] = array(
-      array('data' => drupal_render($data['remove'])),
-      array('data' => SafeMarkup::checkPlain($data['name']['#value'])),
-      array('data' => \Drupal::service('date.formatter')->format($data['expiration']['#value'], 'short')),
+    $rows[] = [
+      ['data' => drupal_render($data['remove'])],
+      ['data' => SafeMarkup::checkPlain($data['name']['#value'])],
+      ['data' => \Drupal::service('date.formatter')->format($data['expiration']['#value'], 'short')],
 
       // Options to adjust the expiration.
-      array('data' => '<a name="role-expiration-' . $rid . '">' .
+      ['data' => '<a name="role-expiration-' . $rid . '">' .
                       '<div class="expiration">' .
                         drupal_render($data['polarity']) . drupal_render($data['qty']) . drupal_render($data['granularity']) .
-                      '</div></a>'),
-    );
+                      '</div></a>'],
+    ];
   }
 
-  $table = array(
+  $table = [
     '#theme' => 'table',
     '#header' => $header,
     '#rows' => $rows,
     '#caption' => t('Below you can add or remove time to the expiration dates of the following roles.'),
     '#empty' => t('There are no pending expirations for roles this user.'),
-  );
+  ];
   $output  = drupal_render($table);
   $output .= drupal_render_children($form);
 
