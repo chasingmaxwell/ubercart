@@ -24,7 +24,8 @@ function uc_googleanalytics_page_attachments_alter(&$page) {
   // Check to see if we are at the order completion page.
   if (uc_googleanalytics_display()) {
     // If so, then if we can load the order...
-    if (!empty($_SESSION['ucga_order_id']) && $order = Order::load($_SESSION['ucga_order_id'])) {
+    $session = \Drupal::service('session');
+    if ($session->has('ucga_order_id') && $order = Order::load($session->get('ucga_order_id'))) {
       // Build the GA tracking code.
       $script = uc_googleanalytics_ecommerce_js($order);
 
@@ -33,8 +34,8 @@ function uc_googleanalytics_page_attachments_alter(&$page) {
     }
 
     // Clean out the session variable.
-    if (isset($_SESSION['ucga_order_id'])) {
-      unset($_SESSION['ucga_order_id']);
+    if ($session->has('ucga_order_id')) {
+      $session->remove('ucga_order_id');
     }
   }
 }
@@ -45,7 +46,7 @@ function uc_googleanalytics_page_attachments_alter(&$page) {
 function uc_googleanalytics_uc_order_create(OrderInterface $order) {
   // If a new order is created during the checkout process...
   // Store the order ID for later use.
-  $_SESSION['ucga_order_id'] = $order->id();
+  \Drupal::service('session')->set('ucga_order_id', $order->id());
 }
 
 /**
