@@ -24,7 +24,7 @@ class OrderWeightTotal extends Weight {
   protected function defineOptions() {
     $options = parent::defineOptions();
     $store_config = \Drupal::config('uc_store.settings');
-    $options['weight_units'] = array('default' => $store_config->get('weight.units'));
+    $options['weight_units'] = ['default' => $store_config->get('weight.units')];
     return $options;
   }
 
@@ -34,17 +34,17 @@ class OrderWeightTotal extends Weight {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
-    $form['weight_units'] = array(
+    $form['weight_units'] = [
       '#type' => 'select',
       '#title' => $this->t('Unit of measurement'),
       '#default_value' => $this->options['weight_units'],
-      '#options' => array(
+      '#options' => [
         'lb' => $this->t('Pounds'),
         'kg' => $this->t('Kilograms'),
         'oz' => $this->t('Ounces'),
         'g' => $this->t('Grams'),
-      ),
-    );
+      ],
+    ];
   }
 
   /**

@@ -121,50 +121,56 @@ function hook_uc_download_authorize($user, $file_download) {
 function hook_uc_file_action($op, $args) {
   switch ($op) {
     case 'info':
-      return array('uc_image_watermark_add_mark' => 'Add Watermark');
+      return ['uc_image_watermark_add_mark' => 'Add Watermark'];
+
     case 'insert':
       // Automatically adds watermarks to any new files that are uploaded to
       // the file download directory.
       _add_watermark($args['file_object']->uri);
-    break;
+      break;
+
     case 'form':
       if ($args['action'] == 'uc_image_watermark_add_mark') {
-        $form['watermark_text'] = array(
+        $form['watermark_text'] = [
           '#type' => 'textfield',
           '#title' => t('Watermark text'),
-        );
-        $form['actions'] = array('#type' => 'actions');
-        $form['actions']['submit_watermark'] = array(
+        ];
+        $form['actions'] = ['#type' => 'actions'];
+        $form['actions']['submit_watermark'] = [
           '#type' => 'submit',
           '#value' => t('Add watermark'),
-        );
+        ];
       }
-    return $form;
+      return $form;
+
     case 'upload':
       _add_watermark($args['file_object']->uri);
       break;
+
     case 'upload_validate':
       // Given a file path, function checks if file is valid JPEG.
       if (!_check_image($args['file_object']->uri)) {
         $form_state->setErrorByName('upload', t('Uploaded file is not a valid JPEG'));
       }
-    break;
+      break;
+
     case 'validate':
       if ($args['form_values']['action'] == 'uc_image_watermark_add_mark') {
         if (empty($args['form_values']['watermark_text'])) {
           $form_state->setErrorByName('watermark_text', t('Must fill in text'));
         }
       }
-    break;
+      break;
+
     case 'submit':
       if ($args['form_values']['action'] == 'uc_image_watermark_add_mark') {
         foreach ($args['form_values']['file_ids'] as $file_id) {
-          $filename = db_query("SELECT filename FROM {uc_files} WHERE fid = :fid", array(':fid' => $file_id))->fetchField();
+          $filename = db_query("SELECT filename FROM {uc_files} WHERE fid = :fid", [':fid' => $file_id])->fetchField();
           // Function adds watermark to image.
           _add_watermark($filename);
         }
       }
-    break;
+      break;
   }
 }
 

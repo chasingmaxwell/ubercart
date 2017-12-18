@@ -28,54 +28,54 @@ class UcDimensionsWidget extends WidgetBase {
     $height = isset($items[$delta]->height) ? $items[$delta]->height : 0;
     $units = isset($items[$delta]->units) ? $items[$delta]->units : \Drupal::config('uc_store.settings')->get('length.units');
 
-    $element += array(
+    $element += [
       '#type' => 'fieldset',
-      '#attributes' => array('class' => array(
+      '#attributes' => ['class' => [
         'container-inline',
         'fieldgroup',
         'form-composite',
-      )),
-    );
+      ]],
+    ];
 
-    $element['length'] = array(
+    $element['length'] = [
       '#type' => 'number',
       '#title' => $this->t('Length'),
       '#default_value' => $length,
       '#size' => 6,
       '#min' => 0,
       '#step' => 'any',
-    );
+    ];
 
-    $element['width'] = array(
+    $element['width'] = [
       '#type' => 'number',
       '#title' => $this->t('Width'),
       '#default_value' => $width,
       '#size' => 6,
       '#min' => 0,
       '#step' => 'any',
-    );
+    ];
 
-    $element['height'] = array(
+    $element['height'] = [
       '#type' => 'number',
       '#title' => $this->t('Height'),
       '#default_value' => $height,
       '#size' => 6,
       '#min' => 0,
       '#step' => 'any',
-    );
+    ];
 
-    $element['units'] = array(
+    $element['units'] = [
       '#type' => 'select',
       '#title' => $this->t('Units'),
       '#title_display' => 'invisible',
       '#default_value' => $units,
-      '#options' => array(
+      '#options' => [
         'in' => $this->t('Inches'),
         'ft' => $this->t('Feet'),
         'cm' => $this->t('Centimeters'),
         'mm' => $this->t('Millimeters'),
-      ),
-    );
+      ],
+    ];
 
     return $element;
   }

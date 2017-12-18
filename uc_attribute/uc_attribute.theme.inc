@@ -31,8 +31,8 @@ function theme_uc_product_attributes(array $variables) {
   foreach (Element::children($attributes) as $key) {
     $optionstr = '';
 
-    foreach ((array)$attributes[$key]['#options'] as $option) {
-      // We only need to allow translation from the second option onward
+    foreach ((array) $attributes[$key]['#options'] as $option) {
+      // We only need to allow translation from the second option onward.
       if (empty($optionstr)) {
         $optionstr .= $option;
       }

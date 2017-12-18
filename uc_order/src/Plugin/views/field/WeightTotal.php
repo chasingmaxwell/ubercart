@@ -23,7 +23,7 @@ class WeightTotal extends Weight {
 
     $table = $this->table_alias;
     $field = $this->real_field;
-    $params = $this->options['group_type'] != 'group' ? array('function' => $this->options['group_type']) : array();
+    $params = $this->options['group_type'] != 'group' ? ['function' => $this->options['group_type']] : [];
     $this->field_alias = $this->query->add_field(NULL, "$table.$field * $table.qty", $this->table . '_' . $this->field, $params);
 
     $this->add_additional_fields();

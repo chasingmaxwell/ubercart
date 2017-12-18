@@ -24,18 +24,18 @@ class AddressBookForm extends FormBase {
     $select = uc_select_address($uid, $type, $func);
 
     if ($uid == 0) {
-      $form['desc'] = array(
+      $form['desc'] = [
         '#prefix' => '<br />',
         '#markup' => $this->t('You must select a customer before address<br />information is available.<br />'),
         '#suffix' => '<br />',
-      );
+      ];
     }
     elseif (is_null($select)) {
-      $form['desc'] = array(
+      $form['desc'] = [
         '#prefix' => '<br />',
         '#markup' => $this->t('No addresses found for customer.'),
         '#suffix' => '<br />',
-      );
+      ];
     }
     else {
       $form['addresses'] = uc_select_address($uid, $type, $func, $this->t('Select an address'));

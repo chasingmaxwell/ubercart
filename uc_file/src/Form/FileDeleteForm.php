@@ -100,14 +100,14 @@ class FileDeleteForm extends ConfirmFormBase {
       // Default to FALSE. Although we have the JS behavior to update with the
       // state of the checkbox on load, this should improve the experience of
       // users who don't have JS enabled over not defaulting to any info.
-      $form['affected_files'] = array(
+      $form['affected_files'] = [
         '#theme' => 'item_list',
         '#items' => $affected_list[FALSE],
         '#title' => $this->t('Affected files'),
-        '#attributes' => array(
-          'class' => array('affected-file-name'),
-        ),
-      );
+        '#attributes' => [
+          'class' => ['affected-file-name'],
+        ],
+      ];
     }
 
     return parent::buildForm($form, $form_state);

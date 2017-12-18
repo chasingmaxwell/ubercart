@@ -36,7 +36,8 @@ class DisplayPrice extends Price {
       $node = Node::load($nid);
       return $node->price->value;
 
-      // !TODO Refactor so that all variants are loaded at once in the pre_render hook.
+      // @todo Refactor so that all variants are loaded at once
+      // in the pre_render hook.
       $node = node_view(Node::load($nid), 'teaser');
       return $node['display_price']['#value'];
     }
@@ -46,7 +47,7 @@ class DisplayPrice extends Price {
    * {@inheritdoc}
    */
   public function clickSort($order) {
-    $params = $this->options['group_type'] != 'group' ? array('function' => $this->options['group_type']) : array();
+    $params = $this->options['group_type'] != 'group' ? ['function' => $this->options['group_type']] : [];
     $this->query->addOrderBy(NULL, NULL, $order, 'price', $params);
   }
 

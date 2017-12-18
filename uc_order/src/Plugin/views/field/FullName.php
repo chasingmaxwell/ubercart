@@ -23,7 +23,7 @@ class FullName extends FieldPluginBase {
   public function init(ViewExecutable $view, DisplayPluginBase $display, array &$options = NULL) {
     parent::init($view, $display, $options);
     if (!empty($this->options['link_to_user'])) {
-      $this->additional_fields['uid'] = array('table' => 'uc_orders', 'field' => 'uid');
+      $this->additional_fields['uid'] = ['table' => 'uc_orders', 'field' => 'uid'];
     }
   }
 
@@ -32,8 +32,8 @@ class FullName extends FieldPluginBase {
    */
   protected function defineOptions() {
     $options = parent::defineOptions();
-    $options['link_to_user'] = array('default' => FALSE, 'bool' => TRUE);
-    $options['format'] = array('default' => 'first_last');
+    $options['link_to_user'] = ['default' => FALSE, 'bool' => TRUE];
+    $options['format'] = ['default' => 'first_last'];
     return $options;
   }
 
@@ -43,23 +43,23 @@ class FullName extends FieldPluginBase {
   public function buildOptionsForm(&$form, FormStateInterface $form_state) {
     parent::buildOptionsForm($form, $form_state);
 
-    $form['link_to_user'] = array(
+    $form['link_to_user'] = [
       '#title' => $this->t('Link this field to its user'),
       '#description' => $this->t("Enable to override this field's links."),
       '#type' => 'checkbox',
       '#default_value' => $this->options['link_to_user'],
-    );
+    ];
 
-    $form['format'] = array(
+    $form['format'] = [
       '#type' => 'select',
       '#title' => $this->t('Format'),
-      '#options' => array(
+      '#options' => [
         'first_last' => $this->t('First Last'),
         'last_c_first' => $this->t('Last, First'),
         'last_first' => $this->t('Last First'),
-      ),
+      ],
       '#default_value' => $this->options['format'],
-    );
+    ];
   }
 
   /**

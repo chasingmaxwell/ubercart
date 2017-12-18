@@ -25,7 +25,7 @@ function hook_uc_product_alter(&$node) {
       $node->weight += $option['weight'];
     }
 
-    $combination = array();
+    $combination = [];
     foreach ($node->data['attributes'] as $aid => $value) {
       if (is_numeric($value)) {
         $attribute = uc_attribute_load($aid, $node->id(), 'product');
@@ -36,7 +36,7 @@ function hook_uc_product_alter(&$node) {
     }
     ksort($combination);
 
-    $model = db_query("SELECT model FROM {uc_product_adjustments} WHERE nid = :nid AND combination LIKE :combo", array(':nid' => $node->id(), ':combo' => serialize($combination)))->fetchField();
+    $model = db_query("SELECT model FROM {uc_product_adjustments} WHERE nid = :nid AND combination LIKE :combo", [':nid' => $node->id(), ':combo' => serialize($combination)])->fetchField();
 
     if (!empty($model)) {
       $node->model = $model;
@@ -60,16 +60,16 @@ function hook_uc_product_alter(&$node) {
  *   A structured array that can be fed into drupal_render().
  */
 function hook_uc_product_description($product) {
-  $description = array(
-    'attributes' => array(
-      '#product' => array(
+  $description = [
+    'attributes' => [
+      '#product' => [
         '#type' => 'value',
         '#value' => $product,
-      ),
+      ],
       '#theme' => 'uc_product_attributes',
       '#weight' => 1,
-    ),
-  );
+    ],
+  ];
 
   $desc =& $description['attributes'];
 
@@ -80,7 +80,7 @@ function hook_uc_product_description($product) {
     foreach (_uc_cart_product_get_options($product) as $option) {
       if (!isset($desc[$option['aid']])) {
         $desc[$option['aid']]['#attribute_name'] = $option['attribute'];
-        $desc[$option['aid']]['#options'] = array($option['name']);
+        $desc[$option['aid']]['#options'] = [$option['name']];
       }
       else {
         $desc[$option['aid']]['#options'][] = $option['name'];
@@ -90,11 +90,11 @@ function hook_uc_product_description($product) {
   }
   else {
     foreach ((array)$product->data['attributes'] as $attribute => $option) {
-      $desc[] = array(
+      $desc[] = [
         '#attribute_name' => $attribute,
         '#options' => $option,
         '#weight' => $weight++,
-      );
+      ];
     }
   }
 
@@ -124,7 +124,7 @@ function hook_uc_product_description_alter(&$description, $product) {
  */
 function hook_uc_product_models($nid) {
   // Get all the SKUs for all the attributes on this node.
-  $models = db_query("SELECT DISTINCT model FROM {uc_product_adjustments} WHERE nid = :nid", array(':nid' => $nid))->fetchCol();
+  $models = db_query("SELECT DISTINCT model FROM {uc_product_adjustments} WHERE nid = :nid", [':nid' => $nid])->fetchCol();
 
   return $models;
 }
@@ -141,7 +141,7 @@ function hook_uc_product_models($nid) {
  *   Array of node type ids.
  */
 function hook_uc_product_types() {
-  return array('product_kit');
+  return ['product_kit'];
 }
 
 /**

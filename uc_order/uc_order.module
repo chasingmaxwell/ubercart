@@ -57,9 +57,9 @@ function uc_order_page_attachments(&$page) {
  * Implements hook_theme().
  */
 function uc_order_theme($existing, $type, $theme, $path) {
-  $theme_hooks = array(
-    'uc_order_invoice' => array(
-      'variables' => array(
+  $theme_hooks = [
+    'uc_order_invoice' => [
+      'variables' => [
         'order' => NULL,
         'op' => 'view',
         'template' => '',
@@ -69,21 +69,21 @@ function uc_order_theme($existing, $type, $theme, $path) {
         'store_footer' => FALSE,
         'business_header' => FALSE,
         'shipping_method' => FALSE,
-      ),
+      ],
       'template' => 'uc-order-invoice',
-    ),
-    'uc_order_invoice_page' => array(
-      'variables' => array('content' => NULL),
+    ],
+    'uc_order_invoice_page' => [
+      'variables' => ['content' => NULL],
       'template' => 'uc-order-invoice-page',
-    ),
-  );
+    ],
+  ];
 
-  $theme_hooks += array(
-    'uc_order_invoice__admin' => array(
+  $theme_hooks += [
+    'uc_order_invoice__admin' => [
       'variables' => $theme_hooks['uc_order_invoice']['variables'],
       'template' => 'uc-order-invoice--admin',
-    ),
-  );
+    ],
+  ];
 
   return $theme_hooks;
 }
@@ -102,13 +102,13 @@ function uc_order_entity_bundle_info() {
  */
 function uc_order_entity_extra_field_info() {
   $panes = \Drupal::service('plugin.manager.uc_order.order_pane')->getDefinitions();
-  $extra = array();
+  $extra = [];
 
   foreach ($panes as $id => $pane) {
-    $extra_field = array(
+    $extra_field = [
       'label' => $pane['title'],
       'weight' => $pane['weight'],
-    );
+    ];
 
     if (in_array('Drupal\uc_order\EditableOrderPanePluginInterface', class_implements($pane['class']))) {
       $extra['uc_order']['uc_order']['form'][$id] = $extra_field;
@@ -129,11 +129,11 @@ function uc_order_user_view(array &$build, UserInterface $account, EntityViewDis
   if ($view_mode == 'full' &&
       $user->isAuthenticated() &&
       (($user->id() == $account->id() && $user->hasPermission('view own orders')) || $user->hasPermission('view all orders'))) {
-    $build['orders'] = array(
+    $build['orders'] = [
       '#type' => 'item',
       '#title' => t('Orders'),
       '#markup' => Link::createFromRoute(t('Click here to view your order history.'), 'view.uc_order_history.page_1', ['user' => $account->id()])->toString(),
-    );
+    ];
   }
 }
 
@@ -223,11 +223,11 @@ function uc_order_product_save($order_id, $product) {
 function uc_order_product_revive($products, $published = TRUE) {
   // Allow invocation for a single product.
   if (!is_array($products)) {
-    $products = array($products);
+    $products = [$products];
   }
 
   // Load the nodes associated with each order product.
-  $nids = array();
+  $nids = [];
   foreach ($products as $product) {
     $nids[] = $product->nid->target_id;
   }
@@ -276,24 +276,24 @@ function uc_order_comments_load($order_id, $admin = FALSE) {
 function uc_order_comment_save($order_id, $uid, $message, $type = 'admin', $status = 'pending', $notify = FALSE) {
   if ($type == 'admin') {
     db_insert('uc_order_admin_comments')
-      ->fields(array(
+      ->fields([
         'order_id' => $order_id,
         'uid' => $uid,
         'message' => $message,
         'created' => REQUEST_TIME,
-      ))
+      ])
       ->execute();
   }
   elseif ($type == 'order') {
     db_insert('uc_order_comments')
-      ->fields(array(
+      ->fields([
         'order_id' => $order_id,
         'uid' => $uid,
         'message' => $message,
         'order_status' => $status,
         'notified' => $notify ? 1 : 0,
         'created' => REQUEST_TIME,
-      ))
+      ])
       ->execute();
   }
 }
@@ -343,7 +343,7 @@ function template_preprocess_uc_order_invoice(&$variables) {
 
   $variables['shippable'] = $order->isShippable();
 
-  $variables['products'] = array();
+  $variables['products'] = [];
   if (!empty($order->products)) {
     foreach ($order->products as $id => $product) {
       $variables['products'][$id] = new stdClass;
@@ -358,16 +358,16 @@ function template_preprocess_uc_order_invoice(&$variables) {
         $variables['products'][$id]->individual_price = '';
       }
 
-      $variables['products'][$id]->details = array();
+      $variables['products'][$id]->details = [];
       if (!empty($product->data->attributes)) {
-        $attributes = array();
+        $attributes = [];
         foreach ($product->data->attributes as $attribute => $option) {
           $attributes[] = t('@attribute: @options', ['@attribute' => $attribute, '@options' => implode(', ', (array)$option)]);
         }
-        $variables['products'][$id]->details = array(
+        $variables['products'][$id]->details = [
           '#theme' => 'item_list',
           '#items' => $attributes,
-        );
+        ];
       }
     }
   }
@@ -376,16 +376,16 @@ function template_preprocess_uc_order_invoice(&$variables) {
   $order->line_items = $variables['line_items'];
 
   // Generate tokens to use as template variables.
-  $types = array(
+  $types = [
     'uc_order' => $order,
-  );
+  ];
 
   $token_service = \Drupal::token();
   $token_info = $token_service->getInfo();
   $bubbleable_metadata = new BubbleableMetadata();
 
-  $replacements = array();
-  foreach (array('site', 'store', 'uc_order') as $type) {
+  $replacements = [];
+  foreach (['site', 'store', 'uc_order'] as $type) {
     $tokens = array_keys($token_info['tokens'][$type]);
     $replacements[$type] = $token_service->generate($type, array_combine($tokens, $tokens), $types, [], $bubbleable_metadata);
   }
@@ -416,13 +416,13 @@ function template_preprocess_uc_order_invoice_page(&$variables) {
   $language_interface = \Drupal::languageManager()->getCurrentLanguage();
 
   // HTML element attributes.
-  $attributes = array();
+  $attributes = [];
   $attributes['lang'] = $language_interface->getId();
   $attributes['dir'] = $language_interface->getDirection();
   $variables['html_attributes'] = new Attribute($attributes);
 
   $site_config = \Drupal::config('system.site');
-  $head_title = array('name' => $site_config->get('name'));
+  $head_title = ['name' => $site_config->get('name')];
   if ($site_config->get('slogan')) {
     $head_title['slogan'] = strip_tags(Xss::filterAdmin($site_config->get('slogan')));
   }
@@ -431,11 +431,11 @@ function template_preprocess_uc_order_invoice_page(&$variables) {
   if (theme_get_setting('features.favicon')) {
     $favicon = theme_get_setting('favicon.url');
     $type = theme_get_setting('favicon.mimetype');
-    $build['#attached']['html_head_link'][][] = array(
+    $build['#attached']['html_head_link'][][] = [
       'rel' => 'shortcut icon',
       'href' => \Drupal\Component\Utility\UrlHelper::stripDangerousProtocols($favicon),
       'type' => $type,
-    );
+    ];
     \Drupal::service('renderer')->render($build);
   }
   $variables['head_title'] = implode(' | ', $head_title);

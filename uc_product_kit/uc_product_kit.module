@@ -44,17 +44,17 @@ function uc_product_kit_form_node_type_form_alter(&$form, FormStateInterface $fo
   $form['uc_product']['product']['#access'] = FALSE;
   $form['uc_product']['shippable']['#access'] = FALSE;
 
-  $form['uc_product']['mutable'] = array(
+  $form['uc_product']['mutable'] = [
     '#type' => 'radios',
     '#title' => t('Product kit cart display'),
     '#description' => t('This setting can still be overridden on the node form.'),
-    '#options' => array(
+    '#options' => [
       UC_PRODUCT_KIT_UNMUTABLE_NO_LIST => t('As a unit. Customers may only change how many kits they are buying. Do not list component products.'),
       UC_PRODUCT_KIT_UNMUTABLE_WITH_LIST => t('As a unit. Customers may only change how many kits they are buying. List component products.'),
       UC_PRODUCT_KIT_MUTABLE => t('As individual products. Customers may add or remove kit components at will. Discounts entered below are not applied to the kit price'),
-    ),
+    ],
     '#default_value' => $type->getThirdPartySetting('uc_product_kit', 'mutable', UC_PRODUCT_KIT_UNMUTABLE_WITH_LIST),
-  );
+  ];
 
   $form['#entity_builders'][] = 'uc_product_kit_form_node_type_form_builder';
 }
@@ -65,7 +65,7 @@ function uc_product_kit_form_node_type_form_alter(&$form, FormStateInterface $fo
  * @see uc_product_kit_form_node_type_form_alter().
  */
 function uc_product_kit_form_node_type_form_builder($entity_type, NodeTypeInterface $type, &$form, FormStateInterface $form_state) {
-  $type->setThirdPartySetting('uc_product_kit', 'mutable', $form_state->getValue(array('uc_product', 'mutable')));
+  $type->setThirdPartySetting('uc_product_kit', 'mutable', $form_state->getValue(['uc_product', 'mutable']));
 }
 
 /**
@@ -97,13 +97,13 @@ function uc_product_kit_uc_form_alter(&$form, FormStateInterface $form_state, $f
         return;
       }
 
-      $products = array('#tree' => TRUE);
+      $products = ['#tree' => TRUE];
       foreach ($kit->products as $kit_product) {
-        $products[$kit_product->nid] = array();
+        $products[$kit_product->nid] = [];
       }
 
       // Add the products to the beginning of the form for visual aesthetics.
-      $form = array_merge(array('sub_products' => $products), $form);
+      $form = array_merge(['sub_products' => $products], $form);
     }
   }
   elseif (strpos($form_id, 'uc_product_add_to_cart_form') !== FALSE) {
@@ -112,11 +112,11 @@ function uc_product_kit_uc_form_alter(&$form, FormStateInterface $form_state, $f
       return;
     }
 
-    $form['products'] = array('#tree' => TRUE);
+    $form['products'] = ['#tree' => TRUE];
     foreach ($kit->products as $i => $product) {
-      $form['products'][$i] = array('#title' => SafeMarkup::checkPlain($product->label()));
-      $form['products'][$i]['nid'] = array('#type' => 'hidden', '#value' => $product->id());
-      $form['products'][$i]['qty'] = array('#type' => 'hidden', '#value' => $product->qty);
+      $form['products'][$i] = ['#title' => SafeMarkup::checkPlain($product->label())];
+      $form['products'][$i]['nid'] = ['#type' => 'hidden', '#value' => $product->id()];
+      $form['products'][$i]['qty'] = ['#type' => 'hidden', '#value' => $product->qty];
     }
 
     $form['#validate'][] = 'uc_product_kit_add_to_cart_form_validate';
@@ -128,11 +128,11 @@ function uc_product_kit_uc_form_alter(&$form, FormStateInterface $form_state, $f
       return;
     }
 
-    $form['products'] = array('#tree' => TRUE);
+    $form['products'] = ['#tree' => TRUE];
     foreach ($node->products as $i => $product) {
-      $form['products'][$i] = array('#title' => SafeMarkup::checkPlain($product->title));
-      $form['products'][$i]['nid'] = array('#type' => 'hidden', '#value' => $product->nid);
-      $form['products'][$i]['qty'] = array('#type' => 'hidden', '#value' => $product->qty);
+      $form['products'][$i] = ['#title' => SafeMarkup::checkPlain($product->title)];
+      $form['products'][$i]['nid'] = ['#type' => 'hidden', '#value' => $product->nid];
+      $form['products'][$i]['qty'] = ['#type' => 'hidden', '#value' => $product->qty];
     }
 
     $form['#validate'][] = 'uc_product_kit_buy_it_now_form_validate';
@@ -149,10 +149,10 @@ function uc_product_kit_node_prepare_form(NodeInterface $node, $operation, FormS
   }
 
   $type = NodeType::load($node->getType());
-  $defaults = array(
+  $defaults = [
     'mutable' => $type->getThirdPartySetting('uc_product_kit', 'mutable', UC_PRODUCT_KIT_UNMUTABLE_WITH_LIST),
-    'products' => array(),
-  );
+    'products' => [],
+  ];
 
   foreach ($defaults as $key => $value) {
     if (!isset($node->$key)) {
@@ -194,14 +194,14 @@ function uc_product_kit_node_insert($node) {
     }
 
     db_insert('uc_product_kits')
-      ->fields(array(
+      ->fields([
         'vid' => $node->getRevisionId(),
         'nid' => $node->id(),
         'product_id' => $product->id(),
         'mutable' => $node->mutable,
         'qty' => 1,
         'synchronized' => 1,
-      ))
+      ])
       ->execute();
 
     $obj->model .= $product->model->value . ' / ';
@@ -216,8 +216,8 @@ function uc_product_kit_node_insert($node) {
   $obj->model = rtrim($obj->model, ' / ');
 
   db_merge('uc_products')
-    ->key(array('vid' => $obj->vid))
-    ->fields(array(
+    ->key(['vid' => $obj->vid])
+    ->fields([
       'nid' => $obj->nid,
       'model' => $obj->model,
       'cost' => $obj->cost,
@@ -226,7 +226,7 @@ function uc_product_kit_node_insert($node) {
       'weight_units' => $obj->weight_units,
       'default_qty' => $obj->default_qty,
       'shippable' => $obj->shippable ? 1 : 0,
-    ))
+    ])
     ->execute();
 }
 
@@ -367,7 +367,7 @@ function uc_product_kit_node_update($node) {
     }
 
     db_insert('uc_product_kits')
-      ->fields(array(
+      ->fields([
         'vid' => $node->getRevisionId(),
         'nid' => $node->id(),
         'product_id' => $nid,
@@ -376,7 +376,7 @@ function uc_product_kit_node_update($node) {
         'discount' => $discount,
         'ordering' => $product->ordering,
         'synchronized' => $override_discounts ? 0 : 1,
-      ))
+      ])
       ->execute();
   }
 
@@ -387,8 +387,8 @@ function uc_product_kit_node_update($node) {
   }
 
   db_merge('uc_products')
-    ->key(array('vid' => $obj->vid))
-    ->fields(array(
+    ->key(['vid' => $obj->vid])
+    ->fields([
       'model' => $obj->model,
       'cost' => $obj->cost,
       'price' => $obj->price,
@@ -396,7 +396,7 @@ function uc_product_kit_node_update($node) {
       'weight_units' => $obj->weight_units,
       'default_qty' => $obj->default_qty,
       'shippable' => $obj->shippable ? 1 : 0,
-    ))
+    ])
     ->execute();
 
   // When a kit is updated, remove matching kits from the cart, as there is no
@@ -429,7 +429,7 @@ function uc_product_kit_node_delete($node) {
       ->execute();
   }
   else {
-    $empty = array();
+    $empty = [];
     $result = db_query('SELECT DISTINCT nid FROM {uc_product_kits} WHERE product_id = :nid', [':nid' => $node->id()]);
     while ($nid = $result->fetchField()) {
       $kit = Node::load($nid, NULL, TRUE);
@@ -453,7 +453,7 @@ function uc_product_kit_node_delete($node) {
  * Implements hook_node_load().
  */
 function uc_product_kit_node_load($nodes) {
-  $vids = array();
+  $vids = [];
   foreach ($nodes as $nid => $node) {
     if ($node->getType() == 'product_kit') {
       $vids[$nid] = $node->getRevisionId();
@@ -467,9 +467,9 @@ function uc_product_kit_node_load($nodes) {
       $nodes[$prod->nid]->synchronized = $prod->synchronized;
 
       // Add the component information.
-      $data = array();
+      $data = [];
       if ($prod->mutable != UC_PRODUCT_KIT_MUTABLE) {
-        $data = array('kit_id' => $prod->nid, 'kit_discount' => $prod->discount);
+        $data = ['kit_id' => $prod->nid, 'kit_discount' => $prod->discount];
       }
       $product = uc_product_load_variant($prod->product_id, $data);
       $product->qty = $prod->qty;
@@ -506,7 +506,7 @@ function uc_product_kit_module_implements_alter(&$implementations, $hook) {
   if ($hook == 'uc_product_alter') {
     $group = $implementations['uc_product_kit'];
     unset($implementations['uc_product_kit']);
-    $implementations =  array('uc_product_kit' => $group) + $implementations;
+    $implementations =  ['uc_product_kit' => $group] + $implementations;
   }
 }
 
@@ -514,13 +514,13 @@ function uc_product_kit_module_implements_alter(&$implementations, $hook) {
  * Implements hook_theme().
  */
 function uc_product_kit_theme() {
-  return array(
-    'uc_product_kit_list_item' => array(
-      'variables' => array('product' => NULL),
+  return [
+    'uc_product_kit_list_item' => [
+      'variables' => ['product' => NULL],
       'file' => 'uc_product_kit.theme.inc',
       'function' => 'theme_uc_product_kit_list_item',
-    ),
-  );
+    ],
+  ];
 }
 
 /**
@@ -533,7 +533,7 @@ function uc_product_kit_form_node_form_alter(&$form, FormStateInterface $form_st
   }
 
   // Create an array of products on the site for use in the product selector.
-  $products = array();
+  $products = [];
   $result = \Drupal::entityQuery('node')
     ->condition('type', uc_product_types(), 'IN')
     ->sort('title')
@@ -544,78 +544,78 @@ function uc_product_kit_form_node_form_alter(&$form, FormStateInterface $form_st
     $products[$nid] = $product->label();
   }
 
-  $form['base'] = array(
+  $form['base'] = [
     '#type' => 'details',
     '#title' => t('Product kit information'),
     '#weight' => 0,
     '#open' => TRUE,
-  );
-  $form['base']['mutable'] = array(
+  ];
+  $form['base']['mutable'] = [
     '#type' => 'radios',
     '#title' => t('How is this product kit handled by the cart?'),
-    '#options' => array(
+    '#options' => [
       UC_PRODUCT_KIT_UNMUTABLE_NO_LIST => t('As a unit. Customers may only change how many kits they are buying. Do not list component products.'),
       UC_PRODUCT_KIT_UNMUTABLE_WITH_LIST => t('As a unit. Customers may only change how many kits they are buying. List component products.'),
       UC_PRODUCT_KIT_MUTABLE => t('As individual products. Customers may add or remove kit components at will. Discounts entered below are not applied to the kit price'),
-    ),
+    ],
     '#default_value' => $node->mutable,
-  );
-  $form['base']['products'] = array(
+  ];
+  $form['base']['products'] = [
     '#type' => 'select',
     '#multiple' => TRUE,
     '#required' => TRUE,
     '#title' => t('Products'),
     '#options' => $products,
     '#default_value' => array_keys($node->products),
-  );
+  ];
   $total = 0;
   $base_total = 0;
   if (!empty($node->products)) {
-    $form['base']['items'] = array(
+    $form['base']['items'] = [
       '#type' => 'table',
-      '#header' => array(t('Product'), t('Quantity'), t('List position'), t('Discount')),
-      '#tabledrag' => array(
-        array(
+      '#header' => [t('Product'), t('Quantity'), t('List position'), t('Discount')],
+      '#tabledrag' => [
+        [
           'action' => 'order',
           'relationship' => 'sibling',
           'group' => 'uc-product-kit-item-ordering',
-        ),
-      ),
+        ],
+      ],
       '#weight' => 1,
-    );
-    $form['base']['help'] = array(
+    ];
+    $form['base']['help'] = [
       '#markup' => '<p>' . t('Enter a positive or negative discount to raise or lower the item price by that amount. The change is applied to each item in the kit.') . '</p>',
       '#weight' => 2,
-    );
+    ];
     foreach ($node->products as $i => $product) {
       $form['base']['items'][$i]['#attributes']['class'][] = 'draggable';
-      $form['base']['items'][$i]['link'] = array(
+      $form['base']['items'][$i]['link'] = [
         '#type' => 'link',
         '#title' => $product->label(),
         '#url' => $product->toUrl(),
-      );
-      $form['base']['items'][$i]['qty'] = array(
+      ];
+      $form['base']['items'][$i]['qty'] = [
         '#type' => 'uc_quantity',
         '#title' => t('Quantity'),
         '#title_display' => 'invisible',
         '#default_value' => $product->qty,
-      );
-      $form['base']['items'][$i]['ordering'] = array(
+      ];
+      $form['base']['items'][$i]['ordering'] = [
         '#type' => 'weight',
         '#title' => t('List position'),
         '#title_display' => 'invisible',
         '#default_value' => isset($product->ordering) ? $product->ordering : 0,
-        '#attributes' => array('class' => array('uc-product-kit-item-ordering')),
-      );
+        '#attributes' => ['class' => ['uc-product-kit-item-ordering']],
+      ];
 
-      $form['base']['items'][$i]['discount'] = array(
+      $form['base']['items'][$i]['discount'] = [
         '#type' => 'textfield',
         '#title' => t('Discount'),
         '#title_display' => 'invisible',
         '#field_prefix' => uc_currency_format($product->price->value) . ' + ',
         '#default_value' => isset($product->discount) ? number_format($product->discount, 3, '.', '') : 0,
         '#size' => 5,
-      );
+      ];
       $total += $product->price->value * $product->qty;
       $base_total += $product->price->value * $product->qty;
       if (isset($product->discount)) {
@@ -632,19 +632,19 @@ function uc_product_kit_form_node_form_alter(&$form, FormStateInterface $form_st
         $form['base']['items'][$i]['discount']['#default_value'] = number_format($discount, 3, '.', '');
       }
     }
-    $form['base']['kit_total'] = array(
+    $form['base']['kit_total'] = [
       '#type' => 'uc_price',
       '#title' => t('Total price'),
       '#default_value' => $node->synchronized ? '' : $total,
       '#description' => t('If this field is set, the discounts of the individual products will be recalculated to equal this value. Currently, the total price is %price.', ['%price' => uc_currency_format($total)]),
       '#empty_zero' => FALSE,
-    );
+    ];
   }
 
   // Disable all shipping related functionality.
   $form['shipping']['#access'] = FALSE;
 
-  $form['#entity_builders'] = array('uc_product_kit_node_builder');
+  $form['#entity_builders'] = ['uc_product_kit_node_builder'];
 }
 
 /**
@@ -676,7 +676,7 @@ function uc_product_kit_node_view(array &$build, NodeInterface $node, EntityView
 
   // Calculate the display price.
   $display_price = 0;
-  $suffixes = array();
+  $suffixes = [];
   if ($node->mutable != UC_PRODUCT_KIT_MUTABLE) {
     // If this is a non-mutable kit, then sum the display price of each of the
     // component products.
@@ -689,23 +689,23 @@ function uc_product_kit_node_view(array &$build, NodeInterface $node, EntityView
   else {
     // For mutable, just use the price.
     $display_price = $variant->price->value;
-    $suffixes = array();
+    $suffixes = [];
   }
 
   $build['display_price']['#value'] = $display_price;
   $build['display_price']['#suffixes'] = $suffixes;
 
   if ($node->mutable != UC_PRODUCT_KIT_UNMUTABLE_NO_LIST) {
-    $build['products'] = array('#weight' => 6);
+    $build['products'] = ['#weight' => 6];
 
     $i = 0;
     foreach ($node->products as $product) {
-      $build['products'][$product->id()]['qty'] = array(
+      $build['products'][$product->id()]['qty'] = [
         '#theme' => 'uc_product_kit_list_item',
         '#product' => $product,
         '#prefix' => '<div class="product-qty">',
         '#suffix' => '</div>',
-      );
+      ];
       $build['products'][$product->id()]['#weight'] = $i++;
     }
   }
@@ -717,11 +717,11 @@ function uc_product_kit_node_view(array &$build, NodeInterface $node, EntityView
  * @see \Drupal\uc_product\Form\AddToCartForm
  */
 function uc_product_kit_add_to_cart_form_validate($form, FormStateInterface $form_state) {
-  $data = \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', array($form_state->getValues()));
+  $data = \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', [$form_state->getValues()]);
   $form_state->set('variant', uc_product_load_variant($form_state->getValue('nid'), $data));
 
   foreach ($form_state->get('variant')->products as &$product) {
-    $data = \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', array($form_state->getValue(['products', $product->id()])));
+    $data = \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', [$form_state->getValue(['products', $product->id()])]);
     $data += $product->data;
     $qty = $product->qty;
     $product = uc_product_load_variant($product->id(), $data);
@@ -807,11 +807,11 @@ function uc_product_kit_uc_add_to_cart($nid, $qty, $kit_data) {
   if ($node->getType() == 'product_kit') {
     $cart = \Drupal::service('uc_cart.manager')->get();
     $unique = uniqid('', TRUE);
-    $update = array();
-    $product_data = array();
+    $update = [];
+    $product_data = [];
 
     foreach ($node->products as $product) {
-      $data = array('kit_id' => $node->id(), 'module' => 'uc_product_kit') + \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', array($kit_data['products'][$product->id()]));
+      $data = ['kit_id' => $node->id(), 'module' => 'uc_product_kit'] + \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', [$kit_data['products'][$product->id()]]);
       $product_data[$product->id()] = $data;
       foreach ($cart->getContents() as $item) {
         if ($item->nid == $product->id() && isset($item->data['kit_id']) && $item->data['kit_id'] == $node->id()) {
@@ -844,7 +844,7 @@ function uc_product_kit_uc_add_to_cart($nid, $qty, $kit_data) {
       }
     }
 
-    return array(array('success' => FALSE, 'silent' => TRUE, 'message' => ''));
+    return [['success' => FALSE, 'silent' => TRUE, 'message' => '']];
   }
 }
 
@@ -888,8 +888,8 @@ function uc_product_kit_uc_order_product_alter(OrderProductInterface &$product, 
   // Have to save each individual product if this is a kit.
   foreach ($product->products as $kit_product) {
     $qty = $kit_product->qty * $product->qty;
-    $data = isset($kit_product->data) ? $kit_product->data : array();
-    $data += \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', array($_POST['product_controls']['sub_products'][$kit_product->nid]));
+    $data = isset($kit_product->data) ? $kit_product->data : [];
+    $data += \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', [$_POST['product_controls']['sub_products'][$kit_product->nid]]);
     $data['shippable'] = $product->shippable;
     $kit_product = uc_product_load_variant($kit_product->nid, $data);
     $kit_product->qty = $qty;
@@ -920,7 +920,7 @@ function uc_product_kit_uc_order_product_alter(OrderProductInterface &$product, 
  *   A form element array to be processed by the cart form().
  */
 function uc_product_kit_uc_cart_display($item) {
-  static $elements = array();
+  static $elements = [];
   static $products;
   $unique_id = $item->data->unique_id;
   $kit = Node::load($item->data->kit_id);
@@ -933,35 +933,35 @@ function uc_product_kit_uc_cart_display($item) {
     if (!isset($products[$unique_id])) {
       // Initialize table row.
       $kit_qty = $item->qty->value / $kit->products[$nid]->qty;
-      $element = array();
-      $element['nid'] = array('#type' => 'value', '#value' => $kit->id());
-      $element['module'] = array('#type' => 'value', '#value' => 'uc_product_kit');
-      $element['remove'] = array('#type' => 'submit', '#value' => t('Remove'));
-      $element['title'] = array('#type' => 'link', '#title' => $kit->label(), '#url' => $kit->toUrl());
-      $element['qty'] = array(
+      $element = [];
+      $element['nid'] = ['#type' => 'value', '#value' => $kit->id()];
+      $element['module'] = ['#type' => 'value', '#value' => 'uc_product_kit'];
+      $element['remove'] = ['#type' => 'submit', '#value' => t('Remove')];
+      $element['title'] = ['#type' => 'link', '#title' => $kit->label(), '#url' => $kit->toUrl()];
+      $element['qty'] = [
         '#type' => 'uc_quantity',
         '#title' => t('Quantity'),
         '#title_display' => 'invisible',
         '#default_value' => $kit_qty,
-      );
-      $element['description'] = array('#markup' => '');
+      ];
+      $element['description'] = ['#markup' => ''];
       $element['#total'] = 0;
-      $element['#suffixes'] = array();
-      $element['#extra'] = array();
+      $element['#suffixes'] = [];
+      $element['#extra'] = [];
       $element['#entity'] = $kit; // Override the entity associated with this
                                   // render-array to be the kit itself.
       $elements[$unique_id] = $element;
     }
 
     if ($kit->mutable == UC_PRODUCT_KIT_UNMUTABLE_WITH_LIST) {
-      $elements[$unique_id]['#extra'][] = array(
+      $elements[$unique_id]['#extra'][] = [
         '#theme' => 'uc_product_kit_list_item',
         '#product' => $item,
         '#suffix' => uc_product_get_description($item),
-        '#wrapper_attributes' => array(
-          'class' => array('kit-component-cart-desc'),
-        ),
-      );
+        '#wrapper_attributes' => [
+          'class' => ['kit-component-cart-desc'],
+        ],
+      ];
     }
 
     // Build the kit item product variant.
@@ -981,15 +981,15 @@ function uc_product_kit_uc_cart_display($item) {
     }
 
     if ($done) {
-      $elements[$unique_id]['data'] = array('#type' => 'value', '#value' => serialize($elements[$unique_id]['data']));
+      $elements[$unique_id]['data'] = ['#type' => 'value', '#value' => serialize($elements[$unique_id]['data'])];
       if ($kit->mutable == UC_PRODUCT_KIT_UNMUTABLE_WITH_LIST) {
-        $elements[$unique_id]['description'] = array(
+        $elements[$unique_id]['description'] = [
           '#theme' => 'item_list',
           '#items' => $elements[$unique_id]['#extra'],
-          '#attributes' => array(
-            'class' => array('product-description'),
-          ),
-        );
+          '#attributes' => [
+            'class' => ['product-description'],
+          ],
+        ];
       }
       $element = $elements[$unique_id];
       unset($products[$unique_id]);
@@ -997,7 +997,7 @@ function uc_product_kit_uc_cart_display($item) {
       return $element;
     }
   }
-  return array();
+  return [];
 }
 
 /**
@@ -1005,7 +1005,7 @@ function uc_product_kit_uc_cart_display($item) {
  *
  * Handles individual products or entire kits.
  */
-function uc_product_kit_uc_update_cart_item($nid, $data = array(), $qty, $cid = NULL) {
+function uc_product_kit_uc_update_cart_item($nid, $data = [], $qty, $cid = NULL) {
   if (isset($data['kit_id'])) {
     // Product was listed individually.
     uc_product_uc_update_cart_item($nid, $data, $qty, $cid);
@@ -1028,11 +1028,11 @@ function uc_product_kit_entity_bundle_field_info(EntityTypeInterface $entity_typ
       ->setDescription(t('Customer purchase price.'))
       ->setRequired(TRUE)
       ->setCustomStorage(TRUE)
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'type' => 'uc_price',
         'label' => 'inline',
         'weight' => 2,
-      ))
+      ])
       ->setDisplayConfigurable('view', TRUE);
 
     $fields['shippable'] = BaseFieldDefinition::create('boolean')

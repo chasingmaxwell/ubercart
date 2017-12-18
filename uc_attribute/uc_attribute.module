@@ -36,6 +36,7 @@ function uc_attribute_help($route_name, RouteMatchInterface $route_match) {
     // Help messages for the attributes overview on products and classes.
     case 'uc_attribute.product_attributes':
       return '<p>' . t('Add attributes to this product using the <a href=":url">add attributes form</a>. You may then adjust the settings for these attributes on this page and go on to configure their options in the <em>Options</em> tab.', [':url' => Url::fromRoute('uc_attribute.product_attributes_add', ['node' => $route_match->getRawParameter('node')])->toString()]) . '</p>';
+
     case 'uc_attribute.product_class_attributes':
       return '<p>' . t('Add attributes to the product class using the <a href=":url">add attributes form</a>. You may then adjust the settings for these attributes on this page and go on to configure their options in the <em>Options</em> tab.', [':url' => Url::fromRoute('uc_attribute.product_class_attributes_add', ['node_type' => $route_match->getRawParameter('node_type')])->toString()]) . '</p>';
 
@@ -59,40 +60,40 @@ function uc_attribute_help($route_name, RouteMatchInterface $route_match) {
  * Implements hook_theme().
  */
 function uc_attribute_theme() {
-  return array(
-    'uc_attribute_option' => array(
-      'variables' => array('option' => '', 'price' => ''),
+  return [
+    'uc_attribute_option' => [
+      'variables' => ['option' => '', 'price' => ''],
       'template' => 'uc-attribute-option',
-    ),
-    'uc_product_attributes' => array(
+    ],
+    'uc_product_attributes' => [
       'render element' => 'attributes',
       'file' => 'uc_attribute.theme.inc',
       'function' => 'theme_uc_product_attributes',
-    ),
-  );
+    ],
+  ];
 }
 
 /**
  * Implements hook_form_FORM_ID_alter() for uc_product_settings_form().
  */
 function uc_attribute_form_uc_product_settings_form_alter(&$form, FormStateInterface $form_state) {
-  $form['attributes'] = array(
+  $form['attributes'] = [
     '#type' => 'details',
     '#title' => 'Attribute settings',
     '#group' => 'product-settings',
     '#weight' => -3,
-  );
-  $form['attributes']['uc_attribute_option_price_format'] = array(
+  ];
+  $form['attributes']['uc_attribute_option_price_format'] = [
     '#type' => 'radios',
     '#title' => t('Option price format'),
     '#default_value' => \Drupal::config('uc_attribute.settings')->get('option_price_format'),
-    '#options' => array(
+    '#options' => [
       'none' => t('Do not display'),
       'adjustment' => t('Display price adjustment'),
       'total' => t('Display total price'),
-    ),
+    ],
     '#description' => t('Determines how price variations are displayed to the customer. Prices may be displayed directly next to each attribute option in the attribute selection form either as a total price for the product with that option or as an adjustment (+ or -) showing how that option affects the product base price. Note that the price will always be displayed as an adjustment for attributes that can have multiple options (using checkboxes).'),
-  );
+  ];
 
   $form['#submit'][] = 'uc_attribute_uc_product_settings_form_submit';
 }
@@ -183,7 +184,7 @@ function uc_attribute_buy_it_now_form_validate(&$form, FormStateInterface $form_
     $form_state->setRedirect('entity.node.canonical', ['node' => $form_state->getValue('nid')]);
 
     // Prevent submit handlers from running.
-    $form_state->setSubmitHandlers(array());
+    $form_state->setSubmitHandlers([]);
   }
 }
 
@@ -204,17 +205,17 @@ function uc_attribute_node_load($nodes) {
 function uc_attribute_node_insert($node) {
   // Set attributes from class attributes.
   $select = db_select('uc_class_attributes', 'ca')
-    ->fields('ca', array(
+    ->fields('ca', [
       'aid',
       'label',
       'ordering',
       'required',
       'display',
       'default_option',
-    ))
+    ])
     ->condition('pcid', $node->getType());
-  // SELECT $node->nid AS nid
-  $select->addExpression(':nid', 'nid', array(':nid' => $node->id()));
+  // SELECT $node->nid AS nid.
+  $select->addExpression(':nid', 'nid', [':nid' => $node->id()]);
 
   db_insert('uc_product_attributes')
     ->from($select)
@@ -222,15 +223,15 @@ function uc_attribute_node_insert($node) {
 
   // Set options from class options.
   $select = db_select('uc_class_attribute_options', 'co')
-    ->fields('co', array(
+    ->fields('co', [
       'oid',
       'cost',
       'price',
       'weight',
       'ordering',
-    ))
+    ])
     ->condition('pcid', $node->getType());
-  $select->addExpression(':nid', 'nid', array(':nid' => $node->id()));
+  $select->addExpression(':nid', 'nid', [':nid' => $node->id()]);
 
   db_insert('uc_product_options')
     ->from($select)
@@ -294,10 +295,10 @@ function uc_attribute_uc_product_models($nid) {
  */
 function uc_attribute_uc_add_to_cart_data($form_values) {
   if (isset($form_values['attributes'])) {
-    return array('attributes' => $form_values['attributes']);
+    return ['attributes' => $form_values['attributes']];
   }
   else {
-    return array('attributes' => array());
+    return ['attributes' => []];
   }
 }
 
@@ -311,7 +312,7 @@ function uc_attribute_uc_order_product_alter(OrderProductInterface &$product, Or
   if (!empty($product->data->attributes)) {
     $attributes_keys = array_keys($product->data->attributes);
     if (is_numeric(array_shift($attributes_keys))) {
-      $attributes = array();
+      $attributes = [];
       $options = _uc_cart_product_get_options($product);
       foreach ($options as $option) {
         $attributes[$option['attribute']][$option['oid']] = $option['name'];
@@ -347,7 +348,7 @@ function uc_attribute_uc_product_alter(&$node) {
       $node->weight->value += $option['weight'];
     }
 
-    $combination = array();
+    $combination = [];
     foreach ($node->data['attributes'] as $aid => $value) {
       if (is_numeric($value)) {
         $attribute = uc_attribute_load($aid, $node->id(), 'product');
@@ -370,16 +371,16 @@ function uc_attribute_uc_product_alter(&$node) {
  * Implements hook_uc_product_description().
  */
 function uc_attribute_uc_product_description($product) {
-  $description = array(
-    'attributes' => array(
-      '#product' => array(
+  $description = [
+    'attributes' => [
+      '#product' => [
         '#type' => 'value',
         '#value' => $product,
-      ),
+      ],
       '#theme' => 'uc_product_attributes',
       '#weight' => 1,
-    ),
-  );
+    ],
+  ];
 
   $desc =& $description['attributes'];
 
@@ -390,7 +391,7 @@ function uc_attribute_uc_product_description($product) {
     foreach (_uc_cart_product_get_options($product) as $option) {
       if (!isset($desc[$option['aid']])) {
         $desc[$option['aid']]['#attribute_name'] = $option['attribute'];
-        $desc[$option['aid']]['#options'] = array($option['name']);
+        $desc[$option['aid']]['#options'] = [$option['name']];
       }
       else {
         $desc[$option['aid']]['#options'][] = $option['name'];
@@ -400,11 +401,11 @@ function uc_attribute_uc_product_description($product) {
   }
   elseif (!empty($product->data->attributes)) {
     foreach ($product->data->attributes as $attribute => $option) {
-      $desc[] = array(
+      $desc[] = [
         '#attribute_name' => $attribute,
         '#options' => $option,
         '#weight' => $weight++,
-      );
+      ];
     }
   }
 
@@ -418,18 +419,18 @@ function uc_attribute_uc_product_description($product) {
  * logic; that is, we could make uc_attribute load call this function and allow
  * this function to minimize the number of queries necessary. -cha0s
  *
- * @param $aids
+ * @param array $aids
  *   Attribute IDs to load.
- * @param $type
+ * @param string $type
  *   The type of attribute. 'product', or 'class'. Any other type will fetch
  *   a base attribute.
  * @param $id
  *   The ID of the product/class this attribute belongs to.
  *
- * @return
+ * @return array
  *   An array of loaded attributes.
  */
-function uc_attribute_load_multiple($aids = array(), $type = '', $id = NULL) {
+function uc_attribute_load_multiple(array $aids = [], $type = '', $id = NULL) {
   $sql = uc_attribute_type_info($type);
 
   // Product/class attributes.
@@ -439,7 +440,7 @@ function uc_attribute_load_multiple($aids = array(), $type = '', $id = NULL) {
     // It appears that product/class attributes with no ordering won't let the
     // attribute's propagate down, as it does when loading. -cha0s)
     $query = db_select($sql['attr_table'], 'uca')
-      ->fields('uca', array('aid'))
+      ->fields('uca', ['aid'])
       ->condition("uca.{$sql['id']}", $id);
 
     $query->leftJoin('uc_attributes', 'ua', 'uca.aid = ua.aid');
@@ -450,7 +451,7 @@ function uc_attribute_load_multiple($aids = array(), $type = '', $id = NULL) {
   // Base attributes.
   else {
     $query = db_select('uc_attributes', 'ua')
-      ->fields('ua', array('aid'))
+      ->fields('ua', ['aid'])
       ->orderBy('ordering')
       ->orderBy('name');
   }
@@ -465,7 +466,7 @@ function uc_attribute_load_multiple($aids = array(), $type = '', $id = NULL) {
   $aids = $query->execute()->fetchCol();
 
   // Load the attributes.
-  $attributes = array();
+  $attributes = [];
   foreach ($aids as $aid) {
     $attributes[$aid] = uc_attribute_load($aid, $id, $type);
   }
@@ -478,13 +479,13 @@ function uc_attribute_load_multiple($aids = array(), $type = '', $id = NULL) {
  *
  * @param $aid
  *   The ID of the attribute.
- * @param $type
+ * @param string $type
  *   The type of attribute. 'product', or 'class'. Any other type will fetch
  *   a base attribute.
  * @param $id
  *   The ID of the product/class this attribute belongs to.
  *
- * @return
+ * @return object|false
  *   The attribute object, or FALSE if it doesn't exist.
  */
 function uc_attribute_load($aid, $id = NULL, $type = '') {
@@ -493,14 +494,13 @@ function uc_attribute_load($aid, $id = NULL, $type = '') {
   switch ($type) {
     case 'product':
     case 'class':
-
       // Read attribute data.
       $query = db_select('uc_attributes', 'a')
-        ->fields('a', array('aid', 'name', 'description'))
+        ->fields('a', ['aid', 'name', 'description'])
         ->condition('a.aid', $aid);
 
-      $query->leftJoin($sql['attr_table'], 'pa', "a.aid = pa.aid AND pa.{$sql['id']} = :id", array(':id' => $id));
-      $query->fields('pa', array('label', 'default_option', 'required', 'ordering', 'display', $sql['id']));
+      $query->leftJoin($sql['attr_table'], 'pa', "a.aid = pa.aid AND pa.{$sql['id']} = :id", [':id' => $id]);
+      $query->fields('pa', ['label', 'default_option', 'required', 'ordering', 'display', $sql['id']]);
       $query->addField('a', 'label', 'default_label');
       $query->addField('a', 'ordering', 'default_ordering');
       $query->addField('a', 'required', 'default_required');
@@ -509,10 +509,12 @@ function uc_attribute_load($aid, $id = NULL, $type = '') {
       $attribute = $query->execute()->fetchObject();
 
       // Don't try to build it further if it failed already.
-      if (!$attribute) return FALSE;
+      if (!$attribute) {
+        return FALSE;
+      }
 
       // Set any missing defaults.
-      foreach (array('ordering', 'required', 'display', 'label') as $field) {
+      foreach (['ordering', 'required', 'display', 'label'] as $field) {
         if (isset($attribute->{"default_$field"}) && is_null($attribute->$field)) {
           $attribute->$field = $attribute->{"default_$field"};
         }
@@ -523,18 +525,17 @@ function uc_attribute_load($aid, $id = NULL, $type = '') {
 
       // Read option data.
       $query = db_select($sql['opt_table'], 'po')
-        ->fields('po', array($sql['id'], 'oid', 'cost', 'price', 'weight', 'ordering'));
-      $query->leftJoin('uc_attribute_options', 'ao', "po.oid = ao.oid AND po.{$sql['id']} = :id", array(':id' => $id));
-      $query->fields('ao', array('name', 'aid'))
+        ->fields('po', [$sql['id'], 'oid', 'cost', 'price', 'weight', 'ordering']);
+      $query->leftJoin('uc_attribute_options', 'ao', "po.oid = ao.oid AND po.{$sql['id']} = :id", [':id' => $id]);
+      $query->fields('ao', ['name', 'aid'])
         ->condition('aid', $aid)
         ->orderBy('po.ordering')
         ->orderBy('ao.name');
 
       $result = $query->execute();
-    break;
+      break;
 
     default:
-
       // Read attribute and option data.
       $attribute = db_query("SELECT * FROM {uc_attributes} WHERE aid = :aid", [':aid' => $aid])->fetchObject();
       $result = db_query("SELECT * FROM {uc_attribute_options} WHERE aid = :aid ORDER BY ordering, name", [':aid' => $aid]);
@@ -543,14 +544,13 @@ function uc_attribute_load($aid, $id = NULL, $type = '') {
       if (!$attribute) {
         return FALSE;
       }
-
-    break;
+      break;
   }
 
   // Got an attribute?
   if ($attribute) {
     // Get its options, too.
-    $attribute->options = array();
+    $attribute->options = [];
     foreach ($result as $option) {
       $attribute->options[$option->oid] = $option;
     }
@@ -562,34 +562,34 @@ function uc_attribute_load($aid, $id = NULL, $type = '') {
 /**
  * Fetches an array of attribute objects that belong to a product.
  *
- * @param $nid
+ * @param \Drupal\node\NodeInterface $nid
  *   Product whose attributes to load.
  *
- * @return
+ * @return object[]
  *   The array of attribute objects.
  */
-function uc_attribute_load_product_attributes($nid) {
-  return uc_attribute_load_multiple(array(), 'product', $nid);
+function uc_attribute_load_product_attributes(NodeInterface $nid) {
+  return uc_attribute_load_multiple([], 'product', $nid);
 }
 
 /**
  * Saves an attribute object to the database.
  *
- * @param $attribute
+ * @param object $attribute
  *   The attribute object to save.
  *
- * @return
+ * @return int
  *   The integer result from db_merge().
  */
 function uc_attribute_save(&$attribute) {
-  $fields = array(
+  $fields = [
     'name' => $attribute->name,
     'label' => $attribute->label,
     'ordering' => $attribute->ordering,
     'required' => (int) $attribute->required,
     'display' => $attribute->display,
     'description' => $attribute->description,
-  );
+  ];
 
   if (empty($attribute->aid)) {
     $attribute->aid = db_insert('uc_attributes')
@@ -609,10 +609,10 @@ function uc_attribute_save(&$attribute) {
 /**
  * Deletes an attribute from the database.
  *
- * @param $aid
+ * @param int $aid
  *   Attribute ID to delete.
  *
- * @return
+ * @return int
  *   The Drupal SAVED_DELETED flag.
  */
 function uc_attribute_delete($aid) {
@@ -636,10 +636,10 @@ function uc_attribute_delete($aid) {
 /**
  * Loads an attribute option from the database.
  *
- * @param $oid
+ * @param int $oid
  *   Option ID to load.
  *
- * @return
+ * @return object
  *   The attribute option object.
  */
 function uc_attribute_option_load($oid) {
@@ -649,21 +649,21 @@ function uc_attribute_option_load($oid) {
 /**
  * Saves an attribute object to the database.
  *
- * @param $option
+ * @param object $option
  *   The attribute option object to save.
  *
- * @return
+ * @return int
  *   The integer result from db_merge().
  */
 function uc_attribute_option_save(&$option) {
-  $fields = array(
+  $fields = [
     'aid' => $option->aid,
     'name' => $option->name,
     'cost' => $option->cost,
     'price' => $option->price,
     'weight' => $option->weight,
     'ordering' => $option->ordering,
-  );
+  ];
 
   if (empty($option->oid)) {
     $option->oid = db_insert('uc_attribute_options')
@@ -683,10 +683,10 @@ function uc_attribute_option_save(&$option) {
 /**
  * Deletes an attribute option from the database.
  *
- * @param $oid
+ * @param int $oid
  *   Option ID to delete.
  *
- * @return
+ * @return int
  *   The Drupal SAVED_DELETED flag.
  */
 function uc_attribute_option_delete($oid) {
@@ -709,14 +709,14 @@ function uc_attribute_option_delete($oid) {
  *
  * @param &$attribute
  *   The product/class attribute.
- * @param $type
+ * @param string $type
  *   Is this a product or a class?
- * @param $id
+ * @param string $id
  *   The product/class ID.
- * @param $save_options
+ * @param bool $save_options
  *   Save the product/class attribute's options, too?
  *
- * @return
+ * @return int
  *   The integer result from db_merge().
  */
 function uc_attribute_subject_save(&$attribute, $type, $id, $save_options = FALSE) {
@@ -747,38 +747,38 @@ function uc_attribute_subject_save(&$attribute, $type, $id, $save_options = FALS
   $attribute->{$sql['id']} = $id;
 
   return db_merge($sql['attr_table'])
-    ->keys(array(
+    ->keys([
       $sql['id'] => $id,
       'aid' => $attribute->aid,
-    ))
-    ->fields(array(
+    ])
+    ->fields([
       'label' => $attribute->label,
       'ordering' => $attribute->ordering,
       'default_option' => isset($attribute->default_option) ? $attribute->default_option : 0,
       'required' => (int) $attribute->required,
       'display' => $attribute->display,
-    ))
+    ])
     ->execute();
 }
 
 /**
  * Deletes an attribute and all options associated with it.
  *
- * @param $aid
+ * @param int $aid
  *   The base attribute ID.
- * @param $type
+ * @param string $type
  *   Is this a product or a class?
  * @param $id
  *   The product/class ID.
  *
- * @return
+ * @return int
  *   The Drupal SAVED_DELETED flag.
  */
 function uc_attribute_subject_delete($aid, $type, $id = NULL) {
   $sql = uc_attribute_type_info($type);
 
   $query = db_select('uc_attribute_options', 'a')
-    ->fields('a', array('oid'));
+    ->fields('a', ['oid']);
   $query->join($sql['opt_table'], 'subject', 'a.oid = subject.oid');
 
   // Base conditions, and an ID check if necessary.
@@ -801,10 +801,10 @@ function uc_attribute_subject_delete($aid, $type, $id = NULL) {
 
   // If this is a product attribute, wipe any associated adjustments.
   if ($type == 'product') {
-    uc_attribute_adjustments_delete(array(
+    uc_attribute_adjustments_delete([
       'aid' => $aid,
       'nid' => $id,
-    ));
+    ]);
   }
 
   return SAVED_DELETED;
@@ -813,14 +813,14 @@ function uc_attribute_subject_delete($aid, $type, $id = NULL) {
 /**
  * Loads a product/class attribute option.
  *
- * @param $oid
+ * @param int $oid
  *   The product/class attribute option ID.
- * @param $type
+ * @param string $type
  *   Is this a product or a class?
  * @param $id
  *   The product/class ID.
  *
- * @return
+ * @return object
  *   An object containing the product/class attribute option.
  */
 function uc_attribute_subject_option_load($oid, $type, $id) {
@@ -828,8 +828,8 @@ function uc_attribute_subject_option_load($oid, $type, $id) {
 
   $query = db_select($sql['opt_table'], 'po');
   $query->leftJoin('uc_attribute_options', 'ao', 'po.oid = ao.oid');
-  $query->fields('po', array($sql['id'], 'oid', 'cost', 'price', 'weight', 'ordering'))
-    ->fields('ao', array('name', 'aid'))
+  $query->fields('po', [$sql['id'], 'oid', 'cost', 'price', 'weight', 'ordering'])
+    ->fields('ao', ['name', 'aid'])
     ->condition('po.oid', $oid)
     ->condition("po.{$sql['id']}", $id)
     ->orderBy('po.ordering')
@@ -843,28 +843,28 @@ function uc_attribute_subject_option_load($oid, $type, $id) {
  *
  * @param &$option
  *   The product/class attribute option.
- * @param $type
+ * @param string $type
  *   Is this a product or a class?
  * @param $id
  *   The product/class ID.
  *
- * @return
+ * @return int
  *   The integer result from db_merge().
  */
 function uc_attribute_subject_option_save(&$option, $type, $id) {
   $sql = uc_attribute_type_info($type);
 
   return db_merge($sql['opt_table'])
-    ->keys(array(
+    ->keys([
       $sql['id'] => $id,
       'oid' => $option->oid,
-    ))
-    ->fields(array(
+    ])
+    ->fields([
       'cost' => $option->cost,
       'price' => $option->price,
       'weight' => $option->weight,
       'ordering' => $option->ordering,
-    ))
+    ])
     ->execute();
 }
 
@@ -873,12 +873,12 @@ function uc_attribute_subject_option_save(&$option, $type, $id) {
  *
  * @param $oid
  *   The base attribute's option ID.
- * @param $type
+ * @param string $type
  *   Is this a product or a class?
  * @param $id
  *   The product/class ID.
  *
- * @return
+ * @return int
  *   The Drupal SAVED_DELETED flag.
  */
 function uc_attribute_subject_option_delete($oid, $type, $id = NULL, $adjustments = TRUE) {
@@ -897,11 +897,11 @@ function uc_attribute_subject_option_delete($oid, $type, $id = NULL, $adjustment
 
   // If this is a product, clean up the associated adjustments.
   if ($adjustments && $type == 'product') {
-    uc_attribute_adjustments_delete(array(
+    uc_attribute_adjustments_delete([
       'aid' => uc_attribute_option_load($oid)->aid,
       'oid' => $oid,
       'nid' => $id,
-    ));
+    ]);
   }
 
   return SAVED_DELETED;
@@ -910,14 +910,14 @@ function uc_attribute_subject_option_delete($oid, $type, $id = NULL, $adjustment
 /**
  * Deletes an attribute adjustment.
  *
- * @param $fields
+ * @param array $fields
  *   Fields used to build a condition to delete adjustments against. Fields
  *   currently handled are 'aid', 'oid', and 'nid'.
  *
- * @return
+ * @return int
  *   The Drupal SAVED_DELETED flag.
  */
-function uc_attribute_adjustments_delete($fields) {
+function uc_attribute_adjustments_delete(array $fields) {
   // Build the serialized string to match against adjustments.
   $match = '';
   if (!empty($fields['aid'])) {
@@ -940,7 +940,7 @@ function uc_attribute_adjustments_delete($fields) {
     $query->condition('nid', $fields['nid']);
   }
 
-  // Delete what's necessary,
+  // Delete what's necessary.
   if ($query->conditions()) {
     $query->execute();
   }
@@ -951,20 +951,20 @@ function uc_attribute_adjustments_delete($fields) {
 /**
  * Checks if a product/class attribute exists.
  *
- * @param $aid
+ * @param int $aid
  *   The base attribute ID.
  * @param $id
  *   The product/class attribute's ID.
- * @param $type
+ * @param string $type
  *   Is this a product or a class?
  *
- * @return
+ * @return bool
  *   TRUE if the attribute exists.
  */
 function uc_attribute_subject_exists($aid, $type, $id) {
   $sql = uc_attribute_type_info($type);
   $query = db_select($sql['attr_table'], 'a')
-    ->fields('a', array('aid'))
+    ->fields('a', ['aid'])
     ->condition('aid', $aid)
     ->condition($sql['id'], $id);
   return FALSE !== $query->execute()->fetchField();
@@ -973,38 +973,42 @@ function uc_attribute_subject_exists($aid, $type, $id) {
 /**
  * Returns a list of names to abstract queries between products and classes.
  *
- * @param $type
+ * @param string $type
  *   Is this a product or a class?
  *
- * @return
+ * @return array
  *   Array of information helpful for creating SQL queries dealing
  *   with attributes.
  */
 function uc_attribute_type_info($type) {
   switch ($type) {
     case 'product':
-      return array(
+      return [
         'attr_table' => 'uc_product_attributes',
         'opt_table' => 'uc_product_options',
         'id' => 'nid',
-      );
-    break;
+      ];
 
     case 'class':
-      return array(
+      return [
         'attr_table' => 'uc_class_attributes',
         'opt_table' => 'uc_class_attribute_options',
         'id' => 'pcid',
-      );
-    break;
+      ];
   }
 }
 
 /**
  * Loads all attributes associated with a product node.
+ *
+ * @param int $nid
+ *   The product node id.
+ *
+ * @return
+ *   The attributes.
  */
 function uc_product_get_attributes($nid) {
-  $attributes = array();
+  $attributes = [];
 
   $result = db_query("SELECT upa.aid FROM {uc_product_attributes} upa LEFT JOIN {uc_attributes} ua ON upa.aid = ua.aid WHERE upa.nid = :nid ORDER BY upa.ordering, ua.name", [':nid' => $nid]);
   foreach ($result as $attribute) {
@@ -1016,9 +1020,15 @@ function uc_product_get_attributes($nid) {
 
 /**
  * Loads all attributes associated with a product class.
+ *
+ * @param int $pcid
+ *   The product class id.
+ *
+ * @return
+ *   The attributes.
  */
 function uc_class_get_attributes($pcid) {
-  $attributes = array();
+  $attributes = [];
 
   $result = db_query("SELECT uca.aid FROM {uc_class_attributes} uca LEFT JOIN {uc_attributes} ua ON uca.aid = ua.aid WHERE uca.pcid = :type ORDER BY uca.ordering, ua.name", [':type' => $pcid]);
   foreach ($result as $attribute) {
@@ -1031,10 +1041,10 @@ function uc_class_get_attributes($pcid) {
 /**
  * Gets the options chosen for a product that is in the cart.
  *
- * @param $item
+ * @param mixed $item
  *   A product node, a cart item or an ordered product object.
  *
- * @return
+ * @return array
  *   Array of options chosen by a customer, indexed by attribute ids. Each
  *   element stores the attribute name and the option object chosen.
  */
@@ -1048,7 +1058,7 @@ function _uc_cart_product_get_options($item) {
     $attributes = $item->data->attributes;
   }
 
-  $options = array();
+  $options = [];
   $index = 0;
   if (!empty($attributes)) {
     foreach ($attributes as $aid => $selected) {
@@ -1058,9 +1068,9 @@ function _uc_cart_product_get_options($item) {
         // Only discrete options can affect the price of an item.
         if ($attribute->display && count($attribute->options)) {
           // There may be many selected options, or just one.
-          foreach ((array)$selected as $oid) {
+          foreach ((array) $selected as $oid) {
             if ($oid > 0) {
-              $options[$index] = (array)$attribute->options[$oid];
+              $options[$index] = (array) $attribute->options[$oid];
               $options[$index]['attribute'] = $name;
               $index++;
             }
@@ -1068,7 +1078,7 @@ function _uc_cart_product_get_options($item) {
         }
         else {
           // Handle textfield attributes.
-          $options[$index] = array(
+          $options[$index] = [
             'attribute' => $name,
             'aid' => $aid,
             'oid' => 0,
@@ -1076,7 +1086,7 @@ function _uc_cart_product_get_options($item) {
             'cost' => 0,
             'price' => 0,
             'weight' => 0,
-          );
+          ];
         }
         $index++;
       }
@@ -1103,9 +1113,9 @@ function uc_attribute_option_ajax($form, FormStateInterface $form_state) {
     }
   }
   if (strpos($form['#form_id'], 'add_to_cart_form') !== FALSE) {
-    uc_product_view_ajax_commands($response, $form_state, array('display_price', 'weight', 'cost'));
+    uc_product_view_ajax_commands($response, $form_state, ['display_price', 'weight', 'cost']);
   }
-  $status_messages = array('#type' => 'status_messages');
+  $status_messages = ['#type' => 'status_messages'];
   $response->addCommand(new PrependCommand($wrapper, drupal_render($status_messages)));
   return $response;
 }
@@ -1134,9 +1144,10 @@ function _uc_attribute_alter_form($id, &$product, $use_ajax) {
   $attributes = $product->attributes;
   $priced_attributes = uc_attribute_priced_attributes($nid);
 
-  // If the form is being built for the first time, populate attributes with their default values.
+  // If the form is being built for the first time, populate attributes
+  // with their default values.
   if (!isset($product->data['attributes'])) {
-    $values = array();
+    $values = [];
     foreach ($priced_attributes as $aid) {
       if (!$attributes[$aid]->required && ($attributes[$aid]->display == 1 || $attributes[$aid]->display == 2)) {
         $values[$aid] = $attributes[$aid]->default_option;
@@ -1157,30 +1168,30 @@ function _uc_attribute_alter_form($id, &$product, $use_ajax) {
   }
 
   if (empty($product->data) || !is_array($product->data)) {
-    $product->data = array();
+    $product->data = [];
   }
 
   // Initialize the form element.
-  $form_attributes = array(
+  $form_attributes = [
     '#type' => 'container',
-    '#attributes' => array(
+    '#attributes' => [
       'id' => $id,
-      'class' => array('product-attributes'),
-    ),
-  );
+      'class' => ['product-attributes'],
+    ],
+  ];
 
   $price_format = \Drupal::config('uc_attribute.settings')->get('option_price_format');
 
   // Loop through each product attribute and generate its form element.
   foreach ($attributes as $attribute) {
     // Build the attribute's options array.
-    $options = array();
+    $options = [];
     foreach ($attribute->options as $option) {
       $display_price = '';
       if (in_array($attribute->aid, $priced_attributes)) {
-        $data = array('display_only' => TRUE) + $product->data;
+        $data = ['display_only' => TRUE] + $product->data;
         if (empty($data['attributes'])) {
-          $data['attributes'] = array();
+          $data['attributes'] = [];
         }
         switch ($price_format) {
           case 'total':
@@ -1188,7 +1199,7 @@ function _uc_attribute_alter_form($id, &$product, $use_ajax) {
             // !TODO Fix attribute option total price display for product kits.
             if ($attribute->display != 3 && !isset($product->data['kit_id'])) {
               $use_ajax = $use_ajax || (count($priced_attributes) > 1);
-              $data['attributes'] = array($attribute->aid => $option->oid) + $data['attributes'];
+              $data['attributes'] = [$attribute->aid => $option->oid] + $data['attributes'];
               $variant = uc_product_load_variant($product->id(), $data);
               $display_price = uc_currency_format($variant->display_price);
               break;
@@ -1197,11 +1208,12 @@ function _uc_attribute_alter_form($id, &$product, $use_ajax) {
             if ($attribute->display == 3 || !$use_ajax) {
               // For checkboxes, or if the node totals are not being updated,
               // we compare this attribute against base price.
-              if (empty($base)) { // only build the base once.
+              if (empty($base)) {
+                // Only build the base once.
                 unset($data['attributes']);
                 $base = uc_product_load_variant($product->id(), $data);
               }
-              $data['attributes'] = array($attribute->aid => $option->oid);
+              $data['attributes'] = [$attribute->aid => $option->oid];
               $variant = uc_product_load_variant($product->id(), $data);
               $adjustment = $variant->display_price - $base->display_price;
             }
@@ -1210,7 +1222,7 @@ function _uc_attribute_alter_form($id, &$product, $use_ajax) {
               if (empty($selected)) {
                 $selected = uc_product_load_variant($product->id(), $data);
               }
-              $data['attributes'] = array($attribute->aid => $option->oid) + $data['attributes'];
+              $data['attributes'] = [$attribute->aid => $option->oid] + $data['attributes'];
               $variant = uc_product_load_variant($product->id(), $data);
               $adjustment = $variant->display_price - $selected->display_price;
             }
@@ -1223,18 +1235,18 @@ function _uc_attribute_alter_form($id, &$product, $use_ajax) {
       }
 
       // Select options are sanitized, but radio button labels are not.
-      $build = array(
+      $build = [
         '#theme' => 'uc_attribute_option',
         '#option' => $attribute->display == 2 ? SafeMarkup::checkPlain($option->name) : $option->name,
         '#price' => $display_price,
-      );
+      ];
       $options[$option->oid] = drupal_render($build);
     }
 
     if (count($attribute->options) && $attribute->display > 0) {
       if ($attribute->required) {
         if ($attribute->display == 1) {
-          $options = array('' => t('Please select')) + $options;
+          $options = ['' => t('Please select')] + $options;
         }
         $attribute->default_option = NULL;
       }
@@ -1243,40 +1255,42 @@ function _uc_attribute_alter_form($id, &$product, $use_ajax) {
         case 1:
           $attr_type = 'select';
           break;
+
         case 2:
           $attr_type = 'radios';
           break;
+
         case 3:
           $attr_type = 'checkboxes';
-          $attribute->default_option = array();
+          $attribute->default_option = [];
           break;
       }
-      $form_attributes[$attribute->aid] = array(
+      $form_attributes[$attribute->aid] = [
         '#type' => $attr_type,
         '#default_value' => $attribute->default_option,
         '#options' => $options,
-      );
+      ];
       if ($use_ajax) {
-        $form_attributes[$attribute->aid]['#ajax'] = array(
+        $form_attributes[$attribute->aid]['#ajax'] = [
           'callback' => 'uc_attribute_option_ajax',
           'wrapper' => $id,
-        );
+        ];
       }
     }
     elseif ($attribute->display > 0) {
-      $form_attributes[$attribute->aid] = array(
+      $form_attributes[$attribute->aid] = [
         '#type' => 'textfield',
         '#default_value' => '',
-      );
+      ];
       if (!$attribute->required && isset($attribute->options[$attribute->default_option])) {
         $form_attributes[$attribute->aid]['#default_value'] = $attribute->options[$attribute->default_option]->name;
       }
     }
     else {
-      $form_attributes[$attribute->aid] = array(
+      $form_attributes[$attribute->aid] = [
         '#type' => 'textfield',
         '#default_value' => '',
-      );
+      ];
     }
 
     $name = _uc_attribute_get_name($attribute, FALSE);
@@ -1295,21 +1309,21 @@ function _uc_attribute_alter_form($id, &$product, $use_ajax) {
  * Returns an array of display types used as options when creating attributes.
  */
 function _uc_attribute_display_types() {
-  return array(
+  return [
     0 => t('Text field'),
     1 => t('Select box'),
     2 => t('Radio buttons'),
     3 => t('Checkboxes'),
-  );
+  ];
 }
 
 /**
  * Gets the price affecting attributes for a product.
  *
- * @param $nid
+ * @param int $nid
  *   The nid of a product.
  *
- * @return
+ * @return array
  *   Array of attribute ids that have price affecting options.
  */
 function uc_attribute_priced_attributes($nid) {
@@ -1329,13 +1343,13 @@ function uc_attribute_priced_attributes($nid) {
  * The NULL return value is typically used by forms so they know to hide the
  * #title property of the element.
  *
- * @param $attribute
+ * @param object $attribute
  *   Attribute object.
- * @param $title
+ * @param bool $title
  *   TRUE indicates the function is to return the attribute name when its label
  *   is set to '<none>'.
  *
- * @return
+ * @return string|null
  *   When the attribute label is set and not '<none>', it is returned.
  *   Otherwise, the attribute name is returned when $title is TRUE and NULL is
  *   returned when $title is FALSE.

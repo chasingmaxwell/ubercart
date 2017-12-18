@@ -125,7 +125,7 @@ function hook_uc_order_product_alter(\Drupal\uc_order\OrderProductInterface &$pr
  * @see hook_entity_load()
  */
 function hook_uc_order_product_load(array $order_products) {
-  $result = db_query('SELECT pid, foo FROM {mytable} WHERE pid IN(:ids[])', array(':ids[]' => array_keys($entities)));
+  $result = db_query('SELECT pid, foo FROM {mytable} WHERE pid IN(:ids[])', [':ids[]' => array_keys($entities)]);
   foreach ($result as $record) {
     $entities[$record->pid]->foo = $record->foo;
   }
@@ -143,10 +143,10 @@ function hook_uc_order_product_load(array $order_products) {
  */
 function hook_uc_order_product_insert(object $order_product) {
   db_insert('mytable')
-    ->fields(array(
+    ->fields([
       'id' => entity_id('uc_order_product', $order_product),
       'extra' => print_r($order_product, TRUE),
-    ))
+    ])
     ->execute();
 }
 
@@ -176,7 +176,7 @@ function hook_uc_order_product_presave(object $order_product) {
  */
 function hook_uc_order_product_update(object $order_product) {
   db_update('mytable')
-    ->fields(array('extra' => print_r($order_product, TRUE)))
+    ->fields(['extra' => print_r($order_product, TRUE)])
     ->condition('opid', entity_id('uc_order_product', $order_product))
     ->execute();
 }
