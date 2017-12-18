@@ -4,47 +4,40 @@ alpha_3: LKA
 numeric: 144
 status: false
 zones:
-  1: 'Basnahira Palata'
-  2: 'Central Province'
-  3: 'Dakunu Palata'
-  5: 'Eastern Province'
-  2: 'Madhyama Palata'
-  5: 'Negenahira Palata'
-  7: 'North Central Province'
-  6: 'North Western Province'
-  4: 'Northern Province'
-  9: 'Sabaragamuwa Palata'
-  3: 'Southern Province'
-  4: 'Uturu Palata'
-  7: 'Uturumeda Palata'
-  8: 'Uva Palata'
-  6: 'Wayamba Palata'
-  1: 'Western Province'
-  11: Colombo
-  12: Gampaha
-  13: Kalutara
-  21: Kandy
-  22: Matale
-  23: 'Nuwara Eliya'
-  31: Galle
-  33: Hambantota
-  32: Matara
-  41: Jaffna
-  42: Kilinochchi
-  43: Mannar
-  45: Mullaittivu
-  44: Vavuniya
-  52: Ampara
-  51: Batticaloa
-  53: Trincomalee
-  61: Kurunegala
-  62: Puttalam
-  71: Anuradhapura
-  72: Polonnaruwa
-  81: Badulla
-  82: Monaragala
-  92: Kegalla
-  91: Ratnapura
+  LK-1: 'Western Province'
+  LK-2: 'Central Province'
+  LK-3: 'Southern Province'
+  LK-4: 'Northern Province'
+  LK-5: 'Eastern Province'
+  LK-6: 'North Western Province'
+  LK-7: 'North Central Province'
+  LK-8: 'Uva Province'
+  LK-9: 'Sabaragamuwa Province'
+  LK-11: Colombo
+  LK-12: Gampaha
+  LK-13: Kalutara
+  LK-21: Kandy
+  LK-22: Matale
+  LK-23: 'Nuwara Eliya'
+  LK-31: Galle
+  LK-32: Matara
+  LK-33: Hambantota
+  LK-41: Jaffna
+  LK-42: Kilinochchi
+  LK-43: Mannar
+  LK-44: Vavuniya
+  LK-45: Mullaittivu
+  LK-51: Batticaloa
+  LK-52: Ampara
+  LK-53: Trincomalee
+  LK-61: Kurunegala
+  LK-62: Puttalam
+  LK-71: Anuradhapura
+  LK-72: Polonnaruwa
+  LK-81: Badulla
+  LK-82: Monaragala
+  LK-91: Ratnapura
+  LK-92: Kegalla
 address_format:
   - '!company'
   - '!first_name !last_name'

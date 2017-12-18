@@ -4,27 +4,29 @@ alpha_3: MNE
 numeric: 499
 status: false
 zones:
-  01: Andrijevica
-  02: Bar
-  03: Berane
-  04: 'Bijelo Polje'
-  05: Budva
-  06: Cetinje
-  07: Danilovgrad
-  08: Herceq-Novi
-  09: Kolasin
-  10: Kotor
-  11: Mojkovac
-  12: Niksic
-  13: Plav
-  14: Pljevlja
-  15: Pluzine
-  16: Podgorica
-  17: Rozaje
-  18: Savnik
-  19: Tivat
-  20: Ulcinj
-  21: Zabljak
+  ME-01: Andrijevica
+  ME-02: Bar
+  ME-03: Berane
+  ME-04: 'Bijelo Polje'
+  ME-05: Budva
+  ME-06: Cetinje
+  ME-07: Danilovgrad
+  ME-08: Herceg-Novi
+  ME-09: Kolasin
+  ME-10: Kotor
+  ME-11: Mojkovac
+  ME-12: Niksic
+  ME-13: Plav
+  ME-14: Pljevlja
+  ME-15: Pluzine
+  ME-16: Podgorica
+  ME-17: Rozaje
+  ME-18: Savnik
+  ME-19: Tivat
+  ME-20: Ulcinj
+  ME-21: Zabljak
+  ME-22: Gusinje
+  ME-23: Petnjica
 address_format:
   - '!company'
   - '!first_name !last_name'

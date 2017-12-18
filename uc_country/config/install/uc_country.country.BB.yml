@@ -4,17 +4,17 @@ alpha_3: BRB
 numeric: 52
 status: false
 zones:
-  01: 'Christ Church'
-  02: 'Saint Andrew'
-  03: 'Saint George'
-  04: 'Saint James'
-  05: 'Saint John'
-  06: 'Saint Joseph'
-  07: 'Saint Lucy'
-  08: 'Saint Michael'
-  09: 'Saint Peter'
-  10: 'Saint Philip'
-  11: 'Saint Thomas'
+  BB-01: 'Christ Church'
+  BB-02: 'Saint Andrew'
+  BB-03: 'Saint George'
+  BB-04: 'Saint James'
+  BB-05: 'Saint John'
+  BB-06: 'Saint Joseph'
+  BB-07: 'Saint Lucy'
+  BB-08: 'Saint Michael'
+  BB-09: 'Saint Peter'
+  BB-10: 'Saint Philip'
+  BB-11: 'Saint Thomas'
 address_format:
   - '!company'
   - '!first_name !last_name'

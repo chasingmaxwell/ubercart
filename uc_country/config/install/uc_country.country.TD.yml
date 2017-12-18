@@ -4,11 +4,11 @@ alpha_3: TCD
 numeric: 148
 status: false
 zones:
-  KA: 'Barh el Ghazel'
+  BG: 'Barh el Ghazel'
   BA: Batha
-  BET: Borkou
+  BO: Borkou
   CB: Chari-Baguirmi
-  BET: Ennedi
+  EE: Ennedi
   GR: Guera
   HL: Hadjer-Lamis
   KA: Kanem
@@ -21,9 +21,9 @@ zones:
   MC: Moyen-Chari
   OD: Ouaddai
   SA: Salamat
-  OD: Sila
+  SI: Sila
   TA: Tandjile
-  BET: Tibesti
+  TI: Tibesti
   ND: "Ville de N'Djamena"
   WF: 'Wadi Fira'
 address_format:

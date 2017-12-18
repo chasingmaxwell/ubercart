@@ -4,38 +4,36 @@ alpha_3: TZA
 numeric: 834
 status: false
 zones:
-  01: Arusha
-  19: Coast
-  02: 'Dar es Salaam'
-  03: Dodoma
-  04: Iringa
-  05: Kagera
-  06: 'Kaskazini Pemba'
-  07: 'Kaskazini Unguja'
-  08: Kigoma
-  09: Kilimanjaro
-  10: 'Kusini Pemba'
-  11: 'Kusini Unguja'
-  12: Lindi
-  26: Manyara
-  13: Mara
-  14: Mbeya
-  15: 'Mjini Mgharibi'
-  16: Morogoro
-  17: Mtwara
-  18: Mwanza
-  06: 'Pemba North'
-  10: 'Pemba South'
-  19: Pwani
-  20: Rukwa
-  21: Ruvuma
-  22: Shinyanga
-  23: Singida
-  24: Tabora
-  25: Tanga
-  07: 'Zanzibar North'
-  11: 'Zanzibar South'
-  15: 'Zanzibar West'
+  TZ-01: Arusha
+  TZ-02: 'Dar es Salaam'
+  TZ-03: Dodoma
+  TZ-27: Geita
+  TZ-04: Iringa
+  TZ-05: Kagera
+  TZ-06: 'Pemba North'
+  TZ-07: 'Zanzibar North'
+  TZ-28: Katavi
+  TZ-08: Kigoma
+  TZ-09: Kilimanjaro
+  TZ-10: 'Pemba South'
+  TZ-11: 'Zanzibar South'
+  TZ-12: Lindi
+  TZ-26: Manyara
+  TZ-13: Mara
+  TZ-14: Mbeya
+  TZ-15: 'Zanzibar West'
+  TZ-16: Morogoro
+  TZ-17: Mtwara
+  TZ-18: Mwanza
+  TZ-29: Njombe
+  TZ-19: Coast
+  TZ-20: Rukwa
+  TZ-21: Ruvuma
+  TZ-22: Shinyanga
+  TZ-30: Simiyu
+  TZ-23: Singida
+  TZ-24: Tabora
+  TZ-25: Tanga
 address_format:
   - '!company'
   - '!first_name !last_name'

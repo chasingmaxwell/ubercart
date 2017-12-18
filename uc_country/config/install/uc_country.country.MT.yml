@@ -4,81 +4,74 @@ alpha_3: MLT
 numeric: 470
 status: false
 zones:
-  01: Attard
-  02: Balzan
-  03: Birqu
-  04: Birkirkara
-  05: Birzebbuqa
-  06: Bormla
-  07: Dinqli
-  08: Fgura
-  09: Floriana
-  10: Fontana
-  13: Ghajnsielem
-  14: Gharb
-  15: Gharqhur
-  16: Ghasri
-  17: Ghaxaq
-  11: Gudja
-  12: Gzira
-  18: Hamrun
-  19: Iklin
-  20: Isla
-  21: Kalkara
-  22: Kercem
-  23: Kirkop
-  24: Lija
-  25: Luga
-  26: Marsa
-  27: Marsaskala
-  28: Marsaxlokk
-  29: Mdina
-  30: Mellieha
-  31: Mgarr
-  32: Mosta
-  33: Mgabba
-  34: Msida
-  35: Mtarfa
-  36: Munxar
-  37: Nadur
-  38: Naxxar
-  39: Paola
-  40: Pembroke
-  41: Pieta
-  42: Qala
-  43: Qormi
-  44: Qrendi
-  45: 'Rabat Ghawdex'
-  45: 'Rabat Gozo'
-  46: 'Rabat Malta'
-  47: Safi
-  49: 'Saint John'
-  48: "Saint Julian's"
-  50: 'Saint Lawrence'
-  53: "Saint Lucia's"
-  51: "Saint Paul's Bay"
-  48: 'San Giljan'
-  49: 'San Gwann'
-  50: 'San Lawrenz'
-  51: 'San Pawl il-Bahar'
-  52: Sannat
-  53: 'Santa Lucija'
-  54: 'Santa Venera'
-  55: Siggiewi
-  56: Sliema
-  57: Swiegi
-  58: "Ta'Xbiex"
-  59: Tarxien
-  60: Valletta
-  61: Xaghra
-  62: Xewkija
-  63: Xghajra
-  64: Zabbar
-  65: 'Zebbug Ghawdex'
-  65: 'Zebbug Gozo'
-  66: 'Zebbug Malta'
-  67: Zejtun
-  68: Zurrieg
+  MT-01: Attard
+  MT-02: Balzan
+  MT-03: Birqu
+  MT-04: Birkirkara
+  MT-05: Birzebbuqa
+  MT-06: Bormla
+  MT-07: Dinqli
+  MT-08: Fgura
+  MT-09: Floriana
+  MT-10: Fontana
+  MT-11: Gudja
+  MT-12: Gzira
+  MT-13: Ghajnsielem
+  MT-14: Gharb
+  MT-15: Gharqhur
+  MT-16: Ghasri
+  MT-17: Ghaxaq
+  MT-18: Hamrun
+  MT-19: Iklin
+  MT-20: Isla
+  MT-21: Kalkara
+  MT-22: Kercem
+  MT-23: Kirkop
+  MT-24: Lija
+  MT-25: Luga
+  MT-26: Marsa
+  MT-27: Marsaskala
+  MT-28: Marsaxlokk
+  MT-29: Mdina
+  MT-30: Mellieha
+  MT-31: Mgarr
+  MT-32: Mosta
+  MT-33: Mgabba
+  MT-34: Msida
+  MT-35: Mtarfa
+  MT-36: Munxar
+  MT-37: Nadur
+  MT-38: Naxxar
+  MT-39: Paola
+  MT-40: Pembroke
+  MT-41: Pieta
+  MT-42: Qala
+  MT-43: Qormi
+  MT-44: Qrendi
+  MT-45: 'Rabat Gozo'
+  MT-46: 'Rabat Malta'
+  MT-47: Safi
+  MT-49: 'Saint John'
+  MT-48: "Saint Julian's"
+  MT-50: 'Saint Lawrence'
+  MT-51: "Saint Paul's Bay"
+  MT-52: Sannat
+  MT-53: "Saint Lucia's"
+  MT-54: 'Santa Venera'
+  MT-55: Siggiewi
+  MT-56: Sliema
+  MT-57: Swiegi
+  MT-58: "Ta'Xbiex"
+  MT-59: Tarxien
+  MT-60: Valletta
+  MT-61: Xaghra
+  MT-62: Xewkija
+  MT-63: Xghajra
+  MT-64: Zabbar
+  MT-65: 'Zebbug Gozo'
+  MT-66: 'Zebbug Malta'
+  MT-67: Zejtun
+  MT-68: Zurrieg
 address_format:
   - '!company'
   - '!first_name !last_name'

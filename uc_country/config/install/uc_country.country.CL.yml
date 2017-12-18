@@ -4,21 +4,21 @@ alpha_3: CHL
 numeric: 152
 status: false
 zones:
-  TA: Tarapaca
+  AI: Aysen
   AN: Antofagasta
-  AT: Atacama
-  CO: Coquimbo
-  VA: Valparaiso
-  OH: Ohiggins
-  MA: Maule
-  BI: Biobio
   AR: Araucania
-  LA: Lagos
-  AI: Aisen
+  AP: Arica y Parinacota
+  AT: Atacama
+  BI: Biobio
+  CO: Coquimbo
+  OH: Libertador General Bernardo O'Higgins
+  LL: Los Lagos
+  LR: Los Rios
   MA: Magallanes
-  RM: Metropolitana
-  Ri: Rios
-  AR: Arica
+  ML: Maule
+  RM: Region Metropolitana de Santiago
+  TA: Tarapaca
+  VA: Valparaiso
 address_format:
   - '!company'
   - '!first_name !last_name'

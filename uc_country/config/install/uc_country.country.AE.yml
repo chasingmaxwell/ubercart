@@ -4,12 +4,13 @@ alpha_3: ARE
 numeric: 784
 status: false
 zones:
-  DXB: Dubai
-  SHJ: Sharjah
-  ABU: 'Abu dhabi'
-  UAQ: 'UM Al Quwain'
-  FUJ: Fujairah
-  Ala: 'Al Ain'
+  AE-AZ: 'Abu Dhabi'
+  AE-AJ: Ajman
+  AE-FU: Fujairah
+  AE-SH: Sharjah
+  AE-DU: Dubai
+  AE-RK: 'Ras al-Khaimah'
+  AE-UQ: 'Umm al-Quwain'
 address_format:
   - '!company'
   - '!first_name !last_name'

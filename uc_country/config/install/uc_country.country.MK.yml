@@ -4,89 +4,77 @@ alpha_3: MKD
 numeric: 807
 status: false
 zones:
-  01: Aerodrom
-  02: Aracinovo
-  03: Berovo
-  04: Bitola
-  05: Bogdanci
-  06: Bogovinje
-  07: Bosilovo
-  08: Brvenica
-  09: Butel
-  79: Cair
-  80: Caska
-  77: Centar
-  78: 'Centar Zupa'
-  81: Cesinovo-Oblesevo
-  82: 'Cucer Sandevo'
-  21: Debar
-  22: Debarca
-  23: Delcevo
-  24: 'Demir Kapija'
-  26: Dojran
-  27: Dolneni
-  28: Drugovo
-  17: 'Gazi Baba'
-  18: Gevgelija
-  29: 'Gjorce Petrov'
-  19: Gostivar
-  20: Gradsko
-  34: Ilinden
-  35: Jequnovce
-  37: Karbinci
-  38: Karpos
-  36: Kavadarci
-  40: Kicevo
-  39: 'Kisela Voda'
-  42: Kocani
-  41: Konce
-  43: Kratovo
-  44: 'Kriva Palanka'
-  45: Krivoqastani
-  46: Krusevo
-  47: Kumanovo
-  48: Lipkovo
-  49: Lozovo
-  51: 'Makedonska Kamenica'
-  52: 'Makedonski Brod'
-  50: Mavrovo-i-Rostusa
-  53: Moqila
-  54: Negotino
-  55: Novaci
-  56: 'Novo Selo'
-  58: Ohrid
-  57: Oslomej
-  60: Pehcevo
-  59: Petrovec
-  61: Plasnica
-  62: Prilep
-  63: Probistip
-  64: Radovis
-  65: Rankovce
-  66: Resen
-  67: Rosoman
-  68: Saraj
-  70: Sopiste
-  71: 'Staro Nagoricane'
-  83: Stip
-  72: Struga
-  73: Strumica
-  74: Studenicani
-  84: 'Suto Orizari'
-  69: 'Sveti Nikole'
-  75: Tearce
-  76: Tetovo
-  10: Valandovo
-  11: Vasilevo
-  13: Veles
-  12: Vevcani
-  14: Vinica
-  15: Vranestica
-  16: Vrapciste
-  31: Zajas
-  32: Zelenikovo
-  30: Zelino
-  33: Zrnovci
+  MK-02: Aracinovo
+  MK-03: Berovo
+  MK-04: Bitola
+  MK-05: Bogdanci
+  MK-06: Bogovinje
+  MK-07: Bosilovo
+  MK-08: Brvenica
+  MK-78: 'Centar Zupa'
+  MK-80: Caska
+  MK-81: Cesinovo-Oblesevo
+  MK-82: 'Cucer Sandevo'
+  MK-21: Debar
+  MK-22: Debarca
+  MK-23: Delcevo
+  MK-25: 'Demir Hisar'
+  MK-24: 'Demir Kapija'
+  MK-26: Dojran
+  MK-27: Dolneni
+  MK-18: Gevgelija
+  MK-19: Gostivar
+  MK-20: Gradsko
+  MK-34: Ilinden
+  MK-35: Jegunovce
+  MK-37: Karbinci
+  MK-36: Kavadarci
+  MK-40: Kicevo
+  MK-42: Kocani
+  MK-41: Konce
+  MK-43: Kratovo
+  MK-44: 'Kriva Palanka'
+  MK-45: Krivoqastani
+  MK-46: Krusevo
+  MK-47: Kumanovo
+  MK-48: Lipkovo
+  MK-49: Lozovo
+  MK-51: 'Makedonska Kamenica'
+  MK-52: 'Makedonski Brod'
+  MK-50: 'Mavrovo i Rostusa'
+  MK-53: Mogila
+  MK-54: Negotino
+  MK-55: Novaci
+  MK-56: 'Novo Selo'
+  MK-58: Ohrid
+  MK-60: Pehcevo
+  MK-59: Petrovec
+  MK-61: Plasnica
+  MK-62: Prilep
+  MK-63: Probistip
+  MK-64: Radovis
+  MK-65: Rankovce
+  MK-66: Resen
+  MK-67: Rosoman
+  MK-85: Skopje
+  MK-70: Sopiste
+  MK-71: 'Staro Nagoricane'
+  MK-72: Struga
+  MK-73: Strumica
+  MK-74: Studenicani
+  MK-69: 'Sveti Nikole'
+  MK-83: Stip
+  MK-75: Tearce
+  MK-76: Tetovo
+  MK-10: Valandovo
+  MK-11: Vasilevo
+  MK-13: Veles
+  MK-12: Vevcani
+  MK-14: Vinica
+  MK-16: Vrapciste
+  MK-32: Zelenikovo
+  MK-33: Zrnovci
+  MK-30: Zelino
 address_format:
   - '!company'
   - '!first_name !last_name'

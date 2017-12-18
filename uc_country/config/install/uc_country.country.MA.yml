@@ -4,22 +4,22 @@ alpha_3: MAR
 numeric: 504
 status: false
 zones:
-  09: Chaouia-Ouardigha
-  10: Doukkala-Abda
-  05: Fes-Boulemane
-  02: 'Gharb-Chrarda-Beni Hssen'
-  08: 'Grand Casablanca'
-  14: 'Guelmim-Es Smara'
-  15: 'Laayoune-Boujdour-Sakia el Hamra'
-  04: L-Oriental
-  11: 'Marrakech-Tensift-Al Haouz'
-  06: Meknes-Tafilalet
-  16: 'Oued ed Dahab-Lagouira'
-  07: Rabat-Sale-Zemmour-Zaer
-  13: Sous-Massa-Draa
-  12: Tadla-Azilal
-  01: Tanger-Tetouan
-  03: 'Taza-Al Hoceima-Taounate'
+  MA-09: Chaouia-Ouardigha
+  MA-10: Doukkala-Abda
+  MA-05: Fes-Boulemane
+  MA-02: 'Gharb-Chrarda-Beni Hssen'
+  MA-08: 'Grand Casablanca'
+  MA-14: 'Guelmim-Es Smara'
+  MA-15: 'Laayoune-Boujdour-Sakia el Hamra'
+  MA-04: L-Oriental
+  MA-11: 'Marrakech-Tensift-Al Haouz'
+  MA-06: Meknes-Tafilalet
+  MA-16: 'Oued ed Dahab-Lagouira'
+  MA-07: Rabat-Sale-Zemmour-Zaer
+  MA-13: Sous-Massa-Draa
+  MA-12: Tadla-Azilal
+  MA-01: Tanger-Tetouan
+  MA-03: 'Taza-Al Hoceima-Taounate'
   CHE: Chefchaouene
   LAR: Larache
   TNG: Tanger
@@ -45,7 +45,6 @@ zones:
   KHE: Khemisset
   RBA: Rabat-Sale
   CAS: Casablanca
-  CAS: 'Dar el Beida'
   BES: 'Ben Slimane'
   KHO: Khouribga
   SET: Settat

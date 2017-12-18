@@ -4,16 +4,16 @@ alpha_3: DMA
 numeric: 212
 status: false
 zones:
-  02: 'Saint Andrew'
-  03: 'Saint David'
-  04: 'Saint George'
-  05: 'Saint John'
-  06: 'Saint Joseph'
-  07: 'Saint Luke'
-  08: 'Saint Mark'
-  09: 'Saint Patrick'
-  10: 'Saint Paul'
-  11: 'Saint Peter'
+  DM-02: 'Saint Andrew'
+  DM-03: 'Saint David'
+  DM-04: 'Saint George'
+  DM-05: 'Saint John'
+  DM-06: 'Saint Joseph'
+  DM-07: 'Saint Luke'
+  DM-08: 'Saint Mark'
+  DM-09: 'Saint Patrick'
+  DM-10: 'Saint Paul'
+  DM-11: 'Saint Peter'
 address_format:
   - '!company'
   - '!first_name !last_name'

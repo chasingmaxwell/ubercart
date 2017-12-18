@@ -4,38 +4,10 @@ alpha_3: GRL
 numeric: 304
 status: false
 zones:
-  NK: Nuuk
-  NQ: Nuussuaq
-  KQ: Kangerlussuaq
-  ST: Sisimiut
-  MQ: Maniitsoq
-  TQ: Tasiilaq
-  KK: Kulusuk
-  AP: 'Alluitsup Paa'
-  QQ: Qaqortoq
-  NA: Narsaq
-  NK: Nanortalik
-  NR: Narsarsuaq
-  IQ: Ikerasassuaq
-  KT: Kangilinnguit
-  AK: Arsuk
-  PT: Paamiut
-  AT: Aasiaat
-  QT: Qasigiannguit
-  IL: Ilulissat
-  QE: Qeqertarsuaq
-  KA: Kangaatsiaq
-  UM: Uummannaq
-  UP: Upernavik
-  QA: Qaarsut
-  PT: Pituffik
-  QN: Qaanaaq
-  SN: 'Station Nord'
-  IT: Ittoqqortoormiit
-  MV: Mestersvig
-  DH: Danmarkshavn
-  CP: 'Constable Pynt'
-  SS: 'Slædepatruljen Sirius'
+  GL-KU: 'Kommune Kujalleq'
+  GL-SM: 'Kommuneqarfik Sermersooq'
+  GL-QA: 'Qaasuitsup Kommunia'
+  GL-QE: 'Qeqqata Kommunia'
 address_format:
   - '!company'
   - '!first_name !last_name'

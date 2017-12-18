@@ -5,9 +5,9 @@ numeric: 480
 status: false
 zones:
   AG: 'Agalega Islands'
-  BR: 'Beau Bassin-Rose'
+  BR: 'Beau Bassin-Rose Hill'
   BL: 'Black River'
-  CC: 'Cargados Carajos'
+  CC: 'Cargados Carajos Shoals'
   CU: Curepipe
   FL: Flacq
   GP: 'Grand Port'
@@ -17,9 +17,8 @@ zones:
   PL: 'Port Louis'
   PU: 'Port Louis'
   QB: 'Quatre Bornes'
-  RR: 'Riviere du Rempart'
+  RR: 'Rivière du Rempart'
   RO: 'Rodrigues Island'
-  CC: 'Saint Brandon Islands'
   SA: Savanne
   VP: Vacoas-Phoenix
 address_format:
