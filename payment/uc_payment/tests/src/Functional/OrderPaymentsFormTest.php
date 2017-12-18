@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\uc_payment\Tests;
+namespace Drupal\Tests\uc_payment\Functional;
 
-use Drupal\uc_store\Tests\UbercartTestBase;
+use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 
 /**
  * Tests the order payments form.
  *
- * @group Ubercart
+ * @group ubercart
  */
-class OrderPaymentsFormTest extends UbercartTestBase {
+class OrderPaymentsFormTest extends UbercartBrowserTestBase {
 
   public static $modules = ['uc_payment', 'uc_payment_pack'];
   public static $adminPermissions = ['view payments', 'manual payments', 'delete payments'];

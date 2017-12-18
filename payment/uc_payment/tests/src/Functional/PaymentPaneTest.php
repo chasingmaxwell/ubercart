@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\uc_payment\Tests;
+namespace Drupal\Tests\uc_payment\Functional;
 
-use Drupal\uc_store\Tests\UbercartTestBase;
+use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 
 /**
  * Tests the checkout payment pane.
  *
- * @group Ubercart
+ * @group ubercart
  */
-class PaymentPaneTest extends UbercartTestBase {
+class PaymentPaneTest extends UbercartBrowserTestBase {
 
   public static $modules = ['uc_payment', 'uc_payment_pack'];
 
@@ -47,7 +47,7 @@ class PaymentPaneTest extends UbercartTestBase {
   }
 
   /**
-   * Tests operation of uc_payment_show_order_total_preview variable.
+   * Tests operation of the uc_payment_show_order_total_preview variable.
    */
   public function testOrderTotalPreview() {
     $edit = [
@@ -87,14 +87,14 @@ class PaymentPaneTest extends UbercartTestBase {
     $this->assertNoText("Subtotal:\n      $0.00");
 
     // Check that free products can be purchased successfully with no payment.
-    $this->drupalPostForm('cart', [], t('Remove'));
-    $this->drupalPostForm('cart', [], t('Remove'));
+    $this->drupalPostForm('cart', [], 'Remove');
+    $this->drupalPostForm('cart', [], 'Remove');
     $this->addToCart($free_product);
     $this->drupalGet('cart/checkout');
     $this->assertNoEscaped($check['label']);
     $this->assertText('No payment required');
     $this->assertText('Continue with checkout to complete your order.');
-    $this->assertTextPattern('/Subtotal:\s*\$0.00/', '"Subtotal: $0.00" found');
+    $this->assertSession()->pageTextMatches('/Subtotal:\s*\$0.00/', '"Subtotal: $0.00" found');
 
     // Check that this is the only available payment method.
     $this->assertNoText('Select a payment method from the following options.');
