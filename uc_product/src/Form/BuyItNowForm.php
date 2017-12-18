@@ -83,7 +83,7 @@ class BuyItNowForm extends FormBase implements BaseFormIdInterface {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     if (!$form_state->getRedirect()) {
-      $data = \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', array($form_state->getValues()));
+      $data = \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', [$form_state->getValues()]);
       $msg = $this->config('uc_cart.settings')->get('add_item_msg');
       $cart = \Drupal::service('uc_cart.manager')->get();
       $redirect = $cart->addItem($form_state->getValue('nid'), $form_state->getValue('qty'), $data, $msg);

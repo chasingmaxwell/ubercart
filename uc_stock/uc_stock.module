@@ -13,6 +13,10 @@
 
 use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\node\Entity\Node;
+use Drupal\node\NodeInterface;
+use Drupal\uc_order\OrderInterface;
+use Drupal\uc_order\OrderProductInterface;
+use Drupal\uc_stock\Event\StockLevelChangedEvent;
 
 /**
  * Implements hook_help().
@@ -117,10 +121,10 @@ function uc_stock_level($sku) {
  * Checks if a SKU has an active stock record.
  *
  * @param string $sku
- *   The Ubercart product SKU to check
+ *   The Ubercart product SKU to check.
  *
  * @return bool
- *   Boolean indicating whether or not the sku has an active stock record.
+ *   Boolean indicating whether or not the SKU has an active stock record.
  */
 function uc_stock_is_active($sku) {
   return (bool) db_query("SELECT active FROM {uc_product_stock} WHERE sku = :sku", [':sku' => $sku])->fetchField();
@@ -131,19 +135,16 @@ function uc_stock_is_active($sku) {
  *
  * @param \Drupal\uc_order\OrderInterface $order
  *   The order object that tripped the threshold limit.
- * @param $node
+ * @param \Drupal\node\NodeInterface $node
  *   The node object that is associated with the SKU/model.
  * @param $stock
  *   The stock level object that contains the stock level and SKU.
- *
- * @return array
- *   The result of \Drupal::service('plugin.manager.mail')->mail().
  */
-function _uc_stock_send_mail($order, $node, $stock) {
+function _uc_stock_send_mail(OrderInterface $order, NodeInterface $node, $stock) {
   $token_service = \Drupal::token();
 
   $account = $order->getOwner();
-  $token_filters = array('uc_order' => $order, 'user' => $account, 'uc_stock' => $stock, 'node' => $node);
+  $token_filters = ['uc_order' => $order, 'user' => $account, 'uc_stock' => $stock, 'node' => $node];
 
   $to = \Drupal::config('uc_stock.settings')->get('recipients');
   $to = $token_service->replace($to, $token_filters);

@@ -35,13 +35,13 @@ function uc_product_page_attachments(&$page) {
  * Implements hook_theme().
  */
 function uc_product_theme() {
-  return array(
-    'uc_product_price' => array(
+  return [
+    'uc_product_price' => [
       'render element' => 'element',
       'file' => 'uc_product.theme.inc',
       'function' => 'theme_uc_product_price',
-    ),
-  );
+    ],
+  ];
 }
 
 /**
@@ -59,7 +59,7 @@ function uc_product_preprocess_field(&$variables) {
 function uc_product_node_insert($node) {
   // Set sample values for Devel Generate.
   if (!empty($node->devel_generate) && uc_product_is_product($node)) {
-    $fields = array('model', 'cost', 'price', 'weight', 'dimensions', 'shippable');
+    $fields = ['model', 'cost', 'price', 'weight', 'dimensions', 'shippable'];
     foreach ($fields as $field) {
       $node->$field->generateSampleItems();
     }
@@ -77,11 +77,11 @@ function uc_product_node_update($node) {
   }
 
   db_merge('uc_products')
-    ->keys(array(
+    ->keys([
       'vid' => $node->getRevisionId(),
       'nid' => $node->id(),
-    ))
-    ->fields(array(
+    ])
+    ->fields([
       'model' => $node->model->value,
       'cost' => $node->cost->value,
       'price' => $node->price->value,
@@ -94,7 +94,7 @@ function uc_product_node_update($node) {
       'pkg_qty' => $node->pkg_qty->value,
       'default_qty' => $node->default_qty->value,
       'shippable' => (int) $node->shippable->value,
-    ))
+    ])
     ->execute();
 }
 
@@ -102,7 +102,7 @@ function uc_product_node_update($node) {
  * Implements hook_node_load().
  */
 function uc_product_node_load($nodes) {
-  $vids = array();
+  $vids = [];
   foreach ($nodes as $node) {
     if (uc_product_is_product($node)) {
       $vids[$node->id()] = $node->getRevisionId();
@@ -111,7 +111,7 @@ function uc_product_node_load($nodes) {
 
   if (!empty($vids)) {
     $result = db_query('SELECT nid, model, cost, price, weight, weight_units, length, width, height, length_units, pkg_qty, default_qty, shippable FROM {uc_products} WHERE vid IN (:vids[])', [':vids[]' => $vids]);
-    $fields = array('model', 'cost', 'price', 'weight', 'pkg_qty', 'default_qty', 'shippable');
+    $fields = ['model', 'cost', 'price', 'weight', 'pkg_qty', 'default_qty', 'shippable'];
     foreach ($result as $record) {
       foreach ($fields as $name) {
         $nodes[$record->nid]->$name->value = $record->$name;
@@ -123,7 +123,7 @@ function uc_product_node_load($nodes) {
       $nodes[$record->nid]->dimensions->units = $record->length_units;
 
       $nodes[$record->nid]->display_price = $nodes[$record->nid]->price->value;
-      $nodes[$record->nid]->display_price_suffixes = array();
+      $nodes[$record->nid]->display_price_suffixes = [];
     }
   }
 }
@@ -283,17 +283,17 @@ function uc_product_view_product(array &$build, NodeInterface $node, EntityViewD
     }
   }
 
-  $build['display_price'] = array(
+  $build['display_price'] = [
     '#theme' => 'uc_product_price',
     '#value' => $variant->display_price,
     '#suffixes' => $variant->display_price_suffixes,
-    '#attributes' => array(
-      'class' => array(
+    '#attributes' => [
+      'class' => [
         'display-price',
         'uc-product-' . $node->id(),
-      ),
-    ),
-  );
+      ],
+    ],
+  ];
 
   if (isset($add_to_cart_form)) {
     $build['add_to_cart'] = $add_to_cart_form;
@@ -339,38 +339,38 @@ function uc_product_form_node_type_form_alter(&$form, FormStateInterface $form_s
   /** @var \Drupal\node\NodeTypeInterface $type */
   $type = $form_state->getFormObject()->getEntity();
 
-  $form['uc_product'] = array(
+  $form['uc_product'] = [
     '#type' => 'details',
     '#title' => t('Ubercart product settings'),
     '#group' => 'additional_settings',
     '#tree' => TRUE,
-    '#attached' => array(
-      'library' => array(
+    '#attached' => [
+      'library' => [
         'uc_product/uc_product.scripts',
-      ),
-    ),
-  );
+      ],
+    ],
+  ];
 
-  $form['uc_product']['product'] = array(
+  $form['uc_product']['product'] = [
     '#type' => 'checkbox',
     '#title' => t('Content type is a product'),
     '#default_value' => $type->getThirdPartySetting('uc_product', 'product', FALSE),
     '#weight' => -10,
-  );
+  ];
 
   // Shippable.
-  $form['uc_product']['shippable'] = array(
+  $form['uc_product']['shippable'] = [
     '#type' => 'checkbox',
     '#title' => t('Product is shippable'),
     '#default_value' => $type->getThirdPartySetting('uc_product', 'shippable', TRUE),
     '#description' => t('This setting can still be overridden on the node form.'),
     '#weight' => -5,
-  );
+  ];
 
   // Image field.
   $entity_type = $type->getEntityType();
   if (!empty($entity_type)) {
-    $options = array('' => t('None'));
+    $options = ['' => t('None')];
     $instances = \Drupal::service('entity_field.manager')->getFieldDefinitions('node', $type->id());
     foreach ($instances as $field_name => $instance) {
       if ($instance->getType() == 'image') {
@@ -378,14 +378,14 @@ function uc_product_form_node_type_form_alter(&$form, FormStateInterface $form_s
       }
     }
 
-    $form['uc_product']['image_field'] = array(
+    $form['uc_product']['image_field'] = [
       '#type' => 'select',
       '#title' => t('Product image field'),
       '#default_value' => $type->getThirdPartySetting('uc_product', 'image_field', 'uc_product_image'),
       '#options' => $options,
       '#description' => t('The selected field will be used on Ubercart pages to represent the products of this content type.'),
       '#weight' => -4,
-    );
+    ];
   }
 
   $form['#entity_builders'][] = 'uc_product_form_node_type_form_builder';
@@ -397,32 +397,32 @@ function uc_product_form_node_type_form_alter(&$form, FormStateInterface $form_s
  * @see uc_product_form_node_type_form_alter().
  */
 function uc_product_form_node_type_form_builder($entity_type, NodeTypeInterface $type, &$form, FormStateInterface $form_state) {
-  $type->setThirdPartySetting('uc_product', 'product', (bool) $form_state->getValue(array('uc_product', 'product')));
-  $type->setThirdPartySetting('uc_product', 'shippable', (bool) $form_state->getValue(array('uc_product', 'shippable')));
-  $type->setThirdPartySetting('uc_product', 'image_field', $form_state->getValue(array('uc_product', 'image_field')));
+  $type->setThirdPartySetting('uc_product', 'product', (bool) $form_state->getValue(['uc_product', 'product']));
+  $type->setThirdPartySetting('uc_product', 'shippable', (bool) $form_state->getValue(['uc_product', 'shippable']));
+  $type->setThirdPartySetting('uc_product', 'image_field', $form_state->getValue(['uc_product', 'image_field']));
 }
 
 /**
  * Implements hook_entity_extra_field_info().
  */
 function uc_product_entity_extra_field_info() {
-  $extra = array();
+  $extra = [];
 
   foreach (uc_product_types() as $type) {
-    $extra['node'][$type] = array(
-      'display' => array(
-        'display_price' => array(
+    $extra['node'][$type] = [
+      'display' => [
+        'display_price' => [
           'label' => t('Display price'),
           'description' => t('High-visibility sell price.'),
           'weight' => -1,
-        ),
-        'add_to_cart' => array(
+        ],
+        'add_to_cart' => [
           'label' => t('Add to cart form'),
           'description' => t('Add to cart form'),
           'weight' => 10,
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
   }
 
   return $extra;
@@ -440,19 +440,19 @@ function uc_product_entity_bundle_field_info(EntityTypeInterface $entity_type, $
       ->setCustomStorage(TRUE)
       ->setDefaultValue('')
       ->setSetting('max_length', 40)
-      ->setDisplayOptions('form', array(
+      ->setDisplayOptions('form', [
         'type' => 'string_textfield',
         'weight' => 1,
-        'settings' => array(
+        'settings' => [
           'size' => 32,
-        ),
-      ))
+        ],
+      ])
       ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'type' => 'string',
         'label' => 'inline',
         'weight' => 1,
-      ))
+      ])
       ->setDisplayConfigurable('view', TRUE);
 
     $fields['cost'] = BaseFieldDefinition::create('uc_price')
@@ -474,16 +474,16 @@ function uc_product_entity_bundle_field_info(EntityTypeInterface $entity_type, $
       ->setCustomStorage(TRUE)
       ->setDefaultValue('0.00')
       ->setSetting('min', 0)
-      ->setDisplayOptions('form', array(
+      ->setDisplayOptions('form', [
         'type' => 'uc_price',
         'weight' => 2,
-      ))
+      ])
       ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'type' => 'uc_price',
         'label' => 'inline',
         'weight' => 2,
-      ))
+      ])
       ->setDisplayConfigurable('view', TRUE);
 
     $fields['shippable'] = BaseFieldDefinition::create('boolean')
@@ -492,13 +492,13 @@ function uc_product_entity_bundle_field_info(EntityTypeInterface $entity_type, $
       ->setDefaultValue(NodeType::load($bundle)->getThirdPartySetting('uc_product', 'shippable', TRUE))
       ->setSetting('on_label', t('Product is shippable'))
       ->setSetting('off_label', t('Product is not shippable'))
-      ->setDisplayOptions('form', array(
+      ->setDisplayOptions('form', [
         'type' => 'boolean_checkbox',
-        'settings' => array(
+        'settings' => [
           'display_label' => TRUE,
-        ),
+        ],
         'weight' => 3,
-      ))
+      ])
       ->setDisplayConfigurable('form', TRUE);
 
     $fields['weight'] = BaseFieldDefinition::create('uc_weight')
@@ -509,16 +509,16 @@ function uc_product_entity_bundle_field_info(EntityTypeInterface $entity_type, $
         'value' => 0,
         'units' => \Drupal::config('uc_store.settings')->get('weight.units'),
       ])
-      ->setDisplayOptions('form', array(
+      ->setDisplayOptions('form', [
         'type' => 'uc_weight',
         'weight' => 4,
-      ))
+      ])
       ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'type' => 'uc_weight',
         'label' => 'inline',
         'weight' => 4,
-      ))
+      ])
       ->setDisplayConfigurable('view', TRUE);
 
     $fields['dimensions'] = BaseFieldDefinition::create('uc_dimensions')
@@ -531,16 +531,16 @@ function uc_product_entity_bundle_field_info(EntityTypeInterface $entity_type, $
         'height' => 0,
         'units' => \Drupal::config('uc_store.settings')->get('length.units'),
       ])
-      ->setDisplayOptions('form', array(
+      ->setDisplayOptions('form', [
         'type' => 'uc_dimensions',
         'weight' => 5,
-      ))
+      ])
       ->setDisplayConfigurable('form', TRUE)
-      ->setDisplayOptions('view', array(
+      ->setDisplayOptions('view', [
         'type' => 'uc_dimensions',
         'label' => 'inline',
         'weight' => 5,
-      ))
+      ])
       ->setDisplayConfigurable('view', TRUE);
 
     $fields['pkg_qty'] = BaseFieldDefinition::create('integer')
@@ -595,7 +595,7 @@ function uc_product_uc_store_status() {
       . ' ' . t('(This action is not required and should not be taken if you do not need images or have implemented your own image support.)');
   }
 
-  return array(array('status' => $status, 'title' => t('Images'), 'desc' => $description));
+  return [['status' => $status, 'title' => t('Images'), 'desc' => $description]];
 }
 
 /**
@@ -604,36 +604,36 @@ function uc_product_uc_store_status() {
 function uc_product_uc_cart_display($item) {
   $node = $item->nid->entity;
 
-  $element = array();
-  $element['nid'] = array('#type' => 'value', '#value' => $node->id());
-  $element['module'] = array('#type' => 'value', '#value' => 'uc_product');
-  $element['remove'] = array('#type' => 'submit', '#value' => t('Remove'));
+  $element = [];
+  $element['nid'] = ['#type' => 'value', '#value' => $node->id()];
+  $element['module'] = ['#type' => 'value', '#value' => 'uc_product'];
+  $element['remove'] = ['#type' => 'submit', '#value' => t('Remove')];
 
   if ($node->access('view')) {
-    $element['title'] = array(
+    $element['title'] = [
       '#type' => 'link',
       '#title' => $item->title,
       '#url' => $node->toUrl(),
-    );
+    ];
   }
   else {
-    $element['title'] = array(
+    $element['title'] = [
       '#markup' => $item->title,
-    );
+    ];
   }
 
   $element['#total'] = $item->price->value * $item->qty->value;
-  $element['#suffixes'] = array();
-  $element['data'] = array('#type' => 'hidden', '#value' => serialize($item->data->first()->toArray()));
-  $element['qty'] = array(
+  $element['#suffixes'] = [];
+  $element['data'] = ['#type' => 'hidden', '#value' => serialize($item->data->first()->toArray())];
+  $element['qty'] = [
     '#type' => 'uc_quantity',
     '#title' => t('Quantity'),
     '#title_display' => 'invisible',
     '#default_value' => $item->qty->value,
     '#allow_zero' => TRUE,
-  );
+  ];
 
-  $element['description'] = array('#markup' => '');
+  $element['description'] = ['#markup' => ''];
   if ($description = uc_product_get_description($item)) {
     $element['description']['#markup'] = $description;
   }
@@ -644,7 +644,7 @@ function uc_product_uc_cart_display($item) {
 /**
  * Implements hook_uc_update_cart_item().
  */
-function uc_product_uc_update_cart_item($nid, $data = array(), $qty, $cid = NULL) {
+function uc_product_uc_update_cart_item($nid, $data = [], $qty, $cid = NULL) {
   $cart = \Drupal::service('uc_cart.manager')->get($cid);
 
   $result = \Drupal::entityQuery('uc_cart_item')
@@ -671,16 +671,16 @@ function uc_product_uc_update_cart_item($nid, $data = array(), $qty, $cid = NULL
 function uc_product_uc_add_to_cart_data($form_values) {
   if (isset($form_values['nid'])) {
     $node = Node::load($form_values['nid']);
-    return array(
+    return [
       'shippable' => $node->shippable->value,
       'type' => $node->getType(),
-    );
+    ];
   }
   else {
-    return array(
+    return [
       'shippable' => NodeType::load('product')->getThirdPartySetting('uc_product', 'shippable', TRUE),
       'type' => 'product',
-    );
+    ];
   }
 }
 
@@ -694,7 +694,7 @@ function uc_product_types() {
 /**
  * Determines whether or not a given node or node type is a product.
  *
- * @param $node
+ * @param mixed $node
  *   Either a full node object/array, a node ID, or a node type.
  *
  * @return bool
@@ -758,7 +758,7 @@ function uc_product_is_product_form(FormStateInterface $form_state) {
  */
 function uc_product_get_models($nid, $add_blank = TRUE) {
   // Get any modules' SKUs on this node.
-  $models = \Drupal::moduleHandler()->invokeAll('uc_product_models', array($nid));
+  $models = \Drupal::moduleHandler()->invokeAll('uc_product_models', [$nid]);
   // Add the base SKU of the node.
   $models[] = db_query('SELECT model FROM {uc_products} WHERE nid = :nid', [':nid' => $nid])->fetchField();
 
@@ -772,7 +772,7 @@ function uc_product_get_models($nid, $add_blank = TRUE) {
     if ($add_blank === TRUE) {
       $add_blank = t('- Any -');
     }
-    return array('' => $add_blank) + $models;
+    return ['' => $add_blank] + $models;
   }
 
   return $models;
@@ -793,23 +793,23 @@ function uc_product_get_models($nid, $add_blank = TRUE) {
 function uc_product_get_picture($nid, $style = 'uc_product') {
   $product = Node::load($nid);
   if (!$product) {
-    return array();
+    return [];
   }
   $field_name = $product->type->entity->getThirdPartySetting('uc_product', 'image_field', 'uc_product_image');
-  $output = array();
+  $output = [];
 
   if ($field_name && !empty($product->$field_name)) {
-    $elements = $product->$field_name->view(array(
+    $elements = $product->$field_name->view([
       'label' => 'hidden',
       'type' => 'image',
-      'settings' => array(
+      'settings' => [
         'image_link' => 'content',
         'image_style' => $style,
-      ),
-    ));
+      ],
+    ]);
 
     // Extract the part of the render array we need.
-    $output = isset($elements[0]) ? $elements[0] : array();
+    $output = isset($elements[0]) ? $elements[0] : [];
     if (isset($elements['#access'])) {
       $output['#access'] = $elements['#access'];
     }
@@ -834,7 +834,7 @@ function uc_product_get_picture($nid, $style = 'uc_product') {
  */
 function uc_product_get_description($product) {
   // Run through implementations of hook_uc_product_description().
-  $description = \Drupal::moduleHandler()->invokeAll('uc_product_description', array($product));
+  $description = \Drupal::moduleHandler()->invokeAll('uc_product_description', [$product]);
 
   // Now allow alterations via hook_uc_product_description_alter().
   \Drupal::moduleHandler()->alter('uc_product_description', $description, $product);
@@ -887,7 +887,7 @@ function uc_product_feature_save(&$data) {
   }
   else {
     db_merge('uc_product_features')
-      ->key(array('pfid' => $data['pfid']))
+      ->key(['pfid' => $data['pfid']])
       ->fields($data)
       ->execute();
     drupal_set_message(t('The product feature has been updated.'));
@@ -959,7 +959,7 @@ function uc_product_node_type_insert(NodeTypeInterface $type) {
   if ($type->getThirdPartySetting('uc_product', 'product', FALSE)) {
     uc_product_add_default_image_field($type->id());
 
-    $defaults = array(
+    $defaults = [
       'model' => '',
       'cost' => 0,
       'price' => 0,
@@ -972,14 +972,14 @@ function uc_product_node_type_insert(NodeTypeInterface $type) {
       'pkg_qty' => 1,
       'default_qty' => 1,
       'shippable' => $type->getThirdPartySetting('uc_product', 'shippable', TRUE),
-    );
+    ];
     $result = db_query('SELECT n.vid, n.nid FROM {node} n LEFT JOIN {uc_products} p ON n.vid = p.vid WHERE n.type = :type AND p.vid IS NULL', [':type' => $type->id()]);
     foreach ($result as $node) {
       db_insert('uc_products')
-        ->fields($defaults + array(
+        ->fields($defaults + [
           'nid' => $node->nid,
           'vid' => $node->vid,
-        ))
+        ])
         ->execute();
     }
   }
@@ -1015,9 +1015,9 @@ function uc_product_add_default_image_field($type = NULL) {
       'field_name' => 'uc_product_image',
       'type' => 'image',
       'cardinality' => FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED,
-      'settings' => array(
+      'settings' => [
         'display_field' => 0,
-      ),
+      ],
     ])->save();
   }
 
@@ -1046,23 +1046,23 @@ function uc_product_add_default_image_field($type = NULL) {
         ->save();
 
       entity_get_form_display('node', $type, 'default')
-        ->setComponent($field_name, array(
+        ->setComponent($field_name, [
           'type' => 'image_image',
-        ))
+        ])
         ->save();
 
       entity_get_display('node', $type, 'default')
-        ->setComponent($field_name, array(
+        ->setComponent($field_name, [
           'label' => 'hidden',
           'type' => 'uc_product_image',
-        ))
+        ])
         ->save();
 
       entity_get_display('node', $type, 'teaser')
-        ->setComponent($field_name, array(
+        ->setComponent($field_name, [
           'label' => 'hidden',
           'type' => 'uc_product_image',
-        ))
+        ])
         ->save();
     }
   }
