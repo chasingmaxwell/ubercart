@@ -1,17 +1,26 @@
 <?php
 
-namespace Drupal\uc_store\Tests;
+namespace Drupal\Tests\uc_store\Functional;
 
 use Drupal\Component\Utility\SafeMarkup;
-use Drupal\simpletest\WebTestBase;
+use Drupal\Core\Test\AssertMailTrait;
+use Drupal\Tests\BrowserTestBase;
 use Drupal\uc_country\Entity\Country;
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_order\Entity\OrderProduct;
 
 /**
- * Base class for Ubercart Simpletest tests.
+ * Base class for Ubercart PHPUnit browser tests.
  */
-abstract class UbercartTestBase extends WebTestBase {
+abstract class UbercartBrowserTestBase extends BrowserTestBase {
+  use AssertMailTrait;
+
+  /**
+   * The profile to install as a basis for testing.
+   *
+   * @var string
+   */
+  protected $profile = 'testing';
 
   /**
    * The standard modules to be loaded for all tests.
@@ -411,7 +420,7 @@ abstract class UbercartTestBase extends WebTestBase {
    *   TRUE on pass, FALSE on fail.
    */
   protected function assertNoMailString($field_name, $string, $email_depth, $message = '', $group = 'Other') {
-    $mails = $this->drupalGetMails();
+    $mails = $this->getMails();
     $string_found = FALSE;
     for ($i = count($mails) - 1; $i >= count($mails) - $email_depth && $i >= 0; $i--) {
       $mail = $mails[$i];

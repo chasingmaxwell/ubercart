@@ -8,14 +8,18 @@ use Drupal\filter\Entity\FilterFormat;
 use Drupal\uc_store\Tests\UbercartTestBase;
 
 /**
- * Tests the cart links functionality.
+ * Tests the Cart Links functionality.
  *
  * @group Ubercart
  */
 class CartLinksTest extends UbercartTestBase {
 
   public static $modules = ['uc_cart_links', 'uc_attribute', 'help', 'block'];
-  public static $adminPermissions = ['administer cart links', 'view cart links report', 'access administration pages'];
+  public static $adminPermissions = [
+    'administer cart links',
+    'view cart links report',
+    'access administration pages',
+  ];
 
   /**
    * {@inheritdoc}
@@ -84,7 +88,7 @@ class CartLinksTest extends UbercartTestBase {
     $this->assertFieldByName(
       'uc_cart_links_messages',
       '',
-      'Cart Links messages  is empty.'
+      'Cart Links messages is empty.'
     );
     $this->assertFieldByName(
       'uc_cart_links_restrictions',
@@ -116,8 +120,8 @@ class CartLinksTest extends UbercartTestBase {
     $link_data  = $link_array['data'];
 
     // Need to test incorrect links as well:
-    //   links which add invalid attributes.
-    //   links which omit required attributes.
+    // - links which add invalid attributes.
+    // - links which omit required attributes.
 
     // Create a page containing these links.
     $page = $this->createCartLinksPage($cart_links);
@@ -384,7 +388,7 @@ class CartLinksTest extends UbercartTestBase {
     // Now create a special redirect page for bad links.
     $redirect_page = $this->drupalCreateNode([
         'body' => [
-          0 => ['value' => 'ERROR: Invalid Cart Link!']
+          0 => ['value' => 'ERROR: Invalid Cart Link!'],
         ],
         'promote' => 0,
       ]);
@@ -653,7 +657,7 @@ class CartLinksTest extends UbercartTestBase {
    * Must be logged in with 'administer cart links' permission.
    *
    * @param string $url
-   *   Relative URL of the destination page for the redirect.  Omit leading '/'.
+   *   Relative URL of the destination page for the redirect. Omit leading '/'.
    */
   protected function setCartLinksUiRedirect($url = '') {
     $this->drupalPostForm(
@@ -698,7 +702,7 @@ class CartLinksTest extends UbercartTestBase {
         0 => [
           'value' => !empty($links) ? \Drupal::service('renderer')->renderPlain($item_list) : $this->randomMachineName(128),
           'format' => 'full_html',
-        ]
+        ],
       ],
       'promote' => 0,
     ];
@@ -740,7 +744,7 @@ class CartLinksTest extends UbercartTestBase {
       }
     }
 
-   // ['required' => TRUE]
+    // ['required' => TRUE]
 
     // Get the options.
     $attribute = uc_attribute_load($attribute->aid);
@@ -754,8 +758,8 @@ class CartLinksTest extends UbercartTestBase {
     // Load the attributes back.
     $loaded_attributes = uc_attribute_load_multiple($aids);
 
-      // @todo: add attributes of all 4 types.
-      // @todo: create both required and not required attributes.
+    // @todo: add attributes of all 4 types.
+    // @todo: create both required and not required attributes.
 
     // Add the selected attributes to the product.
     foreach ($loaded_attributes as $loaded_attribute) {
@@ -764,7 +768,6 @@ class CartLinksTest extends UbercartTestBase {
 
     return $product;
   }
-
 
   /**
    * Creates Cart Links pointing to the given product(s).
@@ -785,7 +788,7 @@ class CartLinksTest extends UbercartTestBase {
    * @return array
    *   Array containing Cart Links and link metadata.
    */
-  protected function createValidCartLinks($products = []) {
+  protected function createValidCartLinks(array $products = []) {
     foreach ($products as $key => $product) {
       $nid   = $product->id();
       $title = $product->label();
@@ -808,19 +811,21 @@ class CartLinksTest extends UbercartTestBase {
       $attributes = uc_product_get_attributes($nid);
       foreach ($attributes as $attribute) {
         // If this is textfield, radio, or select option, then
-        // only 1 option allowed.  If checkbox, multiple are allowed.
+        // only 1 option allowed. If checkbox, multiple are allowed.
         switch ($attribute->display) {
           case 0:  // textfield
             $value = $this->randomMachineName(12);  // Textfield
             $link_data[$key]['attributes'][$attribute->label][] = $value;
             $cart_links[$key] .= '_a' . $attribute->aid . 'o' . $value;
             break;
+
           case 1:  // select
           case 2:  // radios
             $option = $attribute->options[array_rand($attribute->options)];
             $link_data[$key]['attributes'][$attribute->label][] = $option->name;
             $cart_links[$key] .= '_a' . $attribute->aid . 'o' . $option->oid;
             break;
+
           case 3:  // checkboxes
             foreach ($attribute->options as $option) {
               $link_data[$key]['attributes'][$attribute->label][] = $option->name;
