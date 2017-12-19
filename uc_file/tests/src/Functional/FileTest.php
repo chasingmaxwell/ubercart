@@ -1,24 +1,30 @@
 <?php
 
-namespace Drupal\uc_file\Tests;
+namespace Drupal\Tests\uc_file\Functional;
+
+use Drupal\Tests\Traits\Core\CronRunTrait;
 
 /**
  * Tests the file purchase functionality.
  *
- * @group Ubercart
+ * @group ubercart
  */
 class FileTest extends FileTestBase {
+  use CronRunTrait;
 
+  /**
+   * Tests that purchased files may be downloaded after checkout.
+   */
   public function testFilePurchaseCheckout() {
     // Add file download feature to the test product.
     $filename = $this->getTestFile();
     $this->drupalLogin($this->adminUser);
-    $this->drupalPostForm('node/' . $this->product->id() . '/edit/features', ['feature' => 'file'], t('Add'));
+    $this->drupalPostForm('node/' . $this->product->id() . '/edit/features', ['feature' => 'file'], 'Add');
     $edit = [
       'uc_file_model' => '',
       'uc_file_filename' => $filename,
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save feature'));
+    $this->drupalPostForm(NULL, $edit, 'Save feature');
 
     // Check out with the test product.
     $method = $this->createPaymentMethod('other');

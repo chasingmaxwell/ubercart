@@ -78,8 +78,8 @@ class PaymentPaneTest extends UbercartBrowserTestBase {
     $this->assertNoText('No payment required');
     $this->assertNoText("Subtotal:\n      $0.00");
 
-
-    // Check that a mixture of free and paid products cannot be purchased for free.
+    // Check that a mixture of free and paid products
+    // cannot be purchased for free.
     $this->addToCart($free_product);
     $this->drupalGet('cart/checkout');
     $this->assertEscaped($check['label']);

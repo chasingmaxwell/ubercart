@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\uc_file\Tests;
+namespace Drupal\Tests\uc_file\Functional;
 
 use Drupal\uc_order\Entity\Order;
 use Drupal\user\Entity\User;
@@ -8,7 +8,7 @@ use Drupal\user\Entity\User;
 /**
  * Tests file download upon checkout.
  *
- * @group Ubercart
+ * @group ubercart
  */
 class FileCheckoutTest extends FileTestBase {
 
@@ -34,14 +34,17 @@ class FileCheckoutTest extends FileTestBase {
       ->save();
   }
 
+  /**
+   * Tests that purchased files may be downloaded after checkout.
+   */
   public function testCheckoutFileDownload() {
     $this->drupalLogin($this->adminUser);
     $method = $this->createPaymentMethod('other');
 
     // Add file download to the test product.
     $filename = $this->getTestFile();
-    $this->drupalPostForm('node/' . $this->product->id() . '/edit/features', ['feature' => 'file'], t('Add'));
-    $this->drupalPostForm(NULL, ['uc_file_filename' => $filename], t('Save feature'));
+    $this->drupalPostForm('node/' . $this->product->id() . '/edit/features', ['feature' => 'file'], 'Add');
+    $this->drupalPostForm(NULL, ['uc_file_filename' => $filename], 'Save feature');
 
     // Process an anonymous, shippable order.
     $order = $this->createOrder([
@@ -59,7 +62,7 @@ class FileCheckoutTest extends FileTestBase {
     // $account = User::load($uid);
     // $this->assertTrue($account->hasFile($fid), 'New user was granted file.');
     $order = Order::load($order->id());
-    $this->assertEqual($order->getStatusId(), 'payment_received', 'Shippable order was set to payment received.');
+    $this->assertEquals($order->getStatusId(), 'payment_received', 'Shippable order was set to payment received.');
 
     // Test that the file shows up on the user's purchased files list.
     //$this->drupalGet('user/' . $uid . '/purchased-files');
@@ -87,7 +90,7 @@ class FileCheckoutTest extends FileTestBase {
     // @todo Re-enable when Rules is available.
     // $this->assertTrue($account->hasFile($fid), 'Existing user was granted file.');
     $order = Order::load($order->id());
-    $this->assertEqual($order->getStatusId(), 'completed', 'Non-shippable order was set to completed.');
+    $this->assertEquals($order->getStatusId(), 'completed', 'Non-shippable order was set to completed.');
 
     // 3 e-mails: customer invoice, admin invoice, file download.
     $this->assertNoMailString('subject', 'Account details', 3, 'New account email was sent');

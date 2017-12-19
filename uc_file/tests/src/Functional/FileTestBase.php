@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\uc_file\Tests;
+namespace Drupal\Tests\uc_file\Functional;
 
-use Drupal\uc_store\Tests\UbercartTestBase;
+use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 
 /**
  * Base class for file download feature tests.
  */
-abstract class FileTestBase extends UbercartTestBase {
+abstract class FileTestBase extends UbercartBrowserTestBase {
 
   public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_file'];
 
@@ -51,36 +51,34 @@ abstract class FileTestBase extends UbercartTestBase {
   public function setTestFile($filename) {
     // First delete existing file, if set.
     if (!empty($this->testFilename)) {
-      \Drupal::service('file_system')->unlink($this->getTempFilesDirectory() . '/' . $this->testFilename);
+      \Drupal::service('file_system')->unlink($this->tempFilesDirectory . '/' . $this->testFilename);
     }
 
     // Copy new file to downloads directory.
     copy(
       $filename,
-      $this->getTempFilesDirectory() . '/' . basename($filename)
+      $this->tempFilesDirectory . '/' . basename($filename)
     );
     $this->testFilename = basename($filename);
   }
 
   /**
    * Helper function to configure the file downloads directory.
+   *
+   * Uses BrowserTestBase::tempFilesDirectory as a place to store the downloads
+   * for the tests, but this is NOT where you'd put the downloads directory on
+   * a live site. On a live site, it should be outside the web root.
    */
   protected function configureDownloadDirectory() {
-    /*
-     * Use $this->getTempFilesDirectory() as a place to store the downloads for
-     * the tests, but this is NOT where you'd put the downloads directory on a
-     * live site. On a live site, it should be outside the web root.
-     */
-
     $this->drupalPostForm(
       'admin/store/config/file',
-      ['base_dir' => $this->getTempFilesDirectory()],
+      ['base_dir' => $this->tempFilesDirectory],
       t('Save configuration')
     );
 
     $this->assertFieldByName(
       'base_dir',
-      $this->getTempFilesDirectory(),
+      $this->tempFilesDirectory,
       'Download file path has been set.'
     );
   }
@@ -90,7 +88,7 @@ abstract class FileTestBase extends UbercartTestBase {
    */
   protected function tearDown() {
     // Cleanup - delete our test file.
-    \Drupal::service('file_system')->unlink($this->getTempFilesDirectory() . '/' . $this->testFilename);
+    \Drupal::service('file_system')->unlink($this->tempFilesDirectory . '/' . $this->testFilename);
     parent::tearDown();
   }
 

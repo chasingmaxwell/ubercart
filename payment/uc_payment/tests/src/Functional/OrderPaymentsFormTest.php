@@ -12,7 +12,11 @@ use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 class OrderPaymentsFormTest extends UbercartBrowserTestBase {
 
   public static $modules = ['uc_payment', 'uc_payment_pack'];
-  public static $adminPermissions = ['view payments', 'manual payments', 'delete payments'];
+  public static $adminPermissions = [
+    'view payments',
+    'manual payments',
+    'delete payments',
+  ];
 
   /**
    * Number of digits after decimal point, for currency rounding.
@@ -43,13 +47,15 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
     $method = $this->createPaymentMethod('check');
     $this->addToCart($this->product);
     $order = $this->checkout();
-    // Add a payment of $1 so that the order total and current balance are different.
+    // Add a payment of $1 so that the order total and
+    // current balance are different.
     uc_payment_enter($order->id(), 'check', 1.0);
 
     // Log in as admin user to test order payments form.
     $this->drupalLogin($this->adminUser);
 
-    // Goto order payments form and confirm order total and payments total of $1 show up.
+    // Goto order payments form and confirm order total and
+    // payments total of $1 show up.
     $this->drupalGet('admin/store/orders/' . $order->id() . '/payments');
     $this->assertRaw(
       '<span class="uc-price">' . uc_currency_format($order->getTotal()) . '</span>',
@@ -138,7 +144,8 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
       'Current balance is correct'
     );
 
-    // Go to order log and ensure two payments and one payment deletion were logged.
+    // Go to order log and ensure two payments and
+    // one payment deletion were logged.
     $this->drupalGet('admin/store/orders/' . $order->id() . '/log');
     $this->assertText(
       'Check payment for ' . uc_currency_format($first_payment) . ' entered.',

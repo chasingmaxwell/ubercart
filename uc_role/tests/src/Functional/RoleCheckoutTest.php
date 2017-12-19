@@ -1,17 +1,17 @@
 <?php
 
-namespace Drupal\uc_role\Tests;
+namespace Drupal\Tests\uc_role\Functional;
 
 use Drupal\uc_order\Entity\Order;
-use Drupal\uc_store\Tests\UbercartTestBase;
+use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 use Drupal\user\Entity\User;
 
 /**
  * Tests role assignment upon checkout.
  *
- * @group Ubercart
+ * @group ubercart
  */
-class RoleCheckoutTest extends UbercartTestBase {
+class RoleCheckoutTest extends UbercartBrowserTestBase {
 
   public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_role'];
 
@@ -64,9 +64,9 @@ class RoleCheckoutTest extends UbercartTestBase {
     // @todo Re-enable when Rules is available.
     // $this->assertTrue($account->hasRole($rid), 'New user was granted role.');
     $order = Order::load($order->id());
-    $this->assertEqual($order->getStatusId(), 'payment_received', 'Shippable order was set to payment received.');
+    $this->assertEquals($order->getStatusId(), 'payment_received', 'Shippable order was set to payment received.');
 
-    // 4 e-mails: new account, customer invoice, admin invoice, role assignment
+    // 4 e-mails: new account, customer invoice, admin invoice, role assignment.
     $this->assertMailString('subject', 'Account details', 4, 'New account email was sent');
     $this->assertMailString('subject', 'Your Order at Ubercart', 4, 'Customer invoice was sent');
     $this->assertMailString('subject', 'New Order at Ubercart', 4, 'Admin notification was sent');
@@ -86,9 +86,9 @@ class RoleCheckoutTest extends UbercartTestBase {
     uc_payment_enter($order->id(), 'other', $order->getTotal());
     $account = User::load($this->customer->id());
     // @todo Re-enable when Rules is available.
-    // $this->assertTrue($account->hasRole($rid), 'Existing user was granted role.');
+    //$this->assertTrue($account->hasRole($rid), 'Existing user was granted role.');
     $order = Order::load($order->id());
-    $this->assertEqual($order->getStatusId(), 'completed', 'Non-shippable order was set to completed.');
+    $this->assertEquals($order->getStatusId(), 'completed', 'Non-shippable order was set to completed.');
 
     // 3 e-mails: customer invoice, admin invoice, role assignment.
     $this->assertNoMailString('subject', 'Account details', 4, 'New account email was sent');
