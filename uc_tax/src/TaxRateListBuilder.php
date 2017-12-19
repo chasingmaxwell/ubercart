@@ -124,37 +124,37 @@ class TaxRateListBuilder extends DraggableListBuilder implements FormInterface {
     }, $this->taxRatePluginManager->getDefinitions());
     uasort($options, 'strnatcasecmp');
 
-    $form['add'] = array(
+    $form['add'] = [
       '#type' => 'details',
       '#title' => $this->t('Add a tax rate'),
       '#open' => TRUE,
-      '#attributes' => array(
-        'class' => array('container-inline'),
-      ),
-    );
-    $form['add']['plugin'] = array(
+      '#attributes' => [
+        'class' => ['container-inline'],
+      ],
+    ];
+    $form['add']['plugin'] = [
       '#type' => 'select',
       '#title' => $this->t('Type'),
       '#empty_option' => $this->t('- Choose -'),
       '#options' => $options,
-    );
-    $form['add']['submit'] = array(
+    ];
+    $form['add']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Add tax rate'),
-      '#validate' => array('::validateAddMethod'),
-      '#submit' => array('::submitAddMethod'),
-      '#limit_validation_errors' => array(array('plugin')),
-    );
+      '#validate' => ['::validateAddMethod'],
+      '#submit' => ['::submitAddMethod'],
+      '#limit_validation_errors' => [['plugin']],
+    ];
 
     $form = parent::buildForm($form, $form_state);
     $form[$this->entitiesKey]['#empty'] = $this->t('No tax rates have been configured yet.');
 
     $form['actions']['#type'] = 'actions';
-    $form['actions']['submit'] = array(
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Save configuration'),
       '#button_type' => 'primary',
-    );
+    ];
 
     return $form;
   }

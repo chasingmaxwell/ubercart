@@ -18,8 +18,11 @@ use Drupal\uc_order\OrderInterface;
  */
 class TaxDisplay extends LineItemPluginBase {
 
+  /**
+   * {@inheritdoc}
+   */
   public function display(OrderInterface $order) {
-    $lines = array();
+    $lines = [];
     $taxes = uc_tax_calculate($order);
     foreach ($taxes as $tax) {
       foreach ($order->line_items as $line_item) {

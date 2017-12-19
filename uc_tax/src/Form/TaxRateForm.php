@@ -39,44 +39,44 @@ class TaxRateForm extends EntityForm {
    */
   public function form(array $form, FormStateInterface $form_state) {
     $definition = $this->plugin->getPluginDefinition();
-    $form['type'] = array(
+    $form['type'] = [
       '#type' => 'item',
       '#title' => $this->t('Type'),
       '#markup' => $definition['label'],
-    );
+    ];
 
-    $form['label'] = array(
+    $form['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
       '#maxlength' => 255,
       '#default_value' => $this->entity->label(),
       '#description' => $this->t('The tax rate name shown to the customer at checkout.'),
       '#required' => TRUE,
-    );
-    $form['id'] = array(
+    ];
+    $form['id'] = [
       '#type' => 'machine_name',
       '#default_value' => $this->entity->id(),
-      '#machine_name' => array(
+      '#machine_name' => [
         'exists' => '\Drupal\uc_tax\Entity\TaxRate::load',
-      ),
+      ],
       '#disabled' => !$this->entity->isNew(),
-    );
+    ];
 
     $form['settings'] = $this->plugin->buildConfigurationForm([], $form_state);
     $form['settings']['#tree'] = TRUE;
 
-    $form['shippable'] = array(
+    $form['shippable'] = [
       '#type' => 'radios',
       '#title' => $this->t('Taxed products'),
-      '#options' => array(
+      '#options' => [
         0 => $this->t('Apply tax to any product regardless of its shippability.'),
         1 => $this->t('Apply tax to shippable products only.'),
-      ),
+      ],
       '#default_value' => (int) $this->entity->isForShippable(),
-    );
+    ];
 
     // TODO: Remove the need for a special case for product kit module.
-    $options = array();
+    $options = [];
     foreach (node_type_get_names() as $type => $name) {
       if ($type != 'product_kit' && uc_product_is_product($type)) {
         $options[$type] = $name;
@@ -84,15 +84,15 @@ class TaxRateForm extends EntityForm {
     }
     $options['blank-line'] = $this->t('"Blank line" product');
 
-    $form['product_types'] = array(
+    $form['product_types'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Taxed product types'),
       '#description' => $this->t('Apply taxes to the specified product types/classes.'),
       '#default_value' => $this->entity->getProductTypes(),
       '#options' => $options,
-    );
+    ];
 
-    $options = array();
+    $options = [];
     $definitions = \Drupal::service('plugin.manager.uc_order.line_item')->getDefinitions();
     foreach ($definitions as $id => $line_item) {
       if (!in_array($id, ['subtotal', 'tax_subtotal', 'total', 'tax_display'])) {
@@ -100,26 +100,26 @@ class TaxRateForm extends EntityForm {
       }
     }
 
-    $form['line_item_types'] = array(
+    $form['line_item_types'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Taxed line items'),
       '#description' => $this->t('Adds the checked line item types to the total before applying this tax.'),
       '#default_value' => $this->entity->getLineItemTypes(),
       '#options' => $options,
-    );
+    ];
 
-    $form['display_include'] = array(
+    $form['display_include'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Include this tax when displaying product prices.'),
       '#default_value' => $this->entity->isIncludedInPrice(),
-    );
+    ];
 
-    $form['inclusion_text'] = array(
+    $form['inclusion_text'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Tax inclusion text'),
       '#description' => $this->t('This text will be displayed near the price to indicate that it includes tax.'),
       '#default_value' => $this->entity->getInclusionText(),
-    );
+    ];
 
     return parent::form($form, $form_state);
   }
@@ -151,11 +151,11 @@ class TaxRateForm extends EntityForm {
     // Modify submit button text.
     $actions['submit']['#value'] = $this->t('Save tax rate');
     // Add a cancel link to take us back to the list builder.
-    $actions['cancel'] = array(
+    $actions['cancel'] = [
       '#type' => 'link',
       '#title' => $this->t('Cancel'),
       '#url' => Url::fromRoute('entity.uc_tax_rate.collection'),
-    );
+    ];
 
     return $actions;
   }

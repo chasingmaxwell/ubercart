@@ -13,15 +13,15 @@
 /**
  * Calculates tax line items for an order.
  *
- * @param $order
+ * @param mixed $order
  *   An order object or an order id.
  *
- * @return
+ * @return array
  *   An array of tax line item objects keyed by a module-specific id.
  */
 function hook_uc_calculate_tax($order) {
   if (!is_object($order)) {
-    return array();
+    return [];
   }
   if (empty($order->delivery_postal_code)) {
     $order->delivery_postal_code = $order->billing_postal_code;
@@ -33,10 +33,10 @@ function hook_uc_calculate_tax($order) {
     $order->delivery_country = $order->billing_country;
   }
 
-  $order->tax = array();
+  $order->tax = [];
 
   if ($order->getStatusId()) {
-    $use_same_rates = in_array($order->getStateId(), array('payment_received', 'completed'));
+    $use_same_rates = in_array($order->getStateId(), ['payment_received', 'completed']);
   }
   else {
     $use_same_rates = FALSE;
@@ -44,7 +44,7 @@ function hook_uc_calculate_tax($order) {
 
   foreach (uc_tax_rate_load() as $tax) {
     if ($use_same_rates) {
-      foreach ((array)$order->line_items as $old_line) {
+      foreach ((array) $order->line_items as $old_line) {
         if ($old_line['type'] == 'tax' && $old_line['data']['tax_id'] == $tax->id) {
           $tax->rate = $old_line['data']['tax_rate'];
           break;

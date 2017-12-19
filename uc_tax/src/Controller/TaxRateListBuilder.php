@@ -35,13 +35,13 @@ class TaxRateListBuilder extends ConfigEntityListBuilder {
     $row['product_types'] = implode(', ', $entity->getProductTypes());
     $row['line_item_types'] = implode(', ', $entity->getLineItemTypes());
     $row['weight'] = $entity->getWeight();
-//    $row['weight'] = array(
+//    $row['weight'] = [
 //      '#type' => 'weight',
 //      '#default_value' => $entity->getWeight(),
-//      '#attributes' => array('class' => array('uc-tax-method-weight')),
-//    );
+//      '#attributes' => ['class' => ['uc-tax-method-weight']],
+//    ];
 
-    //$row['weight']['#attributes'] = array('class' => array('uc-quote-method-weight'));
+    //$row['weight']['#attributes'] = ['class' => ['uc-quote-method-weight']];
 
     return $row + parent::buildRow($entity);
   }
@@ -51,11 +51,11 @@ class TaxRateListBuilder extends ConfigEntityListBuilder {
    */
   public function buildOperations(EntityInterface $entity) {
     $build = parent::buildOperations($entity);
-    $build['#links']['clone'] = array(
+    $build['#links']['clone'] = [
       'title' => $this->t('Clone'),
       'url' => Url::fromRoute('entity.uc_tax_rate.clone', ['uc_tax_rate' => $entity->id()]),
       'weight' => 10, // 'edit' is 0, 'delete' is 100
-    );
+    ];
 
     uasort($build['#links'], 'Drupal\Component\Utility\SortArray::sortByWeightElement');
     return $build;
@@ -65,19 +65,16 @@ class TaxRateListBuilder extends ConfigEntityListBuilder {
    * {@inheritdoc}
    */
   public function render() {
-    $build['description'] = array(
-      '#markup' => $this->t("<p>This is a list of the tax rates currently"
-        . " defined on your Drupal site.</p><p>You may use the 'Add a tax rate'"
-        . " button to add a new rate, or use the widget in the 'Operations'"
-        . " column to edit, delete, or clone existing tax rates.</p>"),
-    );
+    $build['description'] = [
+      '#markup' => $this->t("<p>This is a list of the tax rates currently defined on your Drupal site.</p><p>You may use the 'Add a tax rate' button to add a new rate, or use the widget in the 'Operations' column to edit, delete, or clone existing tax rates.</p>"),
+    ];
     $build += parent::render();
     $build['table']['#empty'] = $this->t('No tax rates have been configured yet.');
-    $build['table']['#tabledrag'] = array(array(
+    $build['table']['#tabledrag'] = [[
       'action' => 'order',
       'relationship' => 'sibling',
       'group' => 'uc-tax-method-weight',
-    ));
+    ]];
     return $build;
   }
 

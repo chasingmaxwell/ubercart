@@ -33,44 +33,52 @@ class TaxRateMethodsForm extends ConfigFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $tax_config = $this->config('uc_tax.settings');
 
-    $header = array($this->t('Name'), $this->t('Rate'), $this->t('Taxed products'), $this->t('Taxed product types'), $this->t('Taxed line items'), $this->t('Weight'), $this->t('Operations'));
-    $form['methods'] = array(
+    $header = [
+      $this->t('Name'),
+      $this->t('Rate'),
+      $this->t('Taxed products'),
+      $this->t('Taxed product types'),
+      $this->t('Taxed line items'),
+      $this->t('Weight'),
+      $this->t('Operations'),
+    ];
+    $form['methods'] = [
       '#type' => 'table',
       '#header' => $header,
-      '#tabledrag' => array(
-        array(
+      '#tabledrag' => [
+        [
           'action' => 'order',
           'relationship' => 'sibling',
           'group' => 'uc-tax-method-weight',
-        ),
-      ),
+        ],
+      ],
       '#empty' => $this->t('No tax rates have been configured yet.'),
-    );
+    ];
 
-    $rows = array();
+    $rows = [];
     foreach (uc_tax_rate_load() as $rate_id => $rate) {
 
       // Build a list of operations links.
-      $operations = array(
-        'edit' => array(
+      $operations = [
+        'edit' => [
           'title' => $this->t('edit'),
           'url' => Url::fromRoute('uc_tax.rate_edit', ['tax_rate' => $rate_id]),
-        ),
+        ],
 // @todo: Fix when Rules works.
 //      'conditions' => array(
 //        'title' => $this->t('conditions'),
 //        'url' => Url::fromRoute('admin/store/config/taxes/manage/uc_tax_', ['rate_id' => $rate_id]),
 //        'weight' => 5,
-//      ),
-        'clone' => array(
+//      ],
+        'clone' => [
           'title' => $this->t('clone'),
           'url' => Url::fromRoute('uc_tax.rate_clone', ['tax_rate' => $rate_id]),
-        ),
-        'delete' => array(
+        ],
+        'delete' => [
           'title' => $this->t('delete'),
           'url' => Url::fromRoute('uc_tax.rate_delete', ['tax_rate' => $rate_id]),
-        ),
-      );
+        ],
+      ];
 
       // Ensure "delete" comes towards the end of the list.
       if (isset($operations['delete'])) {
@@ -78,32 +86,32 @@ class TaxRateMethodsForm extends ConfigFormBase {
       }
       uasort($operations, 'Drupal\Component\Utility\SortArray::sortByWeightElement');
 
-      $form['methods'][$rate_id]['status'] = array(
+      $form['methods'][$rate_id]['status'] = [
         '#type' => 'checkbox',
         '#title' => $rate->name,
         '#default_value' => $rate->enabled,
-      );
-      $form['methods'][$rate_id]['rate'] = array(
+      ];
+      $form['methods'][$rate_id]['rate'] = [
         '#markup' => $rate->rate * 100 . '%',
-      );
-      $form['methods'][$rate_id]['taxed_products'] = array(
+      ];
+      $form['methods'][$rate_id]['taxed_products'] = [
         '#markup' => $rate->shippable ? $this->t('Shippable products') : $this->t('Any product'),
-      );
-      $form['methods'][$rate_id]['taxed_types'] = array(
+      ];
+      $form['methods'][$rate_id]['taxed_types'] = [
         '#markup' => implode(', ', $rate->taxed_product_types),
-      );
-      $form['methods'][$rate_id]['taxed_line_items'] = array(
+      ];
+      $form['methods'][$rate_id]['taxed_line_items'] = [
         '#markup' => implode(', ', $rate->taxed_line_items),
-      );
-      $form['methods'][$rate_id]['weight'] = array(
+      ];
+      $form['methods'][$rate_id]['weight'] = [
         '#type' => 'weight',
         '#default_value' => $rate->weight,
-        '#attributes' => array('class' => array('uc-tax-method-weight')),
-      );
-      $form['methods'][$rate_id]['operations'] = array(
+        '#attributes' => ['class' => ['uc-tax-method-weight']],
+      ];
+      $form['methods'][$rate_id]['operations'] = [
         '#type' => 'operations',
         '#links' => $operations,
-      );
+      ];
     }
 
     return parent::buildForm($form, $form_state);
@@ -113,8 +121,8 @@ class TaxRateMethodsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $enabled = array();
-    $method_weight = array();
+    $enabled = [];
+    $method_weight = [];
     foreach ($form_state->getValue('methods') as $rate_id => $rate) {
       $enabled[$rate_id] = $rate['status'];
       $method_weight[$rate_id] = $rate['weight'];

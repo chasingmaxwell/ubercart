@@ -17,9 +17,9 @@ use Drupal\uc_order\OrderProductInterface;
  * Determines whether e-commerce tracking code should be added to the page.
  *
  * The Google Analytics module takes care of adding the necessary .js file from
- * Google for tracking general statistics.  The UC Google Analytics module works
- * in conjunction with this code to add e-commerce specific code.  However, the
- * e-commerce code should only be added on appropriate pages.  Generally, the
+ * Google for tracking general statistics. The UC Google Analytics module works
+ * in conjunction with this code to add e-commerce specific code. However, the
+ * e-commerce code should only be added on appropriate pages. Generally, the
  * correct page will be the checkout completion page at cart/checkout/complete.
  * However, because modules can change the checkout flow as necessary, it must
  * be possible for alternate pages to be used.
@@ -50,9 +50,9 @@ function hook_ucga_display() {
  *
  * The UC Google Analytics module constructs function calls that work through
  * the Google Analytics JS API to report purchased items for e-commerce tracking
- * purposes.  The module builds the argument list for each product on an order
+ * purposes. The module builds the argument list for each product on an order
  * and uses this hook to give other modules a chance to alter what gets reported
- * to Google Analytics.  Additional arguments passed to implementations of this
+ * to Google Analytics. Additional arguments passed to implementations of this
  * hook are provided for context.
  *
  *   Nothing should be returned. Hook implementations should receive the $item
@@ -79,7 +79,7 @@ function hook_ucga_item_alter(array &$item, OrderProductInterface $product, arra
  *
  * The UC Google Analytics module constructs function calls that work through
  * the Google Analytics JS API to report order information for e-commerce
- * tracking purposes.  The module builds the argument list for the transaction
+ * tracking purposes. The module builds the argument list for the transaction
  * and uses this hook to give other modules a chance to alter what gets reported
  * to Google Analytics.
  *

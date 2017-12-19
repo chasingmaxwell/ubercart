@@ -22,11 +22,11 @@ class PercentageTaxRate extends TaxRatePluginBase {
    * {@inheritdoc}
    */
   public function defaultConfiguration() {
-    return array(
+    return [
       'rate' => 0,
       'jurisdiction' => '',
       'field' => '',
-    );
+    ];
   }
 
   /**
@@ -41,7 +41,7 @@ class PercentageTaxRate extends TaxRatePluginBase {
       $fields[$field->getName()] = $field->label();
     }
 
-    $form['rate'] = array(
+    $form['rate'] = [
       '#type' => 'number',
       '#title' => $this->t('Default tax rate'),
       '#min' => 0,
@@ -50,22 +50,22 @@ class PercentageTaxRate extends TaxRatePluginBase {
       '#default_value' => $this->configuration['rate'],
       '#field_suffix' => $this->t('% (percent)'),
       '#required' => TRUE,
-    );
-    $form['jurisdiction'] = array(
+    ];
+    $form['jurisdiction'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Jurisdiction'),
       '#description' => $this->t('Administrative label for the taxing authority, used to prepare reports of collected taxes.'),
       '#default_value' => $this->configuration['jurisdiction'],
       '#required' => FALSE,
-    );
+    ];
 
-    $form['field'] = array(
+    $form['field'] = [
       '#type' => 'select',
       '#title' => $this->t('Tax rate override field'),
       '#description' => $this->t('Overrides the default percentage tax rate for a product, when the field is attached to a product content type and has a value.'),
       '#options' => $fields,
       '#default_value' => $this->configuration['field'],
-    );
+    ];
     return $form;
   }
 

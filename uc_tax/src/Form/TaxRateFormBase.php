@@ -16,6 +16,7 @@ class TaxRateFormBase extends EntityForm {
    * Returns a Url to redirect to if the current operation is cancelled.
    *
    * @return \Drupal\Core\Url
+   *   Destination Url for a cancelled operation.
    */
   public function getCancelUrl() {
     return Url::fromRoute('entity.uc_tax_rate.collection');
@@ -28,47 +29,47 @@ class TaxRateFormBase extends EntityForm {
     $form = parent::buildForm($form, $form_state);
     $rate = $this->entity;
 
-    $form['label'] = array(
+    $form['label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Label'),
       '#description' => $this->t('This name will appear to the customer when this tax is applied to an order.'),
       '#default_value' => $rate->label(),
       '#required' => TRUE,
-    );
+    ];
 
-    $form['id'] = array(
+    $form['id'] = [
       '#type' => 'machine_name',
       '#title' => $this->t('Machine name'),
       '#default_value' => $rate->id(),
-      '#machine_name' => array(
-        'exists' => array($this, 'exists'),
+      '#machine_name' => [
+        'exists' => [$this, 'exists'],
         'replace_pattern' => '([^a-z0-9_]+)|(^custom$)',
         'error' => 'The machine-readable name must be unique, and can only contain lowercase letters, numbers, and underscores. Additionally, it can not be the reserved word "custom".',
-      ),
+      ],
 //      '#disabled' => !$this->isNew(),
-    );
+    ];
 
-    $form['rate'] = array(
+    $form['rate'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Rate'),
       '#description' => $this->t('The tax rate as a percent or decimal. Examples: 6%, .06'),
       '#size' => 15,
       '#default_value' => (float) $rate->getRate() * 100.0 . '%',
       '#required' => TRUE,
-    );
+    ];
 
-    $form['shippable'] = array(
+    $form['shippable'] = [
       '#type' => 'radios',
       '#title' => $this->t('Taxed products'),
-      '#options' => array(
+      '#options' => [
         0 => $this->t('Apply tax to any product regardless of its shippability.'),
         1 => $this->t('Apply tax to shippable products only.'),
-      ),
+      ],
       '#default_value' => (int) $rate->isForShippable(),
-    );
+    ];
 
     // TODO: Remove the need for a special case for product kit module.
-    $options = array();
+    $options = [];
     foreach (node_type_get_names() as $type => $name) {
       if ($type != 'product_kit' && uc_product_is_product($type)) {
         $options[$type] = $name;
@@ -76,15 +77,15 @@ class TaxRateFormBase extends EntityForm {
     }
     $options['blank-line'] = $this->t('"Blank line" product');
 
-    $form['product_types'] = array(
+    $form['product_types'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Taxed product types'),
       '#description' => $this->t('Apply taxes to the specified product types/classes.'),
       '#default_value' => $rate->getProductTypes(),
       '#options' => $options,
-    );
+    ];
 
-    $options = array();
+    $options = [];
     $definitions = \Drupal::service('plugin.manager.uc_order.line_item')->getDefinitions();
     foreach ($definitions as $id => $line_item) {
       if (!in_array($id, ['subtotal', 'tax_subtotal', 'total', 'tax_display'])) {
@@ -92,33 +93,33 @@ class TaxRateFormBase extends EntityForm {
       }
     }
 
-    $form['line_item_types'] = array(
+    $form['line_item_types'] = [
       '#type' => 'checkboxes',
       '#title' => $this->t('Taxed line items'),
       '#description' => $this->t('Adds the checked line item types to the total before applying this tax.'),
       '#default_value' => $rate->getLineItemTypes(),
       '#options' => $options,
-    );
+    ];
 
-    $form['weight'] = array(
+    $form['weight'] = [
       '#type' => 'weight',
       '#title' => $this->t('Weight'),
       '#description' => $this->t('Taxes are sorted by weight and then applied to the order sequentially. This value is important when taxes need to include other tax line items.'),
       '#default_value' => $rate->getWeight(),
-    );
+    ];
 
-    $form['display_include'] = array(
+    $form['display_include'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Include this tax when displaying product prices.'),
       '#default_value' => $rate->isIncludedInPrice(),
-    );
+    ];
 
-    $form['inclusion_text'] = array(
+    $form['inclusion_text'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Tax inclusion text'),
       '#description' => $this->t('This text will be displayed near the price to indicate that it includes tax.'),
       '#default_value' => $rate->getInclusionText(),
-    );
+    ];
 
     return $form;
   }

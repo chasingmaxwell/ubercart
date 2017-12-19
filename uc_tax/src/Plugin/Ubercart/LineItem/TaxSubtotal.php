@@ -17,6 +17,9 @@ use Drupal\uc_order\OrderInterface;
  */
 class TaxSubtotal extends LineItemPluginBase {
 
+  /**
+   * {@inheritdoc}
+   */
   public function display(OrderInterface $order) {
     $amount = 0;
     $has_taxes = FALSE;
@@ -47,12 +50,12 @@ class TaxSubtotal extends LineItemPluginBase {
     }
 
     if ($different && $has_taxes) {
-      return array(array(
+      return [[
         'id' => 'tax_subtotal',
         'title' => $this->t('Subtotal excluding taxes'),
         'amount' => $amount,
         'weight' => \Drupal::config('uc_tax.settings')->get('tax_line_item.subtotal_weight'),
-      ));
+      ]];
     }
   }
 

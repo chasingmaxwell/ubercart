@@ -13,6 +13,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * Sets the tax rate ID.
    *
    * @param string $id
+   *   The tax rate ID.
    *
    * @return $this
    */
@@ -30,6 +31,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * The tax rate label.
    *
    * @return string
+   *   The tax rate label.
    */
   public function getLabel();
 
@@ -37,6 +39,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * The tax rate label.
    *
    * @param string $label
+   *   The tax rate label.
    *
    * @return $this
    */
@@ -46,6 +49,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * Product item types subject to this tax rate.
    *
    * @return array
+   *   Product item types subject to this tax rate.
    */
   public function getProductTypes();
 
@@ -53,6 +57,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * Product item types subject to this tax rate.
    *
    * @param array $product_types
+   *   Product item types subject to this tax rate.
    *
    * @return $this
    */
@@ -62,6 +67,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * Line item types subject to this tax rate.
    *
    * @return array
+   *   Line item types subject to this tax rate.
    */
   public function getLineItemTypes();
 
@@ -69,6 +75,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * Line item types subject to this tax rate.
    *
    * @param array $line_item_types
+   *   Line item types subject to this tax rate.
    *
    * @return $this
    */
@@ -78,6 +85,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * The tax rate weight.
    *
    * @return int
+   *   The tax rate weight.
    */
   public function getWeight();
 
@@ -85,6 +93,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * The tax rate weight.
    *
    * @param int $weight
+   *   The tax rate weight.
    *
    * @return $this
    */
@@ -94,6 +103,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * Whether to display prices including tax.
    *
    * @return bool
+   *   TRUE if display prices include tax.
    */
   public function isIncludedInPrice();
 
@@ -101,6 +111,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * Whether to display prices including tax.
    *
    * @param bool $included
+   *   Whether to display prices including tax.
    *
    * @return $this
    */
@@ -110,6 +121,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * The text to display next to prices if tax is included.
    *
    * @return string
+   *   The text to display next to prices if tax is included.
    */
   public function getInclusionText();
 
@@ -117,6 +129,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * The text to display next to prices if tax is included.
    *
    * @param string $inclusion_text
+   *   The text to display next to prices if tax is included.
    *
    * @return $this
    */
@@ -126,6 +139,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * If the tax applies only to shippable products.
    *
    * @return bool
+   *   TRUE if the tax applies only to shippable products.
    */
   public function isForShippable();
 
