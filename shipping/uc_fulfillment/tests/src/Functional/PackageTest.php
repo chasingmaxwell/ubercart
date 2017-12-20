@@ -1,20 +1,32 @@
 <?php
 
-namespace Drupal\uc_fulfillment\Tests;
+namespace Drupal\Tests\uc_fulfillment\Functional;
 
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_order\Entity\OrderProduct;
-use Drupal\uc_store\Tests\UbercartTestBase;
+use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 
 /**
  * Tests creating new packages from purchased products.
  *
- * @group Ubercart
+ * @group ubercart
  */
-class PackageTest extends UbercartTestBase {
+class PackageTest extends UbercartBrowserTestBase {
 
   public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_fulfillment'];
   public static $adminPermissions = ['fulfill orders'];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+
+    // Ensure test mails are logged.
+    \Drupal::configFactory()->getEditable('system.mail')
+      ->set('interface.uc_order', 'test_mail_collector')
+      ->save();
+  }
 
   /**
    * Tests the User Interface for packaging products.
@@ -48,6 +60,10 @@ class PackageTest extends UbercartTestBase {
     }
     $order->save();
     $order = Order::load($order->id());
+
+    // Apparently this is needed so tests won't fail.
+    \Drupal::state()->set('system.test_mail_collector', []);
+
     uc_payment_enter($order->id(), 'other', $order->getTotal());
 
 // Order with 4 products shippable products. (where do we test not-shippable?)
@@ -109,7 +125,7 @@ class PackageTest extends UbercartTestBase {
         'shipping_types[small_package][table][3][checked]' => 1,
         'shipping_types[small_package][table][4][checked]' => 1,
       ],
-      t('Cancel')
+      'Cancel'
     );
     // Go back to Packages tab and try something else.
     $this->assertUrl('admin/store/orders/' . $order->id());
@@ -121,7 +137,7 @@ class PackageTest extends UbercartTestBase {
     );
 
     // Now test the "Create one package" button without selecting anything.
-    $this->drupalPostForm(NULL, [], t('Create one package'));
+    $this->drupalPostForm(NULL, [], 'Create one package');
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
       t('Packages must contain at least one product.'),
@@ -137,7 +153,7 @@ class PackageTest extends UbercartTestBase {
         'shipping_types[small_package][table][3][checked]' => 1,
         'shipping_types[small_package][table][4][checked]' => 1,
       ],
-      t('Create one package')
+      'Create one package'
     );
 
     // Check that we're now on the package list page.
@@ -190,7 +206,7 @@ class PackageTest extends UbercartTestBase {
       );
     }
     // Save the package to make sure the submit handler is working.
-    $this->drupalPostForm(NULL, [], t('Save'));
+    $this->drupalPostForm(NULL, [], 'Save');
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/packages');
 
     // Third, "Delete".
@@ -209,7 +225,7 @@ class PackageTest extends UbercartTestBase {
 
     // Again with the "Delete".
     $this->clickLink(t('Delete'));
-    $this->drupalPostForm(NULL, [], t('Delete'));
+    $this->drupalPostForm(NULL, [], 'Delete');
     // Delete returns to new packages page with all packages unchecked.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
@@ -232,7 +248,7 @@ class PackageTest extends UbercartTestBase {
         'shipping_types[small_package][table][1][checked]' => 1,
         'shipping_types[small_package][table][2][checked]' => 1,
       ],
-      t('Create one package')
+      'Create one package'
     );
 
     // Check that we're now on the package list page.
@@ -280,7 +296,7 @@ class PackageTest extends UbercartTestBase {
         'shipping_types[small_package][table][3][checked]' => 1,
         'shipping_types[small_package][table][4][checked]' => 1,
       ],
-      t('Create one package')
+      'Create one package'
     );
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/packages');
     foreach ($order->products as $sequence => $item) {
@@ -296,14 +312,14 @@ class PackageTest extends UbercartTestBase {
 
     // Now delete both packages.
     $this->clickLink(t('Delete'));
-    $this->drupalPostForm(NULL, [], t('Delete'));
+    $this->drupalPostForm(NULL, [], 'Delete');
     $this->assertText(
       'Package 2 has been deleted.',
       'Package deleted message found.'
     );
     // There's still one left to delete...
     $this->clickLink(t('Delete'));
-    $this->drupalPostForm(NULL, [], t('Delete'));
+    $this->drupalPostForm(NULL, [], 'Delete');
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
       'Package 3 has been deleted.',
@@ -319,7 +335,7 @@ class PackageTest extends UbercartTestBase {
         'shipping_types[small_package][table][3][checked]' => 1,
         'shipping_types[small_package][table][4][checked]' => 1,
       ],
-      t('Make packages')
+      'Make packages'
     );
 
     // Check that we're now on the package list page.

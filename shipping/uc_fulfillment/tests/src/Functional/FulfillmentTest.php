@@ -1,18 +1,30 @@
 <?php
 
-namespace Drupal\uc_fulfillment\Tests;
+namespace Drupal\Tests\uc_fulfillment\Functional;
 
-use Drupal\uc_store\Tests\UbercartTestBase;
+use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 
 /**
  * Tests fulfillment backend functionality.
  *
- * @group Ubercart
+ * @group ubercart
  */
-class FulfillmentTest extends UbercartTestBase {
+class FulfillmentTest extends UbercartBrowserTestBase {
 
   public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_fulfillment'];
   public static $adminPermissions = ['fulfill orders'];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+
+    // Ensure test mails are logged.
+    \Drupal::configFactory()->getEditable('system.mail')
+      ->set('interface.uc_order', 'test_mail_collector')
+      ->save();
+  }
 
   /**
    * Tests packaging and shipping a simple order with the "Manual" plugin.
@@ -32,6 +44,9 @@ class FulfillmentTest extends UbercartTestBase {
     ]);
     $order->products[1]->data->shippable = 1;
     $order->save();
+
+    // Apparently this is needed so tests won't fail.
+    \Drupal::state()->set('system.test_mail_collector', []);
 
     // Check out with the test product.
     uc_payment_enter($order->id(), 'other', $order->getTotal());
@@ -214,7 +229,7 @@ class FulfillmentTest extends UbercartTestBase {
     }
 
     // Make the shipment.
-    $this->drupalPostForm(NULL, $form_values, t('Save shipment'));
+    $this->drupalPostForm(NULL, $form_values, 'Save shipment');
 
     // Check that we're now on the shipments overview page
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments');

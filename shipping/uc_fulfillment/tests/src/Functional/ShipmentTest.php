@@ -1,20 +1,32 @@
 <?php
 
-namespace Drupal\uc_fulfillment\Tests;
+namespace Drupal\Tests\uc_fulfillment\Functional;
 
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_order\Entity\OrderProduct;
-use Drupal\uc_store\Tests\UbercartTestBase;
+use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 
 /**
  * Tests creating new shipments of packaged products.
  *
- * @group Ubercart
+ * @group ubercart
  */
-class ShipmentTest extends UbercartTestBase {
+class ShipmentTest extends UbercartBrowserTestBase {
 
   public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_fulfillment'];
   public static $adminPermissions = ['fulfill orders'];
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp() {
+    parent::setUp();
+
+    // Ensure test mails are logged.
+    \Drupal::configFactory()->getEditable('system.mail')
+      ->set('interface.uc_order', 'test_mail_collector')
+      ->save();
+  }
 
   /**
    * Tests the UI for creating new shipments.
@@ -48,6 +60,10 @@ class ShipmentTest extends UbercartTestBase {
     }
     $order->save();
     $order = Order::load($order->id());
+
+    // Apparently this is needed so tests won't fail.
+    \Drupal::state()->set('system.test_mail_collector', []);
+
     uc_payment_enter($order->id(), 'other', $order->getTotal());
 
     // Now quickly package all the products in this order.
@@ -60,7 +76,7 @@ class ShipmentTest extends UbercartTestBase {
         'shipping_types[small_package][table][3][checked]' => 1,
         'shipping_types[small_package][table][4][checked]' => 1,
       ],
-      t('Create one package')
+      'Create one package'
     );
 
     // Test "Ship" operations for this package.
@@ -119,7 +135,7 @@ class ShipmentTest extends UbercartTestBase {
     $this->drupalPostForm(
       NULL,
       ['shipping_types[small_package][table][' . $order->id() . '][checked]' => 1],
-      t('Ship packages')
+      'Ship packages'
     );
     // Check that we're now on the shipment details page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/ship?method_id=manual&0=1');
@@ -213,7 +229,7 @@ class ShipmentTest extends UbercartTestBase {
     }
 
     // Make the shipment.
-    $this->drupalPostForm(NULL, $form_values, t('Save shipment'));
+    $this->drupalPostForm(NULL, $form_values, 'Save shipment');
 
     // Check that we're now on the shipments overview page
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments');
@@ -307,7 +323,7 @@ class ShipmentTest extends UbercartTestBase {
 
     // Again with the "Delete".
     $this->clickLink(t('Delete'));
-    $this->drupalPostForm(NULL, [], t('Delete'));
+    $this->drupalPostForm(NULL, [], 'Delete');
     // Delete returns to new packages page with all packages unchecked.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new');
     $this->assertText(
