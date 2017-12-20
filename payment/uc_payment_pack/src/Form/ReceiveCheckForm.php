@@ -93,7 +93,7 @@ class ReceiveCheckForm extends FormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    uc_payment_enter($form_state->getValue('order_id'), 'check', $form_state->getValue('amount'), $this->currentUser()->id(), '', $form_state->getValue('comment'));
+    uc_payment_enter($form_state->getValue('order_id'), 'check', $form_state->getValue('amount'), $this->currentUser()->id(), NULL, $form_state->getValue('comment'));
 
     $clear_date = $form_state->getValue('clear_date')->getTimestamp();
     db_insert('uc_payment_check')

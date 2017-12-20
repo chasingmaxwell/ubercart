@@ -19,23 +19,30 @@ class Other extends PaymentMethodPluginBase {
    * {@inheritdoc}
    */
   public function orderView(OrderInterface $order) {
+    $build = [];
+
     if ($description = db_query('SELECT description FROM {uc_payment_other} WHERE order_id = :id', [':id' => $order->id()])->fetchField()) {
-      return ['#markup' => $this->t('Description: @desc', ['@desc' => $description])];
+      $build = ['#markup' => $this->t('Description: @desc', ['@desc' => $description])];
     }
+
+    return $build;
   }
 
   /**
    * {@inheritdoc}
    */
   public function orderEditDetails(OrderInterface $order) {
-    $form['description'] = [
+    $build = [];
+
+    $build['description'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Description'),
       '#default_value' => isset($order->payment_details['description']) ? $order->payment_details['description'] : '',
       '#size' => 32,
       '#maxlength' => 64,
     ];
-    return $form;
+
+    return $build;
   }
 
   /**

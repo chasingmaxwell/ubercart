@@ -26,7 +26,7 @@ interface TaxRatePluginInterface extends PluginInspectionInterface, Configurable
    * @param \Drupal\uc_order\OrderInterface $order
    *   The order that is being processed.
    *
-   * @return array
+   * @return \Drupal\uc_tax\TaxLineItem
    */
   public function calculateTax(OrderInterface $order);
 

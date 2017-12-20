@@ -61,14 +61,15 @@ class Cart implements CartInterface {
   /**
    * {@inheritdoc}
    */
-  public function addItem($nid, $qty = 1, $data = NULL, $msg = TRUE) {
+  public function addItem($nid, $qty = 1, array $data = NULL, $msg = TRUE) {
     $node = Node::load($nid);
 
     if (is_null($data) || !isset($data['module'])) {
       $data['module'] = 'uc_product';
     }
 
-    // Invoke hook_uc_add_to_cart() to give other modules a chance to affect the process.
+    // Invoke hook_uc_add_to_cart() to give other modules a chance
+    // to affect the process.
     $result = \Drupal::moduleHandler()->invokeAll('uc_add_to_cart', [$nid, $qty, $data]);
     if (is_array($result) && !empty($result)) {
       foreach ($result as $row) {

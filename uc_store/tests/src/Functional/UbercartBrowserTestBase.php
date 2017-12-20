@@ -338,7 +338,7 @@ abstract class UbercartBrowserTestBase extends BrowserTestBase {
    *   defaults, keys are order field names. For example, 'price' => '12.34'.
    *
    * @return \Drupal\uc_order\OrderInterface
-   *   Product node object.
+   *   The created Order entity.
    */
   protected function createOrder(array $edit = []) {
     if (empty($edit['primary_email'])) {

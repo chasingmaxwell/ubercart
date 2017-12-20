@@ -21,7 +21,7 @@ class ShipmentSaveEvent extends Event {
   public $order;
 
   /**
-   * The expiration.
+   * The shipment.
    *
    * @var \Drupal\uc_fulfillment\ShipmentInterface
    */

@@ -208,8 +208,11 @@ class CashOnDelivery extends PaymentMethodPluginBase {
 
   /**
    * Collect additional information for the "Cash on Delivery" payment method.
+   *
+   * @param \Drupal\uc_order\OrderInterface $order
+   *   The order entity.
    */
-  protected function deliveryDateForm($order) {
+  protected function deliveryDateForm(OrderInterface $order) {
     $delivery_date = empty($order->payment_details['delivery_date']) ?
                      DrupalDateTime::createFromTimestamp(REQUEST_TIME) :
                      DrupalDateTime::createFromTimestamp($order->payment_details['delivery_date']);

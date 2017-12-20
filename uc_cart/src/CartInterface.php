@@ -52,7 +52,7 @@ interface CartInterface {
    * @return \Drupal\Core\Url
    *   A URL to redirect to.
    */
-  public function addItem($nid, $qty = 1, $data = NULL, $msg = TRUE);
+  public function addItem($nid, $qty = 1, array $data = NULL, $msg = TRUE);
 
   /**
    * Empties a cart of its contents.
