@@ -75,7 +75,7 @@ class FileCheckoutTest extends FileTestBase {
     // @todo Re-enable when Rules is available.
     // $this->assertMailString('subject', 'File Downloads', 4, 'File download notification was sent');
 
-    \Drupal::state()->set('system.test_email_collector', []);
+    \Drupal::state()->set('system.test_mail_collector', []);
 
     // Test again with an existing authenticated user and a non-shippable order.
     $order = $this->createOrder([
