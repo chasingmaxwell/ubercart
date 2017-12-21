@@ -241,3 +241,11 @@ uc_store.settings:
     footer_message:
       type: boolean
       label: 'Display footer message'
+
+block.settings.powered_by_ubercart:
+  type: block_settings
+  label: 'Branding block'
+  mapping:
+    message:
+      type: integer
+      label: 'Message to use'

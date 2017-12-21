@@ -2,21 +2,73 @@
 
 namespace Drupal\uc_catalog\Plugin\Block;
 
-use Drupal\Core\Block\BlockBase;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Block\BlockBase;
+use Drupal\Core\Block\BlockPluginInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\uc_catalog\TreeNode;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Provides the product catalog block.
  *
  * @Block(
- *   id = "uc_catalog",
+ *   id = "uc_catalog_block",
  *   admin_label = @Translation("Catalog")
  * )
  */
-class CatalogBlock extends BlockBase {
+class CatalogBlock extends BlockBase implements ContainerFactoryPluginInterface {
+
+  /**
+   * Stores the configuration factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
+
+  /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
+   * Creates a CatalogBlock instance.
+   *
+   * @param array $configuration
+   *   A configuration array containing information about the plugin instance.
+   * @param string $plugin_id
+   *   The plugin_id for the plugin instance.
+   * @param mixed $plugin_definition
+   *   The plugin implementation definition.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The factory for configuration objects.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
+   *   The entity type manager.
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory, EntityTypeManagerInterface $entity_type_manager) {
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+    $this->configFactory = $config_factory;
+    $this->entityTypeManager = $entity_type_manager;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
+    return new static(
+      $configuration,
+      $plugin_id,
+      $plugin_definition,
+      $container->get('config.factory'),
+      $container->get('entity_type.manager')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -25,12 +77,8 @@ class CatalogBlock extends BlockBase {
     return [
       'link_title' => FALSE,
       'expanded' => FALSE,
-      'product_count' => TRUE,
-      'visibility' => [
-        'path' => [
-          'pages' => 'admin*',
-        ],
-      ],
+      'product_count' => BlockPluginInterface::BLOCK_LABEL_VISIBLE,
+      'label_display' => TRUE,
     ];
   }
 
@@ -72,11 +120,12 @@ class CatalogBlock extends BlockBase {
     $this->configuration['product_count'] = $form_state->getValue('product_count');
 
     // @todo Remove when catalog block theming is fully converted.
-    $catalog_config = \Drupal::configFactory()->getEditable('uc_catalog.settings');
+    $catalog_config = $this->configFactory->getEditable('uc_catalog.settings');
 
     $catalog_config
       ->set('expand_categories', $form_state->getValue('expanded'))
       ->set('block_nodecount', $form_state->getValue('product_count'))
+      ->set('block_title_link', $form_state->getValue('link_title'))
       ->save();
   }
 
@@ -85,8 +134,8 @@ class CatalogBlock extends BlockBase {
    */
   public function build() {
     // Get the vocabulary tree information.
-    $vid = \Drupal::config('uc_catalog.settings')->get('vocabulary');
-    $tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree($vid);
+    $vid = $this->configFactory->get('uc_catalog.settings')->get('vocabulary');
+    $tree = $this->entityTypeManager->getStorage('taxonomy_term')->loadTree($vid);
 
     // Then convert it into an actual tree structure.
     $seq = 0;

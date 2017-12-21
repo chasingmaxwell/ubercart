@@ -170,3 +170,20 @@ uc_cart_pane.comments:
 action.configuration.uc_cart_add_product_action:
   type: action_configuration_default
   label: 'Cart add-to-cart configuration'
+
+block.settings.uc_cart_block:
+  type: block_settings
+  label: 'Shopping cart block'
+  mapping:
+    hide_empty:
+      type: boolean
+      label: 'Hide block if cart is empty.'
+    show_image:
+      type: boolean
+      label: 'Display the shopping cart icon in the block title.'
+    collapsible:
+      type: boolean
+      label: 'Make the shopping cart block collapsible by clicking the name or arrow.'
+    collapsed:
+      type: boolean
+      label: 'Display the shopping cart block collapsed by default.'
