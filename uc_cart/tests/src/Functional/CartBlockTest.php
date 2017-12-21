@@ -25,7 +25,7 @@ class CartBlockTest extends UbercartBrowserTestBase {
    */
   protected function setUp() {
     parent::setUp();
-    $this->block = $this->drupalPlaceBlock('uc_cart');
+    $this->block = $this->drupalPlaceBlock('uc_cart_block');
   }
 
   /**
