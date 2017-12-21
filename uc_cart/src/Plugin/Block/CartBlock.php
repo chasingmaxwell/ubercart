@@ -57,6 +57,8 @@ class CartBlock extends BlockBase implements ContainerFactoryPluginInterface {
    *   The factory for configuration objects.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler.
+   * @param \Drupal\uc_cart\CartManagerInterface $cart_manager
+   *   The cart manager.
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition, ConfigFactoryInterface $config_factory, ModuleHandlerInterface $module_handler, CartManagerInterface $cart_manager) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);

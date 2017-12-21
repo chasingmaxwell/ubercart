@@ -29,7 +29,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
   /**
    * The cart manager.
    *
-   * @var \Drupal\uc_cart\CartManager
+   * @var \Drupal\uc_cart\CartManagerInterface
    */
   protected $cartManager;
 

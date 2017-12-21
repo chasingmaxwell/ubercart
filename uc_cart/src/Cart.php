@@ -105,12 +105,12 @@ class Cart implements CartInterface {
 
     if (empty($result)) {
       // If the item isn't in the cart yet, add it.
-      $item_entity = CartItem::create(array(
+      $item_entity = CartItem::create([
         'cart_id' => $this->id,
         'nid' => $nid,
         'qty' => $qty,
         'data' => $data,
-      ));
+     ]);
       $item_entity->save();
       if ($msg) {
         drupal_set_message(t('<strong>@product-title</strong> added to <a href=":url">your shopping cart</a>.', ['@product-title' => $node->label(), ':url' => Url::fromRoute('uc_cart.cart')->toString()]));

@@ -164,7 +164,7 @@ function template_preprocess_uc_cart_checkout_buttons(&$variables) {
  */
 function uc_cart_preprocess_block(&$variables) {
   $cart = \Drupal::service('uc_cart.manager')->get();
-  if ($variables['plugin_id'] == 'uc_cart' && $variables['label']) {
+  if ($variables['plugin_id'] == 'uc_cart_block' && $variables['label']) {
     $variables['label'] = [
       '#theme' => 'uc_cart_block_title',
       '#title' => $variables['label'],
