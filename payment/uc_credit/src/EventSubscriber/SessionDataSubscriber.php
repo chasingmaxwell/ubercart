@@ -59,7 +59,8 @@ class SessionDataSubscriber implements EventSubscriberInterface {
    * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
-    // Must run before \Symfony\Component\HttpKernel\EventListener\SaveSessionListener.
+    // Must run before
+    // \Symfony\Component\HttpKernel\EventListener\SaveSessionListener.
     return [KernelEvents::RESPONSE => ['onKernelResponse']];
   }
 

@@ -182,7 +182,7 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
     }
     else {
       // Otherwise default to the last 4 digits.
-      $default_num = $this->t('(Last 4) ') . substr($order->payment_details['cc_number'], -4);
+      $default_num = $this->t('(Last 4) @digits', ['@digits' => substr($order->payment_details['cc_number'], -4)]);
     }
 
     $build['cc_number'] = [
@@ -236,12 +236,18 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
       '#type' => 'select',
       '#title' => $this->t('Expiration date'),
       '#options' => [
-        1 => $this->t('01 - January'), 2 => $this->t('02 - February'),
-        3 => $this->t('03 - March'), 4 => $this->t('04 - April'),
-        5 => $this->t('05 - May'), 6 => $this->t('06 - June'),
-        7 => $this->t('07 - July'), 8 => $this->t('08 - August'),
-        9 => $this->t('09 - September'), 10 => $this->t('10 - October'),
-        11 => $this->t('11 - November'), 12 => $this->t('12 - December'),
+        1 => $this->t('01 - January'),
+        2 => $this->t('02 - February'),
+        3 => $this->t('03 - March'),
+        4 => $this->t('04 - April'),
+        5 => $this->t('05 - May'),
+        6 => $this->t('06 - June'),
+        7 => $this->t('07 - July'),
+        8 => $this->t('08 - August'),
+        9 => $this->t('09 - September'),
+        10 => $this->t('10 - October'),
+        11 => $this->t('11 - November'),
+        12 => $this->t('12 - December'),
       ],
       '#default_value' => $month,
       '#required' => TRUE,
@@ -371,31 +377,31 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
       $rows = [];
 
       if (!empty($order->payment_details['cc_type'])) {
-        $rows[] = $this->t('Card type') . ': ' . $order->payment_details['cc_type'];
+        $rows[] = $this->t('Card type: @type', ['@type' => $order->payment_details['cc_type']]);
       }
 
       if (!empty($order->payment_details['cc_owner'])) {
-        $rows[] = $this->t('Card owner') . ': ' . $order->payment_details['cc_owner'];
+        $rows[] = $this->t('Card owner: @owner', ['@owner' => $order->payment_details['cc_owner']]);
       }
 
       if (!empty($order->payment_details['cc_number'])) {
-        $rows[] = $this->t('Card number') . ': ' . $this->displayCardNumber($order->payment_details['cc_number']);
+        $rows[] = $this->t('Card number: @number', ['@number' => $this->displayCardNumber($order->payment_details['cc_number'])]);
       }
 
       if (!empty($order->payment_details['cc_start_month']) && !empty($order->payment_details['cc_start_year'])) {
-        $rows[] = $this->t('Start date') . ': ' . $order->payment_details['cc_start_month'] . '/' . $order->payment_details['cc_start_year'];
+        $rows[] = $this->t('Start date: @date', ['@date' => $order->payment_details['cc_start_month'] . '/' . $order->payment_details['cc_start_year']]);
       }
 
       if (!empty($order->payment_details['cc_exp_month']) && !empty($order->payment_details['cc_exp_year'])) {
-        $rows[] = $this->t('Expiration') . ': ' . $order->payment_details['cc_exp_month'] . '/' . $order->payment_details['cc_exp_year'];
+        $rows[] = $this->t('Expiration: @expiration', ['@expiration' => $order->payment_details['cc_exp_month'] . '/' . $order->payment_details['cc_exp_year']]);
       }
 
       if (!empty($order->payment_details['cc_issue'])) {
-        $rows[] = $this->t('Issue number') . ': ' . $order->payment_details['cc_issue'];
+        $rows[] = $this->t('Issue number: @number', ['@number' => $order->payment_details['cc_issue']]);
       }
 
       if (!empty($order->payment_details['cc_bank'])) {
-        $rows[] = $this->t('Issuing bank') . ': ' . $order->payment_details['cc_bank'];
+        $rows[] = $this->t('Issuing bank: @bank', ['@bank' => $order->payment_details['cc_bank']]);
       }
 
       $build['cc_info'] = [
@@ -669,7 +675,7 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
    */
   protected function displayCardNumber($number) {
     if (strlen($number) == 4) {
-      return t('(Last 4) ') . $number;
+      return $this->t('(Last 4) @digits', ['@digits' => $number]);
     }
 
     return str_repeat('-', 12) . substr($number, -4);
