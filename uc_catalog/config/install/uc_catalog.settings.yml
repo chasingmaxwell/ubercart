@@ -1,6 +1,6 @@
+block_nodecount: true
+block_title_link: false
 breadcrumb: true
 display: catalog
-vocabulary: catalog
-
 expand_categories: false
-block_nodecount: true
+vocabulary: catalog

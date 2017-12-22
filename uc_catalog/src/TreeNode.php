@@ -34,13 +34,13 @@ class TreeNode {
    * tree structure. Therefore, if the parameter is more than one level
    * deeper than $this, it should be passed to the last child of $this.
    */
-  public function add_child(&$child) {
+  public function addChild(&$child) {
     if ($child->getDepth() - $this->getDepth() == 1) {
       $this->children[] = $child;
     }
     else {
       $last_child =&$this->children[count($this->children) - 1];
-      $last_child->add_child($child);
+      $last_child->addChild($child);
     }
   }
 
@@ -137,24 +137,24 @@ class TreeNode {
   }
 
   /**
-   * Gets the name of the term.
+   * Gets the sequence of the term.
    *
-   * @return string
-   *   The name of the term.
+   * @return int
+   *   The sequence of the term.
    */
   public function getSequence() {
     return $this->sequence;
   }
 
   /**
-   * Sets the name of the term.
+   * Sets the sequence of the term.
    *
-   * @param string $name
-   *   The node's name.
+   * @param int $sequence
+   *   The term's sequence.
    *
    * @return $this
    */
-  public function setSequence(string $sequence) {
+  public function setSequence($sequence) {
     $this->sequence = $sequence;
     return $this;
   }

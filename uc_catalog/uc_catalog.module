@@ -18,6 +18,8 @@ use Drupal\Core\Url;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 use Drupal\node\NodeTypeInterface;
+use Drupal\taxonomy\Entity\Vocabulary;
+use Drupal\uc_catalog\TreeNode;
 
 /**
  * Implements hook_help().
@@ -71,7 +73,7 @@ function uc_catalog_form_taxonomy_vocabulary_form_alter(&$form, &$form_state, $f
       '#markup' => t('This is the designated product catalog vocabulary. It cannot be deleted until the Catalog module is uninstalled. The machine name of this vocabulary may not be changed.'),
       '#weight' => -1,
     ];
-//@todo - does the 'hierarchy' element do anything?
+    //@todo - does the 'hierarchy' element do anything?
     // Catalog vocabulary always has single hierarchy.
     $form['hierarchy']['#value'] = TAXONOMY_HIERARCHY_SINGLE;
     // Do not allow the catalog vocabulary to be deleted.
@@ -85,7 +87,9 @@ function uc_catalog_form_taxonomy_vocabulary_form_alter(&$form, &$form_state, $f
  * Preprocesses the catalog block output.
  */
 function uc_catalog_preprocess_block(&$variables) {
-  if ($variables['plugin_id'] == 'uc_catalog' && $variables['label'] && $variables['configuration']['link_title']) {
+  if ($variables['plugin_id'] == 'uc_catalog_block' &&
+      $variables['label'] &&
+      $variables['configuration']['link_title']) {
     $variables['label'] = Link::createFromRoute($variables['label'], 'view.uc_catalog.page_1');
   }
 }
@@ -108,7 +112,7 @@ function uc_catalog_uc_store_status() {
 
   $statuses = [];
   $cat_id = \Drupal::config('uc_catalog.settings')->get('vocabulary');
-  $catalog = \Drupal\taxonomy\Entity\Vocabulary::load($cat_id);
+  $catalog = Vocabulary::load($cat_id);
   if ($catalog) {
     // Don't display a status if the taxonomy_index table has no data.
     if (\Drupal::config('taxonomy.settings')->get('maintain_index_table')) {
@@ -165,7 +169,7 @@ function uc_catalog_node_type_insert(NodeTypeInterface $type) {
 /**
  * Emulates Drupal's menu system, but based around the catalog taxonomy.
  *
- * @param $branch
+ * @param \Drupal\uc_catalog\TreeNode $branch
  *   A TreeNode object. Determines if the URL points to itself, or possibly one
  *   of its children, if present. If the URL points to itself or one of its
  *   products, it displays its name and expands to show its children, otherwise
@@ -173,12 +177,12 @@ function uc_catalog_node_type_insert(NodeTypeInterface $type) {
  *   one of its children, it still displays a link and product count, but must
  *   still be expanded. Otherwise, it is collapsed and a link.
  *
- * @return
+ * @return array
  *   An array whose first element is true if the TreeNode is in hierarchy of
  *   the URL path. The second element is the HTML of the list item of itself
  *   and its children.
  */
-function _uc_catalog_navigation($branch) {
+function _uc_catalog_navigation(TreeNode $branch) {
   static $types;
 
   if (empty($types)) {
@@ -186,8 +190,9 @@ function _uc_catalog_navigation($branch) {
   }
 
   $query = \Drupal::entityQuery('node')
-    ->condition('type', $types)
-    ->condition('status', TRUE) // Don't include unpublished products.
+    ->condition('type', $types, 'IN')
+    // Don't include unpublished products.
+    ->condition('status', TRUE)
     ->condition('taxonomy_catalog.target_id', $branch->getTid())
     ->count();
   $num = $query->execute();

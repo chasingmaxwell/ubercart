@@ -5,6 +5,10 @@
  * Install, update and uninstall functions for the uc_catalog module.
  */
 
+use Drupal\Core\Url;
+use Drupal\image\Entity\ImageStyle;
+use Drupal\taxonomy\Entity\Vocabulary;
+
 /**
  * Implements hook_install().
  */
@@ -20,11 +24,11 @@ function uc_catalog_install() {
  */
 function uc_catalog_uninstall() {
   if ($vid = \Drupal::config('uc_catalog.settings')->get('vocabulary')) {
-    $vocab = \Drupal\taxonomy\Entity\Vocabulary::load($vid);
-    drupal_set_message(t('The Ubercart %catalog vocabulary has not been deleted. If you need to delete it, <a href=":url">please do so manually</a>.', ['%catalog' => $vocab->label(), ':url' => \Drupal\Core\Url::fromRoute('entity.taxonomy_vocabulary.edit_form', ['taxonomy_vocabulary' => $vocab->id()])->toString()]), 'warning');
+    $vocab = Vocabulary::load($vid);
+    drupal_set_message(t('The Ubercart %catalog vocabulary has not been deleted. If you need to delete it, <a href=":url">please do so manually</a>.', ['%catalog' => $vocab->label(), ':url' => Url::fromRoute('entity.taxonomy_vocabulary.edit_form', ['taxonomy_vocabulary' => $vocab->id()])->toString()]), 'warning');
   }
 
-  $styles = \Drupal\image\Entity\ImageStyle::loadMultiple(['uc_category', 'uc_product_list']);
+  $styles = ImageStyle::loadMultiple(['uc_category', 'uc_product_list']);
   if (!empty($styles)) {
     $style_names = [];
     foreach ($styles as $style) {
@@ -36,7 +40,7 @@ function uc_catalog_uninstall() {
       [
         '%style' => $style_names[0],
         '%styles' => implode(', ', $style_names),
-        ':url' => \Drupal\Core\Url::fromRoute('entity.image_style.collection')->toString(),
+        ':url' => Url::fromRoute('entity.image_style.collection')->toString(),
       ]
     ), 'warning');
   }

@@ -77,8 +77,8 @@ class CatalogBlock extends BlockBase implements ContainerFactoryPluginInterface 
     return [
       'link_title' => FALSE,
       'expanded' => FALSE,
-      'product_count' => BlockPluginInterface::BLOCK_LABEL_VISIBLE,
-      'label_display' => TRUE,
+      'product_count' => TRUE,
+      'label_display' => BlockPluginInterface::BLOCK_LABEL_VISIBLE,
     ];
   }
 
@@ -119,9 +119,9 @@ class CatalogBlock extends BlockBase implements ContainerFactoryPluginInterface 
     $this->configuration['expanded'] = $form_state->getValue('expanded');
     $this->configuration['product_count'] = $form_state->getValue('product_count');
 
-    // @todo Remove when catalog block theming is fully converted.
+    // @todo Remove this code when catalog block theming is fully converted.
+    // Theme function should use block configuration, not uc_catalog.settings.
     $catalog_config = $this->configFactory->getEditable('uc_catalog.settings');
-
     $catalog_config
       ->set('expand_categories', $form_state->getValue('expanded'))
       ->set('block_nodecount', $form_state->getValue('product_count'))
@@ -145,9 +145,11 @@ class CatalogBlock extends BlockBase implements ContainerFactoryPluginInterface 
       $knot->sequence = $seq;
       $knothole = new TreeNode($knot);
       // Begin at the root of the tree and find the proper place.
-      $menu_tree->add_child($knothole);
+      $menu_tree->addChild($knothole);
     }
 
+    // @todo Theme function should use block configuration, passed here,
+    // not uc_catalog.settings taken from \Drupal::config().
     $build['content'] = [
       '#theme' => 'uc_catalog_block',
       '#menu_tree' => $menu_tree,
