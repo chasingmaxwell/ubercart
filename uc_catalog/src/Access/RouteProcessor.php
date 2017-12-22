@@ -46,7 +46,7 @@ class RouteProcessor implements OutboundRouteProcessorInterface {
   public function processOutbound($route_name, Route $route, array &$parameters, BubbleableMetadata $bubbleable_metadata = NULL) {
     if ($route_name == 'entity.taxonomy_term.canonical' && !empty($parameters['taxonomy_term'])) {
       if ($vid = $this->configFactory->get('uc_catalog.settings')->get('vocabulary')) {
-        if ($this->entityTypeManager->getStorage('taxonomy_term')->load($parameters['taxonomy_term'])->getVocabularyId() == $vid) {
+        if ($this->entityTypeManager->getStorage('taxonomy_term')->load($parameters['taxonomy_term'])->bundle() == $vid) {
           $route->setPath('/catalog/{taxonomy_term}');
         }
       }
