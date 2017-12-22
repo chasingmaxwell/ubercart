@@ -2,19 +2,12 @@
 
 namespace Drupal\Tests\uc_catalog\Functional;
 
-use Drupal\Core\Language\Language;
-use Drupal\taxonomy\Entity\Term;
-use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
-
 /**
  * Tests for the Ubercart catalog breadcrumbs.
  *
  * @group ubercart
  */
-class CatalogBreadcrumbTest extends UbercartBrowserTestBase {
-
-  public static $modules = ['uc_catalog'];
-  public static $adminPermissions = ['view catalog'];
+class CatalogBreadcrumbTest extends CatalogTestBase {
 
   /**
    * {@inheritdoc}
@@ -82,23 +75,6 @@ class CatalogBreadcrumbTest extends UbercartBrowserTestBase {
     $this->assertEquals($links[1], 'Catalog');
     $this->assertEquals($links[2], $grandparent->label());
     $this->assertEquals($links[3], $parent->label());
-  }
-
-  /**
-   * Returns a new term with random properties in the catalog vocabulary.
-   */
-  protected function createTerm($values = []) {
-    $term = Term::create($values + [
-      'name' => $this->randomMachineName(),
-      'description' => [
-        'value' => $this->randomMachineName(),
-        'format' => 'plain_text',
-      ],
-      'vid' => 'catalog',
-      'langcode' => Language::LANGCODE_NOT_SPECIFIED,
-    ]);
-    $term->save();
-    return $term;
   }
 
 }

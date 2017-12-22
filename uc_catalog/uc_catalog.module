@@ -73,7 +73,7 @@ function uc_catalog_form_taxonomy_vocabulary_form_alter(&$form, &$form_state, $f
       '#markup' => t('This is the designated product catalog vocabulary. It cannot be deleted until the Catalog module is uninstalled. The machine name of this vocabulary may not be changed.'),
       '#weight' => -1,
     ];
-    //@todo - does the 'hierarchy' element do anything?
+    // @todo - does the 'hierarchy' element do anything?
     // Catalog vocabulary always has single hierarchy.
     $form['hierarchy']['#value'] = TAXONOMY_HIERARCHY_SINGLE;
     // Do not allow the catalog vocabulary to be deleted.

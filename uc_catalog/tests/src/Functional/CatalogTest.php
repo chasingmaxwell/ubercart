@@ -2,16 +2,12 @@
 
 namespace Drupal\Tests\uc_catalog\Functional;
 
-use Drupal\Core\Language\Language;
-use Drupal\taxonomy\Entity\Term;
-use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
-
 /**
  * Tests for the Ubercart catalog.
  *
  * @group ubercart
  */
-class CatalogTest extends UbercartBrowserTestBase {
+class CatalogTest extends CatalogTestBase {
 
   public static $modules = ['history', 'uc_catalog', 'uc_attribute', 'field_ui'];
   public static $adminPermissions = [
@@ -123,23 +119,6 @@ class CatalogTest extends UbercartBrowserTestBase {
 
     $this->drupalGet('admin/structure/types/manage/product/fields');
     $this->assertText('taxonomy_catalog', 'Catalog taxonomy term reference field exists.');
-  }
-
-  /**
-   * Returns a new term with random properties in the catalog vocabulary.
-   */
-  protected function createTerm() {
-    $term = Term::create([
-      'name' => $this->randomMachineName(),
-      'description' => [
-        'value' => $this->randomMachineName(),
-        'format' => 'plain_text',
-      ],
-      'vid' => 'catalog',
-      'langcode' => Language::LANGCODE_NOT_SPECIFIED,
-    ]);
-    $term->save();
-    return $term;
   }
 
 }
