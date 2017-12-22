@@ -4,6 +4,9 @@ status: true
 dependencies:
   module:
     - user
+  enforced:
+    module:
+      - uc_cart_links
 _core:
   default_config_hash: iufZ1ivzKgeIJx1eyB83vAYU4S40yReIm94xSeiXE74
 id: uc_cart_links

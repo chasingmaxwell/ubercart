@@ -9,6 +9,9 @@ dependencies:
     - node
     - uc_product
     - user
+  enforced:
+    module:
+      - uc_product
 _core:
   default_config_hash: jjB70BGc_-TpY27jvzPQtswSibJUs9Mq4Kiy_2PrHt0
 id: uc_products

@@ -5,6 +5,9 @@ dependencies:
     - uc_order
     - uc_store
     - user
+  enforced:
+    module:
+      - uc_order
 id: uc_order_history
 label: 'Order history'
 module: uc_order

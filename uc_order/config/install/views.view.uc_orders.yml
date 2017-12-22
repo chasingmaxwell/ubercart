@@ -7,6 +7,9 @@ dependencies:
     - uc_order
     - uc_store
     - user
+  enforced:
+    module:
+      - uc_order
 id: uc_orders
 label: Orders
 module: uc_order

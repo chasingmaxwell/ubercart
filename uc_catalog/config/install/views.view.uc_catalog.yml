@@ -11,6 +11,9 @@ dependencies:
     - taxonomy
     - uc_product
     - user
+  enforced:
+    module:
+      - uc_catalog
 id: uc_catalog
 label: Catalog
 module: views

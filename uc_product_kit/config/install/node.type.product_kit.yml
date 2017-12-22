@@ -3,9 +3,10 @@ status: true
 dependencies:
   module:
       - uc_product
+      - uc_product_kit
   enforced:
     module:
-      - uc_product
+      - uc_product_kit
 name: 'Product kit'
 type: product_kit
 description: 'Use <em>product kits</em> to list two or more products together, presenting a logical and convenient grouping of items to the customer.'

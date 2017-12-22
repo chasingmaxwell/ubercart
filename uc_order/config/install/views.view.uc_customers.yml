@@ -7,6 +7,9 @@ dependencies:
     - uc_country
     - uc_order
     - user
+  enforced:
+    module:
+      - uc_order
 id: uc_customers
 label: Customers
 module: views
