@@ -23,7 +23,6 @@ class UcAddress extends Element\FormElement {
     return [
       '#input' => TRUE,
       '#required' => TRUE,
-      '#hide' => [],
       '#process' => [
         [$class, 'processAddress'],
       ],
@@ -64,9 +63,7 @@ class UcAddress extends Element\FormElement {
 
     $element['#tree'] = TRUE;
     $config = \Drupal::config('uc_store.settings')->get('address_fields');
-    /** @var \Drupal\uc_store\AddressInterface */
     $value = $element['#value'];
-    $hide = array_flip($element['#hide']);
     $wrapper = Html::getClass('uc-address-' . $element['#name'] . '-zone-wrapper');
     $country_names = \Drupal::service('country_manager')->getEnabledList();
 
@@ -145,13 +142,6 @@ class UcAddress extends Element\FormElement {
           ];
           break;
 
-        case 'email':
-          $subelement = [
-            '#type' => 'email',
-            '#size' => 16,
-          ];
-          break;
-
         default:
           $subelement = [
             '#type' => 'textfield',
@@ -168,7 +158,7 @@ class UcAddress extends Element\FormElement {
       $element[$field] = $subelement + [
         '#title' => $labels[$field],
         '#default_value' => $value->$field,
-        '#access' => !$element['#hidden'] && !empty($config[$field]['status']) && !isset($hide[$field]),
+        '#access' => !$element['#hidden'] && !empty($config[$field]['status']),
         '#required' => $element['#required'] && !empty($config[$field]['required']),
         '#weight' => isset($config[$field]['weight']) ? $config[$field]['weight'] : 0,
       ];
