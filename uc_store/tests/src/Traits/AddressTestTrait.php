@@ -12,13 +12,6 @@ trait AddressTestTrait {
   /**
    * Creates an address object based on default settings.
    *
-   * This function is a wrapper around Address::create() which serves to
-   * produce reasonable-looking random addresses for randomly selected countries
-   * that are enabled in Ubercart. The goal is to have addresses which are
-   * recognizable as addresses, not just some collection of random strings. The
-   * address fields may be fully or partially filled in - the unfilled fields
-   * will be populated with random values.
-   *
    * @param array $settings
    *   (optional) An associative array of settings to change from the defaults,
    *   keys are address properties. For example, 'city' => 'London'.
@@ -41,14 +34,13 @@ trait AddressTestTrait {
     $values = $settings + [
       'first_name'  => $this->randomMachineName(6),
       'last_name'   => $this->randomMachineName(12),
-      'company'     => $this->randomMachineName(10) . ', ' .
-                       array_rand(['Inc.', 'Ltd.', 'LLC', 'GmbH', 'PLC', 'SE']),
+      'company'     => $this->randomMachineName(10) . ', Inc.',
       'street1'     => mt_rand(10, 1000) . ' ' .
                        $this->randomMachineName(10) . ' ' .
                        array_rand($street),
       'street2'     => 'Suite ' . mt_rand(100, 999),
       'city'        => $this->randomMachineName(10),
-      'postal_code' => (string) mt_rand(10000, 99999),
+      'postal_code' => mt_rand(10000, 99999),
       'phone'       => '(' . mt_rand(100, 999) . ') ' .
                        mt_rand(100, 999) . '-' . mt_rand(0, 9999),
       'email'       => $this->randomMachineName(6) . '@' .
@@ -65,7 +57,7 @@ trait AddressTestTrait {
       $values += ['zone' => array_rand($zone_list)];
     }
 
-    // Create an Address object with these values.
+    // Create object.
     $address = Address::create($values);
 
     return $address;

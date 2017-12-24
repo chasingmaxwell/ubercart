@@ -6,66 +6,51 @@ uc_store.settings:
   mapping:
     name:
       type: string
-      label: 'The store name'
+      label: ''
     mail:
-      type: email
-      label: 'The store e-mail address'
+      type: string
+      label: ''
     mail_include_name:
       type: boolean
-      label: 'Whether to include the store name as part of the From: e-mail address'
+      label: ''
     phone:
       type: string
-      label: 'The store telephone number'
+      label: ''
     fax:
       type: string
-      label: 'The store fax number'
+      label: ''
     help_page:
       type: uri
       label: ''
     address:
       type: mapping
-      label: 'The store mailing address'
+      label: ''
       mapping:
-        first_name:
-          type: string
-          label: 'The mailing address first name'
-        last_name:
-          type: string
-          label: 'The mailing address last name'
-        company:
-          type: string
-          label: 'The mailing address company'
         street1:
           type: string
-          label: 'The mailing address street, line 1'
+          label: ''
         street2:
           type: string
-          label: 'The mailing address street, line 2'
+          label: ''
         city:
           type: string
-          label: 'The mailing address city'
+          label: ''
         zone:
           type: string
-          label: 'The mailing address zone'
+          label: ''
         country:
           type: string
-          label: 'The mailing address country'
+          label: ''
         postal_code:
           type: string
-          label: 'The mailing address postal code'
-        phone:
-          type: string
-          label: 'Telephone number'
-        email:
-          type: email
-          label: 'Email address'
+          label: ''
     address_fields:
       type: mapping
-      label: 'Fields to collect for customer addresses'
+      label: ''
       mapping:
         first_name:
           type: mapping
-          label: 'First name'
+          label: ''
           mapping:
             required:
               type: boolean
@@ -78,7 +63,7 @@ uc_store.settings:
               label: 'Listing weight'
         last_name:
           type: mapping
-          label: 'Last name'
+          label:
           mapping:
             required:
               type: boolean
@@ -91,7 +76,7 @@ uc_store.settings:
               label: 'Listing weight'
         company:
           type: mapping
-          label: 'Company'
+          label:
           mapping:
             required:
               type: boolean
@@ -104,7 +89,7 @@ uc_store.settings:
               label: 'Listing weight'
         street1:
           type: mapping
-          label: 'Street address, line 1'
+          label:
           mapping:
             required:
               type: boolean
@@ -117,7 +102,7 @@ uc_store.settings:
               label: 'Listing weight'
         street2:
           type: mapping
-          label: 'Street address, line 2'
+          label:
           mapping:
             required:
               type: boolean
@@ -130,7 +115,7 @@ uc_store.settings:
               label: 'Listing weight'
         city:
           type: mapping
-          label: 'City'
+          label:
           mapping:
             required:
               type: boolean
@@ -143,7 +128,7 @@ uc_store.settings:
               label: 'Listing weight'
         zone:
           type: mapping
-          label: 'State/Province/Zone'
+          label:
           mapping:
             required:
               type: boolean
@@ -156,7 +141,7 @@ uc_store.settings:
               label: 'Listing weight'
         country:
           type: mapping
-          label: 'Country'
+          label:
           mapping:
             required:
               type: boolean
@@ -169,7 +154,7 @@ uc_store.settings:
               label: 'Listing weight'
         postal_code:
           type: mapping
-          label: 'Postal code'
+          label:
           mapping:
             required:
               type: boolean
@@ -182,7 +167,7 @@ uc_store.settings:
               label: 'Listing weight'
         phone:
           type: mapping
-          label: 'Telephone number'
+          label:
           mapping:
             required:
               type: boolean
@@ -195,7 +180,7 @@ uc_store.settings:
               label: 'Listing weight'
     currency:
       type: mapping
-      label: 'Currency display settings'
+      label:
       mapping:
         code:
           type: string
@@ -217,7 +202,7 @@ uc_store.settings:
           label: 'Currency decimal places'
     weight:
       type: mapping
-      label: 'Weight display settings'
+      label:
       mapping:
         units:
           type: string
@@ -233,7 +218,7 @@ uc_store.settings:
           label: 'Weight decimal places'
     length:
       type: mapping
-      label: 'Length display settings'
+      label:
       mapping:
         units:
           type: string
