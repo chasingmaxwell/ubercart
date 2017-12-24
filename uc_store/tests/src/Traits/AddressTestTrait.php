@@ -41,13 +41,14 @@ trait AddressTestTrait {
     $values = $settings + [
       'first_name'  => $this->randomMachineName(6),
       'last_name'   => $this->randomMachineName(12),
-      'company'     => $this->randomMachineName(10) . ', Inc.',
+      'company'     => $this->randomMachineName(10) . ', ' .
+                       array_rand(['Inc.', 'Ltd.', 'LLC', 'GmbH', 'PLC', 'SE']),
       'street1'     => mt_rand(10, 1000) . ' ' .
                        $this->randomMachineName(10) . ' ' .
                        array_rand($street),
       'street2'     => 'Suite ' . mt_rand(100, 999),
       'city'        => $this->randomMachineName(10),
-      'postal_code' => mt_rand(10000, 99999),
+      'postal_code' => (string) mt_rand(10000, 99999),
       'phone'       => '(' . mt_rand(100, 999) . ') ' .
                        mt_rand(100, 999) . '-' . mt_rand(0, 9999),
       'email'       => $this->randomMachineName(6) . '@' .
