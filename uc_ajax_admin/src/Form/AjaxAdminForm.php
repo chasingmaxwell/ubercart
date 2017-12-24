@@ -36,7 +36,7 @@ class AjaxAdminForm extends FormBase {
    * @param \Drupal\uc_cart\Plugin\CheckoutPaneManager $checkout_pane_manager
    *   The checkout pane manager.
    */
-  public function __construct(CheckoutPanePluginInterface $checkout_pane_manager) {
+  public function __construct(CheckoutPaneManager $checkout_pane_manager) {
     $this->checkoutPaneManager = $checkout_pane_manager;
   }
 
