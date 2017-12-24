@@ -20,5 +20,5 @@ address_format:
   - '!first_name !last_name'
   - '!street1'
   - '!street2'
-  - '!city !zone_code !postal_code'
+  - '!city !zone_name !postal_code'
   - '!country_name_if'
