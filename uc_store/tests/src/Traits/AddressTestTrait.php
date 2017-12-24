@@ -12,13 +12,6 @@ trait AddressTestTrait {
   /**
    * Creates an address object based on default settings.
    *
-   * This function is a wrapper around Address::create() which serves to
-   * produce reasonable-looking random addresses for randomly selected countries
-   * that are enabled in Ubercart. The goal is to have addresses which are
-   * recognizable as addresses, not just some collection of random strings. The
-   * address fields may be fully or partially filled in - the unfilled fields
-   * will be populated with random values.
-   *
    * @param array $settings
    *   (optional) An associative array of settings to change from the defaults,
    *   keys are address properties. For example, 'city' => 'London'.
@@ -65,7 +58,7 @@ trait AddressTestTrait {
       $values += ['zone' => array_rand($zone_list)];
     }
 
-    // Create an Address object with these values.
+    // Create object.
     $address = Address::create($values);
 
     return $address;

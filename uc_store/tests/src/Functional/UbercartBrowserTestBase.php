@@ -95,7 +95,7 @@ abstract class UbercartBrowserTestBase extends BrowserTestBase {
     }
 
     // Enable a random selection of 8 countries so we're not always
-    // testing with the 1 site default.
+    // testing with US and CA.
     $countries = \Drupal::service('country_manager')->getAvailableList();
     $country_ids = array_rand($countries, 8);
     foreach ($country_ids as $country_id) {

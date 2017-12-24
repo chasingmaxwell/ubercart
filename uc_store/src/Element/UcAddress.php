@@ -4,7 +4,7 @@ namespace Drupal\uc_store\Element;
 
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element\FormElement;
+use Drupal\Core\Render\Element;
 use Drupal\uc_store\Address;
 use Drupal\uc_store\AddressInterface;
 
@@ -13,7 +13,7 @@ use Drupal\uc_store\AddressInterface;
  *
  * @FormElement("uc_address")
  */
-class UcAddress extends FormElement {
+class UcAddress extends Element\FormElement {
 
   /**
    * {@inheritdoc}
