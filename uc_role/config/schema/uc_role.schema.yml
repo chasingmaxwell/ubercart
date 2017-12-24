@@ -13,27 +13,27 @@ uc_role.settings:
         label: 'Role'
     default_by_quantity:
       type: boolean
-      label: ''
+      label: 'If the role duration should be multiplied by the quantity purchased'
     default_show_expiration:
       type: boolean
-      label: ''
+      label: 'If users have any role expirations they will be displayed on their account page'
     default_end_expiration:
       type: string
-      label: ''
+      label: 'Expire the role on a fixed date or relative to the purchase date'
     default_end_time:
       type: string
-      label: ''
+      label: 'Fixed day and time to expire the role'
 
-    default_granularity:
-      type: string
-      label: ''
     default_length:
       type: string
-      label: ''
-
-    reminder_granularity:
+      label: 'The amount of time before a role expiration, measured from when the role was purchased'
+    default_granularity:
       type: string
-      label: ''
+      label: 'Units of time'
+
     reminder_length:
       type: string
-      label: ''
+      label: 'The amount of time before a role expiration takes place that a customer is notified of its expiration'
+    reminder_granularity:
+      type: string
+      label: 'Units of time'
