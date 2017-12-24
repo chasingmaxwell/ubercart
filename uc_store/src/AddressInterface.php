@@ -116,10 +116,18 @@ interface AddressInterface {
   public function setCity($city);
 
   /**
+   * Tests if the address has a state, provence, or region.
+   *
+   * @return bool
+   *   TRUE if the address has a zone.
+   */
+  public function hasZone();
+
+  /**
    * Returns the state, provence, or region id.
    *
-   * @return string
-   *   The zone.
+   * @return string|null
+   *   The zone code, or NULL if the country has no zones.
    */
   public function getZone();
 

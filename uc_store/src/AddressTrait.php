@@ -70,7 +70,7 @@ trait AddressTrait {
    *
    * @var string
    */
-  public $zone = '';
+  public $zone = NULL;
 
   /**
    * Postal code.
@@ -204,6 +204,13 @@ trait AddressTrait {
   public function setCity($city) {
     $this->city = $city;
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function hasZone() {
+    return is_null($this->zone);
   }
 
   /**
