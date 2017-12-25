@@ -51,6 +51,7 @@ class Check extends PaymentMethodPluginBase {
     $form['address'] = [
       '#type' => 'uc_address',
       '#tree' => TRUE,
+      '#hide' => ['first_name', 'last_name', 'phone', 'email'],
       '#default_value' => $this->configuration['address'],
       '#required' => FALSE,
     ];
