@@ -76,6 +76,192 @@ class CreditCardTest extends UbercartBrowserTestBase {
   }
 
   /**
+   * Tests security settings configuration.
+   */
+  public function testSecuritySettings() {
+    // TODO:  Still need tests with existing key file
+    // where key file is not readable or doesn't contain a valid key.
+
+    // Create key directory, make it readable and writeable.
+    \Drupal::service('file_system')->mkdir('sites/default/files/testkey', 0755);
+
+    // Try to submit settings form without a key file path.
+    // Save current variable, reset to its value when first installed.
+    $config = \Drupal::configFactory()->getEditable('uc_credit.settings');
+    $temp_variable = $config->get('encryption_path');
+    $config->set('encryption_path', '')->save();
+
+    $this->drupalGet('admin/store');
+    $this->assertText('You must review your credit card security settings and enable encryption before you can accept credit card payments.');
+
+    $this->drupalPostForm(
+      'admin/store/config/payment/credit',
+      [],
+      'Save configuration'
+    );
+    $this->assertFieldByName(
+      'uc_credit_encryption_path',
+      'Not configured.',
+      'Key file has not yet been configured.'
+    );
+    // Restore variable setting.
+    $config->set('encryption_path', $temp_variable)->save();
+
+    // Try to submit settings form with an empty key file path.
+    $this->drupalPostForm(
+      'admin/store/config/payment/credit',
+      ['uc_credit_encryption_path' => ''],
+      'Save configuration'
+    );
+    $this->assertText('Key path must be specified in security settings tab.');
+
+    // Specify non-existent directory.
+    $this->drupalPostForm(
+      'admin/store/config/payment/credit',
+      ['uc_credit_encryption_path' => 'sites/default/ljkh/asdfasfaaaaa'],
+      'Save configuration'
+    );
+    $this->assertText('You have specified a non-existent directory.');
+
+    // Next, specify existing directory that's write protected.
+    // Use /dev, as that should never be accessible.
+    $this->drupalPostForm(
+      'admin/store/config/payment/credit',
+      ['uc_credit_encryption_path' => '/dev'],
+      'Save configuration'
+    );
+    $this->assertText('Cannot write to directory, please verify the directory permissions.');
+
+    // Next, specify writeable directory, but with excess whitespace
+    // and trailing /
+    $this->drupalPostForm(
+      'admin/store/config/payment/credit',
+      ['uc_credit_encryption_path' => '  sites/default/files/testkey/ '],
+      'Save configuration'
+    );
+    // See that the directory has been properly re-written to remove
+    // whitespace and trailing /
+    $this->assertFieldByName(
+      'uc_credit_encryption_path',
+      'sites/default/files/testkey',
+      'Key file path has been set.'
+    );
+    $this->assertText('Credit card encryption key file generated.');
+
+    // Check that warning about needing key file goes away.
+    $this->assertNoText('Credit card security settings must be configured in the security settings tab.');
+    // Remove key file.
+    \Drupal::service('file_system')->unlink('sites/default/files/testkey/' . UC_CREDIT_KEYFILE_NAME);
+
+    // Finally, specify good directory.
+    $this->drupalPostForm(
+      'admin/store/config/payment/credit',
+      ['uc_credit_encryption_path' => 'sites/default/files/testkey'],
+      'Save configuration'
+    );
+    $this->assertText('Credit card encryption key file generated.');
+
+    // Test contents - must contain 32-character hexadecimal string.
+    $this->assertTrue(
+      file_exists('sites/default/files/simpletest.keys/' . UC_CREDIT_KEYFILE_NAME),
+      'Key has been generated and stored.'
+    );
+    $this->assertTrue(
+      preg_match("([0-9a-fA-F]{32})", uc_credit_encryption_key()),
+      'Valid key detected in key file.'
+    );
+
+    // Cleanup keys directory after test.
+    \Drupal::service('file_system')->unlink('sites/default/files/testkey/' . UC_CREDIT_KEYFILE_NAME);
+    \Drupal::service('file_system')->rmdir('sites/default/files/testkey');
+  }
+
+  /**
+   * Tests that an order can be placed using the test gateway even if
+   * the user changes their mind and fails a payment attempt.
+   */
+  public function testCheckout() {
+    $this->addToCart($this->product);
+
+    // Submit the checkout page. Note that because of the Ajax on the country
+    // fields, which is used to populate the zone select, the zone doesn't
+    // actually get set by this post. That's OK because we're not checking that
+    // yet. But we need to make sure that the next time we post this page
+    // (which now has the country set from the first post) we include the zones.
+    $edit = $this->populateCheckoutForm([
+      'panes[payment][details][cc_number]' => array_rand(array_flip(self::$test_cards)),
+      'panes[payment][details][cc_cvv]' => mt_rand(100, 999),
+      'panes[payment][details][cc_exp_month]' => mt_rand(1, 12),
+      'panes[payment][details][cc_exp_year]' => mt_rand(date('Y') + 1, 2022),
+    ]);
+    $this->drupalPostForm('cart/checkout', $edit, 'Review order');
+    $this->assertText('(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4), 'Truncated credit card number found.');
+    $this->assertText($edit['panes[payment][details][cc_exp_year]'], 'Expiry date found.');
+
+    // Go back. Form will still be populated, but verify that the credit
+    // card number is truncated and CVV is masked for security.
+    $this->drupalPostForm(NULL, [], 'Back');
+    $this->assertFieldByName('panes[payment][details][cc_number]', '(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4), 'Truncated credit card number found.');
+    $this->assertFieldByName('panes[payment][details][cc_cvv]', '---', 'Masked CVV found.');
+    $this->assertFieldByName('panes[payment][details][cc_exp_month]', $edit['panes[payment][details][cc_exp_month]'], 'Expiry month found.');
+    $this->assertFieldByName('panes[payment][details][cc_exp_year]', $edit['panes[payment][details][cc_exp_year]'], 'Expiry year found.');
+
+    // Change the card number and fail with a known-bad CVV.
+    $edit['panes[payment][details][cc_number]'] = array_rand(array_flip(self::$test_cards));
+    $edit['panes[payment][details][cc_cvv]'] = '000';
+    // If zones were set, we must re-submit them here to work around the Ajax
+    // situation described above. So we just re-submit all the data to be safe.
+    $this->drupalPostForm(NULL, $edit, 'Review order');
+    $this->assertText('(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4), 'Truncated updated credit card number found.');
+
+    // Try to submit the bad CVV.
+    $this->drupalPostForm(NULL, [], 'Submit order');
+    $this->assertText('We were unable to process your credit card payment. Please verify your details and try again.');
+
+    // Go back. Again check for truncated card number and masked CVV.
+    $this->drupalPostForm(NULL, [], 'Back');
+    $this->assertFieldByName('panes[payment][details][cc_number]', '(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4), 'Truncated updated credit card number found.');
+    $this->assertFieldByName('panes[payment][details][cc_cvv]', '---', 'Masked CVV found.');
+
+    // Fix the CVV and repost.
+    $edit['panes[payment][details][cc_cvv]'] = mt_rand(100, 999);
+    $this->drupalPostForm(NULL, $edit, 'Review order');
+
+    // Check for success.
+    $this->drupalPostForm(NULL, [], 'Submit order');
+    $this->assertText('Your order is complete!');
+  }
+
+  /**
+   * Tests that expiry date validation functions correctly.
+   */
+  public function testExpiryDate() {
+    $order = $this->createOrder(['payment_method' => $this->paymentMethod['id']]);
+
+    $year = date('Y');
+    $month = date('n');
+    for ($y = $year; $y <= $year + 2; $y++) {
+      for ($m = 1; $m <= 12; $m++) {
+        $edit = [
+          'amount' => 1,
+          'cc_data[cc_number]' => '4111111111111111',
+          'cc_data[cc_cvv]' => '123',
+          'cc_data[cc_exp_month]' => $m,
+          'cc_data[cc_exp_year]' => $y,
+        ];
+        $this->drupalPostForm('admin/store/orders/' . $order->id() . '/credit/' . $this->paymentMethod['id'], $edit, 'Charge amount');
+
+        if ($y > $year || $m >= $month) {
+          $this->assertText('The credit card was processed successfully.', SafeMarkup::format('Card with expiry date @month/@year passed validation.', ['@month' => $m, '@year' => $y]));
+        }
+        else {
+          $this->assertNoText('The credit card was processed successfully.', SafeMarkup::format('Card with expiry date @month/@year correctly failed validation.', ['@month' => $m, '@year' => $y]));
+        }
+      }
+    }
+  }
+
+  /**
    * Helper function to configure Credit Card payment method settings.
    */
   protected function configureCreditCard() {
@@ -88,7 +274,7 @@ class CreditCardTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       'admin/store/config/payment/credit',
       ['uc_credit_encryption_path' => 'sites/default/files/simpletest.keys'],
-      t('Save configuration')
+      'Save configuration'
     );
 
     $this->assertFieldByName(
@@ -120,189 +306,6 @@ class CreditCardTest extends UbercartBrowserTestBase {
     \Drupal::service('file_system')->unlink('sites/default/files/simpletest.keys/' . UC_CREDIT_KEYFILE_NAME);
     \Drupal::service('file_system')->rmdir('sites/default/files/simpletest.keys');
     parent::tearDown();
-  }
-
-  /**
-   * Tests security settings configuration.
-   */
-  public function testSecuritySettings() {
-    // TODO:  Still need tests with existing key file
-    // where key file is not readable or doesn't contain a valid key.
-
-    // Create key directory, make it readable and writeable.
-    \Drupal::service('file_system')->mkdir('sites/default/files/testkey', 0755);
-
-    // Try to submit settings form without a key file path.
-    // Save current variable, reset to its value when first installed.
-    $config = \Drupal::configFactory()->getEditable('uc_credit.settings');
-    $temp_variable = $config->get('encryption_path');
-    $config->set('encryption_path', '')->save();
-
-    $this->drupalGet('admin/store');
-    $this->assertText(t('You must review your credit card security settings and enable encryption before you can accept credit card payments.'));
-
-    $this->drupalPostForm(
-      'admin/store/config/payment/credit',
-      [],
-      t('Save configuration')
-    );
-    $this->assertFieldByName(
-      'uc_credit_encryption_path',
-      t('Not configured.'),
-      'Key file has not yet been configured.'
-    );
-    // Restore variable setting.
-    $config->set('encryption_path', $temp_variable)->save();
-
-    // Try to submit settings form with an empty key file path.
-    $this->drupalPostForm(
-      'admin/store/config/payment/credit',
-      ['uc_credit_encryption_path' => ''],
-      t('Save configuration')
-    );
-    $this->assertText(t('Key path must be specified in security settings tab.'));
-
-    // Specify non-existent directory.
-    $this->drupalPostForm(
-      'admin/store/config/payment/credit',
-      ['uc_credit_encryption_path' => 'sites/default/ljkh/asdfasfaaaaa'],
-      t('Save configuration')
-    );
-    $this->assertText(t('You have specified a non-existent directory.'));
-
-    // Next, specify existing directory that's write protected.
-    // Use /dev, as that should never be accessible.
-    $this->drupalPostForm(
-      'admin/store/config/payment/credit',
-      ['uc_credit_encryption_path' => '/dev'],
-      t('Save configuration')
-    );
-    $this->assertText(t('Cannot write to directory, please verify the directory permissions.'));
-
-    // Next, specify writeable directory, but with excess whitespace
-    // and trailing /
-    $this->drupalPostForm(
-      'admin/store/config/payment/credit',
-      ['uc_credit_encryption_path' => '  sites/default/files/testkey/ '],
-      t('Save configuration')
-    );
-    // See that the directory has been properly re-written to remove
-    // whitespace and trailing /
-    $this->assertFieldByName(
-      'uc_credit_encryption_path',
-      'sites/default/files/testkey',
-      'Key file path has been set.'
-    );
-    $this->assertText(t('Credit card encryption key file generated.'));
-
-    // Check that warning about needing key file goes away.
-    $this->assertNoText(t('Credit card security settings must be configured in the security settings tab.'));
-    // Remove key file.
-    \Drupal::service('file_system')->unlink('sites/default/files/testkey/' . UC_CREDIT_KEYFILE_NAME);
-
-    // Finally, specify good directory.
-    $this->drupalPostForm(
-      'admin/store/config/payment/credit',
-      ['uc_credit_encryption_path' => 'sites/default/files/testkey'],
-      t('Save configuration')
-    );
-    $this->assertText(t('Credit card encryption key file generated.'));
-
-    // Test contents - must contain 32-character hexadecimal string.
-    $this->assertTrue(
-      file_exists('sites/default/files/simpletest.keys/' . UC_CREDIT_KEYFILE_NAME),
-      'Key has been generated and stored.'
-    );
-    $this->assertTrue(
-      preg_match("([0-9a-fA-F]{32})", uc_credit_encryption_key()),
-      'Valid key detected in key file.'
-    );
-
-    // Cleanup keys directory after test.
-    \Drupal::service('file_system')->unlink('sites/default/files/testkey/' . UC_CREDIT_KEYFILE_NAME);
-    \Drupal::service('file_system')->rmdir('sites/default/files/testkey');
-  }
-
-  /**
-   * Tests that an order can be placed using the test gateway even if
-   * the user changes their mind and fails a payment attempt.
-   */
-  public function testCheckout() {
-    $this->addToCart($this->product);
-
-    // Submit the checkout page.
-    $edit = $this->populateCheckoutForm([
-      'panes[payment][details][cc_number]' => array_rand(array_flip(self::$test_cards)),
-      'panes[payment][details][cc_cvv]' => mt_rand(100, 999),
-      'panes[payment][details][cc_exp_month]' => mt_rand(1, 12),
-      'panes[payment][details][cc_exp_year]' => mt_rand(date('Y') + 1, 2022),
-    ]);
-    $this->drupalPostForm('cart/checkout', $edit, 'Review order');
-    $this->assertText('(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4), 'Truncated credit card number found.');
-    $this->assertText($edit['panes[payment][details][cc_exp_year]'], 'Expiry date found.');
-
-    // Go back.
-    $this->drupalPostForm(NULL, [], 'Back');
-    $this->assertFieldByName('panes[payment][details][cc_number]', '(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4), 'Truncated credit card number found.');
-    $this->assertFieldByName('panes[payment][details][cc_cvv]', '---', 'Masked CVV found.');
-    $this->assertFieldByName('panes[payment][details][cc_exp_month]', $edit['panes[payment][details][cc_exp_month]'], 'Expiry month found.');
-    $this->assertFieldByName('panes[payment][details][cc_exp_year]', $edit['panes[payment][details][cc_exp_year]'], 'Expiry year found.');
-
-    // Change the number and fail with a known-bad CVV.
-    $edit = [
-      'panes[payment][details][cc_number]' => array_rand(array_flip(self::$test_cards)),
-      'panes[payment][details][cc_cvv]' => '000',
-    ];
-    $this->drupalPostForm(NULL, $edit, 'Review order');
-    $this->assertText('(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4), 'Truncated updated credit card number found.');
-
-    // Try to submit the bad CVV.
-    $this->drupalPostForm(NULL, [], 'Submit order');
-    $this->assertText(t('We were unable to process your credit card payment. Please verify your details and try again.'));
-
-    // Go back.
-    $this->drupalPostForm(NULL, [], 'Back');
-    $this->assertFieldByName('panes[payment][details][cc_number]', '(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4), 'Truncated updated credit card number found.');
-    $this->assertFieldByName('panes[payment][details][cc_cvv]', '---', 'Masked CVV found.');
-
-    // Fix the CVV.
-    $edit = [
-      'panes[payment][details][cc_cvv]' => mt_rand(100, 999),
-    ];
-    $this->drupalPostForm(NULL, $edit, 'Review order');
-
-    // Check for success.
-    $this->drupalPostForm(NULL, [], 'Submit order');
-    $this->assertText(t('Your order is complete!'));
-  }
-
-  /**
-   * Tests that expiry date validation functions correctly.
-   */
-  public function testExpiryDate() {
-    $order = $this->createOrder(['payment_method' => $this->paymentMethod['id']]);
-
-    $year = date('Y');
-    $month = date('n');
-    for ($y = $year; $y <= $year + 2; $y++) {
-      for ($m = 1; $m <= 12; $m++) {
-        $edit = [
-          'amount' => 1,
-          'cc_data[cc_number]' => '4111111111111111',
-          'cc_data[cc_cvv]' => '123',
-          'cc_data[cc_exp_month]' => $m,
-          'cc_data[cc_exp_year]' => $y,
-        ];
-        $this->drupalPostForm('admin/store/orders/' . $order->id() . '/credit/' . $this->paymentMethod['id'], $edit, 'Charge amount');
-
-        if ($y > $year || $m >= $month) {
-          $this->assertText(t('The credit card was processed successfully.'), SafeMarkup::format('Card with expiry date @month/@year passed validation.', ['@month' => $m, '@year' => $y]));
-        }
-        else {
-          $this->assertNoText(t('The credit card was processed successfully.'), SafeMarkup::format('Card with expiry date @month/@year correctly failed validation.', ['@month' => $m, '@year' => $y]));
-        }
-      }
-    }
   }
 
 }
