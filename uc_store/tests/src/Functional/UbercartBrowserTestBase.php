@@ -272,7 +272,8 @@ abstract class UbercartBrowserTestBase extends BrowserTestBase {
         $prefix . '[last_name]' => $this->randomMachineName(10),
         $prefix . '[street1]' => $this->randomMachineName(10),
         $prefix . '[city]' => $this->randomMachineName(10),
-        $prefix . '[postal_code]' => mt_rand(10000, 99999),
+        $prefix . '[postal_code]' => (string) mt_rand(10000, 99999),
+        $prefix . '[country]' => $country_id,
       ];
 
       // Don't try to set the zone unless the store country has zones!
