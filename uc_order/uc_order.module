@@ -22,6 +22,7 @@ use Drupal\Core\Url;
 use Drupal\user\UserInterface;
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_order\OrderInterface;
+use Drupal\uc_order\Event\OrderCommentAdded;
 use Drupal\node\Entity\Node;
 
 require_once dirname(__FILE__) . '/uc_order.line_item.inc';
@@ -274,6 +275,10 @@ function uc_order_comments_load($order_id, $admin = FALSE) {
  * Inserts a comment, $type being either 'order' or 'admin'.
  */
 function uc_order_comment_save($order_id, $uid, $message, $type = 'admin', $status = 'pending', $notify = FALSE) {
+  $order = Order::load($order_id);
+  $event = new OrderCommentAdded($order);
+  \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
+
   if ($type == 'admin') {
     db_insert('uc_order_admin_comments')
       ->fields([

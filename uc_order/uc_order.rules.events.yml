@@ -24,3 +24,11 @@ uc_order_delete:
     order:
       type: 'entity:uc_order'
       label: 'Order'
+
+uc_order_comment_added:
+  label: 'An order comment is added'
+  category: 'Order'
+  context:
+    order:
+      type: 'entity:uc_order'
+      label: 'Order'
