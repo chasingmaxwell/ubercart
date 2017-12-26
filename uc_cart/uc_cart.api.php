@@ -7,6 +7,7 @@
 
 use Drupal\Core\Session\AccountInterface;
 use Drupal\node\Entity\Node;
+use Drupal\uc_cart\CartItemInterface;
 use Drupal\uc_order\OrderInterface;
 
 /**
@@ -30,7 +31,7 @@ use Drupal\uc_order\OrderInterface;
  *   The node ID of the product.
  * @param int $qty
  *   The quantity being added.
- * @param $data array
+ * @param array $data
  *   The data array, including attributes and model number adjustments.
  *
  * @return array
@@ -87,7 +88,7 @@ function hook_uc_add_to_cart_data($form_values) {
  * This hook is only called for the module that owns the cart item in
  * question, as set in $item->module.
  *
- * @param $item
+ * @param \Drupal\uc_cart\CartItemInterface $item
  *   The item in the cart to display.
  *
  * @return array
@@ -121,7 +122,7 @@ function hook_uc_add_to_cart_data($form_values) {
  *     - #value: The quantity of $item in the cart. When "Update cart" is
  *       clicked, the customer's input is saved to the cart.
  */
-function hook_uc_cart_display($item) {
+function hook_uc_cart_display(CartItemInterface $item) {
   $node = $item->nid->entity;
 
   $element = [];
@@ -164,40 +165,40 @@ function hook_uc_cart_display($item) {
 /**
  * Act on a cart item before it is about to be created or updated.
  *
- * @param $entity
+ * @param \Drupal\uc_cart\CartItemInterface $entity
  *   The cart item entity object.
  */
-function hook_uc_cart_item_presave($entity) {
+function hook_uc_cart_item_presave(CartItemInterface $entity) {
   $entity->changed = REQUEST_TIME;
 }
 
 /**
  * Act on cart item entities when inserted.
  *
- * @param $entity
+ * @param \Drupal\uc_cart\CartItemInterface $entity
  *   The cart item entity object.
  */
-function hook_uc_cart_item_insert($entity) {
+function hook_uc_cart_item_insert(CartItemInterface $entity) {
   drupal_set_message(t('An item was added to your cart'));
 }
 
 /**
  * Act on cart item entities when updated.
  *
- * @param $entity
+ * @param \Drupal\uc_cart\CartItemInterface $entity
  *   The cart item entity object.
  */
-function hook_uc_cart_item_update($entity) {
+function hook_uc_cart_item_update(CartItemInterface $entity) {
   drupal_set_message(t('An item was updated in your cart'));
 }
 
 /**
  * Act on cart item entities when deleted.
  *
- * @param $entity
+ * @param \Drupal\uc_cart\CartItemInterface $entity
  *   The cart item entity object.
  */
-function hook_uc_cart_item_delete($entity) {
+function hook_uc_cart_item_delete(CartItemInterface $entity) {
   drupal_set_message(t('An item was deleted from your cart'));
 }
 

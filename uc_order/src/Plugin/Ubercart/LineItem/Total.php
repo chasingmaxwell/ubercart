@@ -17,6 +17,9 @@ use Drupal\uc_order\OrderInterface;
  */
 class Total extends LineItemPluginBase {
 
+  /**
+   * {@inheritdoc}
+   */
   public function display(OrderInterface $order) {
     $lines[] = [
       'id' => 'total',

@@ -59,7 +59,7 @@ function theme_uc_file_hook_user_file_downloads(array $variables) {
           'data' => [
             '#type' => 'container',
             '#markup' => drupal_render($file_download['downloads_in']) . '/',
-            'limit' =>  $file_download['download_limit'],
+            'limit' => $file_download['download_limit'],
           ],
           'class' => ['download-table-index'],
         ],

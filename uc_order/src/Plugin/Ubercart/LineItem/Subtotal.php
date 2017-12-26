@@ -16,6 +16,9 @@ use Drupal\uc_order\OrderInterface;
  */
 class Subtotal extends LineItemPluginBase {
 
+  /**
+   * {@inheritdoc}
+   */
   public function load(OrderInterface $order) {
     $lines[] = [
       'id' => 'subtotal',

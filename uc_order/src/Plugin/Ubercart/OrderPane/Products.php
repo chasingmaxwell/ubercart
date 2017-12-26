@@ -26,37 +26,37 @@ class Products extends EditableOrderPanePluginBase {
    * {@inheritdoc}
    */
   public function view(OrderInterface $order, $view_mode) {
-    $build = array(
+    $build = [
       '#type' => 'table',
-      '#attributes' => array('class' => array('order-pane-table')),
-      '#header' => array(
-        'qty' => array(
+      '#attributes' => ['class' => ['order-pane-table']],
+      '#header' => [
+        'qty' => [
           'data' => $this->t('Qty'),
-          'class' => array('qty'),
-        ),
-        'product' => array(
+          'class' => ['qty'],
+        ],
+        'product' => [
           'data' => $this->t('Product'),
-          'class' => array('product'),
-        ),
-        'model' => array(
+          'class' => ['product'],
+        ],
+        'model' => [
           'data' => $this->t('SKU'),
-          'class' => array('sku', RESPONSIVE_PRIORITY_LOW),
-        ),
-        'cost' => array(
+          'class' => ['sku', RESPONSIVE_PRIORITY_LOW],
+        ],
+        'cost' => [
           'data' => $this->t('Cost'),
-          'class' => array('cost', RESPONSIVE_PRIORITY_LOW),
-        ),
-        'price' => array(
+          'class' => ['cost', RESPONSIVE_PRIORITY_LOW],
+        ],
+        'price' => [
           'data' => $this->t('Price'),
-          'class' => array('price'),
-        ),
-        'total' => array(
+          'class' => ['price'],
+        ],
+        'total' => [
           'data' => $this->t('Total'),
-          'class' => array('price'),
-        ),
-      ),
+          'class' => ['price'],
+        ],
+      ],
       '#empty' => $this->t('This order contains no products.'),
-    );
+    ];
 
     $account = \Drupal::currentUser();
     if (!$account->hasPermission('administer products')) {
@@ -64,15 +64,15 @@ class Products extends EditableOrderPanePluginBase {
     }
 
     // @todo Replace with Views.
-    $rows = array();
+    $rows = [];
     foreach ($order->products as $id => $product) {
-      $rows[$id]['qty'] = array(
-        'data' => array(
+      $rows[$id]['qty'] = [
+        'data' => [
           '#theme' => 'uc_qty',
           '#qty' => $product->qty->value,
-        ),
-        'class' => array('qty'),
-      );
+        ],
+        'class' => ['qty'],
+      ];
 
       if ($product->nid->entity && $product->nid->entity->access('view')) {
         $title = $product->nid->entity->toLink()->toString();
@@ -80,39 +80,39 @@ class Products extends EditableOrderPanePluginBase {
       else {
         $title = $product->title->value;
       }
-      $rows[$id]['product'] = array(
-        'data' => array('#markup' => $title . uc_product_get_description($product)),
-        'class' => array('product'),
-      );
-      $rows[$id]['model'] = array(
-        'data' => array('#markup' => $product->model->value),
-        'class' => array('sku'),
-      );
+      $rows[$id]['product'] = [
+        'data' => ['#markup' => $title . uc_product_get_description($product)],
+        'class' => ['product'],
+      ];
+      $rows[$id]['model'] = [
+        'data' => ['#markup' => $product->model->value],
+        'class' => ['sku'],
+      ];
       if ($account->hasPermission('administer products')) {
-        $rows[$id]['cost'] = array(
-          'data' => array(
+        $rows[$id]['cost'] = [
+          'data' => [
             '#theme' => 'uc_price',
             '#price' => $product->cost->value,
-          ),
-          'class' => array('cost'),
-        );
+          ],
+          'class' => ['cost'],
+        ];
       }
-      $rows[$id]['price'] = array(
-        'data' => array(
+      $rows[$id]['price'] = [
+        'data' => [
           '#theme' => 'uc_price',
           '#price' => $product->price->value,
-          '#suffixes' => array(),
-        ),
-        'class' => array('price'),
-      );
-      $rows[$id]['total'] = array(
-        'data' => array(
+          '#suffixes' => [],
+        ],
+        'class' => ['price'],
+      ];
+      $rows[$id]['total'] = [
+        'data' => [
           '#theme' => 'uc_price',
           '#price' => $product->price->value * $product->qty->value,
-          '#suffixes' => array(),
-        ),
-        'class' => array('total'),
-      );
+          '#suffixes' => [],
+        ],
+        'class' => ['total'],
+      ];
     }
     $build['#rows'] = $rows;
 
@@ -123,38 +123,39 @@ class Products extends EditableOrderPanePluginBase {
    * {@inheritdoc}
    */
   public function buildForm(OrderInterface $order, array $form, FormStateInterface $form_state) {
-    $form['add_product_button'] = array(
+    $form['add_product_button'] = [
       '#type' => 'submit',
       '#value' => $this->t('Add product'),
-      '#submit' => array(array($this, 'productSelectSearch')),
-      '#ajax' => array(
-        'callback' => array($this, 'ajaxCallback'),
+      '#submit' => [[$this, 'productSelectSearch']],
+      '#ajax' => [
+        'callback' => [$this, 'ajaxCallback'],
         'wrapper' => 'product-controls',
-      ),
-    );
-    $form['add_blank_line_button'] = array(
+      ],
+    ];
+    $form['add_blank_line_button'] = [
       '#type' => 'submit',
       '#value' => $this->t('Add blank line'),
-      '#submit' => array(array($this, 'addBlank')),
-      '#ajax' => array(
-        'callback' => array($this, 'ajaxCallback'),
+      '#submit' => [[$this, 'addBlank']],
+      '#ajax' => [
+        'callback' => [$this, 'ajaxCallback'],
         'wrapper' => 'product-controls',
-      ),
-    );
+      ],
+    ];
 
-    $form['product_controls'] = array(
+    $form['product_controls'] = [
       '#tree' => TRUE,
       '#prefix' => '<div id="product-controls">',
       '#suffix' => '</div>',
-    );
+    ];
 
-    $controls = array();
+    $controls = [];
 
     if ($form_state->has('products_action')) {
       switch ($form_state->get('products_action')) {
         case 'select':
           $controls = $this->productSelectForm($form['product_controls'], $form_state, $order);
           break;
+
         case 'add_product':
           $controls = $this->addProductForm($form['product_controls'], $form_state, $order, $form_state->get('node'));
           break;
@@ -174,7 +175,7 @@ class Products extends EditableOrderPanePluginBase {
   public function submitForm(OrderInterface $order, array &$form, FormStateInterface $form_state) {
     // @todo Decouple stock related code into uc_stock
     if (\Drupal::moduleHandler()->moduleExists('uc_stock')) {
-      $qtys = array();
+      $qtys = [];
       foreach ($order->products as $product) {
         $qtys[$product->order_product_id] = $product->qty;
       }
@@ -206,51 +207,51 @@ class Products extends EditableOrderPanePluginBase {
    */
   protected function productSelectForm($form, FormStateInterface $form_state, $order) {
     $options = $form_state->get('product_select_options');
-    $ajax = array(
-      'callback' => array($this, 'ajaxCallback'),
+    $ajax = [
+      'callback' => [$this, 'ajaxCallback'],
       'wrapper' => 'product-controls',
-    );
+    ];
 
-    $form['nid'] = array(
+    $form['nid'] = [
       '#type' => 'select',
       '#options' => $options,
       '#size' => 7,
-      '#ajax' => $ajax + array(
-          'event' => 'dblclick',
-          'trigger_as' => array(
-            'name' => 'op',
-            'value' => $this->t('Select'),
-          ),
-        ),
-    );
-    $form['product_search'] = array(
+      '#ajax' => $ajax + [
+        'event' => 'dblclick',
+        'trigger_as' => [
+          'name' => 'op',
+          'value' => $this->t('Select'),
+        ],
+      ],
+    ];
+    $form['product_search'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Search by name or model/SKU (* is the wildcard)'),
-    );
+    ];
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['select'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['select'] = [
       '#type' => 'submit',
       '#value' => $this->t('Select'),
-      '#validate' => array(array($this, 'productSelectValidate')),
-      '#submit' => array(array($this, 'productSelectSubmit')),
+      '#validate' => [[$this, 'productSelectValidate']],
+      '#submit' => [[$this, 'productSelectSubmit']],
       '#ajax' => $ajax,
       '#weight' => 0,
-    );
-    $form['actions']['search'] = array(
+    ];
+    $form['actions']['search'] = [
       '#type' => 'submit',
       '#value' => $this->t('Search'),
-      '#submit' => array(array($this, 'productSelectSearch')),
+      '#submit' => [[$this, 'productSelectSearch']],
       '#ajax' => $ajax,
       '#weight' => 1,
-    );
-    $form['actions']['close'] = array(
+    ];
+    $form['actions']['close'] = [
       '#type' => 'submit',
       '#value' => $this->t('Close'),
-      '#submit' => array(array($this, 'productSelectClose')),
+      '#submit' => [[$this, 'productSelectClose']],
       '#ajax' => $ajax,
       '#weight' => 2,
-    );
+    ];
 
     return $form;
   }
@@ -268,50 +269,50 @@ class Products extends EditableOrderPanePluginBase {
    * Sets the quantity and attributes of a product added to the order.
    */
   protected function addProductForm($form, FormStateInterface $form_state, $order, $node) {
-    $data = array();
+    $data = [];
     if ($form_state->hasValue(['product_controls', 'qty'])) {
-      $data += \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', array($form_state->getValue('product_controls')));
+      $data += \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', [$form_state->getValue('product_controls')]);
     }
     if (!empty($node->data) && is_array($node->data)) {
       $data += $node->data;
     }
     $node = uc_product_load_variant(intval($form_state->getValue(['product_controls', 'nid'])), $data);
-    $form['title'] = array(
+    $form['title'] = [
       '#markup' => '<h3>' . $node->label() . '</h3>',
-    );
-    $form['nid'] = array(
+    ];
+    $form['nid'] = [
       '#type' => 'hidden',
       '#value' => $node->id(),
-    );
-    $form['qty'] = array(
+    ];
+    $form['qty'] = [
       '#type' => 'uc_quantity',
       '#title' => $this->t('Quantity'),
       '#default_value' => 1,
-    );
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    ];
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Add to order'),
-      '#submit' => array(array($this, 'addProductSubmit')),
-      '#ajax' =>  array(
-        'callback' => array($this, 'ajaxCallback'),
+      '#submit' => [[$this, 'addProductSubmit']],
+      '#ajax' => [
+        'callback' => [$this, 'ajaxCallback'],
         'wrapper' => 'product-controls',
-      ),
-    );
-    $form['actions']['cancel'] = array(
+      ],
+    ];
+    $form['actions']['cancel'] = [
       '#type' => 'submit',
       '#value' => $this->t('Cancel'),
-      '#submit' => array(array($this, 'productSelectSearch')),
-      '#ajax' =>  array(
-        'callback' => array($this, 'ajaxCallback'),
+      '#submit' => [[$this, 'productSelectSearch']],
+      '#ajax' => [
+        'callback' => [$this, 'ajaxCallback'],
         'wrapper' => 'product-controls',
-      ),
-      '#limit_validation_errors' => array(),
-    );
-    $form['node'] = array(
+      ],
+      '#limit_validation_errors' => [],
+    ];
+    $form['node'] = [
       '#type' => 'value',
       '#value' => $node,
-    );
+    ];
 
     uc_form_alter($form, $form_state, __FUNCTION__);
 
@@ -322,94 +323,103 @@ class Products extends EditableOrderPanePluginBase {
    * Form to allow ordered products' data to be changed.
    */
   protected function editProductsForm($form, FormStateInterface $form_state, $products) {
-    $form['products'] = array(
+    $form['products'] = [
       '#type' => 'table',
       '#tree' => TRUE,
-      '#header' => array($this->t('Remove'), $this->t('Quantity'), $this->t('Name'), $this->t('SKU'), $this->t('Weight'), $this->t('Units'), $this->t('Cost'), $this->t('Price')),
-      '#attributes' => array('id' => 'order-edit-products', 'class' => array('order-pane-table')),
+      '#header' => [
+        $this->t('Remove'),
+        $this->t('Quantity'),
+        $this->t('Name'),
+        $this->t('SKU'),
+        $this->t('Weight'),
+        $this->t('Units'),
+        $this->t('Cost'),
+        $this->t('Price'),
+      ],
+      '#attributes' => ['id' => 'order-edit-products', 'class' => ['order-pane-table']],
       '#empty' => $this->t('This order contains no products.'),
-    );
-    $form['data'] = array(
+    ];
+    $form['data'] = [
       '#tree' => TRUE,
-      '#parents' => array('products'),
-    );
+      '#parents' => ['products'],
+    ];
     foreach ($products as $i => $product) {
-      $form['products'][$i]['remove'] = array(
+      $form['products'][$i]['remove'] = [
         '#type' => 'image_button',
         '#title' => $this->t('Remove this product.'),
         '#name' => "products[$i][remove]",
         '#src' => drupal_get_path('module', 'uc_store') . '/images/error.gif',
         '#button_type' => 'remove',
-        '#submit' => array(array($this, 'removeProduct'), '::submitForm'),
+        '#submit' => [[$this, 'removeProduct'], '::submitForm'],
         '#return_value' => $product->order_product_id->value,
-      );
-      $form['data'][$i]['order_product_id'] = array(
+      ];
+      $form['data'][$i]['order_product_id'] = [
         '#type' => 'hidden',
         '#value' => $product->order_product_id->value,
-      );
-      $form['data'][$i]['nid'] = array(
+      ];
+      $form['data'][$i]['nid'] = [
         '#type' => 'hidden',
         '#value' => $product->nid->target_id,
-      );
-      $form['products'][$i]['qty'] = array(
+      ];
+      $form['products'][$i]['qty'] = [
         '#type' => 'uc_quantity',
         '#title' => $this->t('Quantity'),
         '#title_display' => 'invisible',
         '#default_value' => $product->qty->value,
-      );
-      $form['products'][$i]['title'] = array(
+      ];
+      $form['products'][$i]['title'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Title'),
         '#title_display' => 'invisible',
         '#default_value' => $product->title->value,
         '#size' => 32,
         '#maxlength' => 255,
-      );
-      $form['products'][$i]['model'] = array(
+      ];
+      $form['products'][$i]['model'] = [
         '#type' => 'textfield',
         '#title' => $this->t('SKU'),
         '#title_display' => 'invisible',
         '#default_value' => $product->model->value,
         '#size' => 6,
-      );
-      $form['products'][$i]['weight'] = array(
+      ];
+      $form['products'][$i]['weight'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Weight'),
         '#title_display' => 'invisible',
         '#default_value' => $product->weight->value,
         '#size' => 3,
-      );
-      $units = array(
+      ];
+      $units = [
         'lb' => $this->t('Pounds'),
         'kg' => $this->t('Kilograms'),
         'oz' => $this->t('Ounces'),
         'g'  => $this->t('Grams'),
-      );
-      $form['products'][$i]['weight_units'] = array(
+      ];
+      $form['products'][$i]['weight_units'] = [
         '#type' => 'select',
         '#title' => $this->t('Units'),
         '#title_display' => 'invisible',
         '#default_value' => $product->weight->units,
         '#options' => $units,
-      );
-      $form['products'][$i]['cost'] = array(
+      ];
+      $form['products'][$i]['cost'] = [
         '#type' => 'uc_price',
         '#title' => $this->t('Cost'),
         '#title_display' => 'invisible',
         '#default_value' => $product->cost->value,
         '#size' => 5,
-      );
-      $form['products'][$i]['price'] = array(
+      ];
+      $form['products'][$i]['price'] = [
         '#type' => 'uc_price',
         '#title' => $this->t('Price'),
         '#title_display' => 'invisible',
         '#default_value' => $product->price->value,
         '#size' => 5,
-      );
-      $form['data'][$i]['data'] = array(
+      ];
+      $form['data'][$i]['data'] = [
         '#type' => 'hidden',
         '#value' => serialize($product->data->first() ? $product->data->first()->toArray() : NULL),
-      );
+      ];
     }
 
     return $form;
@@ -420,10 +430,10 @@ class Products extends EditableOrderPanePluginBase {
    */
   public function productSelectSearch($form, FormStateInterface $form_state) {
     $types = uc_product_types();
-    $options = array();
+    $options = [];
 
     $query = db_select('node_field_data', 'n')
-      ->fields('n', array('nid', 'title'))
+      ->fields('n', ['nid', 'title'])
       ->condition('n.type', $types, 'IN')
       ->orderBy('n.title')
       ->addTag('node_access');
@@ -481,14 +491,14 @@ class Products extends EditableOrderPanePluginBase {
 
     $order = $form['#order'];
 
-    $product = OrderProduct::create(array(
+    $product = OrderProduct::create([
       'qty' => 1,
       'order_id' => $order->id(),
-    ));
+    ]);
     $product->save();
 
     $order->products[] = $product;
-    $order->logChanges(array('add' => $this->t('Added new product line to order.')));
+    $order->logChanges(['add' => $this->t('Added new product line to order.')]);
   }
 
   /**
@@ -501,7 +511,7 @@ class Products extends EditableOrderPanePluginBase {
 
     $order = $form['#order'];
 
-    $data = \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', array($form_state->getValue('product_controls')));
+    $data = \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', [$form_state->getValue('product_controls')]);
     $values = uc_product_load_variant(intval($form_state->getValue(['product_controls', 'nid'])), $data)->toArray();
     $values['qty'] = $form_state->getValue(['product_controls', 'qty']);
     $values['order_id'] = $order->id();
@@ -554,7 +564,7 @@ class Products extends EditableOrderPanePluginBase {
   public function ajaxCallback($form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
     $response->addCommand(new ReplaceCommand('#product-controls', trim(drupal_render($form['product_controls']))));
-    $status_messages = array('#type' => 'status_messages');
+    $status_messages = ['#type' => 'status_messages'];
     $response->addCommand(new PrependCommand('#product-controls', drupal_render($status_messages)));
 
     if ($form_state->get('refresh_products')) {

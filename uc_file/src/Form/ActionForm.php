@@ -53,7 +53,10 @@ class ActionForm extends FormBase {
     $file_ids = array_filter($form_state->getValue('file_select'));
 
     $form['file_ids'] = ['#type' => 'value', '#value' => $file_ids];
-    $form['action'] = ['#type' => 'value', '#value' => $form_state->getValue(['uc_file_action', 'action'])];
+    $form['action'] = [
+      '#type' => 'value',
+      '#value' => $form_state->getValue(['uc_file_action', 'action']),
+    ];
 
     $file_ids = _uc_file_sort_names(_uc_file_get_dir_file_ids($file_ids, FALSE));
 
@@ -252,7 +255,7 @@ class ActionForm extends FormBase {
           // Copy the file to its final location.
           if (copy($file_object->uri, $dir . '/' . $file_object->filename)) {
 
-            // Check if any hook_uc_file_action('upload', $args) are implemented.
+            // Check for hook_uc_file_action('upload', $args) implementations.
             foreach ($this->moduleHandler->getImplementations('uc_file_action') as $module) {
               $name = $module . '_uc_file_action';
               $name('upload', ['file_object' => $file_object, 'form_id' => $form_id, 'form_state' => $form_state]);

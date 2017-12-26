@@ -76,7 +76,7 @@ class ProductAdjustmentsForm extends FormBase {
     $num_prod_attr = count($attribute_ids);
 
     if ($num_prod_attr) {
-      // Get previous values
+      // Get previous values.
       $old_vals = db_query("SELECT * FROM {uc_product_adjustments} WHERE nid = :nid", [':nid' => $nid])->fetchAll();
 
       $result = $query->execute();

@@ -30,7 +30,11 @@ function uc_googleanalytics_page_attachments_alter(&$page) {
       $script = uc_googleanalytics_ecommerce_js($order);
 
       // Add the code to the footer.
-      drupal_add_js($script, ['type' => 'inline', 'scope' => 'footer', 'preprocess' => FALSE]);
+      drupal_add_js($script, [
+        'type' => 'inline',
+        'scope' => 'footer',
+        'preprocess' => FALSE
+      ]);
     }
 
     // Clean out the session variable.

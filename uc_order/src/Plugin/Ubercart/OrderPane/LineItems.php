@@ -30,30 +30,37 @@ class LineItems extends EditableOrderPanePluginBase {
   /**
    * {@inheritdoc}
    */
+  public function getClasses() {
+    return ['pos-right'];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function view(OrderInterface $order, $view_mode) {
-    $rows = array();
+    $rows = [];
     foreach ($order->getDisplayLineItems() as $item) {
-      $rows[] = array(
-        'data' => array(
+      $rows[] = [
+        'data' => [
           // Title column.
-          array(
-            'data' => array('#markup' => $item['title']),
-            'class' => array('li-title'),
-          ),
+          [
+            'data' => ['#markup' => $item['title']],
+            'class' => ['li-title'],
+          ],
           // Amount column.
-          array(
-            'data' => array('#theme' => 'uc_price', '#price' => $item['amount']),
-            'class' => array('li-amount'),
-          ),
-        ),
-      );
+          [
+            'data' => ['#theme' => 'uc_price', '#price' => $item['amount']],
+            'class' => ['li-amount'],
+          ],
+        ],
+      ];
     }
 
-    $build['line_items'] = array(
+    $build['line_items'] = [
       '#type' => 'table',
       '#rows' => $rows,
-      '#attributes' => array('class' => array('line-item-table')),
-    );
+      '#attributes' => ['class' => ['line-item-table']],
+    ];
 
     return $build;
   }
@@ -62,7 +69,7 @@ class LineItems extends EditableOrderPanePluginBase {
    * {@inheritdoc}
    */
   public function buildForm(OrderInterface $order, array $form, FormStateInterface $form_state) {
-    $options = array();
+    $options = [];
     $line_item_manager = \Drupal::service('plugin.manager.uc_order.line_item');
     $definitions = $line_item_manager->getDefinitions();
     foreach ($definitions as $item) {
@@ -197,7 +204,7 @@ class LineItems extends EditableOrderPanePluginBase {
   public function ajaxCallback($form, FormStateInterface $form_state) {
     $response = new AjaxResponse();
     $response->addCommand(new ReplaceCommand('#order-line-items', trim(drupal_render($form['line_items']))));
-    $status_messages = array('#type' => 'status_messages');
+    $status_messages = ['#type' => 'status_messages'];
     $response->addCommand(new PrependCommand('#order-line-items', drupal_render($status_messages)));
 
     return $response;

@@ -422,9 +422,9 @@ function uc_attribute_uc_product_description($product) {
  * @param array $aids
  *   Attribute IDs to load.
  * @param string $type
- *   The type of attribute. 'product', or 'class'. Any other type will fetch
+ *   The type of attribute: 'product' or 'class'. Any other type will fetch
  *   a base attribute.
- * @param $id
+ * @param int $id
  *   The ID of the product/class this attribute belongs to.
  *
  * @return array
@@ -477,12 +477,12 @@ function uc_attribute_load_multiple(array $aids = [], $type = '', $id = NULL) {
 /**
  * Loads an attribute from the database.
  *
- * @param $aid
+ * @param int $aid
  *   The ID of the attribute.
  * @param string $type
- *   The type of attribute. 'product', or 'class'. Any other type will fetch
+ *   The type of attribute: 'product' or 'class'. Any other type will fetch
  *   a base attribute.
- * @param $id
+ * @param int $id
  *   The ID of the product/class this attribute belongs to.
  *
  * @return object|false
@@ -562,13 +562,13 @@ function uc_attribute_load($aid, $id = NULL, $type = '') {
 /**
  * Fetches an array of attribute objects that belong to a product.
  *
- * @param \Drupal\node\NodeInterface $nid
- *   Product whose attributes to load.
+ * @param int $nid
+ *   Product node id whose attributes to load.
  *
  * @return object[]
  *   The array of attribute objects.
  */
-function uc_attribute_load_product_attributes(NodeInterface $nid) {
+function uc_attribute_load_product_attributes($nid) {
   return uc_attribute_load_multiple([], 'product', $nid);
 }
 
@@ -710,7 +710,8 @@ function uc_attribute_option_delete($oid) {
  * @param &$attribute
  *   The product/class attribute.
  * @param string $type
- *   Is this a product or a class?
+ *   The type of attribute: 'product' or 'class'. Any other type will fetch
+ *   a base attribute.
  * @param string $id
  *   The product/class ID.
  * @param bool $save_options
@@ -767,8 +768,9 @@ function uc_attribute_subject_save(&$attribute, $type, $id, $save_options = FALS
  * @param int $aid
  *   The base attribute ID.
  * @param string $type
- *   Is this a product or a class?
- * @param $id
+ *   The type of attribute: 'product' or 'class'. Any other type will fetch
+ *   a base attribute.
+ * @param int $id
  *   The product/class ID.
  *
  * @return int
@@ -816,8 +818,9 @@ function uc_attribute_subject_delete($aid, $type, $id = NULL) {
  * @param int $oid
  *   The product/class attribute option ID.
  * @param string $type
- *   Is this a product or a class?
- * @param $id
+ *   The type of attribute: 'product' or 'class'. Any other type will fetch
+ *   a base attribute.
+ * @param int $id
  *   The product/class ID.
  *
  * @return object
@@ -844,8 +847,9 @@ function uc_attribute_subject_option_load($oid, $type, $id) {
  * @param &$option
  *   The product/class attribute option.
  * @param string $type
- *   Is this a product or a class?
- * @param $id
+ *   The type of attribute: 'product' or 'class'. Any other type will fetch
+ *   a base attribute.
+ * @param int $id
  *   The product/class ID.
  *
  * @return int
@@ -874,8 +878,9 @@ function uc_attribute_subject_option_save(&$option, $type, $id) {
  * @param $oid
  *   The base attribute's option ID.
  * @param string $type
- *   Is this a product or a class?
- * @param $id
+ *   The type of attribute: 'product' or 'class'. Any other type will fetch
+ *   a base attribute.
+ * @param int $id
  *   The product/class ID.
  *
  * @return int
@@ -953,10 +958,11 @@ function uc_attribute_adjustments_delete(array $fields) {
  *
  * @param int $aid
  *   The base attribute ID.
- * @param $id
+ * @param int $id
  *   The product/class attribute's ID.
  * @param string $type
- *   Is this a product or a class?
+ *   The type of attribute: 'product' or 'class'. Any other type will fetch
+ *   a base attribute.
  *
  * @return bool
  *   TRUE if the attribute exists.
@@ -974,7 +980,8 @@ function uc_attribute_subject_exists($aid, $type, $id) {
  * Returns a list of names to abstract queries between products and classes.
  *
  * @param string $type
- *   Is this a product or a class?
+ *   The type of attribute: 'product' or 'class'. Any other type will fetch
+ *   a base attribute.
  *
  * @return array
  *   Array of information helpful for creating SQL queries dealing
@@ -1004,7 +1011,7 @@ function uc_attribute_type_info($type) {
  * @param int $nid
  *   The product node id.
  *
- * @return
+ * @return array
  *   The attributes.
  */
 function uc_product_get_attributes($nid) {
@@ -1024,7 +1031,7 @@ function uc_product_get_attributes($nid) {
  * @param int $pcid
  *   The product class id.
  *
- * @return
+ * @return array
  *   The attributes.
  */
 function uc_class_get_attributes($pcid) {
@@ -1127,7 +1134,7 @@ function uc_attribute_option_ajax($form, FormStateInterface $form_state) {
  *   The unique id to use to wrap these form elements.
  * @param &$product
  *   The product node for which the attribute form elements are to be attached.
- * @param $use_ajax
+ * @param bool $use_ajax
  *   TRUE to add ajax to the form. Note that ajax may be added even if this is
  *   FALSE, if there are multiple attributes and one or more of them is set to
  *   display total price.

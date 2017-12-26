@@ -79,7 +79,7 @@ class PrintInvoiceAction extends ActionBase implements ContainerFactoryPluginInt
     $output .= '</body></html>';
     $response = new Response($output);
 
-    $listener = function($event) use ($response) {
+    $listener = function ($event) use ($response) {
       $event->setResponse($response);
     };
     // Add the listener to the event dispatcher.

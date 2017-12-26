@@ -10,13 +10,15 @@
  * @{
  */
 
+use Drupal\node\NodeInterface;
+
 /**
  * Make alterations to a specific variant of a product node.
  *
- * @param $node
+ * @param \Drupal\node\NodeInterface $node
  *   The product node to be altered.
  */
-function hook_uc_product_alter(&$node) {
+function hook_uc_product_alter(NodeInterface $node) {
   if (isset($node->data['attributes']) && is_array($node->data['attributes'])) {
     $options = _uc_cart_product_get_options($node);
     foreach ($options as $option) {
@@ -56,8 +58,8 @@ function hook_uc_product_alter(&$node) {
  *   Product. Usually one of the values of the array returned by
  *   uc_cart_get_contents().
  *
- * @return
- *   A structured array that can be fed into drupal_render().
+ * @return array
+ *   A render array that can be fed into drupal_render().
  */
 function hook_uc_product_description($product) {
   $description = [
@@ -74,7 +76,7 @@ function hook_uc_product_description($product) {
   $desc =& $description['attributes'];
 
   // Cart version of the product has numeric attribute => option values so we
-  // need to retrieve the right ones
+  // need to retrieve the right ones.
   $weight = 0;
   if (empty($product->order_id)) {
     foreach (_uc_cart_product_get_options($product) as $option) {
@@ -89,7 +91,7 @@ function hook_uc_product_description($product) {
     }
   }
   else {
-    foreach ((array)$product->data['attributes'] as $attribute => $option) {
+    foreach ((array) $product->data['attributes'] as $attribute => $option) {
       $desc[] = [
         '#attribute_name' => $attribute,
         '#options' => $option,
@@ -104,7 +106,7 @@ function hook_uc_product_description($product) {
 /**
  * Alters the given product description.
  *
- * @param $description
+ * @param array $description
  *   Description array reference.
  * @param $product
  *   The product being described.
@@ -121,6 +123,12 @@ function hook_uc_product_description_alter(&$description, $product) {
  * \Drupal::moduleHandler()->invokeAll(), specifically array_merge_recursive().
  *
  * Code lifted from uc_attribute.module.
+ *
+ * @param int $nid
+ *   The product id.
+ *
+ * @return array
+ *   Array of product SKUs for this product id.
  */
 function hook_uc_product_models($nid) {
   // Get all the SKUs for all the attributes on this node.
@@ -137,7 +145,7 @@ function hook_uc_product_models($nid) {
  * Products are nodes with prices, SKUs, and everything else Ubercart expects
  * them to have.
  *
- * @return
+ * @return array
  *   Array of node type ids.
  */
 function hook_uc_product_types() {

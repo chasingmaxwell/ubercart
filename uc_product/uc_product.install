@@ -5,6 +5,9 @@
  * Install, update and uninstall functions for the uc_product module.
  */
 
+use Drupal\image\Entity\ImageStyle;
+use Drupal\Core\Url;
+
 /**
  * Implements hook_schema().
  */
@@ -176,7 +179,7 @@ function uc_product_schema() {
  * Implements hook_uninstall().
  */
 function uc_product_uninstall() {
-  $styles = \Drupal\image\Entity\ImageStyle::loadMultiple(['uc_product', 'uc_thumbnail']);
+  $styles = ImageStyle::loadMultiple(['uc_product', 'uc_thumbnail']);
   if (!empty($styles)) {
     $style_names = [];
     foreach ($styles as $style) {
@@ -188,7 +191,7 @@ function uc_product_uninstall() {
       [
         '%style' => $style_names[0],
         '%styles' => implode(', ', $style_names),
-        ':url' => \Drupal\Core\Url::fromRoute('entity.image_style.collection')->toString(),
+        ':url' => Url::fromRoute('entity.image_style.collection')->toString(),
       ]
     ), 'warning');
   }
