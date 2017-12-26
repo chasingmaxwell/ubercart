@@ -5,11 +5,15 @@
  * Install, update and uninstall functions for the uc_cart module.
  */
 
+use Drupal\Core\Url;
+use Drupal\image\Entity\ImageStyle;
+use Drupal\uc_order\Entity\OrderStatus;
+
 /**
  * Implements hook_uninstall().
  */
 function uc_cart_uninstall() {
-  $statuses = \Drupal\uc_order\Entity\OrderStatus::loadMultiple(['abandoned']);
+  $statuses = OrderStatus::loadMultiple(['abandoned']);
   if (!empty($statuses)) {
     $status_names = [];
     foreach ($statuses as $status) {
@@ -23,12 +27,12 @@ function uc_cart_uninstall() {
       [
         '%status' => $status_names[0],
         '%statuses' => implode(', ', $status_names),
-        ':url' => \Drupal\Core\Url::fromRoute('uc_order.workflow')->toString(),
+        ':url' => Url::fromRoute('uc_order.workflow')->toString(),
       ]
     ), 'warning');
   }
 
-  $styles = \Drupal\image\Entity\ImageStyle::loadMultiple(['uc_cart']);
+  $styles = ImageStyle::loadMultiple(['uc_cart']);
   if (!empty($styles)) {
     $style_names = [];
     foreach ($styles as $style) {
@@ -40,7 +44,7 @@ function uc_cart_uninstall() {
       [
         '%style' => $style_names[0],
         '%styles' => implode(', ', $style_names),
-        ':url' => \Drupal\Core\Url::fromRoute('entity.image_style.collection')->toString(),
+        ':url' => Url::fromRoute('entity.image_style.collection')->toString(),
       ]
     ), 'warning');
   }

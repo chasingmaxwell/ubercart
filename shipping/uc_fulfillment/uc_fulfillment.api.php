@@ -24,16 +24,16 @@ use Drupal\Component\Utility\SafeMarkup;
  * record of the uc_shipments table, plus $shipment->packages, an array
  * of package objects as returned by uc_fulfillment_package_load().
  *
- * @param $op
+ * @param string $op
  *   The action being taken on the shipment. One of the following values:
  *   - load: The shipment and its packages are loaded from the database.
  *   - save: Changes to the shipment have been written.
  *   - delete: The shipment has been deleted and the packages are available
  *     for reshipment.
- * @param $shipment
+ * @param object $shipment
  *   The shipment object.
  *
- * @return
+ * @return array|null
  *   Only given when $op is "load". An associative array of extra data to
  *   be added to the shipment object. Each key/value element of the array
  *   becomes a separate member of the shipment object. Elements of the array
@@ -80,7 +80,8 @@ function hook_uc_shipment($op, $shipment) {
           $response = uc_google_checkout_send_request('request', $request);
         }
       }
-    break;
+      break;
+
     case 'delete':
       $google_order_number = uc_google_checkout_get_google_number($shipment->order_id);
       if ($google_order_number) {
@@ -102,8 +103,10 @@ function hook_uc_shipment($op, $shipment) {
         $request .= '</reset-items-shipping-information>';
       }
       $response = uc_google_checkout_send_request('request', $request);
-    break;
+      break;
   }
+
+  return;
 }
 
 /**

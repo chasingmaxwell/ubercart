@@ -5,6 +5,10 @@
  * Install, update, and uninstall functions for the uc_store module.
  */
 
+use Drupal\Core\Datetime\Entity\DateFormat;
+use Drupal\Core\Url;
+use Drupal\uc_country\Entity\Country;
+
 /**
  * Implements hook_requirements().
  */
@@ -46,10 +50,10 @@ function uc_store_install() {
   }
   else {
     // Ensure store country is enabled.
-    \Drupal\uc_country\Entity\Country::load($store_country)->enable()->save();
+    Country::load($store_country)->enable()->save();
   }
 
-  // Set mail handler for all Ubercart modules
+  // Set mail handler for all Ubercart modules.
   $mail_config = \Drupal::configFactory()->getEditable('system.mail');
   $mail_config
     ->set('interface.uc_cart', 'ubercart_mail')
@@ -65,8 +69,8 @@ function uc_store_install() {
  * Implements hook_uninstall().
  */
 function uc_store_uninstall() {
-  $format = \Drupal\Core\Datetime\Entity\DateFormat::load('uc_store');
+  $format = DateFormat::load('uc_store');
   if ($format) {
-    drupal_set_message(t('The date format %format has not been deleted. If you need to delete it, <a href=":url">please do so manually</a>.', ['%format' => $format->label(), ':url' => \Drupal\Core\Url::fromRoute('entity.date_format.collection')->toString()]), 'warning');
+    drupal_set_message(t('The date format %format has not been deleted. If you need to delete it, <a href=":url">please do so manually</a>.', ['%format' => $format->label(), ':url' => Url::fromRoute('entity.date_format.collection')->toString()]), 'warning');
   }
 }

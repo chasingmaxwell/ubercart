@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Url;
+use Drupal\uc_usps\USPSUtilities;
 
 /**
  * Implements hook_theme().
@@ -31,22 +32,17 @@ function uc_usps_theme() {
  * @see uc_product_form()
  */
 function uc_usps_form_node_form_alter(&$form, &$form_state, $form_id) {
-  $quote_config = \Drupal::config('uc_quote.settings');
   $node = $form_state->getFormObject()->getEntity();
   if (uc_product_is_product($node->bundle())) {
-    $enabled = $quote_config->get('enabled') + ['usps' => FALSE, 'usps_intl' => FALSE];
-    $weight = $quote_config->get('method_weight') + ['usps' => 0, 'usps_intl' => 1];
-
     $form['shipping']['usps'] = [
       '#type' => 'details',
       '#title' => t('USPS product description'),
-      '#weight' => $weight['usps'],
       '#tree' => TRUE,
     ];
     $form['shipping']['usps']['container'] = [
       '#type' => 'select',
       '#title' => t('Package type'),
-      '#options' => \Drupal\uc_usps\USPSUtilities::packageTypes(),
+      '#options' => USPSUtilities::packageTypes(),
       '#default_value' => isset($node->usps['container']) ? $node->usps['container'] : 'VARIABLE',
     ];
   }
@@ -184,7 +180,7 @@ function uc_usps_uc_shipping_method() {
       'quote' => [
         'type' => 'envelope',
         'callback' => 'uc_usps_quote',
-        'accessorials' => \Drupal\uc_usps\USPSUtilities::envelopeServices(),
+        'accessorials' => USPSUtilities::envelopeServices(),
       ],
     ],
     'usps' => [
@@ -195,7 +191,7 @@ function uc_usps_uc_shipping_method() {
       'quote' => [
         'type' => 'small_package',
         'callback' => 'uc_usps_quote',
-        'accessorials' => \Drupal\uc_usps\USPSUtilities::services(),
+        'accessorials' => USPSUtilities::services(),
       ],
     ],
     'usps_intl_env' => [
@@ -206,7 +202,7 @@ function uc_usps_uc_shipping_method() {
       'quote' => [
         'type' => 'envelope',
         'callback' => 'uc_usps_quote',
-        'accessorials' => \Drupal\uc_usps\USPSUtilities::internationalEnvelopeServices(),
+        'accessorials' => USPSUtilities::internationalEnvelopeServices(),
       ],
       'weight' => 1,
     ],
@@ -218,7 +214,7 @@ function uc_usps_uc_shipping_method() {
       'quote' => [
         'type' => 'small_package',
         'callback' => 'uc_usps_quote',
-        'accessorials' => \Drupal\uc_usps\USPSUtilities::internationalServices(),
+        'accessorials' => USPSUtilities::internationalServices(),
       ],
       'weight' => 1,
     ],

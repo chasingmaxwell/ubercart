@@ -101,7 +101,6 @@ class USPSDomesticRate extends USPSRateBase {
       $rate += $product->price->value * floatval($product_rate) / 100;
     }
 
-
     return [$rate];
   }
 
@@ -204,7 +203,6 @@ class USPSDomesticRate extends USPSRateBase {
         }
       }
 
-
       if (isset($response->Package)) {
         foreach ($response->Package as $package) {
           if (isset($package->Error)) {
@@ -241,9 +239,9 @@ class USPSDomesticRate extends USPSRateBase {
                 }
                 $services[$classid]['label'] = t('U.S.P.S. @service', ['@service' => (string) $postage->MailService]);
                 // Markup rate before customer sees it.
-                // Rates are stored differently if ONLINE $rate_type is requested.
-                // First Class doesn't have online rates, so if CommercialRate
-                // is missing use Rate instead.
+                // Rates are stored differently if the ONLINE $rate_type is
+                // requested. First Class doesn't have online rates, so if
+                // CommercialRate is missing use Rate instead.
                 if ($rate_type && !empty($postage->CommercialRate)) {
                   $services[$classid]['rate'] += $this->rateMarkup((string) $postage->CommercialRate);
                 }
@@ -257,7 +255,7 @@ class USPSDomesticRate extends USPSRateBase {
       }
     }
 
-    // Strip leading 'usps_'
+    // Strip leading 'usps_'.
     $method_services = substr($method['id'] . '_services', 5);
 //$method_services is the name of the callback function
 //  array_keys($method['quote']['accessorials'])
@@ -291,17 +289,17 @@ class USPSDomesticRate extends USPSRateBase {
   /**
    * Constructs a quote request for domestic shipments.
    *
-   * @param $packages
+   * @param array $packages
    *   Array of packages received from the cart.
    * @param $origin
    *   Delivery origin address information.
    * @param $destination
    *   Delivery destination address information.
    *
-   * @return
+   * @return string
    *   RateV4Request XML document to send to USPS.
    */
-  public function rateRequest($packages, $origin, $destination) {
+  public function rateRequest(array $packages, $origin, $destination) {
     $usps_config = \Drupal::config('uc_usps.settings');
     $request  = '<RateV4Request USERID="' . $usps_config->get('user_id') . '">';
     $request .= '<Revision>2</Revision>';

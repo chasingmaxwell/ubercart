@@ -218,7 +218,7 @@ class PayPalPaymentsStandard extends PayPalPaymentMethodPluginBase implements Of
       }
     }
 
-    /**
+    /*
      * night_phone_a: The area code for U.S. phone numbers, or the country code
      *                for phone numbers outside the U.S.
      * night_phone_b: The three-digit prefix for U.S. phone numbers, or the
@@ -317,7 +317,8 @@ class PayPalPaymentsStandard extends PayPalPaymentMethodPluginBase implements Of
 
       foreach ($order->line_items as $item) {
         if ($item['amount'] < 0) {
-          // The minus sign is not an error! The discount amount must be positive.
+          // The discount amount must be positive.
+          // The minus sign is not an error!
           $discount -= $item['amount'];
         }
       }

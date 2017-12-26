@@ -5,6 +5,8 @@
  * Install, update and uninstall functions for the uc_order module.
  */
 
+use Drupal\uc_order\Entity\OrderStatus;
+
 /**
  * Implements hook_schema().
  */
@@ -245,7 +247,7 @@ function uc_order_schema() {
  * Implements hook_uninstall().
  */
 function uc_order_uninstall() {
-  $statuses = \Drupal\uc_order\Entity\OrderStatus::loadMultiple(NULL);
+  $statuses = OrderStatus::loadMultiple(NULL);
   if (!empty($statuses)) {
     foreach ($statuses as $status) {
       // Unlock OrderStatus configuration entity so it can be deleted.

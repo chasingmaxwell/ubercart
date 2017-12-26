@@ -101,7 +101,6 @@ class USPSInternationalRate extends USPSRateBase {
       $rate += $product->price->value * floatval($product_rate) / 100;
     }
 
-
     return [$rate];
   }
 
@@ -204,7 +203,6 @@ class USPSInternationalRate extends USPSRateBase {
         }
       }
 
-
       if (isset($response->Package)) {
         foreach ($response->Package as $package) {
           if (isset($package->Error)) {
@@ -241,9 +239,9 @@ class USPSInternationalRate extends USPSRateBase {
                 }
                 $services[$classid]['label'] = t('U.S.P.S. @service', ['@service' => (string) $postage->MailService]);
                 // Markup rate before customer sees it.
-                // Rates are stored differently if ONLINE $rate_type is requested.
-                // First Class doesn't have online rates, so if CommercialRate
-                // is missing use Rate instead.
+                // Rates are stored differently if ONLINE $rate_type is
+                // requested. First Class doesn't have online rates, so if
+                // CommercialRate is missing use Rate instead.
                 if ($rate_type && !empty($postage->CommercialRate)) {
                   $services[$classid]['rate'] += $this->rateMarkup((string) $postage->CommercialRate);
                 }
@@ -291,17 +289,17 @@ class USPSInternationalRate extends USPSRateBase {
   /**
    * Constructs a quote request for international shipments.
    *
-   * @param $packages
+   * @param array $packages
    *   Array of packages received from the cart.
    * @param $origin
    *   Delivery origin address information.
    * @param $destination
    *   Delivery destination address information.
    *
-   * @return
+   * @return string
    *   IntlRateRequest XML document to send to USPS.
    */
-  public function intlRateRequest($packages, $origin, $destination) {
+  public function intlRateRequest(array $packages, $origin, $destination) {
     $usps_config = \Drupal::config('uc_usps.settings');
     module_load_include('inc', 'uc_usps', 'uc_usps.countries');
     $request  = '<IntlRateV2Request USERID="' . $usps_config->get('user_id') . '">';

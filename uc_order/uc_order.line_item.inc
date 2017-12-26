@@ -2,8 +2,7 @@
 
 /**
  * @file
- * Contains the callbacks for the default line items for orders and
- * the various functions that make line items work.
+ * Callbacks and helper functions for the default order line items.
  *
  * Line items are defined using hook_uc_line_item() and use a callback to
  * handle the different processes involved in line item
@@ -15,10 +14,10 @@
  * Updates a line item.
  */
 function uc_order_update_line_item($id, $title, $amount, $data = NULL) {
-  $fields = array(
+  $fields = [
     'title' => $title,
     'amount' => $amount,
-  );
+  ];
 
   if (!is_null($data)) {
     $fields['data'] = serialize($data);
@@ -68,14 +67,14 @@ function uc_order_line_item_add($order_id, $type, $title, $amount, $weight = NUL
     $weight = $line_item_manager->getDefinition($type)['weight'];
   }
 
-  $line_item = array(
+  $line_item = [
     'order_id' => $order_id,
     'type' => $type,
     'title' => $title,
     'amount' => $amount,
     'weight' => $weight,
     'data' => serialize($data),
-  );
+  ];
 
   $line_item['line_item_id'] = db_insert('uc_order_line_items')
     ->fields($line_item)

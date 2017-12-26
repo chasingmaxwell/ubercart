@@ -19,7 +19,13 @@ function uc_authorizenet_uc_payment_gateway() {
     'description' => t('Process credit card payments using the AIM service of Authorize.net.'),
     'settings' => 'uc_authorizenet_settings_form',
     'credit' => 'uc_authorizenet_charge',
-    'credit_txn_types' => [UC_CREDIT_AUTH_ONLY, UC_CREDIT_PRIOR_AUTH_CAPTURE, UC_CREDIT_AUTH_CAPTURE, UC_CREDIT_REFERENCE_SET, UC_CREDIT_REFERENCE_TXN],
+    'credit_txn_types' => [
+      UC_CREDIT_AUTH_ONLY,
+      UC_CREDIT_PRIOR_AUTH_CAPTURE,
+      UC_CREDIT_AUTH_CAPTURE,
+      UC_CREDIT_REFERENCE_SET,
+      UC_CREDIT_REFERENCE_TXN,
+    ],
   ];
 
   return $gateways;
@@ -186,6 +192,8 @@ function _uc_authorizenet_cim_payment_profile_get(OrderInterface $order, $profil
 }
 
 /**
+ * Helper function for XML API requests.
+ *
  * Wraps XML API request child elements in the request element and includes
  * the merchant authentication information.
  */
@@ -304,12 +312,16 @@ function _uc_authorizenet_substr_between($string, $element) {
   return substr($string, $start, $end - $start);
 }
 
-/**
- * Temporary shim for removed variable_get().
+/*
  * @TODO: Remove!
  */
 if (!function_exists('variable_get')) {
+
+  /**
+   * Temporary shim for removed variable_get().
+   */
   function variable_get($name, $default = NULL) {
     return $default;
   }
+
 }

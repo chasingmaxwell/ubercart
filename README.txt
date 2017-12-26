@@ -8,7 +8,6 @@ designed to be extended to meet any need.  Furthermore, the administrative
 interface, particularly relating to processing and fulfilling orders, has been
 designed for ease of use and efficient display of information.
 
-Join the Ubercart community by signing up to access our support forums on http://www.ubercart.org.
 
 Features overview:
 http://www.ubercart.org/what_is_ubercart
