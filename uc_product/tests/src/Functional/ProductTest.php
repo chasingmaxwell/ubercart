@@ -1,15 +1,15 @@
 <?php
 
-namespace Drupal\uc_product\Tests;
+namespace Drupal\Tests\uc_product\Functional;
 
-use Drupal\uc_store\Tests\UbercartTestBase;
+use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 
 /**
  * Tests the product content type.
  *
- * @group Ubercart
+ * @group ubercart
  */
-class ProductTest extends UbercartTestBase {
+class ProductTest extends UbercartBrowserTestBase {
 
   public static $modules = ['path', 'uc_product'];
   public static $adminPermissions = ['administer content types'];
@@ -22,14 +22,20 @@ class ProductTest extends UbercartTestBase {
     $this->drupalLogin($this->adminUser);
   }
 
+  /**
+   * Tests product administration view.
+   */
   public function testProductAdmin() {
     $this->drupalGet('admin/store/products/view');
-    $this->assertText(t('Title'));
+    $this->assertText('Title');
     $this->assertText($this->product->getTitle());
-    $this->assertText(t('Price'));
+    $this->assertText('Price');
     $this->assertText(uc_currency_format($this->product->price->value));
   }
 
+  /**
+   * Tests product node form.
+   */
   public function testProductNodeForm() {
     $this->drupalGet('node/add/product');
 
@@ -61,19 +67,19 @@ class ProductTest extends UbercartTestBase {
       'shippable[value]' => mt_rand(0, 1),
       'weight[0][value]' => mt_rand(1, 50),
       'weight[0][units]' => array_rand([
-        'lb' => t('Pounds'),
-        'kg' => t('Kilograms'),
-        'oz' => t('Ounces'),
-        'g'  => t('Grams'),
+        'lb' => 'Pounds',
+        'kg' => 'Kilograms',
+        'oz' => 'Ounces',
+        'g'  => 'Grams',
       ]),
       'dimensions[0][length]' => mt_rand(1, 50),
       'dimensions[0][width]' => mt_rand(1, 50),
       'dimensions[0][height]' => mt_rand(1, 50),
       'dimensions[0][units]' => array_rand([
-        'in' => t('Inches'),
-        'ft' => t('Feet'),
-        'cm' => t('Centimeters'),
-        'mm' => t('Millimeters'),
+        'in' => 'Inches',
+        'ft' => 'Feet',
+        'cm' => 'Centimeters',
+        'mm' => 'Millimeters',
       ]),
     ];
     $this->drupalPostForm('node/add/product', $edit, 'Save');
@@ -88,7 +94,7 @@ class ProductTest extends UbercartTestBase {
     $this->assertText(uc_length_format($edit['dimensions[0][height]'], $edit['dimensions[0][units]']), 'Product height found.');
 
     $elements = $this->xpath('//body[contains(@class, "uc-product-node")]');
-    $this->assertEqual(count($elements), 1, 'Product page contains body CSS class.');
+    $this->assertEquals(count($elements), 1, 'Product page contains body CSS class.');
 
     // Update the node fields.
     $edit = [
@@ -99,19 +105,19 @@ class ProductTest extends UbercartTestBase {
       'shippable[value]' => mt_rand(0, 1),
       'weight[0][value]' => mt_rand(1, 50),
       'weight[0][units]' => array_rand([
-        'lb' => t('Pounds'),
-        'kg' => t('Kilograms'),
-        'oz' => t('Ounces'),
-        'g'  => t('Grams'),
+        'lb' => 'Pounds',
+        'kg' => 'Kilograms',
+        'oz' => 'Ounces',
+        'g'  => 'Grams',
       ]),
       'dimensions[0][length]' => mt_rand(1, 50),
       'dimensions[0][width]' => mt_rand(1, 50),
       'dimensions[0][height]' => mt_rand(1, 50),
       'dimensions[0][units]' => array_rand([
-        'in' => t('Inches'),
-        'ft' => t('Feet'),
-        'cm' => t('Centimeters'),
-        'mm' => t('Millimeters'),
+        'in' => 'Inches',
+        'ft' => 'Feet',
+        'cm' => 'Centimeters',
+        'mm' => 'Millimeters',
       ]),
     ];
     $this->clickLink('Edit');
@@ -131,6 +137,9 @@ class ProductTest extends UbercartTestBase {
     $this->assertText(t('Product @title has been deleted.', ['@title' => $edit[$title_key]]), 'Product deleted.');
   }
 
+  /**
+   * Tests adding a product with weight = dimensions = 0.
+   */
   public function testZeroProductWeightAndDimensions() {
     $edit = [
       'title[0][value]' => $this->randomMachineName(32),
@@ -139,28 +148,31 @@ class ProductTest extends UbercartTestBase {
       'shippable[value]' => mt_rand(0, 1),
       'weight[0][value]' => 0,
       'weight[0][units]' => array_rand([
-        'lb' => t('Pounds'),
-        'kg' => t('Kilograms'),
-        'oz' => t('Ounces'),
-        'g'  => t('Grams'),
+        'lb' => 'Pounds',
+        'kg' => 'Kilograms',
+        'oz' => 'Ounces',
+        'g'  => 'Grams',
       ]),
       'dimensions[0][length]' => 0,
       'dimensions[0][width]' => 0,
       'dimensions[0][height]' => 0,
       'dimensions[0][units]' => array_rand([
-        'in' => t('Inches'),
-        'ft' => t('Feet'),
-        'cm' => t('Centimeters'),
-        'mm' => t('Millimeters'),
+        'in' => 'Inches',
+        'ft' => 'Feet',
+        'cm' => 'Centimeters',
+        'mm' => 'Millimeters',
       ]),
     ];
     $this->drupalPostForm('node/add/product', $edit, 'Save');
 
     $this->assertText(t('Product @title has been created.', ['@title' => $edit['title[0][value]']]), 'Product created.');
-    $this->assertNoText(t('Weight'), 'Zero weight not shown.');
-    $this->assertNoText(t('Dimensions'), 'Zero dimensions not shown.');
+    $this->assertNoText('Weight', 'Zero weight not shown.');
+    $this->assertNoText('Dimensions', 'Zero dimensions not shown.');
   }
 
+  /**
+   * Tests making node types into products.
+   */
   public function testProductClassForm() {
     // Try making a new product class.
     $class = strtolower($this->randomMachineName(12));
@@ -180,11 +192,10 @@ class ProductTest extends UbercartTestBase {
     $edit = [
       'uc_product[product]' => 1,
     ];
-
     $this->drupalPostForm('admin/structure/types/manage/' . $type->getOriginalId(), $edit, 'Save content type');
     $this->assertTrue(uc_product_is_product($type->getOriginalId()), 'The updated content type is a product class.');
 
-    // Check the product classes page
+    // Check the product classes page.
     $this->drupalGet('admin/store/products/classes');
     $this->assertText($type->getOriginalId(), 'Product class is listed.');
     $this->assertText($type->getDescription(), 'Product class description is listed.');
@@ -192,28 +203,28 @@ class ProductTest extends UbercartTestBase {
     $this->assertLinkByHref('admin/structure/types/manage/' . $type->getOriginalId() . '/delete', 0, 'Product class delete link is shown.');
 
     // Remove the product class again.
-    $edit = [
-      'uc_product[product]' => 0,
-    ];
-
+    $edit = ['uc_product[product]' => FALSE];
     $this->drupalPostForm('admin/structure/types/manage/' . $class, $edit, 'Save content type');
-    $this->assertTrue(uc_product_is_product($class), 'The updated content type is no longer a product class.');
+    $this->assertFalse(uc_product_is_product($class), 'The updated content type is no longer a product class.');
   }
 
+  /**
+   * Tests product add-to-cart quantity.
+   */
   public function testProductQuantity() {
     $edit = ['uc_product_add_to_cart_qty' => TRUE];
     $this->drupalPostForm('admin/store/config/products', $edit, 'Save configuration');
 
     // Check zero quantity message.
     $this->addToCart($this->product, ['qty' => 0]);
-    $this->assertText(t('The quantity cannot be zero.'));
+    $this->assertText('The quantity cannot be zero.');
 
     // Check invalid quantity messages.
     $this->addToCart($this->product, ['qty' => 'x']);
-    $this->assertText(t('The quantity must be an integer.'));
+    $this->assertText('The quantity must be an integer.');
 
     $this->addToCart($this->product, ['qty' => '1a']);
-    $this->assertText(t('The quantity must be an integer.'));
+    $this->assertText('The quantity must be an integer.');
 
     // Check cart add message.
     $this->addToCart($this->product, ['qty' => 1]);
@@ -221,7 +232,7 @@ class ProductTest extends UbercartTestBase {
 
     // Check cart update message.
     $this->addToCart($this->product, ['qty' => 1]);
-    $this->assertText(t('Your item(s) have been updated.'));
+    $this->assertText('Your item(s) have been updated.');
   }
 
 }
