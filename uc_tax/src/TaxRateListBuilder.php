@@ -189,17 +189,7 @@ class TaxRateListBuilder extends DraggableListBuilder implements FormInterface {
    */
   public function render() {
     $build['description'] = [
-      '#markup' => $this->t("<p>This is a list of the tax rates currently"
-        . " defined on your Drupal site.</p><p>You may use the 'Add tax rate'"
-        . " button to add a new rate, or use the widget in the 'Operations'"
-        . " column to edit, delete, enable/disable, or clone existing tax rates."
-        . " Rates that are disabled will not be applied at checkout and will not"
-        . " be included in product prices.</p>"
-        . "<p>Taxes are sorted by weight and then applied to the order sequentially."
-        . " This order is important when taxes need to be applied to other tax line items."
-        . " To re-order, drag the method to its desired location using the drag icon then save"
-        . " the configuration using the button at the bottom of the page.</p>"
-      ),
+      '#markup' => $this->t("<p>This is a list of the tax rates currently defined on your Drupal site.</p><p>You may use the 'Add tax rate' button to add a new rate, or use the widget in the 'Operations' column to edit, delete, enable/disable, or clone existing tax rates. Rates that are disabled will not be applied at checkout and will not be included in product prices.</p><p>Taxes are sorted by weight and then applied to the order sequentially. This order is important when taxes need to be applied to other tax line items. To re-order, drag the method to its desired location using the drag icon then save the configuration using the button at the bottom of the page.</p>"),
     ];
     $build += parent::render();
 

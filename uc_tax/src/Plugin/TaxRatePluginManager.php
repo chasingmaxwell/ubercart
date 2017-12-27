@@ -12,6 +12,7 @@ use Drupal\uc_tax\TaxRatePluginInterface;
  * Manages discovery and instantiation of TaxRate plugins.
  */
 class TaxRatePluginManager extends DefaultPluginManager {
+
   /**
    * Constructs a TaxRatePluginManager object.
    *
