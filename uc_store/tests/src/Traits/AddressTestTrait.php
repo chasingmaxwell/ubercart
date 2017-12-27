@@ -36,23 +36,21 @@ trait AddressTestTrait {
       'Boulevard',
       'Court',
     ]);
+    $org = array_flip(['Inc.', 'Ltd.', 'LLC', 'GmbH', 'PLC', 'SE']);
 
     // Populate any fields that weren't passed in $settings.
     $values = $settings + [
       'first_name'  => $this->randomMachineName(6),
       'last_name'   => $this->randomMachineName(12),
-      'company'     => $this->randomMachineName(10) . ', ' .
-                       array_rand(['Inc.', 'Ltd.', 'LLC', 'GmbH', 'PLC', 'SE']),
+      'company'     => $this->randomMachineName(10) . ', ' . array_rand($org),
       'street1'     => mt_rand(10, 1000) . ' ' .
-                       $this->randomMachineName(10) . ' ' .
-                       array_rand($street),
+                       $this->randomMachineName(10) . ' ' . array_rand($street),
       'street2'     => 'Suite ' . mt_rand(100, 999),
       'city'        => $this->randomMachineName(10),
       'postal_code' => (string) mt_rand(10000, 99999),
       'phone'       => '(' . mt_rand(100, 999) . ') ' .
                        mt_rand(100, 999) . '-' . mt_rand(0, 9999),
-      'email'       => $this->randomMachineName(6) . '@' .
-                       $this->randomMachineName(8) . '.com',
+      'email'       => $this->randomMachineName(8) . '@example.com',
     ];
 
     // Set the country if it isn't set already.
