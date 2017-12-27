@@ -1,17 +1,23 @@
 <?php
 
-namespace Drupal\uc_tax\Tests;
+namespace Drupal\Tests\uc_tax\Functional;
 
 use Drupal\Component\Utility\SafeMarkup;
 use Drupal\uc_order\Entity\Order;
 
 /**
- * Tests that historical tax data is stored correctly, and that the proper amount is displayed.
+ * Tests stored taxes.
  *
- * @group Ubercart
+ * Tests that historical tax data is stored correctly, and that the
+ * proper amount is displayed.
+ *
+ * @group ubercart
  */
 class StoredTaxTest extends TaxTestBase {
 
+  /**
+   * Tests display of taxes.
+   */
   public function testTaxDisplay() {
     $this->drupalLogin($this->adminUser);
 
@@ -19,16 +25,16 @@ class StoredTaxTest extends TaxTestBase {
     $this->createPaymentMethod('check');
 
     // Create a 20% inclusive tax rate.
-    $rate = (object) array(
+    $rate = (object) [
       'name' => $this->randomMachineName(8),
       'rate' => 0.2,
-      'taxed_product_types' => array('product'),
-      'taxed_line_items' => array(),
+      'taxed_product_types' => ['product'],
+      'taxed_line_items' => [],
       'weight' => 0,
       'shippable' => 0,
       'display_include' => 1,
       'inclusion_text' => '',
-    );
+    ];
     uc_tax_rate_save($rate);
 
     $this->drupalGet('admin/store/config/taxes');
@@ -39,8 +45,9 @@ class StoredTaxTest extends TaxTestBase {
 
     $this->addToCart($this->product);
 
-    // Manually step through checkout. $this->checkout() doesn't know about taxes.
-    $this->drupalPostForm('cart', array(), 'Checkout');
+    // Manually step through checkout. $this->checkout()
+    // doesn't know about taxes.
+    $this->drupalPostForm('cart', [], 'Checkout');
     $this->assertText(
       t('Enter your billing address and information here.'),
       'Viewed cart page: Billing pane has been displayed.'
@@ -56,7 +63,7 @@ class StoredTaxTest extends TaxTestBase {
     $this->assertRaw(uc_currency_format($rate->rate * $this->product->price->value), 'Correct tax amount displayed.');
 
     // Complete the review page.
-    $this->drupalPostForm(NULL, array(), t('Submit order'));
+    $this->drupalPostForm(NULL, [], t('Submit order'));
 
     $order_ids = \Drupal::entityQuery('uc_order')
       ->condition('delivery_first_name', $edit['panes[delivery][first_name]'])
@@ -70,7 +77,7 @@ class StoredTaxTest extends TaxTestBase {
       $this->drupalGet('admin/store/orders/' . $order_id . '/edit');
       $this->assertTaxLineCorrect($this->loadTaxLine($order_id), $rate->rate, 'on initial order load');
 
-      $this->drupalPostForm('admin/store/orders/' . $order_id . '/edit', array(), t('Save changes'));
+      $this->drupalPostForm('admin/store/orders/' . $order_id . '/edit', [], t('Save changes'));
       $this->assertText(t('Order changes saved.'));
       $this->assertTaxLineCorrect($this->loadTaxLine($order_id), $rate->rate, 'after saving order');
 
@@ -80,29 +87,30 @@ class StoredTaxTest extends TaxTestBase {
       $rate = uc_tax_rate_save($rate);
 
       // Save order because tax changes are only updated on save.
-      $this->drupalPostForm('admin/store/orders/' . $order_id . '/edit', array(), t('Save changes'));
+      $this->drupalPostForm('admin/store/orders/' . $order_id . '/edit', [], t('Save changes'));
       $this->assertText(t('Order changes saved.'));
       $this->assertTaxLineCorrect($this->loadTaxLine($order_id), $oldrate, 'after rate change');
 
       // Change taxable products and ensure order doesn't change.
       $class = $this->createProductClass();
-      $rate->taxed_product_types = array($class->getEntityTypeId());
+      $rate->taxed_product_types = [$class->getEntityTypeId()];
       uc_tax_rate_save($rate);
       // entity_flush_caches();
-      $this->drupalPostForm('admin/store/orders/' . $order_id . '/edit', array(), t('Save changes'));
+      $this->drupalPostForm('admin/store/orders/' . $order_id . '/edit', [], t('Save changes'));
       $this->assertText(t('Order changes saved.'));
       $this->assertTaxLineCorrect($this->loadTaxLine($order_id), $oldrate, 'after applicable product change');
 
-      // Change order Status back to in_checkout and ensure tax-rate changes now update the order.
+      // Change order Status back to in_checkout and ensure tax-rate
+      // changes now update the order.
       Order::load($order_id)->setStatusId('in_checkout')->save();
-      $this->drupalPostForm('admin/store/orders/' . $order_id . '/edit', array(), t('Save changes'));
+      $this->drupalPostForm('admin/store/orders/' . $order_id . '/edit', [], t('Save changes'));
       $this->assertText(t('Order changes saved.'));
       $this->assertFalse($this->loadTaxLine($order_id), 'The tax line was removed from the order when order status changed back to in_checkout.');
 
       // Restore taxable product and ensure new tax is added.
-      $rate->taxed_product_types = array('product');
+      $rate->taxed_product_types = ['product'];
       uc_tax_rate_save($rate);
-      $this->drupalPostForm('admin/store/orders/' . $order_id . '/edit', array(), t('Save changes'));
+      $this->drupalPostForm('admin/store/orders/' . $order_id . '/edit', [], t('Save changes'));
       $this->assertText(t('Order changes saved.'));
       $this->assertTaxLineCorrect($this->loadTaxLine($order_id), $rate->rate, 'when order status changed back to in_checkout');
     }

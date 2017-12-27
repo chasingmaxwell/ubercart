@@ -1,18 +1,18 @@
 <?php
 
-namespace Drupal\uc_tax\Tests;
+namespace Drupal\Tests\uc_tax\Functional;
 
 /**
  * Tests the operation of the tax rate configuration user interface.
  *
- * @group Ubercart
+ * @group ubercart
  */
-class TaxRateUITest extends TaxTestBase {
+class TaxRateUiTest extends TaxTestBase {
 
   /**
    * Tests the operation of the tax rate configuration user interface.
    */
-  public function testTaxUI() {
+  public function testTaxUi() {
     $this->drupalLogin($this->adminUser);
 
     // Verify tax rate configuration item is listed on store configuration menu.
@@ -24,7 +24,7 @@ class TaxRateUITest extends TaxTestBase {
     $this->assertText(t('No tax rates have been configured yet.'), 'No tax rates configured.');
 
     // Create a 20% inclusive tax rate.
-    $rate = array(
+    $rate = [
       'label' => $this->randomMachineName(8),
       'settings[rate]' => 20,
       'settings[jurisdiction]' => 'Uberland',
@@ -37,7 +37,7 @@ class TaxRateUITest extends TaxTestBase {
       'line_item_types[tax]' => 1,
       'display_include' => 1,
       'inclusion_text' => ' incl. tax',
-    );
+    ];
     $tax_rate = $this->createTaxRate('percentage_rate', $rate);
 
     $this->drupalGet('admin/store/config/tax');
@@ -60,7 +60,7 @@ class TaxRateUITest extends TaxTestBase {
     // to be at the top of the list so the next tests work!
     $this->drupalPostForm(
       NULL,
-      array('entities[' . $tax_rate->id() . '_clone][weight]' => -10),
+      ['entities[' . $tax_rate->id() . '_clone][weight]' => -10],
       t('Save configuration')
     );
     $this->assertUrl('admin/store/config/tax');
@@ -79,7 +79,7 @@ class TaxRateUITest extends TaxTestBase {
     // Now, actually delete the rate.
     $this->clickLink(t('Delete'));
     $this->assertUrl('admin/store/config/tax/' . $tax_rate->id() . '_clone/delete');
-    $this->drupalPostForm(NULL, array(), t('Delete tax rate'));
+    $this->drupalPostForm(NULL, [], t('Delete tax rate'));
     $this->assertUrl('admin/store/config/tax');
     $this->assertText(t('Tax rate Copy of @label has been deleted.', ['@label' => $tax_rate->label()]), 'Delete message found.');
     // Go to next page to clear the drupal_set_message.
@@ -90,11 +90,11 @@ class TaxRateUITest extends TaxTestBase {
     $this->drupalGet('admin/store/config/tax');
     $this->clickLink(t('Disable'));
     $this->assertUrl('admin/store/config/tax');
-    $this->assertText('The ' . $tax_rate->label() . ' tax rate has been disabled.' , 'Tax rate disabled successfully.');
+    $this->assertText('The ' . $tax_rate->label() . ' tax rate has been disabled.', 'Tax rate disabled successfully.');
     // Test 'Enable' operation.
     $this->clickLink(t('Enable'));
     $this->assertUrl('admin/store/config/tax');
-    $this->assertText('The ' . $tax_rate->label() . ' tax rate has been enabled.' , 'Tax rate enabled successfully.');
+    $this->assertText('The ' . $tax_rate->label() . ' tax rate has been enabled.', 'Tax rate enabled successfully.');
 
     // Test 'Edit' operation.
     $this->drupalGet('admin/store/config/tax');
@@ -117,7 +117,7 @@ class TaxRateUITest extends TaxTestBase {
     $this->assertUrl('admin/store/config/tax');
 
     // Test 'Add' operation.
-    $this->drupalPostForm(NULL, array('plugin' => 'percentage_rate'), t('Add tax rate'));
+    $this->drupalPostForm(NULL, ['plugin' => 'percentage_rate'], t('Add tax rate'));
     $this->assertUrl('admin/store/config/tax/add/percentage_rate');
     // Test for same known fields as above.
     $this->assertText(t('Default tax rate'));
