@@ -37,7 +37,7 @@ class CheckTest extends PaymentPackTestBase {
     $this->drupalPostForm(NULL, ['settings[address][country]' => $address->getCountry()], 'Save');
 
     // Don't try to set the zone unless the chosen country has zones!
-    if (!is_null($address->getZone())) {
+    if (!empty($address->getZone())) {
       $edit += ['settings[address][zone]' => $address->getZone()];
     }
 
