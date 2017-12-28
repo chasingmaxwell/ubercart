@@ -57,7 +57,7 @@ class ShipmentId extends FieldPluginBase {
    *
    * Data should be made XSS safe prior to calling this function.
    */
-  public function render_link($data, $values) {
+  protected function renderLink($data, $values) {
     if (!empty($this->options['link_to_shipment'])) {
       $this->options['alter']['make_link'] = FALSE;
 
@@ -80,7 +80,7 @@ class ShipmentId extends FieldPluginBase {
    * {@inheritdoc}
    */
   public function render(ResultRow $values) {
-    return $this->render_link(SafeMarkup::checkPlain($values->{$this->field_alias}), $values);
+    return $this->renderLink(SafeMarkup::checkPlain($values->{$this->field_alias}), $values);
   }
 
 }

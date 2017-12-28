@@ -106,7 +106,6 @@ function hook_uc_shipment($op, $shipment) {
       break;
   }
 
-  return;
 }
 
 /**

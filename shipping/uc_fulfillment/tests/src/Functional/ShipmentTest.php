@@ -231,7 +231,7 @@ class ShipmentTest extends UbercartBrowserTestBase {
     // Make the shipment.
     $this->drupalPostForm(NULL, $form_values, 'Save shipment');
 
-    // Check that we're now on the shipments overview page
+    // Check that we're now on the shipments overview page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments');
     $this->assertText(
       t('Shipment ID'),
@@ -243,7 +243,8 @@ class ShipmentTest extends UbercartBrowserTestBase {
     );
 
     //
-    // Test "View", "Edit", "Print", "Packing slip" and "Delete" operations for this shipment.
+    // Test "View", "Edit", "Print", "Packing slip" and "Delete"
+    // operations for this shipment.
     //
 
     // First, "View".

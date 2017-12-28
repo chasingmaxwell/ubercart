@@ -9,7 +9,7 @@ use Drupal\uc_order\Entity\OrderProduct;
  */
 class Package implements PackageInterface {
 
-  /** These variables map to DB columns */
+  /* These variables map to DB columns. */
 
   /**
    * Package ID.
@@ -40,7 +40,7 @@ class Package implements PackageInterface {
   protected $shipping_type = '';
 
   /**
-   * Package package type,
+   * Package package type.
    *
    * @var string
    */
@@ -116,7 +116,7 @@ class Package implements PackageInterface {
    */
   protected $label_image;
 
-  /** These variables don't map to DB columns */
+  /* These variables don't map to DB columns. */
 
   /**
    * Products contained in this shipment.
@@ -139,7 +139,11 @@ class Package implements PackageInterface {
    */
   protected $description = '';
 
-  /** Cache loaded packages */
+  /**
+   * Cache for loaded packages.
+   *
+   * @var array
+   */
   protected static $packages = [];
 
   /**
@@ -444,7 +448,7 @@ class Package implements PackageInterface {
   /**
    * Loads packages for a given order.
    *
-   * @param array $order_id
+   * @param int $order_id
    *   An order ID.
    *
    * @return \Drupal\uc_fulfillment\Package[]
@@ -557,10 +561,10 @@ class Package implements PackageInterface {
 
       foreach ($this->products as $id => $product) {
         $insert->values([
-            'package_id' => $this->package_id,
-            'order_product_id' => $id,
-            'qty' => $product->qty,
-          ]);
+          'package_id' => $this->package_id,
+          'order_product_id' => $id,
+          'qty' => $product->qty,
+        ]);
 
         // Save the package_id to the OrderProduct.
         // 'package_id' is a key in the serialized 'data' array.

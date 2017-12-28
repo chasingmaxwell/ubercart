@@ -52,12 +52,15 @@ function uc_report_help($route_name, RouteMatchInterface $route_match) {
       case 'uc_report.customers':
         $output .= t("The following are total orders, products, sales, and average order totals for each store customer. Clicking on the header links will toggle a descending or ascending order for that column. Clicking on a customer's name will take you to a detailed list of orders that customer has made. Clicking on a customers username will take you to their account page.");
         break;
+
       case 'uc_report.products':
         $output .= t('The table lists each product listed in the store, its amount sold, how many times it has been viewed, revenue it has produced, and gross profit it has generated. If you do not see the number of views you must enable the Statistics module on the <a href=":url">module administration page</a>.', [':url' => Url::fromRoute('system.modules_list')->toString()]);
         break;
+
       case 'uc_report.sales':
         $output .= t('These are the sales for the last two days, average sales for the month, and the projected sales for the rest of the month. Further down the list you will see other sales statistics.');
         break;
+
       case 'uc_report.sales_custom_report':
         $output .= t('Expand the fieldset below to customize the date range of this report, the statuses of orders displayed, and product display options.');
         break;
@@ -141,7 +144,7 @@ function theme_uc_report_product_table(array $variables) {
     foreach ($colgroups as $colgroup) {
       $attributes = [];
 
-      // Check if we're dealing with a simple or complex column
+      // Check if we're dealing with a simple or complex column.
       if (isset($colgroup['data'])) {
         foreach ($colgroup as $key => $value) {
           if ($key == 'data') {
@@ -156,7 +159,7 @@ function theme_uc_report_product_table(array $variables) {
         $cols = $colgroup;
       }
 
-      // Build colgroup
+      // Build colgroup.
       if (is_array($cols) && count($cols)) {
         $output .= ' <colgroup' . new Attribute($attributes) . '>';
         foreach ($cols as $col) {
@@ -194,7 +197,8 @@ function theme_uc_report_product_table(array $variables) {
       $cell = tablesort_header($cell, $header, $ts);
       $output .= _theme_table_cell($cell, TRUE);
     }
-    // Using ternary operator to close the tags based on whether or not there are rows
+    // Using ternary operator to close the tags based on
+    // whether or not there are rows.
     $output .= (count($rows) ? " </tr></thead>\n" : "</tr>\n");
   }
   else {
@@ -209,13 +213,13 @@ function theme_uc_report_product_table(array $variables) {
     foreach ($rows as $row) {
       $attributes = [];
 
-      // Check if we're dealing with a simple or complex row
+      // Check if we're dealing with a simple or complex row.
       if (isset($row['data'])) {
         foreach ($row as $key => $value) {
           if ($key == 'data') {
             $cells = $value;
           }
-          // The following elseif clause is where we differ from theme_table()
+          // The following elseif clause is where we differ from theme_table().
           elseif ($key == 'primary') {
             $class = $flip[$class];
           }
@@ -228,11 +232,11 @@ function theme_uc_report_product_table(array $variables) {
         $cells = $row;
       }
       if (count($cells)) {
-        // Add odd/even class
+        // Add odd/even class.
         // We don't flip here like theme_table(), because we did that above.
         $attributes['class'][] = $class;
 
-        // Build row
+        // Build row.
         $output .= ' <tr' . new Attribute($attributes) . '>';
         $i = 0;
         foreach ($cells as $cell) {

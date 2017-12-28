@@ -298,6 +298,7 @@ abstract class UPSRateBase extends ShippingQuotePluginBase {
               $package->pounds = floor($weight);
               $package->ounces = LB_TO_OZ * ($weight - $package->pounds);
               break;
+
             case 'oz':
               $package->pounds = floor($weight * OZ_TO_LB);
               $package->ounces = $weight - $package->pounds * LB_TO_OZ;
@@ -354,10 +355,10 @@ abstract class UPSRateBase extends ShippingQuotePluginBase {
   /**
    * Modifies the rate received from UPS before displaying to the customer.
    *
-   * @param $rate
+   * @param float $rate
    *   Shipping rate without any rate markup.
    *
-   * @return
+   * @return float
    *   Shipping rate after markup.
    */
   protected function rateMarkup($rate) {
@@ -369,8 +370,10 @@ abstract class UPSRateBase extends ShippingQuotePluginBase {
       switch ($type) {
         case 'percentage':
           return $rate + $rate * floatval($markup) / 100;
+
         case 'multiplier':
           return $rate * floatval($markup);
+
         case 'currency':
           return $rate + floatval($markup);
       }

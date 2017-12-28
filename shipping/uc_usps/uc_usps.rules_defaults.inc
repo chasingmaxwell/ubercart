@@ -13,14 +13,15 @@ function uc_usps_default_rules_configuration_alter(&$configs) {
     return;
   }
 
-  // Domestic areas include U.S., American Samoa, Guam, Puerto Rico, and the Virgin Islands
-  $countries = array(
+  // Domestic areas include U.S., American Samoa, Guam,
+  // Puerto Rico, and the Virgin Islands.
+  $countries = [
     'AS' => t('American Samoa'),
     'GU' => t('Guam'),
     'PR' => t('Puerto Rico'),
     'US' => t('United States'),
     'VI' => t('Virgin Islands (US)'),
-  );
+  ];
 
   $domestic = rules_or();
   $domestic->label = t('Order delivers to one of');
@@ -32,7 +33,7 @@ function uc_usps_default_rules_configuration_alter(&$configs) {
   $foreign_env = clone $foreign;
 
   foreach ($countries as $country => $name) {
-    $condition = rules_condition('data_is', array('data:select' => 'order:delivery-address:country', 'value' => $country));
+    $condition = rules_condition('data_is', ['data:select' => 'order:delivery-address:country', 'value' => $country]);
     $condition->label = $name;
 
     $domestic->condition(clone $condition);
@@ -40,7 +41,6 @@ function uc_usps_default_rules_configuration_alter(&$configs) {
     $foreign->condition(clone $condition);
     $foreign_env->condition($condition);
   }
-
 
   $configs['get_quote_from_usps']->condition($domestic);
   $configs['get_quote_from_usps_env']->condition($domestic_env);

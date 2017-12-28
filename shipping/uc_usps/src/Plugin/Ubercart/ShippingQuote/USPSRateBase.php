@@ -237,6 +237,7 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
               $package->pounds = floor($weight);
               $package->ounces = LB_TO_OZ * ($weight - $package->pounds);
               break;
+
             case 'oz':
               $package->pounds = floor($weight * OZ_TO_LB);
               $package->ounces = $weight - $package->pounds * LB_TO_OZ;
@@ -293,6 +294,7 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
               $package->pounds = floor($weight);
               $package->ounces = LB_TO_OZ * ($weight - $package->pounds);
               break;
+
             case 'oz':
               $package->pounds = floor($weight * OZ_TO_LB);
               $package->ounces = $weight - $package->pounds * LB_TO_OZ;
@@ -368,8 +370,10 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
       switch ($type) {
         case 'percentage':
           return $rate + $rate * floatval($markup) / 100;
+
         case 'multiplier':
           return $rate * floatval($markup);
+
         case 'currency':
           return $rate + floatval($markup);
       }

@@ -100,6 +100,7 @@ function _uc_ajax_admin_list_triggers($element, &$list) {
       case 'button': case 'submit':
         $title = empty($element['#value']) ? $key : $element['#value'];
         break;
+
       default:
         $title = empty($element['#title']) ? $key : $element['#title'];
     }
@@ -118,7 +119,7 @@ function _uc_ajax_admin_list_triggers($element, &$list) {
  * @param $form
  *   The fully processed checkout form to search for triggers.
  *
- * @return
+ * @return array
  *   An hierarchical array of select options, categorized by pane.
  */
 function _uc_ajax_admin_checkout_trigger_options($form) {
@@ -151,7 +152,7 @@ function _uc_ajax_admin_build_checkout_form() {
       'price' => 1,
       'data' => ['shippable' => TRUE],
       'model' => 0,
-      'weight' => 0
+      'weight' => 0,
     ])];
   }
   return \Drupal::formBuilder()->getForm('\Drupal\uc_cart\Form\CheckoutForm', $order);

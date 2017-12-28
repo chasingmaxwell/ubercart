@@ -98,7 +98,6 @@ define('MM_TO_FT', 0.003280839895);
 /** Converts millimeters to centimeters. */
 define('MM_TO_CM', 0.1);
 
-
 /**
  * Implements hook_page_attachments().
  */
@@ -275,11 +274,20 @@ function uc_weight_format($value, $unit = NULL, $thou = NULL, $dec = NULL) {
 
   // Add the units last.
   switch ($unit) {
-    case 'lb': return t('@value lb.', ['@value' => $output]);
-    case 'oz': return t('@value oz.', ['@value' => $output]);
-    case 'kg': return t('@valuekg', ['@value' => $output]);
-    case 'g':  return t('@valueg', ['@value' => $output]);
-    default:   return $value;
+    case 'lb':
+      return t('@value lb.', ['@value' => $output]);
+
+    case 'oz':
+      return t('@value oz.', ['@value' => $output]);
+
+    case 'kg':
+      return t('@valuekg', ['@value' => $output]);
+
+    case 'g':
+       return t('@valueg', ['@value' => $output]);
+
+    default:
+      return $value;
   }
 }
 
@@ -351,10 +359,17 @@ function uc_length_format($value, $unit = NULL, $thou = NULL, $dec = NULL) {
 
   // Add the units last.
   switch ($unit) {
-    case 'in': return t('@valuein.', ['@value' => $output]);
-    case 'ft': return t('@valueft.', ['@value' => $output]);
-    case 'cm': return t('@valuecm', ['@value' => $output]);
-    case 'mm':  return t('@valuemm', ['@value' => $output]);
+    case 'in':
+      return t('@valuein.', ['@value' => $output]);
+
+    case 'ft':
+      return t('@valueft.', ['@value' => $output]);
+
+    case 'cm':
+      return t('@valuecm', ['@value' => $output]);
+
+    case 'mm':
+      return t('@valuemm', ['@value' => $output]);
   }
 }
 

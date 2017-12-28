@@ -9,30 +9,32 @@ use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Drupal\uc_order\OrderInterface;
 use Drupal\uc_store\Address;
+use Drupal\uc_ups\UPSUtilities;
 
 /**
  * Shipment creation callback.
  *
  * Confirms shipment data before requesting a shipping label.
  *
- * @param $order_id
- *   The order id for the shipment.
- * @param $package_ids
+ * @param \Drupal\uc_order\OrderInterface $order
+ *   The order entity for the shipment.
+ * @param array $package_ids
  *   Array of package ids to shipped.
  *
  * @see uc_ups_fulfill_order_validate()
  * @see uc_ups_fulfill_order_submit()
  * @ingroup forms
  */
-function uc_ups_fulfill_order($form, FormStateInterface $form_state, $order, $package_ids) {
+function uc_ups_fulfill_order($form, FormStateInterface $form_state, OrderInterface $order, array $package_ids) {
   $store_config = \Drupal::config('uc_store.settings');
-  $pkg_types = \Drupal\uc_ups\UPSUtilities::packageTypes();
+  $pkg_types = UPSUtilities::packageTypes();
   $form['order_id'] = ['#type' => 'value', '#value' => $order->id()];
   $packages = [];
   $addresses = [];
 
-  // Container for package data
+  // Container for package data.
   $form['packages'] = [
     '#type' => 'fieldset',
     '#title' => t('Packages'),
@@ -47,14 +49,14 @@ function uc_ups_fulfill_order($form, FormStateInterface $form_state, $order, $pa
         }
       }
       // Create list of products and get a representative product (last one in
-      // the loop) to use for some default values
+      // the loop) to use for some default values.
       $product_list = [];
       $declared_value = 0;
       foreach ($package->products as $product) {
         $product_list[] = $product->qty . ' x ' . $product->model;
         $declared_value += $product->qty * $product->price;
       }
-      // Use last product in package to determine package type
+      // Use last product in package to determine package type.
       $ups_data = db_query("SELECT pkg_type FROM {uc_ups_products} WHERE nid = :nid", [':nid' => $product->nid])->fetchAssoc();
       $product->ups = $ups_data;
       $pkg_form = [
@@ -152,7 +154,7 @@ function uc_ups_fulfill_order($form, FormStateInterface $form_state, $order, $pa
     $form['destination'][$field]['#required'] = TRUE;
   }
 
-  // Determine shipping option chosen by the customer
+  // Determine shipping option chosen by the customer.
   $method  = $order->quote['method'];
   $methods = \Drupal::moduleHandler()->invokeAll('uc_shipping_method');
   if (isset($methods[$method])) {
@@ -160,13 +162,13 @@ function uc_ups_fulfill_order($form, FormStateInterface $form_state, $order, $pa
     $method   = $services[$order->quote['accessorials']];
   }
 
-  // Container for shipment data
+  // Container for shipment data.
   $form['shipment'] = [
     '#type' => 'fieldset',
     '#title' => t('Shipment data'),
   ];
 
-  // Inform user of customer's shipping choice
+  // Inform user of customer's shipping choice.
   $form['shipment']['shipping_choice'] = [
     '#type' => 'markup',
     '#prefix' => '<div>',
@@ -175,7 +177,7 @@ function uc_ups_fulfill_order($form, FormStateInterface $form_state, $order, $pa
   ];
 
   // Pass shipping charge paid information on to validation function so it
-  // can be displayed alongside actual costs
+  // can be displayed alongside actual costs.
   $form['shipment']['paid'] = [
     '#type' => 'value',
     '#value' => uc_currency_format($order->quote['rate']),
@@ -274,7 +276,7 @@ function uc_ups_fulfill_order_validate($form, FormStateInterface $form_state) {
     $destination->company = $destination->first_name . ' ' . $destination->last_name;
   }
 
-  // Determine if address is Residential or Commercial
+  // Determine if address is Residential or Commercial.
   $destination->residential = $ups_config->get('residential_quotes');
 
   $_SESSION['ups']['destination'] = $destination;
@@ -314,7 +316,7 @@ function uc_ups_fulfill_order_validate($form, FormStateInterface $form_state) {
     }
   }
   $charge = new stdClass();
-  // if NegotiatedRates exist, quote based on those, otherwise, use TotalCharges
+  // If NegotiatedRates exist, quote based on those, otherwise, use TotalCharges.
   if (isset($response->ShipmentCharges)) {
     $charge = $response->ShipmentCharges->TotalCharges;
     $_SESSION['ups']['rate']['type'] = t('Total Charges');
@@ -362,7 +364,7 @@ function uc_ups_shipment_request($packages, $origin, $destination, $ups_service)
   $services = _uc_ups_service_list();
   $service = ['code' => $ups_service, 'description' => $services[$ups_service]];
 
-  $pkg_types = \Drupal\uc_ups\UPSUtilities::packageTypes();
+  $pkg_types = UPSUtilities::packageTypes();
 
   $store_config = \Drupal::config('uc_store.settings');
   $shipper_zone = $store_config->get('address.zone');
@@ -380,7 +382,7 @@ function uc_ups_shipment_request($packages, $origin, $destination, $ups_service)
   $package_schema = '';
   foreach ($packages as $package) {
     // Determine length conversion factor and weight conversion factor
-    // for this shipment
+    // for this shipment.
     $length_factor = uc_length_conversion($package->length_units, $ups_config->get('unit_system'));
     switch ($ups_units) {
       case 'in':
@@ -388,6 +390,7 @@ function uc_ups_shipment_request($packages, $origin, $destination, $ups_service)
         $units = 'LBS';
         $unit_name = 'Pounds';
         break;
+
       case 'cm':
         $weight_factor = uc_weight_conversion($package->weight_units, 'kg');
         $units = 'KGS';
@@ -548,12 +551,12 @@ $schema .= "</ShipmentConfirmRequest>";
 function uc_ups_confirm_shipment($form, FormStateInterface $form_state, $order) {
   $form['digest'] = [
     '#type' => 'hidden',
-    '#value' => $_SESSION['ups']['digest']
+    '#value' => $_SESSION['ups']['digest'],
   ];
   $form['actions'] = ['#type' => 'actions'];
   $form['actions']['submit'] = [
     '#type' => 'submit',
-    '#value' => t('Request Pickup')
+    '#value' => t('Request Pickup'),
   ];
 
   return $form;
@@ -650,7 +653,7 @@ function uc_ups_confirm_shipment_submit($form, FormStateInterface $form_state) {
   $shipment->shipping_method = 'ups';
   $shipment->accessorials = $_SESSION['ups']['service'];
   $shipment->carrier = t('UPS');
-  // if NegotiatedRates exist, quote based on those, otherwise, use TotalCharges
+  // If NegotiatedRates exist, quote based on those, otherwise, use TotalCharges.
   if (isset($response->ShipmentResults->ShipmentCharges)) {
     $charge = $response->ShipmentResults->ShipmentCharges->TotalCharges;
     if (isset($response->ShipmentResults->NegotiatedRates)) {
@@ -669,7 +672,7 @@ function uc_ups_confirm_shipment_submit($form, FormStateInterface $form_state) {
     $package =& current($shipment->packages);
     $package->tracking_number = (string) $package_results->TrackingNumber;
     $label_image = (string) $package_results->LabelImage->GraphicImage;
-    // Save the label
+    // Save the label.
     $directory = 'public://ups_labels';
     if (file_prepare_directory($directory, FILE_CREATE_DIRECTORY)) {
       $label_path = $directory . '/label-' . $package->tracking_number . '.gif';
@@ -697,17 +700,17 @@ function uc_ups_confirm_shipment_submit($form, FormStateInterface $form_state) {
 /**
  * Constructs an XML label and pickup request.
  *
- * @param $digest
+ * @param string $digest
  *   Base-64 encoded shipment request.
- * @param $order_id
+ * @param int $order_id
  *   The order id of the shipment.
- * @param $packages
+ * @param array $packages
  *   An array of package ids to be shipped.
  *
- * @return
+ * @return string
  *   ShipmentAcceptRequest XML document to send to UPS.
  */
-function uc_ups_request_pickup($digest, $order_id = 0, $packages = []) {
+function uc_ups_request_pickup($digest, $order_id = 0, array $packages = []) {
   $packages = (array) $packages;
 
   $schema = uc_ups_access_request();

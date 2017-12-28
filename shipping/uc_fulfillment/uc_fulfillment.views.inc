@@ -15,7 +15,8 @@ function uc_fulfillment_views_data() {
 
   // Allow base tables of shipments.
   $data['uc_shipments']['table']['base'] = [
-    'field' => 'sid', // This is the identifier field for the view.
+    // This is the identifier field for the view.
+    'field' => 'sid',
     'title' => t('Ubercart shipments'),
     'help' => t('Ubercart shipments contain shipping information for orders and can be related to orders and packages.'),
   ];
@@ -233,7 +234,7 @@ function uc_fulfillment_views_data() {
   ];
 
   foreach ($addresses as $prefix => $address) {
-    $group = t('Shipment') . ': ' . $address;
+    $group = t('Shipment: @address_type', ['@address_type' => $address]);
 
     foreach ($fields as $field => $label) {
       $data['uc_shipments'][$prefix . '_' . $field] = [
@@ -252,7 +253,8 @@ function uc_fulfillment_views_data() {
         ],
       ];
     }
-    // uc_order is required by shipping module so is safe to use uc_order handler.
+    // The uc_order module is required by uc_fulfillment, so
+    // it is safe to use a uc_order handler.
     $data['uc_shipments'][$prefix . '_full_name'] = [
       'group' => $group,
       'title' => t('Full name'),
@@ -260,7 +262,7 @@ function uc_fulfillment_views_data() {
       'field' => [
         'additional fields' => [
           $prefix . '_first_name',
-          $prefix . '_last_name'
+          $prefix . '_last_name',
         ],
         'handler' => 'uc_order_handler_field_order_fullname',
         'prefix' => $prefix,
@@ -429,7 +431,8 @@ function uc_fulfillment_views_data() {
   ];
 
   // Package ID field.
-  // We don't redirect to the shipment page because a package can exist without a shipment.
+  // We don't redirect to the shipment page because
+  // a package can exist without a shipment.
   $data['uc_packages']['package_id'] = [
     'title' => t('Package ID'),
     'help' => t('The package ID.'),
