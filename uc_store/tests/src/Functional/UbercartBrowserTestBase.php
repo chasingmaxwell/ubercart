@@ -246,7 +246,7 @@ abstract class UbercartBrowserTestBase extends BrowserTestBase {
       'description' => $this->randomMachineName(32),
       'uc_product[product]' => TRUE,
     ];
-    $this->drupalPostForm('admin/structure/types/add', $edit, t('Save content type'));
+    $this->drupalPostForm('admin/structure/types/add', $edit, 'Save content type');
 
     return node_type_load($class);
   }
@@ -302,18 +302,18 @@ abstract class UbercartBrowserTestBase extends BrowserTestBase {
   protected function checkout(array $edit = []) {
     $this->drupalPostForm('cart', [], 'Checkout');
     $this->assertText(
-      t('Enter your billing address and information here.'),
+      'Enter your billing address and information here.',
       'Viewed cart page: Billing pane has been displayed.'
     );
 
     $edit = $this->populateCheckoutForm($edit);
 
     // Submit the checkout page.
-    $this->drupalPostForm('cart/checkout', $edit, t('Review order'));
-    $this->assertRaw(t('Your order is almost complete.'));
+    $this->drupalPostForm('cart/checkout', $edit, 'Review order');
+    $this->assertText('Your order is almost complete.');
 
     // Complete the review page.
-    $this->drupalPostForm(NULL, [], t('Submit order'));
+    $this->drupalPostForm(NULL, [], 'Submit order');
 
     $order_ids = \Drupal::entityQuery('uc_order')
       ->condition('billing_first_name', $edit['panes[billing][first_name]'])

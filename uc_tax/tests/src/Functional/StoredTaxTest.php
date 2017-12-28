@@ -45,7 +45,7 @@ class StoredTaxTest extends TaxTestBase {
 
     $this->addToCart($this->product);
 
-    // Manually step through checkout. $this->checkout()
+    // Manually step through checkout, because $this->checkout()
     // doesn't know about taxes.
     $this->drupalPostForm('cart', [], 'Checkout');
     $this->assertText(

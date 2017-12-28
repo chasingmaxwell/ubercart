@@ -321,7 +321,7 @@ class AttributeTest extends UbercartBrowserTestBase {
   public function testAttributeUiAddAttribute() {
     $this->drupalGet('admin/store/products/attributes/add');
 
-    $this->assertText(t('The name of the attribute used in administrative forms'), 'Attribute add form working.');
+    $this->assertText('The name of the attribute used in administrative forms', 'Attribute add form working.');
 
     $edit = (array) $this->createAttribute([], FALSE);
 
@@ -329,7 +329,7 @@ class AttributeTest extends UbercartBrowserTestBase {
     if ($edit['display'] != 0) {
       // We redirect to add options page ONLY for non-textfield attributes.
       $this->assertText(t('Options for @name', ['@name' => $edit['name']]));
-      $this->assertText(t('No options for this attribute have been added yet.'));
+      $this->assertText('No options for this attribute have been added yet.');
     }
     else {
       // For textfield attributes we redirect to attribute list.
@@ -444,7 +444,7 @@ class AttributeTest extends UbercartBrowserTestBase {
 
     $this->drupalPostForm('admin/store/products/attributes/' . $attribute->aid . '/delete', [], 'Delete');
 
-    $this->assertText(t('Product attribute deleted.'), 'Attribute deleted properly.');
+    $this->assertText('Product attribute deleted.', 'Attribute deleted properly.');
   }
 
   /**
@@ -552,13 +552,13 @@ class AttributeTest extends UbercartBrowserTestBase {
 
     $this->drupalGet('admin/structure/types/manage/' . $class->id() . '/attributes');
 
-    $this->assertText(t('No attributes available.'), 'Class attribute form working.');
+    $this->assertText('No attributes available.', 'Class attribute form working.');
 
     uc_attribute_subject_save($attribute, 'class', $class->id());
 
     $this->drupalGet('admin/structure/types/manage/' . $class->id() . '/attributes');
 
-    $this->assertNoText(t('No attributes available.'), 'Class attribute form working.');
+    $this->assertNoText('No attributes available.', 'Class attribute form working.');
 
     $a = (array) $this->createAttribute([], FALSE);
     unset($a['name'], $a['description']);
@@ -586,7 +586,7 @@ class AttributeTest extends UbercartBrowserTestBase {
     $edit["attributes[{$attribute->aid}][remove]"] = TRUE;
     $this->drupalPostForm('admin/structure/types/manage/' . $class->id() . '/attributes', $edit, 'Save changes');
 
-    $this->assertText(t('No attributes available.'), 'Class attribute form working.');
+    $this->assertText('No attributes available.', 'Class attribute form working.');
   }
 
   /**
@@ -604,7 +604,7 @@ class AttributeTest extends UbercartBrowserTestBase {
 
     $this->drupalPostForm('admin/structure/types/manage/' . $class->id() . '/attributes/add', $edit, 'Add attributes');
 
-    $this->assertNoText(t('No attributes available.'), 'Class attribute form working.');
+    $this->assertNoText('No attributes available.', 'Class attribute form working.');
   }
 
   /**
@@ -631,7 +631,7 @@ class AttributeTest extends UbercartBrowserTestBase {
     $edit["attributes[$attribute->aid][default]"] = $option->oid;
     $this->showVar($edit);
     $this->drupalPostForm('admin/structure/types/manage/' . $class->id() . '/options', $edit, 'Save changes');
-    $this->assertText(t('The changes have been saved.'), 'Class attribute option saved.');
+    $this->assertText('The changes have been saved.', 'Class attribute option saved.');
     $this->showVar($option);
 
     $option = uc_attribute_subject_option_load($option->oid, 'class', $class->id());
@@ -657,13 +657,13 @@ class AttributeTest extends UbercartBrowserTestBase {
     $option = $this->createAttributeOption(['aid' => $attribute->aid]);
 
     $this->drupalGet('node/' . $product->id() . '/edit/attributes');
-    $this->assertText(t('No attributes available.'));
+    $this->assertText('No attributes available.');
 
     $this->clickLink('Add existing attribute');
     $this->assertText($attribute->name);
 
     $this->drupalPostForm(NULL, ['add_attributes[' . $attribute->aid . ']' => 1], 'Add attributes');
-    $this->assertText(t('1 attribute has been added.'));
+    $this->assertText('1 attribute has been added.');
     $this->assertText($attribute->name, 'Attribute name found');
     $this->assertFieldByName('attributes[' . $attribute->aid . '][label]', $attribute->label, 'Attribute label found');
     $this->assertText($option->name, 'Default option name found');
@@ -672,11 +672,11 @@ class AttributeTest extends UbercartBrowserTestBase {
 
     $this->drupalGet('node/' . $product->id() . '/edit/attributes/add');
     $this->assertNoText($attribute->name);
-    $this->assertText(t('No attributes left to add.'));
+    $this->assertText('No attributes left to add.');
 
     $edit = ['attributes[' . $attribute->aid . '][remove]' => 1];
     $this->drupalPostForm('node/' . $product->id() . '/edit/attributes', $edit, 'Save changes');
-    $this->assertText(t('No attributes available.'));
+    $this->assertText('No attributes available.');
   }
 
   /**

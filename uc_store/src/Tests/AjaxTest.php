@@ -12,11 +12,15 @@ use Drupal\uc_quote\Entity\ShippingQuoteMethod;
  * @group Ubercart
  */
 class AjaxTest extends UbercartTestBase {
-
   use AjaxAttachTrait;
 
-  public static $modules = [/*'rules_admin', */'uc_payment', 'uc_payment_pack', 'uc_quote'];
-  public static $adminPermissions = [/*'administer rules', 'bypass rules access'*/];
+  public static $modules = [
+    // 'rules_admin',
+    'uc_payment',
+    'uc_payment_pack',
+    'uc_quote',
+  ];
+//  public static $adminPermissions = ['administer rules', 'bypass rules access'];
 
   /**
    * {@inheritdoc}

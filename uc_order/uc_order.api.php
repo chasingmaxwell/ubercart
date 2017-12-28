@@ -11,6 +11,7 @@
  */
 
 use Drupal\uc_order\OrderInterface;
+use Drupal\uc_order\OrderProductInterface;
 
 /**
  * Alters the line item plugin definitions.
@@ -27,33 +28,33 @@ function hook_uc_line_item_alter(&$items) {
 /**
  * Adds links to local tasks for orders on the admin's list of orders.
  *
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   An order object.
  *
- * @return
+ * @return array
  *   An array of operations links. Each link has the following keys:
  *   - title: The title of page being linked.
  *   - href: The link path. Do not use url(), but do use the $order's order_id.
  *   - weight: Sets the display order of operations.
  */
-function hook_uc_order_actions($order) {
+function hook_uc_order_actions(OrderInterface $order) {
   $account = \Drupal::currentUser();
-  $actions = array();
+  $actions = [];
   if ($account->hasPermission('fulfill orders')) {
-    $result = db_query("SELECT COUNT(nid) FROM {uc_order_products} WHERE order_id = :id AND data LIKE :data", array(':id' => $order->id(), ':data' => '%s:9:\"shippable\";s:1:\"1\";%'));
+    $result = db_query("SELECT COUNT(nid) FROM {uc_order_products} WHERE order_id = :id AND data LIKE :data", [':id' => $order->id(), ':data' => '%s:9:\"shippable\";s:1:\"1\";%']);
     if ($result->fetchField()) {
-      $actions['package'] = array(
+      $actions['package'] = [
         'title' => t('Package'),
         'href' => 'admin/store/orders/' . $order->id() . '/packages',
         'weight' => 12,
-      );
-      $result = db_query("SELECT COUNT(package_id) FROM {uc_packages} WHERE order_id = :id", array(':id' => $order->id()));
+      ];
+      $result = db_query("SELECT COUNT(package_id) FROM {uc_packages} WHERE order_id = :id", [':id' => $order->id()]);
       if ($result->fetchField()) {
-        $actions['ship'] = array(
+        $actions['ship'] = [
           'title' => t('Ship'),
           'href' => 'admin/store/orders/' . $order->id() . '/shipments',
           'weight' => 13,
-        );
+        ];
       }
     }
   }
@@ -100,16 +101,15 @@ function hook_uc_order_pane_alter(&$panes) {
 /**
  * Allows modules to alter order products when they're loaded with an order.
  *
- * @param &$product
+ * Nothing should be returned. Hook implementations should receive the
+ * $product object by reference and alter it directly.
+
+ * @param \Drupal\uc_order\OrderProductInterface &$product
  *   The product object as found in the $order object.
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   The order object to which the product belongs.
- *
- * @return
- *   Nothing should be returned. Hook implementations should receive the
- *   $product object by reference and alter it directly.
  */
-function hook_uc_order_product_alter(\Drupal\uc_order\OrderProductInterface &$product, \Drupal\uc_order\OrderInterface $order) {
+function hook_uc_order_product_alter(OrderProductInterface &$product, OrderInterface $order) {
   $product->model = 'SKU';
 }
 
@@ -136,12 +136,12 @@ function hook_uc_order_product_load(array $order_products) {
  *
  * This hook is invoked after the order product is inserted into the database.
  *
- * @param object $order_product
+ * @param \Drupal\uc_order\OrderProductInterface $order_product
  *   The order product that is being inserted.
  *
  * @see hook_entity_insert()
  */
-function hook_uc_order_product_insert(object $order_product) {
+function hook_uc_order_product_insert(OrderProductInterface $order_product) {
   db_insert('mytable')
     ->fields([
       'id' => entity_id('uc_order_product', $order_product),
@@ -155,12 +155,12 @@ function hook_uc_order_product_insert(object $order_product) {
  *
  * This hook is invoked before the order product is saved to the database.
  *
- * @param object $order_product
+ * @param \Drupal\uc_order\OrderProductInterface $order_product
  *   The order product that is being inserted or updated.
  *
  * @see hook_entity_presave()
  */
-function hook_uc_order_product_presave(object $order_product) {
+function hook_uc_order_product_presave(OrderProductInterface $order_product) {
   $order_product->name = 'foo';
 }
 
@@ -169,12 +169,12 @@ function hook_uc_order_product_presave(object $order_product) {
  *
  * This hook is invoked after the order product has been updated in the database.
  *
- * @param object $order_product
+ * @param \Drupal\uc_order\OrderProductInterface $order_product
  *   The order product that is being updated.
  *
  * @see hook_entity_update()
  */
-function hook_uc_order_product_update(object $order_product) {
+function hook_uc_order_product_update(OrderProductInterface $order_product) {
   db_update('mytable')
     ->fields(['extra' => print_r($order_product, TRUE)])
     ->condition('opid', entity_id('uc_order_product', $order_product))
@@ -187,13 +187,13 @@ function hook_uc_order_product_update(object $order_product) {
  * This hook is invoked after the order product has been removed from the
  * database.
  *
- * @param object $order_product
+ * @param \Drupal\uc_order\OrderProductInterface $order_product
  *   The order product that is being deleted.
  *
  * @see hook_entity_delete()
  * @see hook_uc_order_edit_form_product_remove()
  */
-function hook_uc_order_product_delete(object $order_product) {
+function hook_uc_order_product_delete(OrderProductInterface $order_product) {
   db_delete('mytable')
     ->condition('opid', entity_id('uc_order_product', $order_product))
     ->execute();

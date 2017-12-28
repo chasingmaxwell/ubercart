@@ -43,20 +43,20 @@ class AddToCartForm extends BuyItNowForm {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, NodeInterface $node = NULL) {
-    $form['node'] = array(
+    $form['node'] = [
       '#type' => 'value',
       '#value' => $form_state->get('variant') ?: $node,
-    );
+    ];
 
     $form = parent::buildForm($form, $form_state, $node);
 
     if ($node->default_qty->value > 0) {
       if ($this->config('uc_product.settings')->get('add_to_cart_qty')) {
-        $form['qty'] = array(
+        $form['qty'] = [
           '#type' => 'uc_quantity',
           '#title' => $this->t('Quantity'),
           '#default_value' => $node->default_qty->value,
-        );
+        ];
       }
       else {
         $form['qty']['#value'] = $node->default_qty->value;
@@ -70,7 +70,7 @@ class AddToCartForm extends BuyItNowForm {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $data = \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', array($form_state->getValues()));
+    $data = \Drupal::moduleHandler()->invokeAll('uc_add_to_cart_data', [$form_state->getValues()]);
     $form_state->set('variant', uc_product_load_variant($form_state->getValue('nid'), $data));
   }
 

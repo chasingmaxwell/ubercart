@@ -53,10 +53,20 @@ use Drupal\user\UserInterface;
  * )
  */
 class Order extends ContentEntityBase implements OrderInterface {
-
   use EntityChangedTrait;
 
+  /**
+   * Order products.
+   *
+   * @var \Drupal\uc_order\OrderProductInterface[]
+   */
   public $products = [];
+
+  /**
+   * Order line items.
+   *
+   * @var array
+   */
   public $line_items = [];
 
   /**

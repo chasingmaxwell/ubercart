@@ -56,22 +56,21 @@ class BuyItNowForm extends FormBase implements BaseFormIdInterface {
     $query = \Drupal::request()->query->all();
     $form['#action'] = Url::fromRoute('<current>')->setOptions(['query' => $query])->toString();
 
-    $form['nid'] = array(
+    $form['nid'] = [
       '#type' => 'value',
       '#value' => $node->id(),
-    );
+    ];
 
-    $form['qty'] = array(
+    $form['qty'] = [
       '#type' => 'value',
       '#value' => 1,
-    );
+    ];
 
-    $form['actions'] = array('#type' => 'actions');
-    $form['actions']['submit'] = array(
+    $form['actions'] = ['#type' => 'actions'];
+    $form['actions']['submit'] = [
       '#type' => 'submit',
       '#value' => $this->t('Add to cart'),
-      '#id' => 'edit-submit-' . $node->id(),
-    );
+    ];
 
     uc_form_alter($form, $form_state, $this->getFormId());
 

@@ -53,6 +53,8 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
 
     // Log in as admin user to test order payments form.
     $this->drupalLogin($this->adminUser);
+    /** @var \Drupal\Tests\WebAssert */
+    $assert = $this->assertSession();
 
     // Goto order payments form and confirm order total and
     // payments total of $1 show up.
@@ -76,9 +78,9 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       'admin/store/orders/' . $order->id() . '/payments',
       $edit,
-      t('Record payment')
+      'Record payment'
     );
-    $this->assertText(t('Payment entered.'));
+    $this->assertText('Payment entered.');
     // Verify partial payment shows up in table.
     $this->assertRaw(
       '<span class="uc-price">' . uc_currency_format($first_payment) . '</span>',
@@ -104,7 +106,7 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       'admin/store/orders/' . $order->id() . '/payments',
       $edit,
-      t('Record payment')
+      'Record payment'
     );
     // Verify partial payment shows up in table.
     $this->assertRaw(
@@ -118,25 +120,25 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
     );
 
     // Delete first partial payment.
-    $this->assertLink(t('Delete'));
-    $this->clickLink(t('Delete'));
+    $this->assertLink('Delete');
+    $this->clickLink('Delete');
     // Delete takes us to confirm page.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/payments/1/delete');
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/payments/1/delete');
     $this->assertText(
-      t('Are you sure you want to delete this payment?'),
+      'Are you sure you want to delete this payment?',
       'Deletion confirm question found.'
     );
     // "Cancel" returns to the payments list page.
-    $this->clickLink(t('Cancel'));
+    $this->clickLink('Cancel');
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/payments');
 
     // Again with the "Delete".
     // Delete the first partial payment, not the $1 initial payment.
-    $this->clickLink(t('Delete'), 1);
-    $this->drupalPostForm(NULL, [], t('Delete'));
+    $this->clickLink('Delete', 1);
+    $this->drupalPostForm(NULL, [], 'Delete');
     // Delete returns to new payments page.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/payments');
-    $this->assertText(t('Payment deleted.'));
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/payments');
+    $this->assertText('Payment deleted.');
 
     // Verify balance has increased.
     $this->assertRaw(
