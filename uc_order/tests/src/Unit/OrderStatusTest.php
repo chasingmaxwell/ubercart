@@ -8,7 +8,7 @@ use Drupal\uc_order\Entity\OrderStatus;
 /**
  * @coversDefaultClass \Drupal\uc_order\Entity\OrderStatus
  *
- * @group Ubercart
+ * @group ubercart
  */
 class OrderStatusTest extends UnitTestCase {
 

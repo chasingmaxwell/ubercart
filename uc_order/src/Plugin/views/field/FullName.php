@@ -67,7 +67,7 @@ class FullName extends FieldPluginBase {
    *
    * Data should be made XSS safe prior to calling this function.
    */
-  protected function render_link($data, $values) {
+  protected function renderLink($data, $values) {
     $account = \Drupal::currentUser();
     if (!empty($this->options['link_to_user']) && $account->hasPermission('access user profiles')) {
       $this->options['alter']['make_link'] = TRUE;
@@ -93,7 +93,7 @@ class FullName extends FieldPluginBase {
     }
 
     if (isset($output)) {
-      return $this->render_link($this->sanitizeValue($output), $values);
+      return $this->renderLink($this->sanitizeValue($output), $values);
     }
   }
 

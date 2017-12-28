@@ -33,7 +33,7 @@ function uc_googleanalytics_page_attachments_alter(&$page) {
       drupal_add_js($script, [
         'type' => 'inline',
         'scope' => 'footer',
-        'preprocess' => FALSE
+        'preprocess' => FALSE,
       ]);
     }
 

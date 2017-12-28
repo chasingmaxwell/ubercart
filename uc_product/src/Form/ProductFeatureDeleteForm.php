@@ -14,16 +14,22 @@ class ProductFeatureDeleteForm extends ConfirmFormBase {
 
   /**
    * The node that is the feature is to be deleted from.
+   *
+   * @var \Drupal\node\NodeInterface
    */
   protected $node;
 
   /**
    * The feature type to be deleted.
+   *
+   * @var int
    */
   protected $featureId;
 
   /**
    * The feature to be deleted.
+   *
+   * @var array
    */
   protected $feature;
 

@@ -9,7 +9,7 @@ use Drupal\Component\Utility\Crypt;
  */
 class OpenSSLEncryption implements EncryptionInterface {
 
-  /*
+  /**
    * Cypher to use.
    *
    * Valid values are defined by OpenSSL.
@@ -19,7 +19,7 @@ class OpenSSLEncryption implements EncryptionInterface {
    */
   protected $cypher = 'AES-128-CBC';
 
-  /*
+  /**
    * Array of error messages.
    *
    * @var string[]

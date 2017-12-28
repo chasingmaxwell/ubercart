@@ -36,7 +36,7 @@ class OrderTest extends UbercartBrowserTestBase {
   }
 
   /**
-   *
+   * Tests order entity API functions.
    */
   public function testOrderApi() {
     // Test defaults.
@@ -60,7 +60,7 @@ class OrderTest extends UbercartBrowserTestBase {
   }
 
   /**
-   *
+   * Tests order CRUD operations.
    */
   public function testOrderEntity() {
     $order = Order::create();
@@ -91,7 +91,7 @@ class OrderTest extends UbercartBrowserTestBase {
   }
 
   /**
-   *
+   * Tests order entity CRUD hooks.
    */
   public function testEntityHooks() {
     \Drupal::service('module_installer')->install(['entity_crud_hook_test']);
@@ -121,7 +121,7 @@ class OrderTest extends UbercartBrowserTestBase {
   }
 
   /**
-   *
+   * Tests admin order creation.
    */
   public function testOrderCreation() {
     $this->drupalLogin($this->adminUser);
@@ -156,7 +156,7 @@ class OrderTest extends UbercartBrowserTestBase {
   }
 
   /**
-   *
+   * Tests order admin View.
    */
   public function testOrderView() {
     $order = $this->ucCreateOrder($this->customer);
@@ -183,7 +183,7 @@ class OrderTest extends UbercartBrowserTestBase {
   }
 
   /**
-   * Tests the customer view of the completed order.
+   * Tests the customer View of the completed order.
    */
   public function testOrderCustomerView() {
     $order = $this->ucCreateOrder($this->customer);
@@ -211,7 +211,7 @@ class OrderTest extends UbercartBrowserTestBase {
   }
 
   /**
-   *
+   * Tests admin editing of orders.
    */
   public function testOrderEditing() {
     $order = $this->ucCreateOrder($this->customer);
@@ -228,7 +228,7 @@ class OrderTest extends UbercartBrowserTestBase {
   }
 
   /**
-   *
+   * Tests admin and automatic changing of order state and status.
    */
   public function testOrderState() {
     $this->drupalLogin($this->adminUser);
@@ -260,6 +260,9 @@ class OrderTest extends UbercartBrowserTestBase {
     $this->assertEquals($order->getStatusId(), $edit['id'], 'Order has correct custom status.');
   }
 
+  /**
+   * Tests using custom order statuses.
+   */
   public function testCustomOrderStatus() {
     $order = $this->ucCreateOrder($this->customer);
 
@@ -303,7 +306,7 @@ class OrderTest extends UbercartBrowserTestBase {
   }
 
   /**
-   *
+   * Helper function for creating an order programmatically.
    */
   protected function ucCreateOrder($customer) {
     $order = Order::create([
@@ -359,7 +362,7 @@ class OrderTest extends UbercartBrowserTestBase {
   }
 
   /**
-   *
+   * Helper function for testing order entity CRUD hooks.
    */
   protected function assertHookMessage($text, $message = NULL, $group = 'Other') {
     if (!isset($message)) {

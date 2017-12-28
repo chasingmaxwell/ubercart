@@ -48,7 +48,7 @@ class MarstonEncryption implements EncryptionInterface {
     if (empty($plaintext)) {
       // Commented out to prevent errors getting logged for use cases that may
       // have variable encryption/decryption requirements.
-      // $this->errors[] = t('No value has been supplied for encryption');
+      /* $this->errors[] = t('No value has been supplied for encryption'); */
       return;
     }
 
@@ -94,8 +94,8 @@ class MarstonEncryption implements EncryptionInterface {
 
     if (empty($cyphertext)) {
       // Commented out to prevent errors getting logged for use cases that may
-      // have variable encryption/decryption requirements. -RS
-      // $this->errors[] = t('No value has been supplied for decryption');
+      // have variable encryption/decryption requirements.
+      /* $this->errors[] = t('No value has been supplied for decryption'); */
       return;
     }
 
@@ -239,7 +239,7 @@ class MarstonEncryption implements EncryptionInterface {
     if (empty($key)) {
       // Commented out to prevent errors getting logged for use cases that may
       // have variable encryption/decryption requirements.
-      // $this->errors[] = 'No value has been supplied for the encryption key';
+      /* $this->errors[] = 'No value has been supplied for the encryption key'; */
       return;
     }
 

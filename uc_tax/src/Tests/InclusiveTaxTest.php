@@ -11,50 +11,60 @@ use Drupal\node\Entity\Node;
  */
 class InclusiveTaxTest extends TaxTestBase {
 
-  public static $modules = ['uc_product_kit', 'uc_attribute', 'uc_cart', 'uc_payment', 'uc_payment_pack', 'uc_tax'];
+  public static $modules = [
+    'uc_product_kit',
+    'uc_attribute',
+    'uc_cart',
+    'uc_payment',
+    'uc_payment_pack',
+    'uc_tax',
+  ];
 
+  /**
+   * Test inclusive taxes with product kit attributes.
+   */
   public function testProductKitAttributes() {
     $this->drupalLogin($this->adminUser);
 
     // Create a 20% inclusive tax rate.
-    $rate = (object) array(
+    $rate = (object) [
       'name' => $this->randomMachineName(8),
       'rate' => 0.2,
-      'taxed_product_types' => array('product'),
+      'taxed_product_types' => ['product'],
       'taxed_line_items' => [],
       'weight' => 0,
       'shippable' => 0,
       'display_include' => 1,
       'inclusion_text' => $this->randomMachineName(6),
-    );
+    ];
     uc_tax_rate_save($rate);
 
     // Ensure Rules picks up the new condition.
     // entity_flush_caches();
 
     // Create a $10 product.
-    $product = $this->createProduct(array('price' => 10));
+    $product = $this->createProduct(['price' => 10]);
 
     // Create an attribute.
-    $attribute = (object) array(
+    $attribute = (object) [
       'name' => $this->randomMachineName(8),
       'label' => $this->randomMachineName(8),
       'description' => $this->randomMachineName(8),
       'required' => TRUE,
       'display' => 1,
       'ordering' => 0,
-    );
+    ];
     uc_attribute_save($attribute);
 
     // Create an option with a price adjustment of $5.
-    $option = (object) array(
+    $option = (object) [
       'aid' => $attribute->aid,
       'name' => $this->randomMachineName(8),
       'cost' => 0,
       'price' => 5,
       'weight' => 0,
       'ordering' => 0,
-    );
+    ];
     uc_attribute_option_save($option);
 
     // Attach the attribute to the product.
@@ -62,12 +72,12 @@ class InclusiveTaxTest extends TaxTestBase {
     uc_attribute_subject_save($attribute, 'product', $product->id(), TRUE);
 
     // Create a product kit containing the product.
-    $kit = $this->drupalCreateNode(array(
+    $kit = $this->drupalCreateNode([
       'type' => 'product_kit',
-      'products' => array($product->id()),
+      'products' => [$product->id()],
       'default_qty' => 1,
       'mutable' => UC_PRODUCT_KIT_UNMUTABLE_WITH_LIST,
-    ));
+    ]);
 
     // Set the kit total to $9 to automatically apply a discount.
     $kit = Node::load($kit->id());
@@ -83,9 +93,10 @@ class InclusiveTaxTest extends TaxTestBase {
 
     // Add the product kit to the cart, selecting the option.
     $attribute_key = 'products[' . $product->id() . '][attributes][' . $attribute->aid . ']';
-    $this->addToCart($kit, array($attribute_key => $option->oid));
+    $this->addToCart($kit, [$attribute_key => $option->oid]);
 
-    // Check that the subtotal is $16.80 ($10 base + $5 option - $1 discount, with 20% tax)
+    // Check that the subtotal is $16.80.
+    // ($10 base + $5 option - $1 discount, with 20% tax.)
     $this->drupalGet('cart');
     $this->assertTextPattern('/Subtotal:\s*\$16.80/', 'Order subtotal is correct on cart page.');
 
@@ -122,4 +133,5 @@ class InclusiveTaxTest extends TaxTestBase {
     $this->drupalGet('admin/store/orders/' . $order_id . '/invoice');
     $this->assertText('$16.80' . $rate->inclusion_text, 'Tax inclusive price appears on the printable invoice.');
   }
+
 }
