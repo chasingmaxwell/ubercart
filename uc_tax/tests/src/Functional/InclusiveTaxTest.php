@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\uc_tax\Tests;
+namespace Drupal\Tests\uc_tax\Functional;
 
 use Drupal\node\Entity\Node;
 
 /**
  * Tests that inclusive taxes are calculated and displayed correctly.
  *
- * @group Ubercart
+ * @group ubercart
  */
 class InclusiveTaxTest extends TaxTestBase {
 
@@ -84,7 +84,7 @@ class InclusiveTaxTest extends TaxTestBase {
     $kit->kit_total = 9;
     $kit->save();
     $kit = Node::load($kit->id());
-    $this->assertEqual($kit->products[$product->id()]->discount, -1, 'Product kit component has correct discount applied.');
+    $this->assertEquals($kit->products[$product->id()]->discount, -1, 'Product kit component has correct discount applied.');
 
     // Ensure the price is displayed tax-inclusively on the add-to-cart form.
     $this->drupalGet('node/' . $kit->id());
@@ -98,14 +98,14 @@ class InclusiveTaxTest extends TaxTestBase {
     // Check that the subtotal is $16.80.
     // ($10 base + $5 option - $1 discount, with 20% tax.)
     $this->drupalGet('cart');
-    $this->assertTextPattern('/Subtotal:\s*\$16.80/', 'Order subtotal is correct on cart page.');
+    $this->assertSession()->pageTextMatches('/Subtotal:\s*\$16.80/', 'Order subtotal is correct on cart page.');
 
     // @todo: disable rest of test, see [#2306379]
     return;
 
     // Make sure that the subtotal is also correct on the checkout page.
     $this->drupalPostForm('cart', [], 'Checkout');
-    $this->assertTextPattern('/Subtotal:\s*\$16.80/', 'Order subtotal is correct on checkout page.');
+    $this->assertSession()->pageTextMatches('/Subtotal:\s*\$16.80/', 'Order subtotal is correct on checkout page.');
 
     // Manually proceed to checkout review.
     $edit = $this->populateCheckoutForm();
