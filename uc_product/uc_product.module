@@ -22,7 +22,9 @@ use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeInterface;
 use Drupal\node\NodeTypeInterface;
 use Drupal\node\Entity\Node;
+use Drupal\uc_cart\Entity\CartItem;
 use Drupal\uc_product\Event\ProductLoadEvent;
+use Drupal\uc_product\Form\AddToCartForm;
 
 /**
  * Implements hook_page_attachments().
@@ -275,7 +277,7 @@ function uc_product_view_product(array &$build, NodeInterface $node, EntityViewD
     // Build the 'add to cart' form, and use the updated variant based on data
     // provided by the form (e.g. attribute default options).
     if (\Drupal::moduleHandler()->moduleExists('uc_cart') && $variant->id() && empty($variant->data['display_only'])) {
-      $form_object = new \Drupal\uc_product\Form\AddToCartForm($node->id());
+      $form_object = new AddToCartForm($node->id());
       $add_to_cart_form = \Drupal::formBuilder()->getForm($form_object, $variant);
       if (\Drupal::config('uc_product.settings')->get('update_node_view')) {
         $variant = $add_to_cart_form['node']['#value'];
@@ -654,7 +656,7 @@ function uc_product_uc_update_cart_item($nid, $data = [], $qty, $cid = NULL) {
     ->execute();
 
   if (!empty($result)) {
-    $item = \Drupal\uc_cart\Entity\CartItem::load(current(array_keys($result)));
+    $item = CartItem::load(current(array_keys($result)));
     if ($item->qty->value != $qty) {
       $item->qty->value = $qty;
       $item->save();

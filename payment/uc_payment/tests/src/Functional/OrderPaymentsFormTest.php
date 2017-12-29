@@ -53,7 +53,7 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
 
     // Log in as admin user to test order payments form.
     $this->drupalLogin($this->adminUser);
-    /** @var \Drupal\Tests\WebAssert */
+    /** @var \Drupal\Tests\WebAssert $assert */
     $assert = $this->assertSession();
 
     // Goto order payments form and confirm order total and

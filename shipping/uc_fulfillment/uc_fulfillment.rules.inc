@@ -13,20 +13,20 @@ use Drupal\uc_store\Address;
 function uc_fulfillment_rules_data_info() {
   $address_info = uc_address_property_info();
 
-  $entities['uc_shipment'] = array(
+  $entities['uc_shipment'] = [
     'label' => t('Ubercart shipment object'),
     'group' => t('Ubercart'),
     'wrap' => TRUE,
-    'property info' => array(
-      'sid' => array(
+    'property info' => [
+      'sid' => [
         'type' => 'integer',
         'label' => t('Shipment ID'),
-      ),
-      'order_id' => array(
+      ],
+      'order_id' => [
         'type' => 'integer',
         'label' => t('Order ID'),
-      ),
-      'origin' => array(
+      ],
+      'origin' => [
         'type' => 'struct',
         'label' => t('Origin address'),
         'description' => t('The origin location for the shipment.'),
@@ -34,8 +34,8 @@ function uc_fulfillment_rules_data_info() {
         'setter callback' => 'uc_fulfillment_address_property_set',
         'setter permission' => 'fulfill orders',
         'property info' => $address_info,
-      ),
-      'destination' => array(
+      ],
+      'destination' => [
         'type' => 'struct',
         'label' => t('Destination address'),
         'description' => t('The destination location for the shipment.'),
@@ -43,115 +43,115 @@ function uc_fulfillment_rules_data_info() {
         'setter callback' => 'uc_fulfillment_address_property_set',
         'setter permission' => 'fulfill orders',
         'property info' => $address_info,
-      ),
-      'shipping_method' => array(
+      ],
+      'shipping_method' => [
         'type' => 'text',
         'label' => t('Shipping method'),
         'description' => t('The transportation method used to ship.'),
-      ),
-      'accessorials' => array(
+      ],
+      'accessorials' => [
         'type' => 'text',
         'label' => t('Accessorials'),
         'description' => t('Shipping options and special instructions.'),
-      ),
-      'carrier' => array(
+      ],
+      'carrier' => [
         'type' => 'text',
         'label' => t('Carrier'),
         'description' => t('The company making the delivery.'),
-      ),
-      'transaction_id' => array(
+      ],
+      'transaction_id' => [
         'type' => 'text',
         'label' => t('Transaction ID'),
         'description' => t("The carrier's shipment identifier."),
-      ),
-      'tracking_number' => array(
+      ],
+      'tracking_number' => [
         'type' => 'text',
         'label' => t('Tracking number'),
         'description' => t('The number used by the carrier to locate the shipment while it is in transit.'),
-      ),
-      'ship_date' => array(
+      ],
+      'ship_date' => [
         'type' => 'date',
         'label' => t('Ship date'),
         'description' => t('The time the shipment was sent out.'),
-      ),
-      'expected_delivery' => array(
+      ],
+      'expected_delivery' => [
         'type' => 'date',
         'label' => t('Expected delivery'),
         'description' => t('The time the shipment is expected to be delivered'),
-      ),
-      'cost' => array(
+      ],
+      'cost' => [
         'type' => 'decimal',
         'label' => t('Cost'),
         'description' => t('The cost of the shipment.'),
-      ),
-      'packages' => array(
+      ],
+      'packages' => [
         'type' => 'list<struct>',
         'label' => t('Packages'),
         'description' => t('The physical items being shipped.'),
-        'property info' => array(
-          'package_id' => array(
+        'property info' => [
+          'package_id' => [
             'type' => 'integer',
             'label' => t('Package ID'),
-          ),
-          'shipping_type' => array(
+          ],
+          'shipping_type' => [
             'type' => 'text',
             'label' => t('Shipping type'),
             'description' => t('The basic type of shipment, e.g.: small package, freight, etc.'),
-          ),
-          'pkg_type' => array(
+          ],
+          'pkg_type' => [
             'type' => 'text',
             'label' => t('Package type'),
             'description' => t('The type of packaging.'),
-          ),
-          'length' => array(
+          ],
+          'length' => [
             'type' => 'decimal',
             'label' => t('Length'),
             'description' => t('The package length.'),
-          ),
-          'width' => array(
+          ],
+          'width' => [
             'type' => 'decimal',
             'label' => t('Width'),
             'description' => t('The package width.'),
-          ),
-          'height' => array(
+          ],
+          'height' => [
             'type' => 'decimal',
             'label' => t('Height'),
             'description' => t('The package height.'),
-          ),
-          'value' => array(
+          ],
+          'value' => [
             'type' => 'decimal',
             'label' => t('Value'),
             'description' => t('The monetary value of the package contents.'),
-          ),
-          'tracking_number' => array(
+          ],
+          'tracking_number' => [
             'type' => 'text',
             'label' => t('Tracking number'),
             'description' => t('The number used by the carrier to locate the shipment while it is in transit.'),
-          ),
-          'description' => array(
+          ],
+          'description' => [
             'type' => 'text',
             'label' => t('Description'),
             'description' => t('The package description'),
-          ),
-          'weight' => array(
+          ],
+          'weight' => [
             'type' => 'decimal',
             'label' => t('Weight'),
             'description' => t('The physical weight of the package.'),
-          ),
-          'products' => array(
+          ],
+          'products' => [
             'type' => 'list<uc_order_product>',
             'label' => t('Products'),
             'description' => t('The package contents.'),
-          ),
-          'label_image' => array(
+          ],
+          'label_image' => [
             'type' => 'file',
             'label' => t('Label image'),
             'description' => t('An image of the shipping label.'),
-          ),
-        ),
-      ),
-    ),
-  );
+          ],
+        ],
+      ],
+    ],
+  ];
 
   return $entities;
 }

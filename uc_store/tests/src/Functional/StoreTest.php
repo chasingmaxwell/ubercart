@@ -13,7 +13,7 @@ class StoreTest extends UbercartBrowserTestBase {
    * Tests operation of store configuration page.
    */
   public function testStoreAdmin() {
-    /** @var \Drupal\Tests\WebAssert */
+    /** @var \Drupal\Tests\WebAssert $assert */
     $assert = $this->assertSession();
     $this->drupalLogin($this->adminUser);
 

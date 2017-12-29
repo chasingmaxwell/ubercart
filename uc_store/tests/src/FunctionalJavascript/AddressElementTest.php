@@ -83,6 +83,7 @@ class AddressElementTest extends JavascriptTestBase {
     // Go to the store settings page.
     $this->drupalGet('admin/store/config/store');
     $page = $this->getSession()->getPage();
+    /** @var \Drupal\Tests\WebAssert $assert */
     $assert = $this->assertSession();
 
     // Go to the store address tab.

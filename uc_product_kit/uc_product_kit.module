@@ -62,7 +62,7 @@ function uc_product_kit_form_node_type_form_alter(&$form, FormStateInterface $fo
 /**
  * Entity builder for the node type form with product kit options.
  *
- * @see uc_product_kit_form_node_type_form_alter().
+ * @see uc_product_kit_form_node_type_form_alter()
  */
 function uc_product_kit_form_node_type_form_builder($entity_type, NodeTypeInterface $type, &$form, FormStateInterface $form_state) {
   $type->setThirdPartySetting('uc_product_kit', 'mutable', $form_state->getValue(['uc_product', 'mutable']));
@@ -72,7 +72,7 @@ function uc_product_kit_form_node_type_form_builder($entity_type, NodeTypeInterf
  * Implements hook_form_FORM_ID_alter() for node_delete_confirm().
  */
 function uc_product_kit_form_node_delete_confirm_alter(&$form, FormStateInterface $form_state) {
-  if (uc_product_is_product((integer)$form['nid']['#value'])) {
+  if (uc_product_is_product((integer) $form['nid']['#value'])) {
     $kits = db_query('SELECT COUNT(k.nid) FROM {node} n JOIN {uc_product_kits} k ON n.vid = k.vid WHERE k.vid IN (SELECT DISTINCT vid FROM {uc_product_kits} WHERE product_id = :nid) GROUP BY k.nid HAVING COUNT(product_id) = 1', [':nid' => $form['nid']['#value']])->fetchField();
 
     if ($kits) {
@@ -167,9 +167,6 @@ function uc_product_kit_node_prepare_form(NodeInterface $node, $operation, FormS
  * Adds a row to {uc_products} to make a product. Extra information about the
  * component products are stored in {uc_product_kits}.
  *
- * @param $node
- *   The node object being saved.
- *
  * @see uc_product_node_insert()
  */
 function uc_product_kit_node_insert($node) {
@@ -239,9 +236,6 @@ function uc_product_kit_node_insert($node) {
  *
  * Also ensures product kit discounts are updated if their component nodes are
  * updated or deleted.
- *
- * @param $node
- *   The node to be updated.
  *
  * @see uc_product_node_update()
  */
@@ -506,7 +500,7 @@ function uc_product_kit_module_implements_alter(&$implementations, $hook) {
   if ($hook == 'uc_product_alter') {
     $group = $implementations['uc_product_kit'];
     unset($implementations['uc_product_kit']);
-    $implementations =  ['uc_product_kit' => $group] + $implementations;
+    $implementations = ['uc_product_kit' => $group] + $implementations;
   }
 }
 
@@ -875,9 +869,9 @@ function uc_product_kit_uc_product_alter(&$variant) {
  *
  * The hookups for making product kits work on the order edit admin screen.
  *
- * @param $product
+ * @param \Drupal\uc_order\OrderProductInterface $product
  *   The order product being saved.
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   The order being edited.
  */
 function uc_product_kit_uc_order_product_alter(OrderProductInterface &$product, OrderInterface $order) {
@@ -916,7 +910,7 @@ function uc_product_kit_uc_order_product_alter(OrderProductInterface &$product, 
  * @param $item
  *   An item in the shopping cart.
  *
- * @return
+ * @return array
  *   A form element array to be processed by the cart form().
  */
 function uc_product_kit_uc_cart_display($item) {
@@ -948,8 +942,9 @@ function uc_product_kit_uc_cart_display($item) {
       $element['#total'] = 0;
       $element['#suffixes'] = [];
       $element['#extra'] = [];
-      $element['#entity'] = $kit; // Override the entity associated with this
-                                  // render-array to be the kit itself.
+      // Override the entity associated with this render array
+      // to be the kit itself.
+      $element['#entity'] = $kit;
       $elements[$unique_id] = $element;
     }
 
@@ -1005,7 +1000,7 @@ function uc_product_kit_uc_cart_display($item) {
  *
  * Handles individual products or entire kits.
  */
-function uc_product_kit_uc_update_cart_item($nid, $data = [], $qty, $cid = NULL) {
+function uc_product_kit_uc_update_cart_item($nid, array $data = [], $qty, $cid = NULL) {
   if (isset($data['kit_id'])) {
     // Product was listed individually.
     uc_product_uc_update_cart_item($nid, $data, $qty, $cid);

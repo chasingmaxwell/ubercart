@@ -54,6 +54,7 @@ class CatalogBlockTest extends CatalogTestBase {
 
     // Test the catalog block with one product.
     $this->drupalGet('');
+    /** @var \Drupal\Tests\WebAssert $assert */
     $assert = $this->assertSession();
     // If the block is present, we should see both
     // the block title and the term title.
@@ -73,6 +74,7 @@ class CatalogBlockTest extends CatalogTestBase {
   public function testTitleLink() {
     // Title link is turned off by default.
     $this->drupalGet('');
+    /** @var \Drupal\Tests\WebAssert $assert */
     $assert = $this->assertSession();
     $assert->pageTextContains($this->block->label());
     $assert->linkNotExists($this->block->label(), 0, 'The block title is not a link.');
@@ -111,6 +113,7 @@ class CatalogBlockTest extends CatalogTestBase {
 
     // Categories are not expanded by default.
     $this->drupalGet('');
+    /** @var \Drupal\Tests\WebAssert $assert */
     $assert = $this->assertSession();
     $assert->pageTextContains($parent->label());
     $assert->linkExists($parent->label() . ' (2)', 0, 'Product count is shown for top-level term.');
