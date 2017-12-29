@@ -84,6 +84,7 @@ class StoreSettingsForm extends ConfigFormBase {
     ];
     $form['address']['address'] = [
       '#type' => 'uc_address',
+      '#hide' => ['first_name', 'last_name', 'company', 'email'],
       '#default_value' => $config->get('address'),
       '#required' => FALSE,
     ];
