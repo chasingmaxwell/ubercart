@@ -8,12 +8,16 @@ use Drupal\FunctionalJavascriptTests\JavascriptTestBase;
 use Drupal\uc_country\Entity\Country;
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_order\Entity\OrderProduct;
+use Drupal\Tests\uc_attribute\Traits\AttributeTestTrait;
+use Drupal\Tests\uc_product\Traits\ProductTestTrait;
 
 /**
  * Base class for Ubercart PHPUnit browser tests.
  */
 abstract class UbercartJavascriptTestBase extends JavascriptTestBase {
   use AssertMailTrait;
+  use AttributeTestTrait;
+  use ProductTestTrait;
 
   /**
    * The profile to install as a basis for testing.
@@ -114,142 +118,10 @@ abstract class UbercartJavascriptTestBase extends JavascriptTestBase {
   }
 
   /**
-   * Creates a new product.
-   *
-   * @param array $product
-   *   (optional) An associative array of product fields to change from the
-   *   defaults, keys are product field names. For example, 'price' => '12.34'.
-   *
-   * @return \Drupal\node\NodeInterface
-   *   Product node object.
-   */
-  protected function createProduct(array $product = []) {
-    // Set the default required fields.
-    $weight_units = ['lb', 'kg', 'oz', 'g'];
-    $length_units = ['in', 'ft', 'cm', 'mm'];
-    $product += [
-      'type' => 'product',
-      'model' => $this->randomMachineName(8),
-      'cost' => mt_rand(1, 9999),
-      'price' => mt_rand(1, 9999),
-      'weight' => [
-        0 => [
-          'value' => mt_rand(1, 9999),
-          'units' => array_rand(array_flip($weight_units)),
-        ],
-      ],
-      'dimensions' => [
-        0 => [
-          'length' => mt_rand(1, 9999),
-          'width' => mt_rand(1, 9999),
-          'height' => mt_rand(1, 9999),
-          'units' => array_rand(array_flip($length_units)),
-        ],
-      ],
-      'pkg_qty' => mt_rand(1, 99),
-      'default_qty' => 1,
-      'shippable' => 1,
-    ];
-
-    $product['model'] = [['value' => $product['model']]];
-    $product['price'] = [['value' => $product['price']]];
-
-    return $this->drupalCreateNode($product);
-  }
-
-  /**
-   * Creates an attribute.
-   *
-   * @param array $data
-   *   (optional) An associative array of attribute initialization data.
-   * @param bool $save
-   *   If TRUE, save attribute in database.
-   *
-   * @return array
-   *   Associative array of attribute data.
-   */
-  protected function createAttribute(array $data = [], $save = TRUE) {
-    $attribute = $data + [
-      'name' => $this->randomMachineName(8),
-      'label' => $this->randomMachineName(8),
-      'description' => $this->randomMachineName(8),
-      'required' => mt_rand(0, 1) ? TRUE : FALSE,
-      'display' => mt_rand(0, 3),
-      'ordering' => mt_rand(-10, 10),
-    ];
-    $attribute = (object) $attribute;
-
-    if ($save) {
-      uc_attribute_save($attribute);
-    }
-    return $attribute;
-  }
-
-  /**
-   * Creates an attribute option.
-   *
-   * @param array $data
-   *   Array containing attribute data, with keys corresponding to the
-   *   columns of the {uc_attribute} table.
-   * @param bool $save
-   *   If TRUE, save attribute option in database.
-   *
-   * @return array
-   *   Associative array of attribute option data.
-   */
-  protected function createAttributeOption(array $data = [], $save = TRUE) {
-    $max_aid = db_select('uc_attributes', 'a')
-      ->fields('a', ['aid'])
-      ->orderBy('aid', 'DESC')
-      ->range(0, 1)
-      ->execute()
-      ->fetchField();
-    $option = $data + [
-      'aid' => $max_aid,
-      'name' => $this->randomMachineName(8),
-      'cost' => mt_rand(-500, 500),
-      'price' => mt_rand(-500, 500),
-      'weight' => mt_rand(-500, 500),
-      'ordering' => mt_rand(-10, 10),
-    ];
-    $option = (object) $option;
-
-    if ($save) {
-      uc_attribute_option_save($option);
-    }
-    return $option;
-  }
-
-  /**
    * Adds a product to the cart.
    */
   protected function addToCart($product, array $options = []) {
     $this->drupalPostForm('node/' . $product->id(), $options, 'Add to cart');
-  }
-
-  /**
-   * Creates a new product class.
-   *
-   * Fix this after adding a proper API call for saving a product class.
-   *
-   * @param array $data
-   *   (optional) An associative array with possible keys of 'type', 'name',
-   *   and 'description' to initialize the product class.
-   *
-   * @return \Drupal\node\NodeInterface
-   *   Product node object.
-   */
-  protected function createProductClass(array $data = []) {
-    $class = strtolower($this->randomMachineName(12));
-    $edit = $data + [
-      'type' => $class,
-      'name' => $class,
-      'description' => $this->randomMachineName(32),
-      'uc_product[product]' => TRUE,
-    ];
-    $this->drupalPostForm('admin/structure/types/add', $edit, 'Save content type');
-
-    return node_type_load($class);
   }
 
   /**

@@ -6,6 +6,10 @@ use Drupal\uc_store\Address;
 
 /**
  * Utility functions to provide addresses for test purposes.
+ *
+ * This trait can only be used in classes which already use
+ * RandomGeneratorTrait. RandomGeneratorTrait is used in all
+ * the PHPUnit and Simpletest base classes.
  */
 trait AddressTestTrait {
 

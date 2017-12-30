@@ -8,12 +8,16 @@ use Drupal\Tests\BrowserTestBase;
 use Drupal\uc_country\Entity\Country;
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_order\Entity\OrderProduct;
+use Drupal\Tests\uc_attribute\Traits\AttributeTestTrait;
+use Drupal\Tests\uc_product\Traits\ProductTestTrait;
 
 /**
  * Base class for Ubercart PHPUnit browser tests.
  */
 abstract class UbercartBrowserTestBase extends BrowserTestBase {
   use AssertMailTrait;
+  use AttributeTestTrait;
+  use ProductTestTrait;
 
   /**
    * The profile to install as a basis for testing.
@@ -113,142 +117,10 @@ abstract class UbercartBrowserTestBase extends BrowserTestBase {
   }
 
   /**
-   * Creates a new product.
-   *
-   * @param array $product
-   *   (optional) An associative array of product fields to change from the
-   *   defaults, keys are product field names. For example, 'price' => '12.34'.
-   *
-   * @return \Drupal\node\NodeInterface
-   *   Product node object.
-   */
-  protected function createProduct(array $product = []) {
-    // Set the default required fields.
-    $weight_units = ['lb', 'kg', 'oz', 'g'];
-    $length_units = ['in', 'ft', 'cm', 'mm'];
-    $product += [
-      'type' => 'product',
-      'model' => $this->randomMachineName(8),
-      'cost' => mt_rand(1, 9999),
-      'price' => mt_rand(1, 9999),
-      'weight' => [
-        0 => [
-          'value' => mt_rand(1, 9999),
-          'units' => array_rand(array_flip($weight_units)),
-        ],
-      ],
-      'dimensions' => [
-        0 => [
-          'length' => mt_rand(1, 9999),
-          'width' => mt_rand(1, 9999),
-          'height' => mt_rand(1, 9999),
-          'units' => array_rand(array_flip($length_units)),
-        ],
-      ],
-      'pkg_qty' => mt_rand(1, 99),
-      'default_qty' => 1,
-      'shippable' => 1,
-    ];
-
-    $product['model'] = [['value' => $product['model']]];
-    $product['price'] = [['value' => $product['price']]];
-
-    return $this->drupalCreateNode($product);
-  }
-
-  /**
-   * Creates an attribute.
-   *
-   * @param array $data
-   *   (optional) An associative array of attribute initialization data.
-   * @param bool $save
-   *   If TRUE, save attribute in database.
-   *
-   * @return array
-   *   Associative array of attribute data.
-   */
-  protected function createAttribute(array $data = [], $save = TRUE) {
-    $attribute = $data + [
-      'name' => $this->randomMachineName(8),
-      'label' => $this->randomMachineName(8),
-      'description' => $this->randomMachineName(8),
-      'required' => mt_rand(0, 1) ? TRUE : FALSE,
-      'display' => mt_rand(0, 3),
-      'ordering' => mt_rand(-10, 10),
-    ];
-    $attribute = (object) $attribute;
-
-    if ($save) {
-      uc_attribute_save($attribute);
-    }
-    return $attribute;
-  }
-
-  /**
-   * Creates an attribute option.
-   *
-   * @param array $data
-   *   Array containing attribute data, with keys corresponding to the
-   *   columns of the {uc_attribute} table.
-   * @param bool $save
-   *   If TRUE, save attribute option in database.
-   *
-   * @return array
-   *   Associative array of attribute option data.
-   */
-  protected function createAttributeOption(array $data = [], $save = TRUE) {
-    $max_aid = db_select('uc_attributes', 'a')
-      ->fields('a', ['aid'])
-      ->orderBy('aid', 'DESC')
-      ->range(0, 1)
-      ->execute()
-      ->fetchField();
-    $option = $data + [
-      'aid' => $max_aid,
-      'name' => $this->randomMachineName(8),
-      'cost' => mt_rand(-500, 500),
-      'price' => mt_rand(-500, 500),
-      'weight' => mt_rand(-500, 500),
-      'ordering' => mt_rand(-10, 10),
-    ];
-    $option = (object) $option;
-
-    if ($save) {
-      uc_attribute_option_save($option);
-    }
-    return $option;
-  }
-
-  /**
    * Adds a product to the cart.
    */
   protected function addToCart($product, array $options = []) {
     $this->drupalPostForm('node/' . $product->id(), $options, 'Add to cart');
-  }
-
-  /**
-   * Creates a new product class.
-   *
-   * Fix this after adding a proper API call for saving a product class.
-   *
-   * @param array $data
-   *   (optional) An associative array with possible keys of 'type', 'name',
-   *   and 'description' to initialize the product class.
-   *
-   * @return \Drupal\node\NodeInterface
-   *   Product node object.
-   */
-  protected function createProductClass(array $data = []) {
-    $class = strtolower($this->randomMachineName(12));
-    $edit = $data + [
-      'type' => $class,
-      'name' => $class,
-      'description' => $this->randomMachineName(32),
-      'uc_product[product]' => TRUE,
-    ];
-    $this->drupalPostForm('admin/structure/types/add', $edit, 'Save content type');
-
-    return node_type_load($class);
   }
 
   /**
@@ -438,80 +310,6 @@ abstract class UbercartBrowserTestBase extends BrowserTestBase {
       $message = SafeMarkup::format('Expected text not found in @field of email message: "@expected".', ['@field' => $field_name, '@expected' => $string]);
     }
     return $this->assertFalse($string_found, $message, $group);
-  }
-
-  /**
-   * Enhances WebTestBase::drupalPostAjaxForm().
-   *
-   * Extends WebTestBase::drupalPostAjaxForm() to replace additional content
-   * on the page after an ajax submission.
-   *
-   * WebTestBase::drupalPostAjaxForm() will only process ajax insertions which
-   * don't have a 'selector' attribute, because it's not easy to convert from a
-   * jQuery selector to an XPath. However, Ubercart uses many simple, id-based
-   * selectors, and these can be converted easily
-   * (eg: '#my-identifier' => '//*[@id="my-identifier"]').
-   *
-   * This helper method post-processes the command array returned by
-   * drupalPostAjaxForm() to perform these insertions.
-   *
-   * @see WebTestBase::drupalPostAjaxForm()
-   */
-  protected function ucPostAjax($path, $edit, $triggering_element, $ajax_path = NULL, array $options = [], array $headers = [], $form_html_id = NULL, $ajax_settings = NULL) {
-    $commands = parent::drupalPostAjaxForm($path, $edit, $triggering_element, $ajax_path, $options, $headers, $form_html_id, $ajax_settings);
-    $dom = new \DOMDocument();
-    @$dom->loadHTML($this->getRawContent());
-    foreach ($commands as $command) {
-      if ($command['command'] == 'insert' && isset($command['selector']) && preg_match('/^\#-?[_a-zA-Z]+[_a-zA-Z0-9-]*$/', $command['selector'])) {
-        $xpath = new \DOMXPath($dom);
-        $wrapperNode = $xpath->query('//*[@id="' . substr($command['selector'], 1) . '"]')->item(0);
-        if ($wrapperNode) {
-          // ajax.js adds an enclosing DIV to work around a Safari bug.
-          $newDom = new \DOMDocument();
-          @$newDom->loadHTML('<div>' . $command['data'] . '</div>');
-          $newNode = $dom->importNode($newDom->documentElement->firstChild->firstChild, TRUE);
-          $method = isset($command['method']) ? $command['method'] : $ajax_settings['method'];
-          // The "method" is a jQuery DOM manipulation function. Emulate
-          // each one using PHP's DOMNode API.
-          switch ($method) {
-            case 'replaceWith':
-              $wrapperNode->parentNode->replaceChild($newNode, $wrapperNode);
-              break;
-
-            case 'append':
-              $wrapperNode->appendChild($newNode);
-              break;
-
-            case 'prepend':
-              // If no firstChild, insertBefore() falls back to
-              // appendChild().
-              $wrapperNode->insertBefore($newNode, $wrapperNode->firstChild);
-              break;
-
-            case 'before':
-              $wrapperNode->parentNode->insertBefore($newNode, $wrapperNode);
-              break;
-
-            case 'after':
-              // If no nextSibling, insertBefore() falls back to
-              // appendChild().
-              $wrapperNode->parentNode->insertBefore($newNode, $wrapperNode->nextSibling);
-              break;
-
-            case 'html':
-              foreach ($wrapperNode->childNodes as $childNode) {
-                $wrapperNode->removeChild($childNode);
-              }
-              $wrapperNode->appendChild($newNode);
-              break;
-          }
-        }
-      }
-    }
-    $content = $dom->saveHTML();
-    $this->setRawContent($content);
-    $this->verbose('Page content after ajax submission:<hr />' . $this->content);
-    return $commands;
   }
 
 }
