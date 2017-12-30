@@ -95,17 +95,17 @@ class DownloadController extends ControllerBase {
    */
   public function userDownloads(AccountInterface $user) {
     // Create a header and the pager it belongs to.
-    $header = array(
-      array('data' => $this->t('Purchased'  ), 'field' => 'u.granted', 'sort' => 'desc'),
-      array('data' => $this->t('Filename'   ), 'field' => 'f.filename'),
-      array('data' => $this->t('Description'), 'field' => 'p.description'),
-      array('data' => $this->t('Downloads'  ), 'field' => 'u.accessed'),
-      array('data' => $this->t('Addresses'  )),
-    );
+    $header = [
+      ['data' => $this->t('Purchased'  ), 'field' => 'u.granted', 'sort' => 'desc'],
+      ['data' => $this->t('Filename'   ), 'field' => 'f.filename'],
+      ['data' => $this->t('Description'), 'field' => 'p.description'],
+      ['data' => $this->t('Downloads'  ), 'field' => 'u.accessed'],
+      ['data' => $this->t('Addresses'  )],
+    ];
 
     $build['#title'] = $this->t('File downloads');
 
-    $files = array();
+    $files = [];
 
     $query = $this->database->select('uc_file_users', 'u')
       ->extend('Drupal\Core\Database\Query\PagerSelectExtender')
@@ -115,7 +115,7 @@ class DownloadController extends ControllerBase {
       ->limit(UC_FILE_PAGER_SIZE);
     $query->leftJoin('uc_files', 'f', 'u.fid = f.fid');
     $query->leftJoin('uc_file_products', 'p', 'p.pfid = u.pfid');
-    $query->fields('u', array(
+    $query->fields('u', [
         'granted',
         'accessed',
         'addresses',
@@ -123,12 +123,12 @@ class DownloadController extends ControllerBase {
         'download_limit',
         'address_limit',
         'expiration',
-      ))
-      ->fields('f', array(
+      ])
+      ->fields('f', [
         'filename',
         'fid',
-      ))
-      ->fields('p', array('description'));
+      ])
+      ->fields('p', ['description']);
 
     $count_query = $this->database->select('uc_file_users')
       ->condition('uid', $user->id());
@@ -144,13 +144,14 @@ class DownloadController extends ControllerBase {
       $download_limit = $file->download_limit;
 
       // Set the JS behavior when this link gets clicked.
-      $onclick = array(
-        'attributes' => array(
-          'onclick' => 'Drupal.behaviors.ucFileUpdateDownload(' . $row . ', ' . $file->accessed . ', ' . ((empty($download_limit)) ? -1 : $download_limit) . ');', 'id' => 'link-' . $row
-        ),
-      );
+      $onclick = [
+        'attributes' => [
+          'onclick' => 'Drupal.behaviors.ucFileUpdateDownload(' . $row . ', ' . $file->accessed . ', ' . ((empty($download_limit)) ? -1 : $download_limit) . ');',
+          'id' => 'link-' . $row,
+        ],
+      ];
 
-      // Expiration set to 'never'
+      // Expiration set to 'never'.
       if ($file->expiration == FALSE) {
         $file_link = Link::createFromRoute(\Drupal::service('file_system')->basename($file->filename), 'uc_file.download_file', ['file' => $file->fid], $onclick)->toString();
       }
@@ -165,7 +166,7 @@ class DownloadController extends ControllerBase {
         $file_link = Link::createFromRoute(\Drupal::service('file_system')->basename($file->filename), 'uc_file.download_file', ['file' => $file->fid], $onclick)->toString() . ' (' . $this->t('expires on @date', ['@date' => \Drupal::service('date.formatter')->format($file->expiration, 'uc_store')]) . ')';
       }
 
-      $files[] = array(
+      $files[] = [
         'granted' => $file->granted,
         'link' => $file_link,
         'description' => $file->description,
@@ -173,15 +174,15 @@ class DownloadController extends ControllerBase {
         'download_limit' => $file->download_limit,
         'addresses' => $file->addresses,
         'address_limit' => $file->address_limit,
-      );
+      ];
       $row++;
     }
 
-    $build['downloads'] = array(
+    $build['downloads'] = [
       '#theme' => 'uc_file_user_downloads',
       '#header' => $header,
       '#files' => $files,
-    );
+    ];
 
     if (\Drupal::currentUser()->hasPermission('administer users')) {
       $build['admin'] = $this->formBuilder()->getForm('Drupal\uc_file\Form\UserForm', $user);
@@ -212,8 +213,6 @@ class DownloadController extends ControllerBase {
    *
    * @param int $fid
    *   The fid of the file specified to download.
-   * @param string $key
-   *   The hash key of a user's download.
    * @param \Symfony\Component\HttpFoundation\Request $request
    *   The request of the page.
    */
@@ -222,7 +221,7 @@ class DownloadController extends ControllerBase {
 
     // Error messages for various failed download states.
     $admin_message = $this->t('Please contact the site administrator if this message has been received in error.');
-    $error_messages = array(
+    $error_messages = [
       UC_FILE_ERROR_NOT_A_FILE              => $this->t('The file you requested does not exist.'),
       UC_FILE_ERROR_TOO_MANY_BOGUS_REQUESTS => $this->t('You have attempted to download an incorrect file URL too many times.'),
       UC_FILE_ERROR_INVALID_DOWNLOAD        => $this->t('The following URL is not a valid download link.') . ' ',
@@ -230,7 +229,7 @@ class DownloadController extends ControllerBase {
       UC_FILE_ERROR_TOO_MANY_DOWNLOADS      => $this->t('You have reached the download limit for this file.'),
       UC_FILE_ERROR_EXPIRED                 => $this->t('This file download has expired.') . ' ',
       UC_FILE_ERROR_HOOK_ERROR              => $this->t('A hook denied your access to this file.') . ' ',
-    );
+    ];
 
     $ip = $request->getClientIp();
     if ($user->hasPermission('view all downloads')) {
@@ -274,10 +273,13 @@ class DownloadController extends ControllerBase {
    * limits then checks for any implementation of hook_uc_download_authorize().
    * Passing that, the function $this->transferDownload() is called.
    *
-   * @param int $fid
-   *   The fid of the file specified to download.
-   * @param string $key
-   *   The hash key of a user's download.
+   * @param $file_download
+   *   A stdClass object representing a file, with properties equal to the
+   *   columns of {uc_files} table.
+   * @param \Drupal\Core\Session\AccountInterface $user
+   *   The user account entity requesting the download.
+   * @param string $ip
+   *   The IP address requesting the download.
    */
   protected function validateDownload($file_download, &$user, $ip) {
 
@@ -327,7 +329,7 @@ class DownloadController extends ControllerBase {
       return UC_FILE_ERROR_EXPIRED;
     }
 
-    // Check any if any hook_uc_download_authorize() calls deny the download
+    // Check any if any hook_uc_download_authorize() calls deny the download.
     $module_handler = $this->moduleHandler();
     foreach ($module_handler->getImplementations('uc_download_authorize') as $module) {
       $name = $module . '_uc_download_authorize';
@@ -371,7 +373,7 @@ class DownloadController extends ControllerBase {
 
     // Workaround for IE filename bug with multiple periods / multiple dots
     // in filename that adds square brackets to filename -
-    // eg. setup.abc.exe becomes setup[1].abc.exe
+    // eg. setup.abc.exe becomes setup[1].abc.exe.
     if (strstr($_SERVER['HTTP_USER_AGENT'], 'MSIE')) {
       $filename = preg_replace('/\./', '%2e', $filename, substr_count($filename, '.') - 1);
     }
@@ -389,7 +391,6 @@ class DownloadController extends ControllerBase {
         $response->headers->set('Status', '416 Requested Range Not Satisfiable');
         $response->headers->set('Content-Range', 'bytes */' . $size);
         return $response;
-        ;
       }
     }
 
@@ -409,7 +410,7 @@ class DownloadController extends ControllerBase {
       $response->headers->set('Status', '206 Partial Content');
     }
 
-    // Standard headers, including content-range and length
+    // Standard headers, including content-range and length.
     $response->headers->set('Pragma', 'public');
     $response->headers->set('Cache-Control', 'cache, must-revalidate');
     $response->headers->set('Accept-Ranges', 'bytes');
@@ -440,8 +441,8 @@ class DownloadController extends ControllerBase {
 
       // Suppress PHP notice that occurs when output buffering isn't enabled.
       // The ob_flush() is needed because if output buffering *is* enabled,
-      // clicking on the file download link won't download anything if the buffer
-      // isn't flushed.
+      // clicking on the file download link won't download anything if the
+      // buffer isn't flushed.
       @ob_flush();
     }
 
@@ -457,7 +458,9 @@ class DownloadController extends ControllerBase {
    * Processes a file download.
    *
    * @param $file_user
+   *   The user that requested the download.
    * @param string $ip
+   *   The IP address that requested the download.
    */
   protected function logDownload($file_user, $ip) {
 
@@ -471,7 +474,7 @@ class DownloadController extends ControllerBase {
     // Accessed again.
     $file_user->accessed++;
 
-    // Calculate hash
+    // Calculate hash.
     $file_user->file_key = \Drupal::csrfToken()->get(serialize($file_user));
 
     $key = NULL;
@@ -490,6 +493,7 @@ class DownloadController extends ControllerBase {
    * Send 'em packin.
    *
    * @param int $uid
+   *   The user id.
    */
   protected function redirectDownload($uid = NULL) {
 

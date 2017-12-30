@@ -4,7 +4,7 @@
  * @file
  * Allows products to be associated with downloadable files.
  *
- * uc_file allows ubercart products to have associated downloadable files.
+ * This module allows Ubercart products to have associated downloadable files.
  * Optionally, after a customer purchases such a product they will be sent a
  * download link via email. Additionally, after logging on a customer can
  * download files via their account page. Optionally, an admininstrator can set
@@ -329,19 +329,19 @@ function _uc_file_accumulate_limits(&$file_user, $file_limits, $force_overwrite)
  *
  * $file_limits['time_polarity'] is either '+' or '-', indicating whether to
  * add or subtract the amount of time. $file_limits['time_granularity'] is a
- * unit of time like 'day', 'week', or 'never'.  $file_limits['time_quantity']
+ * unit of time like 'day', 'week', or 'never'. $file_limits['time_quantity']
  * is an amount of the previously mentioned unit... e.g.
  * $file_limits = ['time_polarity => '+', 'time_granularity' => 'day',
  * 'time_quantity' => 4]; would read "4 days in the future."
  *
- * @param $file_limits
+ * @param array $file_limits
  *   A keyed array containing the fields time_polarity, time_quantity,
  *   and time_granularity.
  *
- * @return
+ * @return int
  *   A UNIX timestamp representing the amount of time the limits apply.
  */
-function _uc_file_expiration_date($file_limits, $timestamp) {
+function _uc_file_expiration_date(array $file_limits, $timestamp) {
   // Never expires.
   if ($file_limits['time_granularity'] == 'never') {
     return NULL;
@@ -478,13 +478,13 @@ function uc_file_refresh() {
  * products, product features, and users will be deleted, as well as the
  * uc_file db entries.
  *
- * @param $fid
+ * @param int $fid
  *   An Ubercart file id.
- * @param $recur
+ * @param bool $recur
  *   Whether or not all files below this (if it's a directory) should be
  *   deleted as well.
  *
- * @return
+ * @return bool
  *   A boolean stating whether or not all requested operations succeeded.
  */
 function uc_file_remove_by_id($fid, $recur) {
@@ -545,12 +545,12 @@ function uc_file_remove_by_id($fid, $recur) {
 /**
  * Returns a list of file ids that are in the directory.
  *
- * @param $fid
+ * @param int $fid
  *   The file id associated with the directory.
- * @param $recursive
+ * @param bool $recursive
  *   Whether or not to list recursive directories and their files.
  *
- * @return
+ * @return array|false
  *   If there are files in the directory, returns an array of file ids.
  *   Else returns FALSE.
  */
@@ -604,13 +604,13 @@ function _uc_file_sort_by_name($l, $r) {
 /**
  * Takes a list of file ids and sort the list by the associated filenames.
  *
- * @param $fids
+ * @param $fids array
  *   The array of file ids.
  *
- * @return
+ * @return array
  *   The sorted array of file ids.
  */
-function _uc_file_sort_names($fids) {
+function _uc_file_sort_names(array $fids) {
 
   $result = $aggregate = [];
 
@@ -631,13 +631,13 @@ function _uc_file_sort_names($fids) {
 /**
  * Takes a list of file ids and sort the list in descending order.
  *
- * @param $fids
+ * @param array $fids
  *   The array of file ids.
  *
- * @return
+ * @return array
  *   The sorted array of file ids.
  */
-function _uc_file_sort_fids($fids) {
+function _uc_file_sort_fids(array $fids) {
 
   $dir_fids = [];
   $output = [];
@@ -775,7 +775,7 @@ function &uc_file_get_by_name($filename) {
 /**
  * Retrieves a file by file ID.
  *
- * @param $fid
+ * @param int $fid
  *   A file ID.
  *
  * @return
@@ -816,9 +816,9 @@ function &uc_file_get_by_key($key) {
 /**
  * Retrieves a file by user ID.
  *
- * @param $uid
+ * @param int $uid
  *   A user ID.
- * @param $fid
+ * @param int $fid
  *   A file ID.
  *
  * @return
@@ -855,7 +855,7 @@ function &uc_file_get_by_uid($uid, $fid) {
  *   A file ID.
  * @param \Drupal\Core\Session\AccountInterface $user
  *   A Drupal user object.
- * @param $pfid
+ * @param int $pfid
  *   An Ubercart product feature ID.
  * @param $file_limits
  *   The limits inherited from this file.
@@ -954,7 +954,7 @@ function _uc_file_user_get(AccountInterface $user, $fid) {
  * @param $file
  *   A uc_file_products object.
  *
- * @return
+ * @return int
  *   The maximum number of downloads.
  */
 function uc_file_get_download_limit($file) {
@@ -976,7 +976,7 @@ function uc_file_get_download_limit($file) {
  * @param $file
  *   A uc_file_products object.
  *
- * @return
+ * @return int
  *   The maximum number of locations.
  */
 function uc_file_get_address_limit($file) {
@@ -998,7 +998,7 @@ function uc_file_get_address_limit($file) {
  * @param $file
  *   A uc_file_products object.
  *
- * @return
+ * @return array
  *   An array with entries for the granularity and quantity.
  */
 function uc_file_get_time_limit($file) {

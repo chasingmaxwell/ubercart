@@ -7,6 +7,9 @@ use Drupal\Component\Utility\Unicode;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Utility functions for autocompleting file download filenames.
+ */
 class FileAutocompleteController {
 
   /**

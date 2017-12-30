@@ -42,7 +42,7 @@ class OrderViewsData extends EntityViewsData {
 
     $data['uc_orders']['billing_country_name'] = [
       'title' => $this->t('Billing country name'),
-      'help' =>  $this->t('The country name where the bill will be sent.'),
+      'help' => $this->t('The country name where the bill will be sent.'),
       'field' => [
         'id' => 'uc_country',
         'real field' => 'billing_country',
@@ -51,7 +51,7 @@ class OrderViewsData extends EntityViewsData {
 
     $data['uc_orders']['delivery_country_name'] = [
       'title' => $this->t('Delivery country name'),
-      'help' =>  $this->t('The country name of the delivery location.'),
+      'help' => $this->t('The country name of the delivery location.'),
       'field' => [
         'id' => 'uc_country',
         'real field' => 'delivery_country',
@@ -65,13 +65,13 @@ class OrderViewsData extends EntityViewsData {
 
     $data['uc_orders']['billing_zone_name'] = [
       'title' => $this->t('Billing state/province name'),
-      'help' =>  $this->t('The state/zone/province ID where the bill will be sent.'),
+      'help' => $this->t('The state/zone/province ID where the bill will be sent.'),
       'field' => [
         'id' => 'uc_zone',
         'real field' => 'billing_zone',
         'additional fields' => [
           'country' => [
-            'field' => 'billing_country'
+            'field' => 'billing_country',
           ],
         ],
       ],
@@ -79,13 +79,13 @@ class OrderViewsData extends EntityViewsData {
 
     $data['uc_orders']['delivery_zone_name'] = [
       'title' => $this->t('Delivery state/province name'),
-      'help' =>  $this->t('The state/zone/province ID of the delivery location.'),
+      'help' => $this->t('The state/zone/province ID of the delivery location.'),
       'field' => [
         'id' => 'uc_zone',
         'real field' => 'delivery_zone',
         'additional fields' => [
           'country' => [
-            'field' => 'delivery_country'
+            'field' => 'delivery_country',
           ],
         ],
       ],
@@ -99,7 +99,7 @@ class OrderViewsData extends EntityViewsData {
         'real field' => 'billing_first_name',
         'additional fields' => [
           'last_name' => [
-            'field' => 'billing_last_name'
+            'field' => 'billing_last_name',
           ],
         ],
       ],
@@ -113,7 +113,7 @@ class OrderViewsData extends EntityViewsData {
         'real field' => 'delivery_first_name',
         'additional fields' => [
           'last_name' => [
-            'field' => 'delivery_last_name'
+            'field' => 'delivery_last_name',
           ],
         ],
       ],
@@ -154,7 +154,7 @@ class OrderViewsData extends EntityViewsData {
     //     unset($data['uc_order_products'][$bad_field]);
     //   }
     // }
-    // // Fix incomplete fields
+    // // Fix incomplete fields.
     // $data['uc_order_products']['weight_units']['title'] = $this->t('Weight units');
 
     $data['uc_order_products']['table']['group'] = $this->t('Ordered product');
@@ -391,7 +391,7 @@ class OrderViewsData extends EntityViewsData {
     // the views cache will have to be rebuilt
     // Although new line items views support should be defined on each module,
     // I don't think this wider apporach would harm. At most, it will duplicate
-    // line items
+    // line items.
     $line_items = [];
     $definitions = \Drupal::service('plugin.manager.uc_order.line_item')->getDefinitions();
     foreach ($definitions as $line_item) {

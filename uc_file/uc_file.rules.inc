@@ -5,6 +5,8 @@
  * Rules hooks and functions for uc_file.module.
  */
 
+use Drupal\uc_order\OrderInterface;
+
 /**
  * Implements hook_rules_data_info().
  *
@@ -12,83 +14,83 @@
  * email.
  */
 function uc_file_rules_data_info() {
-  $data['uc_file_expiration'] = array(
+  $data['uc_file_expiration'] = [
     'label' => t('Ubercart file expiration(s)'),
     'wrap' => TRUE,
-    'property info' => array(
-      'fuid' => array(
+    'property info' => [
+      'fuid' => [
         'type' => 'integer',
         'label' => t('File-user ID'),
         'description' => t('Primary key for user permission to download a file.'),
-      ),
-      'fid' => array(
+      ],
+      'fid' => [
         'type' => 'integer',
         'label' => t('File ID'),
         'description' => t('The file that may be downloaded.'),
-      ),
-      'file' => array(
+      ],
+      'file' => [
         'type' => 'file',
         'label' => t('File'),
         'description' => t('The file that may be downloaded.'),
         'getter callback' => 'uc_file_get_expiration_properties',
         'setter callback' => 'uc_file_set_expiration_properties',
-      ),
-      'uid' => array(
+      ],
+      'uid' => [
         'type' => 'integer',
         'label' => t('User ID'),
         'description' => t('The user account ID.'),
-      ),
-      'user' => array(
+      ],
+      'user' => [
         'type' => 'user',
         'label' => t('User'),
         'description' => t('The user account that may download the file.'),
         'getter callback' => 'uc_file_get_expiration_properties',
         'setter callback' => 'uc_file_set_expiration_properties',
-      ),
-      'pfid' => array(
+      ],
+      'pfid' => [
         'type' => 'integer',
         'label' => t('Product feature ID'),
         'description' => t('The product feature that granted permission to download the file.'),
-      ),
-      'file-key' => array(
+      ],
+      'file-key' => [
         'type' => 'text',
         'label' => t('File key'),
         'description' => t('A hash of the permission and expiraiton data.'),
-      ),
-      'granted' => array(
+      ],
+      'granted' => [
         'type' => 'date',
         'label' => t('Granted time'),
         'description' => t('The time the permission to download the file was granted.'),
-      ),
-      'expiration' => array(
+      ],
+      'expiration' => [
         'type' => 'date',
         'label' => t('Expiration time'),
         'description' => t('The time when the permission to download the file will expire.'),
-      ),
-      'accessed' => array(
+      ],
+      'accessed' => [
         'type' => 'integer',
         'label' => t('Accesses'),
         'description' => t('The number of times the file has been accessed.'),
-      ),
-      'addresses' => array(
+      ],
+      'addresses' => [
         'type' => 'list<text>',
         'label' => t('IP addresses'),
         'description' => t('List of IP addresses to which the file has been downloaded.'),
-      ),
-      'download-limit' => array(
+      ],
+      'download-limit' => [
         'type' => 'integer',
         'label' => t('Download limit'),
         'description' => t('The numer of times the user may download the file.'),
-      ),
-      'address-limit' => array(
+      ],
+      'address-limit' => [
         'type' => 'integer',
         'label' => t('Address limit'),
         'description' => t('The number of different IP addresses that may download the file.'),
-      ),
-    ),
+      ],
+    ],
     'group' => t('File download'),
     'token type' => 'uc_file',
-  );
+  ];
 
   return $data;
 }
@@ -102,6 +104,7 @@ function uc_file_get_expiration_properties($expiration, array $options, $name, $
   switch ($name) {
     case 'user':
       return $expiration->uid;
+
     case 'file':
       return $expiration->fid;
   }
@@ -126,55 +129,55 @@ function uc_file_set_expiration_properties($expiration, $name, $value) {
  */
 function uc_file_rules_action_info() {
   // Renew file expirations.
-  $actions['uc_file_order_renew'] = array(
+  $actions['uc_file_order_renew'] = [
     'label' => t('Renew the files on an order.'),
     'group' => t('renewal'),
     'base' => 'uc_file_action_order_renew',
-    'parameter' => array(
-      'order' => array(
+    'parameter' => [
+      'order' => [
         'type' => 'uc_order',
         'label' => t('Order'),
-      ),
-    ),
-  );
+      ],
+    ],
+  ];
 
-  // Send an email to an order with a file expiration
-  $actions['uc_file_order_email'] = array(
+  // Send an email to an order with a file expiration.
+  $actions['uc_file_order_email'] = [
     'label' => t('Send an order email regarding files.'),
     'group' => t('Notification'),
     'base' => 'uc_file_action_order_email',
-    'parameter' => array(
-      'order' => array(
+    'parameter' => [
+      'order' => [
         'type' => 'uc_order',
         'label' => t('Order'),
-      ),
-      'expiration' => array(
+      ],
+      'expiration' => [
         'type' => 'uc_file_expiration',
         'label' => t('File expiration'),
-      ),
-      'from' => array(
+      ],
+      'from' => [
         'type' => 'text',
         'label' => t('Sender'),
-      ),
-      'addresses' => array(
+      ],
+      'addresses' => [
         'type' => 'text',
         'label' => t('Recipients'),
-      ),
-      'subject' => array(
+      ],
+      'subject' => [
         'type' => 'text',
         'label' => t('Subject'),
-      ),
-      'message' => array(
+      ],
+      'message' => [
         'type' => 'text',
         'label' => t('Message'),
-      ),
-      'format' => array(
+      ],
+      'format' => [
         'type' => 'text',
         'label' => t('Message format'),
         'options list' => 'uc_file_message_formats',
-      ),
-    ),
-  );
+      ],
+    ],
+  ];
 
   return $actions;
 }
@@ -185,7 +188,7 @@ function uc_file_rules_action_info() {
 function uc_file_message_formats() {
   global $user;
 
-  $options = array();
+  $options = [];
   $formats = filter_formats($user);
   foreach ($formats as $format) {
     $options[$format->format] = $format->name;
@@ -198,20 +201,20 @@ function uc_file_message_formats() {
  * Implements hook_rules_event_info().
  */
 function uc_file_rules_event_info() {
-  $events['uc_file_notify_grant'] = array(
+  $events['uc_file_notify_grant'] = [
     'label' => t('E-mail for granted files'),
     'group' => t('Notification'),
-    'variables' => array(
-      'order' => array(
+    'variables' => [
+      'order' => [
         'type' => 'uc_order',
         'label' => t('Order'),
-      ),
-      'expiration' => array(
+      ],
+      'expiration' => [
         'type' => 'uc_file_expiration',
         'label' => t('File expiration'),
-      ),
-    ),
-  );
+      ],
+    ],
+  ];
 
   return $events;
 }
@@ -222,22 +225,22 @@ function uc_file_rules_event_info() {
  * The recipients, subject, and message fields take order token replacements.
  */
 function uc_file_action_order_email($order, $file_expiration, $from, $addresses, $subject, $message, $format) {
-  $settings = array(
+  $settings = [
     'from' => $from,
     'addresses' => $addresses,
     'subject' => $subject,
     'message' => $message,
     'format' => $format,
-  );
+  ];
 
-  // Token replacements for the subject and body
-  $settings['replacements'] = array(
+  // Token replacements for the subject and body.
+  $settings['replacements'] = [
     'uc_order' => $order,
     'uc_file' => $file_expiration,
-  );
+  ];
 
   // Replace tokens and parse recipients.
-  $recipients = array();
+  $recipients = [];
   $addresses = \Drupal::token()->replace($settings['addresses'], $settings['replacements']);
   foreach (explode("\n", $addresses) as $address) {
     $recipients[] = trim($address);
@@ -248,7 +251,7 @@ function uc_file_action_order_email($order, $file_expiration, $from, $addresses,
     $sent = \Drupal::service('plugin.manager.mail')->mail('uc_order', 'action-mail', $email, uc_store_mail_recipient_langcode($email), $settings, $settings['from']);
 
     if (!$sent['result']) {
-      \Drupal::logger('uc_file')->error('Attempt to e-mail @email concerning order @order_id failed.', array('@email' => $email, '@order_id' => $order->id()));
+      \Drupal::logger('uc_file')->error('Attempt to e-mail @email concerning order @order_id failed.', ['@email' => $email, '@order_id' => $order->id()]);
     }
   }
 }
@@ -262,12 +265,12 @@ function uc_file_action_order_email($order, $file_expiration, $from, $addresses,
  * user is notified in Drupal, as well as through the email address associated
  * with the order.
  *
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   An Ubercart order object.
  */
-function uc_file_action_order_renew($order) {
+function uc_file_action_order_renew(OrderInterface $order) {
 
-  $user_downloads = array();
+  $user_downloads = [];
 
   // Load user.
   if (!($order_user = $order->getOwner())) {
@@ -279,7 +282,7 @@ function uc_file_action_order_renew($order) {
     $files = db_query("SELECT * FROM {uc_file_products} fp " .
       "INNER JOIN {uc_product_features} pf ON pf.pfid = fp.pfid " .
       "INNER JOIN {uc_files} f ON f.fid = fp.fid " .
-      "WHERE nid = :nid", array(':nid' => $product->nid));
+      "WHERE nid = :nid", [':nid' => $product->nid]);
 
     foreach ($files as $file) {
 
@@ -292,12 +295,12 @@ function uc_file_action_order_renew($order) {
       // as an offset of the previous.
       $file_user = _uc_file_user_get($order_user, $file->fid);
 
-      // Get the limit info from the product feature
-      $file_modification = array(
+      // Get the limit info from the product feature.
+      $file_modification = [
         'download_limit' => uc_file_get_download_limit($file),
         'address_limit' => uc_file_get_address_limit($file),
         'expiration' => _uc_file_expiration_date(uc_file_get_time_limit($file), ($file_user ? max($file_user->expiration, REQUEST_TIME) : NULL)),
-      );
+      ];
 
       // Add file_user(s) for this file/directory. (No overwrite)
       $new_files = uc_file_user_renew($file->fid, $order_user, $file->pfid, $file_modification, FALSE);
