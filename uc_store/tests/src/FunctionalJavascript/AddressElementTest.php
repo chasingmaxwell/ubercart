@@ -82,6 +82,7 @@ class AddressElementTest extends JavascriptTestBase {
 
     // Go to the store settings page.
     $this->drupalGet('admin/store/config/store');
+    /** @var \Behat\Mink\Element\DocumentElement $page */
     $page = $this->getSession()->getPage();
     /** @var \Drupal\Tests\WebAssert $assert */
     $assert = $this->assertSession();
@@ -95,15 +96,17 @@ class AddressElementTest extends JavascriptTestBase {
     // hide it if there are no zones.
     $page->findField('address[country]')->selectOption($address->getCountry());
     $assert->assertWaitOnAjaxRequest();
-    $this->assertNotEmpty('address[country]');
-    $this->assertEquals($page->findField('address[country]')->getValue(), $address->getCountry());
+    $field = $page->findField('address[country]');
+    $this->assertNotEmpty($field);
+    $this->assertEquals($field->getValue(), $address->getCountry());
 
     // Don't try to set the zone unless the country has zones!
     if ($page->findField('address[zone]')) {
       $page->findField('address[zone]')->selectOption($address->getZone());
       $assert->assertWaitOnAjaxRequest();
-      $this->assertNotEmpty('address[zone]');
-      $this->assertEquals($page->findField('address[zone]')->getValue(), $address->getZone());
+      $field = $page->findField('address[zone]');
+      $this->assertNotEmpty($field);
+      $this->assertEquals($field->getValue(), $address->getZone());
     }
     else {
       // If there are no zones, the zone select is hidden.
