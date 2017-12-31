@@ -125,6 +125,8 @@ class OrderTest extends UbercartBrowserTestBase {
    */
   public function testOrderCreation() {
     $this->drupalLogin($this->adminUser);
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
 
     $edit = [
       'customer_type' => 'search',
@@ -134,7 +136,7 @@ class OrderTest extends UbercartBrowserTestBase {
 
     $edit['customer[uid]'] = $this->customer->id();
     $this->drupalPostForm(NULL, $edit, 'Create order');
-    $this->assertSession()->pageTextContains(t('Order created by the administration.'), 'Order created by the administration.');
+    $assert->pageTextContains('Order created by the administration.', 'Order created by the administration.');
     $this->assertFieldByName('uid_text', $this->customer->id(), 'The customer UID appears on the page.');
 
     $order_ids = \Drupal::entityQuery('uc_order')
@@ -144,14 +146,14 @@ class OrderTest extends UbercartBrowserTestBase {
     $this->assertTrue($order_id, SafeMarkup::format('Found order ID @order_id', ['@order_id' => $order_id]));
 
     $this->drupalGet('admin/store/orders/view');
-    $this->assertSession()->linkByHrefExists('admin/store/orders/' . $order_id, 0, 'View link appears on order list.');
-    $this->assertSession()->pageTextContains('Pending', 'New order is "Pending".');
+    $assert->linkByHrefExists('admin/store/orders/' . $order_id, 0, 'View link appears on order list.');
+    $assert->pageTextContains('Pending', 'New order is "Pending".');
 
     $this->drupalGet('admin/store/customers/orders/' . $this->customer->id());
-    $this->assertSession()->linkByHrefExists('admin/store/orders/' . $order_id, 0, 'View link appears on customer order list.');
+    $assert->linkByHrefExists('admin/store/orders/' . $order_id, 0, 'View link appears on customer order list.');
 
     $this->clickLink('Create order for this customer');
-    $this->assertSession()->pageTextContains(t('Order created by the administration.'));
+    $assert->pageTextContains('Order created by the administration.');
     $this->assertFieldByName('uid_text', $this->customer->id(), 'The customer UID appears on the page.');
   }
 
@@ -159,33 +161,39 @@ class OrderTest extends UbercartBrowserTestBase {
    * Tests order admin View.
    */
   public function testOrderView() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $order = $this->ucCreateOrder($this->customer);
 
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('admin/store/orders/' . $order->id());
 
     $billing_address = $order->getAddress('billing');
-    $this->assertSession()->pageTextContains(Unicode::strtoupper($billing_address->first_name), 'Billing first name found.');
-    $this->assertSession()->pageTextContains(Unicode::strtoupper($billing_address->last_name), 'Billing last name found.');
-    $this->assertSession()->pageTextContains(Unicode::strtoupper($billing_address->street1), 'Billing street 1 found.');
-    $this->assertSession()->pageTextContains(Unicode::strtoupper($billing_address->street2), 'Billing street 2 found.');
-    $this->assertSession()->pageTextContains(Unicode::strtoupper($billing_address->city), 'Billing city found.');
+    $assert->pageTextContains(Unicode::strtoupper($billing_address->first_name), 'Billing first name found.');
+    $assert->pageTextContains(Unicode::strtoupper($billing_address->last_name), 'Billing last name found.');
+    $assert->pageTextContains(Unicode::strtoupper($billing_address->street1), 'Billing street 1 found.');
+    $assert->pageTextContains(Unicode::strtoupper($billing_address->street2), 'Billing street 2 found.');
+    $assert->pageTextContains(Unicode::strtoupper($billing_address->city), 'Billing city found.');
 
     $delivery_address = $order->getAddress('delivery');
-    $this->assertSession()->pageTextContains(Unicode::strtoupper($delivery_address->first_name), 'Delivery first name found.');
-    $this->assertSession()->pageTextContains(Unicode::strtoupper($delivery_address->last_name), 'Delivery last name found.');
-    $this->assertSession()->pageTextContains(Unicode::strtoupper($delivery_address->street1), 'Delivery street 1 found.');
-    $this->assertSession()->pageTextContains(Unicode::strtoupper($delivery_address->street2), 'Delivery street 2 found.');
-    $this->assertSession()->pageTextContains(Unicode::strtoupper($delivery_address->city), 'Delivery city found.');
+    $assert->pageTextContains(Unicode::strtoupper($delivery_address->first_name), 'Delivery first name found.');
+    $assert->pageTextContains(Unicode::strtoupper($delivery_address->last_name), 'Delivery last name found.');
+    $assert->pageTextContains(Unicode::strtoupper($delivery_address->street1), 'Delivery street 1 found.');
+    $assert->pageTextContains(Unicode::strtoupper($delivery_address->street2), 'Delivery street 2 found.');
+    $assert->pageTextContains(Unicode::strtoupper($delivery_address->city), 'Delivery city found.');
 
-    $this->assertSession()->linkExists($order->getOwnerId(), 0, 'Link to customer account page found.');
-    $this->assertSession()->linkExists($order->getEmail(), 0, 'Link to customer email address found.');
+    $assert->linkExists($order->getOwnerId(), 0, 'Link to customer account page found.');
+    $assert->linkExists($order->getEmail(), 0, 'Link to customer email address found.');
   }
 
   /**
    * Tests the customer View of the completed order.
    */
   public function testOrderCustomerView() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $order = $this->ucCreateOrder($this->customer);
 
     // Update the status to pending, so the user can see the order on the
@@ -195,25 +203,28 @@ class OrderTest extends UbercartBrowserTestBase {
 
     $this->drupalLogin($this->customer);
     $this->drupalGet('user/' . $this->customer->id() . '/orders');
-    $this->assertSession()->pageTextContains(t('My order history'));
-    $this->assertSession()->pageTextContains(t('Pending'), 'Order status is visible to the customer.');
+    $assert->pageTextContains('My order history');
+    $assert->pageTextContains('Pending', 'Order status is visible to the customer.');
 
     $this->drupalGet('user/' . $this->customer->id() . '/orders/' . $order->id());
-    $this->assertSession()->statusCodeEquals(200, 'Customer can view their own order.');
+    $assert->statusCodeEquals(200, 'Customer can view their own order.');
     $address = $order->getAddress('billing');
-    $this->assertSession()->pageTextContains(Unicode::strtoupper($address->first_name . ' ' . $address->last_name), 'Found customer name.');
+    $assert->pageTextContains(Unicode::strtoupper($address->first_name . ' ' . $address->last_name), 'Found customer name.');
 
     $this->drupalGet('admin/store/orders/' . $order->id());
-    $this->assertSession()->statusCodeEquals(403, 'Customer may not see the admin view of their order.');
+    $assert->statusCodeEquals(403, 'Customer may not see the admin view of their order.');
 
     $this->drupalGet('admin/store/orders/' . $order->id() . '/edit');
-    $this->assertSession()->statusCodeEquals(403, 'Customer may not edit orders.');
+    $assert->statusCodeEquals(403, 'Customer may not edit orders.');
   }
 
   /**
    * Tests admin editing of orders.
    */
   public function testOrderEditing() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $order = $this->ucCreateOrder($this->customer);
 
     $this->drupalLogin($this->adminUser);
@@ -222,7 +233,7 @@ class OrderTest extends UbercartBrowserTestBase {
       'billing[last_name]' => $this->randomMachineName(15),
     ];
     $this->drupalPostForm('admin/store/orders/' . $order->id() . '/edit', $edit, 'Save changes');
-    $this->assertSession()->pageTextContains(t('Order changes saved.'));
+    $assert->pageTextContains('Order changes saved.');
     $this->assertFieldByName('billing[first_name]', $edit['billing[first_name]'], 'Billing first name changed.');
     $this->assertFieldByName('billing[last_name]', $edit['billing[last_name]'], 'Billing last name changed.');
   }
@@ -264,6 +275,9 @@ class OrderTest extends UbercartBrowserTestBase {
    * Tests using custom order statuses.
    */
   public function testCustomOrderStatus() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $order = $this->ucCreateOrder($this->customer);
 
     $this->drupalLogin($this->adminUser);
@@ -279,7 +293,7 @@ class OrderTest extends UbercartBrowserTestBase {
 
     // Confirm the updated label is displayed.
     $this->drupalGet('admin/store/orders/view');
-    $this->assertSession()->pageTextContains($title, 'Order displays updated status title.');
+    $assert->pageTextContains($title, 'Order displays updated status title.');
 
     // Create a custom order status.
     $this->drupalGet('admin/store/config/orders');
@@ -291,18 +305,18 @@ class OrderTest extends UbercartBrowserTestBase {
       'weight' => mt_rand(-10, 10),
     ];
     $this->drupalPostForm(NULL, $edit, 'Create');
-    $this->assertSession()->pageTextContains($edit['id'], 'Custom status ID found.');
+    $assert->pageTextContains($edit['id'], 'Custom status ID found.');
     $this->assertFieldByName('order_statuses[' . $edit['id'] . '][name]', $edit['name'], 'Custom status title found.');
     $this->assertFieldByName('order_statuses[' . $edit['id'] . '][weight]', $edit['weight'], 'Custom status weight found.');
 
     // Set an order to the custom status.
     $this->drupalPostForm('admin/store/orders/' . $order->id(), ['status' => $edit['id']], 'Update');
     $this->drupalGet('admin/store/orders/view');
-    $this->assertSession()->pageTextContains($edit['name'], 'Order displays custom status title.');
+    $assert->pageTextContains($edit['name'], 'Order displays custom status title.');
 
     // Delete the custom order status.
     $this->drupalPostForm('admin/store/config/orders', ['order_statuses[' . $edit['id'] . '][remove]' => 1], 'Save configuration');
-    $this->assertSession()->pageTextNotContains($edit['id'], 'Deleted status ID not found.');
+    $assert->pageTextNotContains($edit['id'], 'Deleted status ID not found.');
   }
 
   /**
@@ -313,7 +327,7 @@ class OrderTest extends UbercartBrowserTestBase {
       'uid' => $customer->id(),
     ]);
     $order->save();
-    uc_order_comment_save($order->id(), 0, t('Order created programmatically.'), 'admin');
+    uc_order_comment_save($order->id(), 0, 'Order created programmatically.', 'admin');
 
     $order_ids = \Drupal::entityQuery('uc_order')
       ->condition('order_id', $order->id())

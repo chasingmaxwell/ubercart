@@ -484,6 +484,7 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
     $password = $mails[0]['params']['account']->password;
     $this->assertTrue(!empty($password), 'New password is not empty.');
 
+    // Clear contents of mail collector.
     \Drupal::state()->set('system.test_mail_collector', []);
 
     // Different user, sees the checkout page first.
@@ -504,6 +505,7 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
     $password = $mails[0]['params']['account']->password;
     $this->assertTrue(!empty($password), 'New password is not empty.');
 
+    // Clear contents of mail collector.
     \Drupal::state()->set('system.test_mail_collector', []);
 
     // Same user, new order.

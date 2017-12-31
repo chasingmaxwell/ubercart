@@ -16,14 +16,14 @@ class CustomerAdminTest extends UbercartBrowserTestBase {
   /**
    * A user with permission to view customers.
    *
-   * @var \Drupal\user\UserInterface
+   * @var \Drupal\Core\Session\AccountInterface
    */
   protected $adminUser;
 
   /**
-   * A user created the order.
+   * The user who placed the order.
    *
-   * @var \Drupal\user\UserInterface
+   * @var \Drupal\Core\Session\AccountInterface
    */
   protected $customer;
 
@@ -52,6 +52,8 @@ class CustomerAdminTest extends UbercartBrowserTestBase {
    */
   public function testCustomerAdminPages() {
     $this->drupalLogin($this->adminUser);
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
 
     $country = Country::load('US');
     Order::create([
@@ -61,10 +63,10 @@ class CustomerAdminTest extends UbercartBrowserTestBase {
     ])->save();
 
     $this->drupalGet('admin/store/customers/view');
-    $this->assertResponse(200);
-    $this->assertLinkByHref('user/' . $this->customer->id());
-    $this->assertText($country->getZones()['AK']);
-    $this->assertText($country->label());
+    $assert->statusCodeEquals(200);
+    $assert->linkByHrefExists('user/' . $this->customer->id());
+    $assert->pageTextContains($country->getZones()['AK']);
+    $assert->pageTextContains($country->label());
   }
 
 }

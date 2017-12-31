@@ -39,12 +39,12 @@ class ProductTabsTest extends UbercartBrowserTestBase {
     $this->assertFieldByName('title[0][value]', $product->getTitle());
 
     // Check that each of the tabs exist.
-    $this->assertLink(t('Product'));
-    $this->assertLink(t('Attributes'));
-    $this->assertLink(t('Options'));
-    $this->assertLink(t('Adjustments'));
-    $this->assertLink(t('Features'));
-    $this->assertLink(t('Stock'));
+    $this->assertLink('Product');
+    $this->assertLink('Attributes');
+    $this->assertLink('Options');
+    $this->assertLink('Adjustments');
+    $this->assertLink('Features');
+    $this->assertLink('Stock');
   }
 
   /**
@@ -59,12 +59,12 @@ class ProductTabsTest extends UbercartBrowserTestBase {
     $this->assertFieldByName('title[0][value]', $page->getTitle());
 
     // Check that each of the tabs do not exist.
-    $this->assertNoLink(t('Product'));
-    $this->assertNoLink(t('Attributes'));
-    $this->assertNoLink(t('Options'));
-    $this->assertNoLink(t('Adjustments'));
-    $this->assertNoLink(t('Features'));
-    $this->assertNoLink(t('Stock'));
+    $this->assertNoLink('Product');
+    $this->assertNoLink('Attributes');
+    $this->assertNoLink('Options');
+    $this->assertNoLink('Adjustments');
+    $this->assertNoLink('Features');
+    $this->assertNoLink('Stock');
   }
 
   /**
@@ -77,8 +77,8 @@ class ProductTabsTest extends UbercartBrowserTestBase {
     $this->assertFieldByName('name', 'Product');
 
     // Check that each of the tabs exist.
-    $this->assertLink(t('Product attributes'));
-    $this->assertLink(t('Product options'));
+    $this->assertLink('Product attributes');
+    $this->assertLink('Product options');
   }
 
   /**
@@ -92,8 +92,8 @@ class ProductTabsTest extends UbercartBrowserTestBase {
     $this->assertFieldByName('name', $type->label());
 
     // Check that each of the tabs do not exist.
-    $this->assertNoLink(t('Product attributes'));
-    $this->assertNoLink(t('Product options'));
+    $this->assertNoLink('Product attributes');
+    $this->assertNoLink('Product options');
   }
 
 }
