@@ -34,7 +34,7 @@ class MailInvoiceForm extends FormBase {
    *   The mail manager service.
    */
   public function __construct(MailManagerInterface $mail_manager) {
-    $this->mailManager = $mailManager;
+    $this->mailManager = $mail_manager;
   }
 
   /**
