@@ -24,10 +24,10 @@ class ParametersForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state, $args = NULL) {
     if (!isset($args['start_date'])) {
-      $args['start_date'] = REQUEST_TIME;
+      $args['start_date'] = \Drupal::time()->getRequestTime();
     }
     if (!isset($args['end_date'])) {
-      $args['end_date'] = REQUEST_TIME;
+      $args['end_date'] = \Drupal::time()->getRequestTime();
     }
     if (!isset($args['statuses'])) {
       $args['statuses'] = uc_report_order_statuses();

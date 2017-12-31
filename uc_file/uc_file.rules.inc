@@ -299,7 +299,7 @@ function uc_file_action_order_renew(OrderInterface $order) {
       $file_modification = [
         'download_limit' => uc_file_get_download_limit($file),
         'address_limit' => uc_file_get_address_limit($file),
-        'expiration' => _uc_file_expiration_date(uc_file_get_time_limit($file), ($file_user ? max($file_user->expiration, REQUEST_TIME) : NULL)),
+        'expiration' => _uc_file_expiration_date(uc_file_get_time_limit($file), ($file_user ? max($file_user->expiration, \Drupal::time()->getRequestTime()) : NULL)),
       ];
 
       // Add file_user(s) for this file/directory. (No overwrite)

@@ -66,7 +66,7 @@ function uc_report_help($route_name, RouteMatchInterface $route_match) {
         break;
     }
     if (strpos($route_name, 'admin/store/reports/sales/year') === 0) {
-      $year = $arg[5] ? $arg[5] : \Drupal::service('date.formatter')->format(REQUEST_TIME, 'custom', "Y");
+      $year = $arg[5] ? $arg[5] : \Drupal::service('date.formatter')->format(\Drupal::time()->getRequestTime(), 'custom', "Y");
       $output .= t('This is the monthly break down of sales for the year @year. Clicking on each link will take you to a list of orders during that month.', ['@year' => $year]);
     }
     $output .= '</p>';

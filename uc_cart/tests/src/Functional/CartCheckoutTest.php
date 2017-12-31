@@ -559,7 +559,7 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
       // Jump 10 minutes into the future.
       // @todo: Can we set changed through the Entity API rather than DBTNG?
       db_update('uc_orders')
-        ->fields(['changed' => time() - CartInterface::ORDER_TIMEOUT - 1])
+        ->fields(['changed' => \Drupal::time()->getCurrentTime() - CartInterface::ORDER_TIMEOUT - 1])
         ->condition('order_id', $order_id)
         ->execute();
 

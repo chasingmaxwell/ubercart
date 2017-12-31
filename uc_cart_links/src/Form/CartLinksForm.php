@@ -2,6 +2,7 @@
 
 namespace Drupal\uc_cart_links\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Component\Utility\Unicode;
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -48,6 +49,13 @@ class CartLinksForm extends ConfirmFormBase {
   protected $session;
 
   /**
+   * The datetime.time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $dateTime;
+
+  /**
    * Form constructor.
    *
    * @param \Drupal\uc_cart\CartManagerInterface $cart_manager
@@ -56,11 +64,14 @@ class CartLinksForm extends ConfirmFormBase {
    *   The module handler.
    * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
    *   The session.
+   * @param \Drupal\Component\Datetime\TimeInterface $date_time
+   *   The datetime.time service.
    */
-  public function __construct(CartManagerInterface $cart_manager, ModuleHandlerInterface $module_handler, SessionInterface $session) {
+  public function __construct(CartManagerInterface $cart_manager, ModuleHandlerInterface $module_handler, SessionInterface $session, TimeInterface $date_time) {
     $this->cartManager = $cart_manager;
     $this->moduleHandler = $module_handler;
     $this->session = $session;
+    $this->dateTime = $date_time;
   }
 
   /**
@@ -70,7 +81,8 @@ class CartLinksForm extends ConfirmFormBase {
     return new static(
       $container->get('uc_cart.manager'),
       $container->get('module_handler'),
-      $container->get('session')
+      $container->get('session'),
+      $container->get('datetime.time')
     );
   }
 
@@ -293,7 +305,7 @@ class CartLinksForm extends ConfirmFormBase {
         ->key(['cart_link_id' => (string) $id])
         ->fields([
           'clicks' => 1,
-          'last_click' => REQUEST_TIME,
+          'last_click' => $this->dateTime->getRequestTime(),
         ])
         ->expression('clicks', 'clicks + :i', [':i' => 1])
         ->execute();

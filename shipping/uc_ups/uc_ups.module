@@ -40,8 +40,8 @@ function uc_ups_menu() {
  */
 function uc_ups_cron() {
   $ups_config = \Drupal::config('uc_ups.settings');
-  $cutoff = REQUEST_TIME - $ups_config->get('label_lifetime');
-  if ($cutoff == REQUEST_TIME) {
+  $cutoff = \Drupal::time()->getRequestTime() - $ups_config->get('label_lifetime');
+  if ($cutoff == \Drupal::time()->getRequestTime()) {
     // Label lifetime is set to 0, meaning never delete.
     return;
   }

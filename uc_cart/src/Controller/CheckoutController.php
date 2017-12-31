@@ -2,6 +2,7 @@
 
 namespace Drupal\uc_cart\Controller;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Url;
@@ -41,6 +42,13 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
   protected $session;
 
   /**
+   * The datetime.time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $dateTime;
+
+  /**
    * Constructs a CheckoutController.
    *
    * @param \Drupal\uc_cart\Plugin\CheckoutPaneManager $checkout_pane_manager
@@ -49,11 +57,14 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
    *   The cart manager.
    * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
    *   The session.
+   * @param \Drupal\Component\Datetime\TimeInterface $date_time
+   *   The datetime.time service.
    */
-  public function __construct(CheckoutPaneManager $checkout_pane_manager, CartManagerInterface $cart_manager, SessionInterface $session) {
+  public function __construct(CheckoutPaneManager $checkout_pane_manager, CartManagerInterface $cart_manager, SessionInterface $session, TimeInterface $date_time) {
     $this->checkoutPaneManager = $checkout_pane_manager;
     $this->cartManager = $cart_manager;
     $this->session = $session;
+    $this->dateTime = $date_time;
   }
 
   /**
@@ -63,7 +74,8 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
     return new static(
       $container->get('plugin.manager.uc_cart.checkout_pane'),
       $container->get('uc_cart.manager'),
-      $container->get('session')
+      $container->get('session'),
+      $container->get('datetime.time')
     );
   }
 
@@ -94,10 +106,11 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
         // To prevent identity theft, don't use an existing order if it has
         // changed status or owner, or if there has been no activity for 10
         // minutes.
+        $request_time = $this->dateTime->getRequestTime();
         if ($order->getStateId() != 'in_checkout' ||
             ($this->currentUser()->isAuthenticated() && $this->currentUser()->id() != $order->getOwnerId()) ||
-            $order->getChangedTime() < REQUEST_TIME - CartInterface::CHECKOUT_TIMEOUT) {
-          if ($order->getStateId() == 'in_checkout' && $order->getChangedTime() < REQUEST_TIME - CartInterface::CHECKOUT_TIMEOUT) {
+            $order->getChangedTime() < $request_time - CartInterface::CHECKOUT_TIMEOUT) {
+          if ($order->getStateId() == 'in_checkout' && $order->getChangedTime() < $request_time - CartInterface::CHECKOUT_TIMEOUT) {
             // Mark expired orders as abandoned.
             $order->setStatusId('abandoned')->save();
           }

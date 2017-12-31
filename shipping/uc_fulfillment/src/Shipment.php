@@ -433,7 +433,7 @@ class Shipment implements ShipmentInterface {
    * Saves this shipment.
    */
   public function save() {
-    $this->changed = time();
+    $this->changed = \Drupal::time()->getCurrentTime();
 
     // Break Address objects into individual fields for saving.
     $fields = [];

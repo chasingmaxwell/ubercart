@@ -64,10 +64,10 @@ function _uc_authorizenet_cim_profile_create(OrderInterface $order) {
  */
 function _uc_authorizenet_cim_profile_create_request(OrderInterface $order) {
   return [
-    'refId' => substr($order->id() . '-' . REQUEST_TIME, 0, 20),
+    'refId' => substr($order->id() . '-' . \Drupal::time()->getRequestTime(), 0, 20),
     'profile' => [
       'merchantCustomerId' => substr($order->getOwnerId(), 0, 20),
-      'description' => substr(t('Order @order taking place at @date', ['@order' => $order->id(), '@date' => \Drupal::service('date.formatter')->format(REQUEST_TIME)]), 0, 255),
+      'description' => substr(t('Order @order taking place at @date', ['@order' => $order->id(), '@date' => \Drupal::service('date.formatter')->format(\Drupal::time()->getRequestTime())]), 0, 255),
       'email' => substr($order->getEmail(), 0, 255),
       'paymentProfiles' => [
         'billTo' => _uc_authorize_cim_xml_billto($order),
@@ -145,7 +145,7 @@ function _uc_authorizenet_cim_profile_charge_request(OrderInterface $order, $amo
   }
   else {
     return [
-      'refId' => substr($order->id() . '-' . REQUEST_TIME, 0, 20),
+      'refId' => substr($order->id() . '-' . \Drupal::time()->getRequestTime(), 0, 20),
       'transaction' => [
         'profileTransAuthCapture' => [
           'amount' => uc_currency_format($amount, FALSE, FALSE, '.'),

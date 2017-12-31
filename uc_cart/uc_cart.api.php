@@ -169,7 +169,7 @@ function hook_uc_cart_display(CartItemInterface $item) {
  *   The cart item entity object.
  */
 function hook_uc_cart_item_presave(CartItemInterface $entity) {
-  $entity->changed = REQUEST_TIME;
+  $entity->changed = \Drupal::time()->getRequestTime();
 }
 
 /**

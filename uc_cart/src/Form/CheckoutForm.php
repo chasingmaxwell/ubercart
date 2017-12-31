@@ -2,6 +2,7 @@
 
 namespace Drupal\uc_cart\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
@@ -14,7 +15,6 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
  * The checkout form built up from the enabled checkout panes.
  */
 class CheckoutForm extends FormBase {
-
   use AjaxAttachTrait;
 
   /**
@@ -32,16 +32,26 @@ class CheckoutForm extends FormBase {
   protected $session;
 
   /**
+   * The datetime.time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $dateTime;
+
+  /**
    * Constructs a CheckoutController.
    *
    * @param \Drupal\uc_cart\Plugin\CheckoutPaneManager $checkout_pane_manager
    *   The checkout pane plugin manager.
    * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
    *   The session.
+   * @param \Drupal\Component\Datetime\TimeInterface $date_time
+   *   The datetime.time service.
    */
-  public function __construct(CheckoutPaneManager $checkout_pane_manager, SessionInterface $session) {
+  public function __construct(CheckoutPaneManager $checkout_pane_manager, SessionInterface $session, TimeInterface $date_time) {
     $this->checkoutPaneManager = $checkout_pane_manager;
     $this->session = $session;
+    $this->dateTime = $date_time;
   }
 
   /**
@@ -50,7 +60,8 @@ class CheckoutForm extends FormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('plugin.manager.uc_cart.checkout_pane'),
-      $container->get('session')
+      $container->get('session'),
+      $container->get('datetime.time')
     );
   }
 
@@ -143,7 +154,7 @@ class CheckoutForm extends FormBase {
     $order = $form_state->get('order');
 
     // Update the order "changed" time to prevent timeout on ajax requests.
-    $order->setChangedTime(REQUEST_TIME);
+    $order->setChangedTime($this->dateTime->getRequestTime());
 
     // Validate/process each cart pane. If one of the process() functions
     // returns FALSE, checkout fails.

@@ -353,7 +353,7 @@ class Reports extends ControllerBase {
     if (arg(5) == '') {
       $args = [
         'start_date' => mktime(0, 0, 0, date('n'), 1, date('Y') - 1),
-        'end_date' => REQUEST_TIME,
+        'end_date' => \Drupal::time()->getRequestTime(),
         'status' => uc_report_order_statuses(),
       ];
     }
@@ -765,7 +765,7 @@ class Reports extends ControllerBase {
     if (arg(5) == '') {
       $args = [
         'start_date' => mktime(0, 0, 0, date('n'), 1, date('Y') - 1),
-        'end_date' => REQUEST_TIME,
+        'end_date' => \Drupal::time()->getRequestTime(),
         'length' => 'month',
         'status' => uc_report_order_statuses(),
         'detail' => FALSE,
@@ -915,7 +915,7 @@ class Reports extends ControllerBase {
       }
       $csv_output .= implode(',', $row) . "\n";
     }
-    \Drupal::cache()->set('uc_report_' . $report_id . '_' . $user_id, $csv_output, REQUEST_TIME + 86400);
+    \Drupal::cache()->set('uc_report_' . $report_id . '_' . $user_id, $csv_output, \Drupal::time()->getRequestTime() + 86400);
     return ['user' => $user_id, 'report' => $report_id, 'csv' => $csv_output];
   }
 

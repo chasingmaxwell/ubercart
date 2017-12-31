@@ -129,7 +129,7 @@ function uc_file_uc_add_to_cart($nid, $qty, $data) {
       $file_modification = [
         'download_limit' => uc_file_get_download_limit($product_feature),
         'address_limit'  => uc_file_get_address_limit($product_feature),
-        'expiration'     => _uc_file_expiration_date(uc_file_get_time_limit($product_feature), max($file_user['expiration'], REQUEST_TIME)),
+        'expiration'     => _uc_file_expiration_date(uc_file_get_time_limit($product_feature), max($file_user['expiration'], \Drupal::time()->getRequestTime())),
       ];
 
       // Calculate the new limits.
@@ -354,7 +354,7 @@ function _uc_file_expiration_date(array $file_limits, $timestamp) {
   }
 
   if (!$timestamp) {
-    $timestamp = REQUEST_TIME;
+    $timestamp = \Drupal::time()->getRequestTime();
   }
 
   // Return the new expiration time.
@@ -885,7 +885,7 @@ function uc_file_user_renew($fid, AccountInterface $user, $pfid, $file_limits, $
     $key = NULL;
     if (!$file_user) {
       $file_user = [
-        'granted' => REQUEST_TIME,
+        'granted' => \Drupal::time()->getRequestTime(),
         'accessed' => 0,
         'addresses' => '',
       ];

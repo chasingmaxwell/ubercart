@@ -7,21 +7,21 @@ use Drupal\uc_report\Controller\Reports;
 
 /**
  * Displays sales tax report.
- *
- * @return
- *   Renderable form array.
  */
 class SalesTaxReport {
 
   /**
    * Displays the sales tax report form and table.
+   *
+   * @return array
+   *   Form API render array.
    */
   public function report($start_date = NULL, $end_date = NULL, $statuses = NULL) {
     // Use default report parameters if we don't detect values in the URL.
     if ($start_date == '') {
       $args = [
         'start_date' => mktime(0, 0, 0, date('n'), 1, date('Y')),
-        'end_date' => REQUEST_TIME,
+        'end_date' => \Drupal::time()->getRequestTime(),
         'statuses' => uc_report_order_statuses(),
       ];
     }

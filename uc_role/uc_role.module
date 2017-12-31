@@ -47,11 +47,11 @@ function uc_role_cron() {
   $query = db_select('uc_roles_expirations', 'e')
     ->fields('e');
   $condition = db_or()
-    ->condition('e.expiration', REQUEST_TIME, '<=');
+    ->condition('e.expiration', \Drupal::time()->getRequestTime(), '<=');
   if ($reminder_granularity != 'never') {
     $condition->condition(db_and()
       ->isNull('e.notified')
-      ->condition('e.expiration', _uc_role_get_expiration($reminder_qty, $reminder_granularity, REQUEST_TIME), '<=')
+      ->condition('e.expiration', _uc_role_get_expiration($reminder_qty, $reminder_granularity, \Drupal::time()->getRequestTime()), '<=')
     );
   }
   $query->condition($condition);
@@ -66,7 +66,7 @@ function uc_role_cron() {
     }
 
     // Role expired.
-    elseif ($expiration->expiration <= REQUEST_TIME) {
+    elseif ($expiration->expiration <= \Drupal::time()->getRequestTime()) {
       // rules_invoke_event('uc_role_notify_revoke', $account, $expiration);
       $event = new NotifyRevokeEvent($account, $expiration);
       \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
@@ -237,7 +237,7 @@ function uc_role_user_validate($form, FormStateInterface $form_state) {
       $qty *= $value['polarity'] == 'add' ? 1 : -1;
 
       $new_expiration = _uc_role_get_expiration($qty, $value['granularity'], $value['expiration']);
-      if (REQUEST_TIME > $new_expiration) {
+      if (\Drupal::time()->getRequestTime() > $new_expiration) {
         $form_state->setErrorByName('qty', t('The new expiration date, %date, has already occurred.', ['%date' => \Drupal::service('date.formatter')->format($new_expiration, 'short')]));
       }
     }
@@ -736,7 +736,7 @@ function _uc_role_get_expiration($duration, $granularity, $start_time = NULL) {
     return NULL;
   }
 
-  $start_time = (!is_null($start_time)) ? $start_time : REQUEST_TIME;
+  $start_time = (!is_null($start_time)) ? $start_time : \Drupal::time()->getRequestTime();
   $operator = ($duration < 0) ? '' : '+';
 
   return strtotime($operator . $duration . ' ' . $granularity, $start_time);

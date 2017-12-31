@@ -229,7 +229,7 @@ function uc_credit_log_authorization($order_id, $auth_id, $amount) {
   // Add the authorization to the cc_txns.
   $data['cc_txns']['authorizations'][$auth_id] = [
     'amount' => $amount,
-    'authorized' => REQUEST_TIME,
+    'authorized' => \Drupal::time()->getRequestTime(),
   ];
 
   // Save the updated data array to the database.
@@ -264,7 +264,7 @@ function uc_credit_log_prior_auth_capture($order_id, $auth_id) {
   }
 
   // Otherwise log the capture timestamp to the authorization.
-  $data['cc_txns']['authorizations'][$auth_id]['captured'] = REQUEST_TIME;
+  $data['cc_txns']['authorizations'][$auth_id]['captured'] = \Drupal::time()->getRequestTime();
 
   // Save the updated data array to the database.
   db_update('uc_orders')
@@ -297,7 +297,7 @@ function uc_credit_log_reference($order_id, $ref_id, $cc_number) {
 
   $data['cc_txns']['references'][$ref_id] = [
     'card' => substr($cc_number, -4),
-    'created' => REQUEST_TIME,
+    'created' => \Drupal::time()->getRequestTime(),
   ];
 
   // Save the updated data array to the database.

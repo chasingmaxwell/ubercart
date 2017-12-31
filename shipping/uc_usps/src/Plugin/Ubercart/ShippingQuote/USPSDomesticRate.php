@@ -325,7 +325,7 @@ class USPSDomesticRate extends USPSRateBase {
           '<Value>' . $package->price . '</Value>' .
           '<Machinable>' . ($package->machinable ? 'TRUE' : 'FALSE') . '</Machinable>' .
           '<ReturnLocations>TRUE</ReturnLocations>' .
-          '<ShipDate Option="EMSH">' . \Drupal::service('date.formatter')->format(time(), 'custom', 'd-M-Y', 'America/New_York', 'en') . '</ShipDate>';
+          '<ShipDate Option="EMSH">' . \Drupal::service('date.formatter')->format(\Drupal::time()->getCurrentTime(), 'custom', 'd-M-Y', 'America/New_York', 'en') . '</ShipDate>';
 
           // Check if we need to add any special services to this package.
           if ($usps_config->get('insurance')            ||
