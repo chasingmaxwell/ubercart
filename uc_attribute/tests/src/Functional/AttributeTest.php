@@ -340,7 +340,7 @@ class AttributeTest extends UbercartBrowserTestBase {
     $this->drupalGet('admin/store/products/attributes');
     $this->assertRaw('<td>' . $edit['name'] . '</td>', 'Verify name field.');
     $this->assertRaw('<td>' . $edit['label'] . '</td>', 'Verify label field.');
-    $this->assertRaw('<td>' . ($edit['required'] ? t('Yes') : t('No')) . '</td>', 'Verify required field.');
+    $this->assertRaw('<td>' . ($edit['required'] ? 'Yes' : 'No') . '</td>', 'Verify required field.');
     $this->assertRaw('<td>' . $edit['ordering'] . '</td>', 'Verify ordering field.');
     $types = _uc_attribute_display_types();
     $this->assertRaw('<td>' . $types[$edit['display']] . '</td>', 'Verify display field.');

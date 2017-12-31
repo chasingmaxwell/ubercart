@@ -73,7 +73,7 @@ abstract class FileTestBase extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       'admin/store/config/file',
       ['base_dir' => $this->tempFilesDirectory],
-      t('Save configuration')
+      'Save configuration'
     );
 
     $this->assertFieldByName(

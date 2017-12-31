@@ -25,16 +25,16 @@ class CheckoutSettingsTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       'admin/store/config/checkout',
       ['uc_checkout_enabled' => FALSE],
-      t('Save configuration')
+      'Save configuration'
     );
 
     $this->drupalPostForm(
       'node/' . $this->product->id(),
       [],
-      t('Add to cart')
+      'Add to cart'
     );
-    $this->assertNoRaw(t('Checkout'));
-    $buttons = $this->xpath('//input[@value="' . t('Checkout') . '"]');
+    $this->assertNoRaw('Checkout');
+    $buttons = $this->xpath('//input[@value="' . 'Checkout' . '"]');
     $this->assertFalse(
       isset($buttons[0]),
       'The checkout button is not shown.'
@@ -55,22 +55,22 @@ class CheckoutSettingsTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       'admin/store/config/checkout',
       ['uc_checkout_anonymous' => FALSE],
-      t('Save configuration')
+      'Save configuration'
     );
 
     $this->drupalLogout();
     $this->drupalPostForm(
       'node/' . $this->product->id(),
       [],
-      t('Add to cart')
+      'Add to cart'
     );
     $this->drupalPostForm(
       'cart',
       [],
-      t('Checkout')
+      'Checkout'
     );
     $this->assertNoText(
-      t('Enter your billing address and information here.'),
+      'Enter your billing address and information here.',
       'The checkout page is not displayed.'
     );
   }

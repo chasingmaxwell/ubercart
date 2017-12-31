@@ -105,12 +105,12 @@ class CountryTest extends BrowserTestBase {
 
     // Verify that an error is shown.
     $this->drupalGet('admin/store');
-    $this->assertSession()->pageTextContains(t('No countries are enabled.'));
+    $this->assertSession()->pageTextContains('No countries are enabled.');
 
     // Verify that the country fields are hidden.
     $this->drupalGet('admin/store/config/store');
-    $this->assertSession()->pageTextNotContains(t('State/Province'));
-    $this->assertSession()->pageTextNotContains(t('Country'));
+    $this->assertSession()->pageTextNotContains('State/Province');
+    $this->assertSession()->pageTextNotContains('Country');
   }
 
   /**

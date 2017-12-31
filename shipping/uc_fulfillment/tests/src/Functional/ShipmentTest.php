@@ -81,8 +81,8 @@ class ShipmentTest extends UbercartBrowserTestBase {
 
     // Test "Ship" operations for this package.
     $this->drupalGet('admin/store/orders/' . $order->id() . '/packages');
-    $this->assertLink(t('Ship'));
-    $this->clickLink(t('Ship'));
+    $this->assertLink('Ship');
+    $this->clickLink('Ship');
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new?pkgs=1');
     foreach ($order->products as $sequence => $item) {
       $this->assertText(
@@ -111,11 +111,11 @@ class ShipmentTest extends UbercartBrowserTestBase {
     $this->drupalGet('admin/store/orders/view');
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments');
     // Test action.
-    $this->clickLink(t('Ship'));
+    $this->clickLink('Ship');
     $this->assertResponse(200);
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new');
     $this->assertText(
-      t('No shipments have been made for this order.'),
+      'No shipments have been made for this order.',
       'Ship action found.'
     );
     $this->assertText(
@@ -140,11 +140,11 @@ class ShipmentTest extends UbercartBrowserTestBase {
     // Check that we're now on the shipment details page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/ship?method_id=manual&0=1');
     $this->assertText(
-      t('Origin address'),
+      'Origin address',
       'Origin address pane found.'
     );
     $this->assertText(
-      t('Destination address'),
+      'Destination address',
       'Destination address pane found.'
     );
     $this->assertText(
@@ -152,7 +152,7 @@ class ShipmentTest extends UbercartBrowserTestBase {
       'Packages data pane found.'
     );
     $this->assertText(
-      t('Shipment data'),
+      'Shipment data',
       'Shipment data pane found.'
     );
 
@@ -234,7 +234,7 @@ class ShipmentTest extends UbercartBrowserTestBase {
     // Check that we're now on the shipments overview page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments');
     $this->assertText(
-      t('Shipment ID'),
+      'Shipment ID',
       'Shipment summary found.'
     );
     $this->assertText(
@@ -284,8 +284,8 @@ class ShipmentTest extends UbercartBrowserTestBase {
 
     // Third "Print".
     $this->drupalGet('admin/store/orders/' . $order->id() . '/shipments');
-    $this->assertLink(t('Print'));
-    $this->clickLink(t('Print'));
+    $this->assertLink('Print');
+    $this->clickLink('Print');
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/1/print');
 //    foreach ($order->products as $sequence => $item) {
 //      $this->assertText(
@@ -296,8 +296,8 @@ class ShipmentTest extends UbercartBrowserTestBase {
 
     // Fourth "Packing slip".
     $this->drupalGet('admin/store/orders/' . $order->id() . '/shipments');
-    $this->assertLink(t('Packing slip'));
-    $this->clickLink(t('Packing slip'));
+    $this->assertLink('Packing slip');
+    $this->clickLink('Packing slip');
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/1/packing_slip');
     // Check for "Print invoice" and "Back" buttons.
 
@@ -310,20 +310,20 @@ class ShipmentTest extends UbercartBrowserTestBase {
 
     // Fifth, "Delete".
     $this->drupalGet('admin/store/orders/' . $order->id() . '/shipments');
-    $this->assertLink(t('Delete'));
-    $this->clickLink(t('Delete'));
+    $this->assertLink('Delete');
+    $this->clickLink('Delete');
     // Delete takes us to confirm page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/1/delete');
     $this->assertText(
-      t('The shipment will be canceled and the packages it contains will be available for reshipment.'),
+      'The shipment will be canceled and the packages it contains will be available for reshipment.',
       'Deletion confirm question found.'
     );
     // "Cancel" returns to the shipment list page.
-    $this->clickLink(t('Cancel'));
+    $this->clickLink('Cancel');
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments');
 
     // Again with the "Delete".
-    $this->clickLink(t('Delete'));
+    $this->clickLink('Delete');
     $this->drupalPostForm(NULL, [], 'Delete');
     // Delete returns to new packages page with all packages unchecked.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new');

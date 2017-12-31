@@ -19,10 +19,10 @@ class StoreTest extends UbercartBrowserTestBase {
 
     $this->drupalGet('admin/store');
     $assert->titleEquals('Store | Drupal');
-    $assert->pageTextContains(t('Configuration'));
-    $assert->linkExists(t('Store'));
-    $assert->linkExists(t('Countries and addresses'));
-    $assert->pageTextContains(t('Store status'));
+    $assert->pageTextContains('Configuration');
+    $assert->linkExists('Store');
+    $assert->linkExists('Countries and addresses');
+    $assert->pageTextContains('Store status');
 
     $edit = [
       'uc_store_name' => $this->randomMachineName(),

@@ -53,13 +53,13 @@ class CartSettingsTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       'admin/store/config/cart',
       ['uc_add_item_redirect' => $redirect],
-      t('Save configuration')
+      'Save configuration'
     );
 
     $this->drupalPostForm(
       'node/' . $this->product->id(),
       [],
-      t('Add to cart')
+      'Add to cart'
     );
     $url_pass = ($this->getUrl() == Url::fromUri('base:' . $redirect, ['absolute' => TRUE])->toString());
     $this->assertTrue(
@@ -76,10 +76,10 @@ class CartSettingsTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       'admin/store/config/cart',
       ['uc_add_item_redirect' => '<none>'],
-      t('Save configuration')
+      'Save configuration'
     );
 
-    $this->drupalPostForm('node/' . $this->product->id(), [], t('Add to cart'), ['query' => ['test' => 'querystring']]);
+    $this->drupalPostForm('node/' . $this->product->id(), [], 'Add to cart', ['query' => ['test' => 'querystring']]);
     $url = $this->product->toUrl('canonical', ['absolute' => TRUE, 'query' => ['test' => 'querystring']])->toString();
     $this->assertTrue($this->getUrl() == $url, 'Add to cart no-redirect preserves the query string.');
   }
@@ -99,7 +99,7 @@ class CartSettingsTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       NULL,
       ['uc_minimum_subtotal' => $minimum_subtotal],
-      t('Save configuration')
+      'Save configuration'
     );
 
     // Create two products, one below the minimum price and one above.
@@ -111,11 +111,11 @@ class CartSettingsTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       'node/' . $product_below_limit->id(),
       [],
-      t('Add to cart')
+      'Add to cart'
     );
     $this->drupalPostForm('cart',
       [],
-      t('Checkout')
+      'Checkout'
     );
     $this->assertRaw(
       'The minimum order subtotal for checkout is',
@@ -127,12 +127,12 @@ class CartSettingsTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       'node/' . $product_above_limit->id(),
       [],
-      t('Add to cart')
+      'Add to cart'
     );
     $this->drupalPostForm(
       'cart',
       [],
-      t('Checkout')
+      'Checkout'
     );
     $this->assertText('Enter your billing address and information here.');
   }
@@ -145,10 +145,10 @@ class CartSettingsTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       'node/' . $this->product->id(),
       [],
-      t('Add to cart')
+      'Add to cart'
     );
     $this->assertLink(
-      t('Continue shopping'),
+      'Continue shopping',
       0,
       'Continue shopping link appears on the page.'
     );
@@ -178,13 +178,13 @@ class CartSettingsTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       NULL,
       $settings,
-      t('Save configuration')
+      'Save configuration'
     );
 
     $this->drupalPostForm(
       'cart',
       [],
-      t('Continue shopping')
+      'Continue shopping'
     );
     $url_pass = ($this->getUrl() == Url::fromUri('base:' . $settings['uc_continue_shopping_url'], ['absolute' => TRUE])->toString());
     $this->assertTrue(
@@ -215,13 +215,13 @@ class CartSettingsTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       NULL,
       $settings,
-      t('Save configuration')
+      'Save configuration'
     );
 
     $this->drupalPostForm(
       'node/' . $this->product->id(),
       [],
-      t('Add to cart')
+      'Add to cart'
     );
     $this->assertLink(
       $settings['uc_cart_breadcrumb_text'],

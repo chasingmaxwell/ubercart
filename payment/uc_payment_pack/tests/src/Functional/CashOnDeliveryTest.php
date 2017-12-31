@@ -30,7 +30,7 @@ class CashOnDeliveryTest extends PaymentPackTestBase {
 
     // Test review order page.
     $this->drupalPostForm(NULL, [], 'Review order');
-    $this->assertText(t('Cash on delivery'), 'COD payment method found on review page.');
+    $this->assertText('Cash on delivery', 'COD payment method found on review page.');
     $this->drupalPostForm(NULL, [], 'Submit order');
 
     // Test user order view.
@@ -38,11 +38,11 @@ class CashOnDeliveryTest extends PaymentPackTestBase {
     $this->assertEquals($order->getPaymentMethodId(), $cod['id'], 'Order has COD payment method.');
 
     $this->drupalGet('user/' . $order->getOwnerId() . '/orders/' . $order->id());
-    $this->assertText(t('Method: Cash on delivery'), 'COD payment method displayed.');
+    $this->assertText('Method: Cash on delivery', 'COD payment method displayed.');
 
     // Test admin order view.
     $this->drupalGet('admin/store/orders/' . $order->id());
-    $this->assertText(t('Method: Cash on delivery'), 'COD payment method displayed.');
+    $this->assertText('Method: Cash on delivery', 'COD payment method displayed.');
   }
 
 }

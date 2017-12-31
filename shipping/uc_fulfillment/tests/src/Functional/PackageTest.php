@@ -89,10 +89,10 @@ class PackageTest extends UbercartBrowserTestBase {
     $this->drupalGet('admin/store/orders/view');
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/packages');
     // Test action.
-    $this->clickLink(t('Package'));
+    $this->clickLink('Package');
     $this->assertResponse(200);
     $this->assertText(
-      t("This order's products have not been organized into packages."),
+      "This order's products have not been organized into packages.",
       'Package action found.'
     );
 
@@ -129,10 +129,10 @@ class PackageTest extends UbercartBrowserTestBase {
     );
     // Go back to Packages tab and try something else.
     $this->assertUrl('admin/store/orders/' . $order->id());
-    $this->clickLink(t('Packages'));
+    $this->clickLink('Packages');
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
-      t("This order's products have not been organized into packages."),
+      "This order's products have not been organized into packages.",
       'Package action found.'
     );
 
@@ -140,7 +140,7 @@ class PackageTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(NULL, [], 'Create one package');
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
-      t('Packages must contain at least one product.'),
+      'Packages must contain at least one product.',
       'Validation that there must be products in a package.'
     );
 
@@ -166,12 +166,12 @@ class PackageTest extends UbercartBrowserTestBase {
     }
 
     // The "Create packages" local action should now be available too.
-    $this->assertLink(t('Create packages'));
-    $this->clickLink(t('Create packages'));
+    $this->assertLink('Create packages');
+    $this->clickLink('Create packages');
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     // But we've already packaged everything...
     $this->assertText(
-      t('There are no products available for this type of package.'),
+      'There are no products available for this type of package.',
       'Create packages local action found.'
     );
 
@@ -181,8 +181,8 @@ class PackageTest extends UbercartBrowserTestBase {
 
     // First "Ship".
     $this->drupalGet('admin/store/orders/' . $order->id() . '/packages');
-    $this->assertLink(t('Ship'));
-    $this->clickLink(t('Ship'));
+    $this->assertLink('Ship');
+    $this->clickLink('Ship');
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new?pkgs=1');
     foreach ($order->products as $sequence => $item) {
       $this->assertText(
@@ -211,20 +211,20 @@ class PackageTest extends UbercartBrowserTestBase {
 
     // Third, "Delete".
     $this->drupalGet('admin/store/orders/' . $order->id() . '/packages');
-    $this->assertLink(t('Delete'));
-    $this->clickLink(t('Delete'));
+    $this->assertLink('Delete');
+    $this->clickLink('Delete');
     // Delete takes us to confirm page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/1/delete');
     $this->assertText(
-      t('The products it contains will be available for repackaging.'),
+      'The products it contains will be available for repackaging.',
       'Deletion confirm question found.'
     );
     // "Cancel" returns to the package list page.
-    $this->clickLink(t('Cancel'));
+    $this->clickLink('Cancel');
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/packages');
 
     // Again with the "Delete".
-    $this->clickLink(t('Delete'));
+    $this->clickLink('Delete');
     $this->drupalPostForm(NULL, [], 'Delete');
     // Delete returns to new packages page with all packages unchecked.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
@@ -271,8 +271,8 @@ class PackageTest extends UbercartBrowserTestBase {
     );
 
     // Use "Create packages" to create a second package.
-    $this->assertLink(t('Create packages'));
-    $this->clickLink(t('Create packages'));
+    $this->assertLink('Create packages');
+    $this->clickLink('Create packages');
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertNoText(
       $order->products[1]->model->value,
@@ -311,14 +311,14 @@ class PackageTest extends UbercartBrowserTestBase {
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments/new?pkgs=3');
 
     // Now delete both packages.
-    $this->clickLink(t('Delete'));
+    $this->clickLink('Delete');
     $this->drupalPostForm(NULL, [], 'Delete');
     $this->assertText(
       'Package 2 has been deleted.',
       'Package deleted message found.'
     );
     // There's still one left to delete...
-    $this->clickLink(t('Delete'));
+    $this->clickLink('Delete');
     $this->drupalPostForm(NULL, [], 'Delete');
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(

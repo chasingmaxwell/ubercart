@@ -52,8 +52,8 @@ class StockTest extends UbercartBrowserTestBase {
       $prefix . '[stock]' => $stock,
       $prefix . '[threshold]' => rand(1, 100),
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save changes'));
-    $this->assertText(t('Stock settings saved.'));
+    $this->drupalPostForm(NULL, $edit, 'Save changes');
+    $this->assertText('Stock settings saved.');
     $this->assertTrue(uc_stock_is_active($sku));
     $this->assertEquals($stock, uc_stock_level($sku));
 
@@ -73,8 +73,8 @@ class StockTest extends UbercartBrowserTestBase {
       $prefix . '[active]' => 1,
       $prefix . '[stock]' => $stock,
     ];
-    $this->drupalPostForm('node/' . $this->product->id() . '/edit/stock', $edit, t('Save changes'));
-    $this->assertText(t('Stock settings saved.'));
+    $this->drupalPostForm('node/' . $this->product->id() . '/edit/stock', $edit, 'Save changes');
+    $this->assertText('Stock settings saved.');
 
     // Enable product quantity field.
     $edit = ['uc_product_add_to_cart_qty' => TRUE];

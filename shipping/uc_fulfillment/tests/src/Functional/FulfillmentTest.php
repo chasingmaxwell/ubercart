@@ -60,12 +60,12 @@ class FulfillmentTest extends UbercartBrowserTestBase {
     // Test presence of tab to package products.
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/packages');
     // Go to packages tab.
-    $this->clickLink(t('Packages'));
+    $this->clickLink('Packages');
     $this->assertResponse(200);
     // Check redirected path.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
-      t("This order's products have not been organized into packages."),
+      "This order's products have not been organized into packages.",
       'Packages tab found.'
     );
 
@@ -74,12 +74,12 @@ class FulfillmentTest extends UbercartBrowserTestBase {
     // Test presence of tab to make shipments.
     $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments');
     // Go to Shipments tab.
-    $this->clickLink(t('Shipments'));
+    $this->clickLink('Shipments');
     $this->assertResponse(200);
     // Check redirected path.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
     $this->assertText(
-      t("This order's products have not been organized into packages."),
+      "This order's products have not been organized into packages.",
       'Shipments tab found.'
     );
 
@@ -103,7 +103,7 @@ class FulfillmentTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       NULL,
       ['shipping_types[small_package][table][' . $order->id() . '][checked]' => 1],
-      t('Create one package')
+      'Create one package'
     );
     // Check that we're now on the package list page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/packages');
@@ -114,12 +114,12 @@ class FulfillmentTest extends UbercartBrowserTestBase {
 
     // Test the Shipments tab.
     $this->drupalGet('admin/store/orders/' . $order->id());
-    $this->clickLink(t('Shipments'));
+    $this->clickLink('Shipments');
     $this->assertResponse(200);
     // Check redirected path.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new');
     $this->assertText(
-      t('No shipments have been made for this order.'),
+      'No shipments have been made for this order.',
       'New shipments page reached.'
     );
     $this->assertText(
@@ -136,24 +136,24 @@ class FulfillmentTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(
       NULL,
       ['shipping_types[small_package][table][' . $order->id() . '][checked]' => 1],
-      t('Ship packages')
+      'Ship packages'
     );
     // Check that we're now on the shipment details page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/ship?method_id=manual&0=1');
     $this->assertText(
-      t('Origin address'),
+      'Origin address',
       'Origin address pane found.'
     );
     $this->assertText(
-      t('Destination address'),
+      'Destination address',
       'Destination address pane found.'
     );
     $this->assertText(
-      t('Package 1'),
+      'Package 1',
       'Packages data pane found.'
     );
     $this->assertText(
-      t('Shipment data'),
+      'Shipment data',
       'Shipment data pane found.'
     );
 
@@ -234,7 +234,7 @@ class FulfillmentTest extends UbercartBrowserTestBase {
     // Check that we're now on the shipments overview page
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments');
     $this->assertText(
-      t('Shipment ID'),
+      'Shipment ID',
       'Shipment summary found.'
     );
     $this->assertText(
@@ -246,7 +246,7 @@ class FulfillmentTest extends UbercartBrowserTestBase {
     // been shipped and a tracking number entered.
     $this->drupalGet('admin/store/orders/' . $order->id());
     $this->assertText(
-      t('Tracking numbers:'),
+      'Tracking numbers:',
       'Tracking order pane found.'
     );
     $this->assertText(
