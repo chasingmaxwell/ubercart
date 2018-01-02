@@ -46,11 +46,11 @@ class AddressBookForm extends FormBase {
 
     // Need to pass along address type selector for use in the JavaScript.
     $form['#attached']['drupalSettings']['addressTypeId'] = '#' . $type . '-address-select';
-    $form['close'] = array(
+    $form['close'] = [
       '#type' => 'button',
       '#value' => $this->t('Close'),
-      '#attributes' => array('id' => 'close-address-select'),
-    );
+      '#attributes' => ['id' => 'close-address-select'],
+    ];
 
     return $form;
   }

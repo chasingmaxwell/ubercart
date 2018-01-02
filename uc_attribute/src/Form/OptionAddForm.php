@@ -26,7 +26,7 @@ class OptionAddForm extends OptionFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // Remove Form API elements from $form_state
+    // Remove Form API elements from $form_state.
     $form_state->cleanValues();
     $oid = db_insert('uc_attribute_options')->fields($form_state->getValues())->execute();
     drupal_set_message($this->t('Created new option %option.', ['%option' => $form_state->getValue('name')]));

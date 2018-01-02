@@ -22,7 +22,7 @@ class CustomerInfo extends EditableOrderPanePluginBase {
    * {@inheritdoc}
    */
   public function getClasses() {
-    return array('pos-left');
+    return ['pos-left'];
   }
 
   /**
@@ -31,20 +31,20 @@ class CustomerInfo extends EditableOrderPanePluginBase {
   public function view(OrderInterface $order, $view_mode) {
     if ($view_mode != 'customer') {
       if ($order->getOwnerId()) {
-        $build['uid'] = array(
+        $build['uid'] = [
           '#type' => 'link',
           '#prefix' => $this->t('Customer number') . ': ',
           '#suffix' => '<br />',
           '#title' => $order->getOwnerId(),
           '#url' => $order->getOwner()->toUrl(),
-        );
+        ];
       }
-      $build['primary_email'] = array(
+      $build['primary_email'] = [
         '#type' => 'link',
         '#prefix' => $this->t('E-mail address') . ': ',
         '#title' => $order->getEmail(),
         '#url' => Url::fromUri('mailto:' . $order->getEmail()),
-      );
+      ];
       return $build;
     }
   }
@@ -54,50 +54,50 @@ class CustomerInfo extends EditableOrderPanePluginBase {
    */
   public function buildForm(OrderInterface $order, array $form, FormStateInterface $form_state) {
 
-    $form['order-view-image'] = array(
+    $form['order-view-image'] = [
       '#theme' => 'image',
       '#uri' => base_path() . drupal_get_path('module', 'uc_store') . '/images/order_view.gif',
       '#title' => $this->t('Search for an existing customer.'),
       '#alt' => $this->t('Search for an existing customer.'),
-      '#attributes' => array('id' => 'load-customer-search'),
+      '#attributes' => ['id' => 'load-customer-search'],
       '#prefix' => '<div class="order-pane-icons">',
-    );
+    ];
 
-    $form['menu-customers-image'] = array(
+    $form['menu-customers-image'] = [
       '#theme' => 'image',
       '#uri' => base_path() . drupal_get_path('module', 'uc_store') . '/images/menu_customers_small.gif',
       '#title' => $this->t('Create a new customer.'),
       '#alt' => $this->t('Create a new customer.'),
-      '#attributes' => array('id' => 'load-new-customer-form'),
+      '#attributes' => ['id' => 'load-new-customer-form'],
       '#suffix' => '</div>',
-    );
+    ];
 
-    $form['icons'] = array(
+    $form['icons'] = [
       '#type' => 'markup',
       '#markup' => '<div id="customer-select"></div>',
-    );
+    ];
 
-    $form['uid'] = array(
+    $form['uid'] = [
       '#type' => 'hidden',
       '#default_value' => $order->getOwnerId(),
-    );
+    ];
 
-    $form['uid_text'] = array(
+    $form['uid_text'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Customer number'),
       '#default_value' => $order->getOwnerId(),
       '#maxlength' => 10,
       '#size' => 10,
       '#disabled' => TRUE,
-    );
+    ];
 
-    $form['primary_email'] = array(
+    $form['primary_email'] = [
       '#type' => 'email',
       '#title' => $this->t('E-mail address'),
       '#default_value' => $order->getEmail(),
       '#maxlength' => 64,
       '#size' => 32,
-    );
+    ];
 
     return $form;
   }

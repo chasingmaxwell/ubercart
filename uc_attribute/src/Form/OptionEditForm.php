@@ -19,7 +19,7 @@ class OptionEditForm extends OptionFormBase {
 
     $form['#title'] = $this->t('Edit option: %name', ['%name' => $option->name]);
 
-    $form['oid'] = array('#type' => 'value', '#value' => $option->oid);
+    $form['oid'] = ['#type' => 'value', '#value' => $option->oid];
     $form['name']['#default_value'] = $option->name;
     $form['ordering']['#default_value'] = $option->ordering;
     $form['cost']['#default_value'] = $option->cost;
@@ -33,10 +33,10 @@ class OptionEditForm extends OptionFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    // Remove Form API elements from $form_state
+    // Remove Form API elements from $form_state.
     $form_state->cleanValues();
     db_merge('uc_attribute_options')
-      ->key(array('aid' => $form_state->getValue('aid'), 'oid' => $form_state->getValue('oid')))
+      ->key(['aid' => $form_state->getValue('aid'), 'oid' => $form_state->getValue('oid')])
       ->fields($form_state->getValues())
       ->execute();
     drupal_set_message($this->t('Updated option %option.', ['%option' => $form_state->getValue('name')]));

@@ -205,9 +205,9 @@ function uc_order_form_views_exposed_form_submit($form, FormStateInterface $form
  * Save a product to an order.
  *
  * @param int $order_id
- *  The order id.
+ *   The order id.
  * @param \Drupal\uc_order\OrderProductInterface $product
- *  The order id.
+ *   The order id.
  */
 function uc_order_product_save($order_id, $product) {
   $product->order_id = $order_id;

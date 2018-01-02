@@ -26,16 +26,16 @@ class UcWeightWidget extends WidgetBase {
     $value = isset($items[$delta]->value) ? $items[$delta]->value : 0;
     $units = isset($items[$delta]->units) ? $items[$delta]->units : \Drupal::config('uc_store.settings')->get('weight.units');
 
-    $element += array(
+    $element += [
       '#type' => 'fieldset',
-      '#attributes' => array('class' => array(
+      '#attributes' => ['class' => [
         'container-inline',
         'fieldgroup',
         'form-composite',
-      )),
-    );
+      ]],
+    ];
 
-    $element['value'] = array(
+    $element['value'] = [
       '#type' => 'number',
       '#title' => $this->t('Weight'),
       '#title_display' => 'invisible',
@@ -43,20 +43,20 @@ class UcWeightWidget extends WidgetBase {
       '#size' => 6,
       '#min' => 0,
       '#step' => 'any',
-    );
+    ];
 
-    $element['units'] = array(
+    $element['units'] = [
       '#type' => 'select',
       '#title' => $this->t('Units'),
       '#title_display' => 'invisible',
       '#default_value' => $units,
-      '#options' => array(
+      '#options' => [
         'lb' => $this->t('Pounds'),
         'kg' => $this->t('Kilograms'),
         'oz' => $this->t('Ounces'),
         'g' => $this->t('Grams'),
-      ),
-    );
+      ],
+    ];
 
     return $element;
   }

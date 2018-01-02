@@ -22,7 +22,7 @@ use Drupal\Core\Session\AccountInterface;
  * the uc_file module will check for implementations of this hook.
  *
  * @param \Drupal\Core\Session\AccountInterface $user
- *   The Drupal user object that has requested the download
+ *   The Drupal user object that has requested the download.
  * @param $file_download
  *   The file download object as defined as a row from the uc_file_users table
  *   that grants the user the download

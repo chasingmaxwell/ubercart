@@ -19,7 +19,7 @@ use Drupal\uc_order\Entity\OrderStatus;
  * Implements hook_help().
  */
 function uc_report_help($route_name, RouteMatchInterface $route_match) {
-  $output =  '';
+  $output = '';
 
   $route = \Drupal::routeMatch()->getRouteName();
   //if (substr($route, 0, 10) == 'uc_report.') {
@@ -270,33 +270,33 @@ function uc_report_page_attachments(&$page) {
 function uc_report_form_uc_store_settings_form_alter(&$form, &$form_state) {
   $report_config = \Drupal::config('uc_report.settings');
 
-  $form['reports'] = array(
+  $form['reports'] = [
     '#type' => 'details',
     '#title' => t('Report settings'),
     '#group' => 'store',
-  );
-  $form['reports']['uc_report_table_size'] = array(
+  ];
+  $form['reports']['uc_report_table_size'] = [
     '#type' => 'textfield',
     '#title' => t('Number of rows to show in reports'),
     '#description' => t('The maximum number of rows displayed on one page for a report table.'),
     '#default_value' => $report_config->get('table_size'),
     '#size' => 5,
-  );
-  $form['reports']['uc_report_reported_statuses'] = array(
+  ];
+  $form['reports']['uc_report_reported_statuses'] = [
     '#type' => 'checkboxes',
     '#title' => t('Reported statuses'),
     '#description' => t('Only orders with selected statuses will be included in reports.'),
     '#options' => OrderStatus::getOptionsList(),
     '#default_value' => $report_config->get('reported_statuses'),
     '#multiple' => TRUE,
-  );
+  ];
 }
 
 /**
  * Returns a SQL friendly array of order statuses for orders used in reports.
  */
 function uc_report_order_statuses() {
-  $statuses = array();
+  $statuses = [];
   foreach (OrderStatus::loadMultiple() as $status) {
     $statuses[] = $status->id();
   }

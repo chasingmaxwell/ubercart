@@ -147,6 +147,7 @@ interface TaxRateInterface extends ConfigEntityInterface {
    * If the tax applies only to shippable products.
    *
    * @param bool $shippable
+   *   If the tax applies only to shippable products.
    *
    * @return $this
    */
