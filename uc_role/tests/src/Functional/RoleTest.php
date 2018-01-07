@@ -1,16 +1,18 @@
 <?php
 
-namespace Drupal\uc_role\Tests;
+namespace Drupal\Tests\uc_role\Functional;
 
-use Drupal\uc_store\Tests\UbercartTestBase;
+use Drupal\Tests\Traits\Core\CronRunTrait;
+use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 use Drupal\user\Entity\Role;
 
 /**
  * Tests the role purchase functionality.
  *
- * @group Ubercart
+ * @group ubercart
  */
-class RoleTest extends UbercartTestBase {
+class RoleTest extends UbercartBrowserTestBase {
+  use CronRunTrait;
 
   // editor.module caused a crash on non-shippable products.
   // @see https://www.drupal.org/node/2695639
@@ -24,14 +26,14 @@ class RoleTest extends UbercartTestBase {
     $product = $this->createProduct(['price' => 0, 'shippable' => 0]);
     $rid = $this->drupalCreateRole(['access content']);
     $this->drupalLogin($this->adminUser);
-    $this->drupalPostForm('node/' . $product->id() . '/edit/features', ['feature' => 'role'], t('Add'));
+    $this->drupalPostForm('node/' . $product->id() . '/edit/features', ['feature' => 'role'], 'Add');
     $edit = [
       'role' => $rid,
       'end_override' => TRUE,
       'expire_relative_duration' => 1,
       'expire_relative_granularity' => 'day',
     ];
-    $this->drupalPostForm(NULL, $edit, t('Save feature'));
+    $this->drupalPostForm(NULL, $edit, 'Save feature');
 
     // Check out with the test product.
     $this->addToCart($product);
