@@ -46,7 +46,7 @@ class CatalogBlockTest extends CatalogTestBase {
     $this->assertEquals(BlockPluginInterface::BLOCK_LABEL_VISIBLE, $configuration['label_display']);
 
     // Create a taxonomy term to use as a catalog category.
-    $term = $this->createTerm();
+    $term = $this->createCatalogTerm();
     // Create product and put it in this category.
     $product = $this->createProduct([
       'taxonomy_catalog' => [$term->id()],
@@ -95,10 +95,10 @@ class CatalogBlockTest extends CatalogTestBase {
    */
   public function testExpandCategories() {
     // Top level category with two children.
-    $parent = $this->createTerm();
+    $parent = $this->createCatalogTerm();
     $child = [];
-    $child[1] = $this->createTerm(['parent' => $parent->id()]);
-    $child[2] = $this->createTerm(['parent' => $parent->id()]);
+    $child[1] = $this->createCatalogTerm(['parent' => $parent->id()]);
+    $child[2] = $this->createCatalogTerm(['parent' => $parent->id()]);
 
     // Create first product in this category.
     $product = [];
@@ -145,7 +145,7 @@ class CatalogBlockTest extends CatalogTestBase {
    */
   public function testProductCountDisplay() {
     // Create a taxonomy term to use as a catalog category.
-    $term = $this->createTerm();
+    $term = $this->createCatalogTerm();
     $product = [];
     // Create first product in this category.
     $product[] = $this->createProduct([

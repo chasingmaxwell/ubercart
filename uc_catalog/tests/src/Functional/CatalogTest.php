@@ -23,7 +23,7 @@ class CatalogTest extends CatalogTestBase {
   public function testCatalog() {
     $this->drupalLogin($this->adminUser);
 
-    $term = $this->createTerm();
+    $term = $this->createCatalogTerm();
     $product = $this->createProduct([
       'taxonomy_catalog' => [$term->id()],
     ]);
@@ -48,7 +48,7 @@ class CatalogTest extends CatalogTestBase {
   public function testCatalogAttribute() {
     $this->drupalLogin($this->adminUser);
 
-    $term = $this->createTerm();
+    $term = $this->createCatalogTerm();
     $product = $this->createProduct([
       'taxonomy_catalog' => [$term->id()],
     ]);
@@ -67,7 +67,7 @@ class CatalogTest extends CatalogTestBase {
   public function testCatalogNode() {
     $this->drupalLogin($this->adminUser);
 
-    $term = $this->createTerm();
+    $term = $this->createCatalogTerm();
     $product = $this->createProduct([
       'taxonomy_catalog' => [$term->id()],
     ]);

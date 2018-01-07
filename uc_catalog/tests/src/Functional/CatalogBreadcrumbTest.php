@@ -23,9 +23,9 @@ class CatalogBreadcrumbTest extends CatalogTestBase {
   public function testProductBreadcrumb() {
     $this->drupalLogin($this->adminUser);
 
-    $grandparent = $this->createTerm();
-    $parent = $this->createTerm(['parent' => $grandparent->id()]);
-    $term = $this->createTerm(['parent' => $parent->id()]);
+    $grandparent = $this->createCatalogTerm();
+    $parent = $this->createCatalogTerm(['parent' => $grandparent->id()]);
+    $term = $this->createCatalogTerm(['parent' => $parent->id()]);
     $product = $this->createProduct([
       'taxonomy_catalog' => [$term->id()],
     ]);
@@ -52,9 +52,9 @@ class CatalogBreadcrumbTest extends CatalogTestBase {
   public function testCatalogBreadcrumb() {
     $this->drupalLogin($this->adminUser);
 
-    $grandparent = $this->createTerm();
-    $parent = $this->createTerm(['parent' => $grandparent->id()]);
-    $term = $this->createTerm(['parent' => $parent->id()]);
+    $grandparent = $this->createCatalogTerm();
+    $parent = $this->createCatalogTerm(['parent' => $grandparent->id()]);
+    $term = $this->createCatalogTerm(['parent' => $parent->id()]);
     $product = $this->createProduct([
       'taxonomy_catalog' => [$term->id()],
     ]);
