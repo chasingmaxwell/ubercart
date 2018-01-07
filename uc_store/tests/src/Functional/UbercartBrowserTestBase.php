@@ -6,7 +6,6 @@ use Drupal\Core\Test\AssertMailTrait;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\uc_country\Entity\Country;
 use Drupal\uc_order\Entity\Order;
-use Drupal\uc_order\Entity\OrderProduct;
 use Drupal\Tests\uc_attribute\Traits\AttributeTestTrait;
 use Drupal\Tests\uc_order\Traits\OrderTestTrait;
 
