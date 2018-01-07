@@ -84,6 +84,7 @@ class QuoteSettingsForm extends ConfigFormBase {
     $form['default_address']['address'] = [
 //    '#tree' => TRUE,
       '#type' => 'uc_address',
+      '#hide' => ['first_name', 'last_name', 'company', 'email'],
       '#default_value' => $quote_config->get('ship_from_address'),
       '#required' => FALSE,
     ];

@@ -98,11 +98,11 @@ class TwoCheckoutController extends ControllerBase {
     $order->save();
 
     if (Unicode::strtolower($request->request->get('email')) !== Unicode::strtolower($order->getEmail())) {
-      uc_order_comment_save($order->id(), 0, $this->t('Customer used a different e-mail address during payment: @email', ['@email' => SafeMarkup::checkPlain($request->request->get('email'))]), 'admin');
+      uc_order_comment_save($order->id(), 0, $this->t('Customer used a different e-mail address during payment: @email', ['@email' => $request->request->get('email')]), 'admin');
     }
 
     if ($request->request->get('credit_card_processes') == 'Y' && is_numeric($request->request->get('total'))) {
-      $comment = $this->t('Paid by @type, 2Checkout.com order #@order.', ['@type' => $request->request->get('pay_method') == 'CC' ? $this->t('credit card') : $this->t('echeck'), '@order' => SafeMarkup::checkPlain($request->request->get('order_number'))]);
+      $comment = $this->t('Paid by @type, 2Checkout.com order #@order.', ['@type' => $request->request->get('pay_method') == 'CC' ? $this->t('credit card') : $this->t('echeck'), '@order' => $request->request->get('order_number')]);
       uc_payment_enter($order->id(), '2checkout', $request->request->get('total'), 0, NULL, $comment);
     }
     else {

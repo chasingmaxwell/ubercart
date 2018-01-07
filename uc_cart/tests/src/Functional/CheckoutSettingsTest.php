@@ -34,7 +34,7 @@ class CheckoutSettingsTest extends UbercartBrowserTestBase {
       'Add to cart'
     );
     $this->assertNoRaw('Checkout');
-    $buttons = $this->xpath('//input[@value="' . 'Checkout' . '"]');
+    $buttons = $this->xpath('//input[@value="Checkout"]');
     $this->assertFalse(
       isset($buttons[0]),
       'The checkout button is not shown.'

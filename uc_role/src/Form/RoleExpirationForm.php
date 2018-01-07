@@ -6,7 +6,6 @@ use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
-use Drupal\Component\Utility\SafeMarkup;
 use Drupal\user\Entity\User;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -87,8 +86,8 @@ class RoleExpirationForm extends FormBase {
 
       // Each row has username, role, expiration, and edit/delete operations.
       $row = [
-        'username' => SafeMarkup::checkPlain($account->getUsername()),
-        'role' => SafeMarkup::checkPlain(_uc_role_get_name($result->rid)),
+        'username' => $account->getUsername(),
+        'role' => _uc_role_get_name($result->rid),
         'expiration' => $this->dateFormatter->format($result->expiration, 'short'),
       ];
 

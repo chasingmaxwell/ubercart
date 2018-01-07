@@ -299,7 +299,7 @@ class ShipmentTest extends UbercartBrowserTestBase {
     $this->assertLink('Packing slip');
     $this->clickLink('Packing slip');
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/1/packing_slip');
-    // Check for "Print invoice" and "Back" buttons.
+    // Check for "Print packing slip" and "Back" buttons.
 
 //    foreach ($order->products as $sequence => $item) {
 //      $this->assertText(

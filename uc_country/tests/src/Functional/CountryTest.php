@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\uc_country\Functional;
 
-use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Tests\BrowserTestBase;
 
 /**
@@ -33,7 +32,7 @@ class CountryTest extends BrowserTestBase {
       $this->assertSession()->linkByHrefExists(
         'admin/store/config/country/' . $country_id . '/enable',
         0,
-        SafeMarkup::format('%country is not enabled by default.', ['%country' => $countries[$country_id]])
+        format_string('%country is not enabled by default.', ['%country' => $countries[$country_id]])
       );
 
       // Enable this country.
@@ -42,7 +41,7 @@ class CountryTest extends BrowserTestBase {
       $this->assertSession()->linkByHrefExists(
         'admin/store/config/country/' . $country_id . '/disable',
         0,
-        SafeMarkup::format('%country is now enabled.', ['%country' => $countries[$country_id]])
+        format_string('%country is now enabled.', ['%country' => $countries[$country_id]])
       );
     }
 
@@ -62,7 +61,7 @@ class CountryTest extends BrowserTestBase {
     $this->assertSession()->linkByHrefExists(
       'admin/store/config/country/' . $last_country . '/disable',
       0,
-      SafeMarkup::format('%country is now enabled.', ['%country' => $countries[$last_country]])
+      format_string('%country is now enabled.', ['%country' => $countries[$last_country]])
     );
 
     // Verify that last random country now shows up as available.
@@ -82,7 +81,7 @@ class CountryTest extends BrowserTestBase {
     $this->assertSession()->linkByHrefExists(
       'admin/store/config/country/' . $last_country . '/enable',
       0,
-      SafeMarkup::format('%country is now disabled.', ['%country' => $countries[$last_country]])
+      format_string('%country is now disabled.', ['%country' => $countries[$last_country]])
     );
   }
 
@@ -150,14 +149,14 @@ class CountryTest extends BrowserTestBase {
     ]);
     if (isset($urls[$index])) {
       $url_target = $this->getAbsoluteUrl($urls[$index]->getAttribute('href'));
-      $this->pass(SafeMarkup::format('Clicked link %label (@url_target) from @url_before', [
+      $this->pass(format_string('Clicked link %label (@url_target) from @url_before', [
         '%label' => $label,
         '@url_target' => $url_target,
         '@url_before' => $url_before,
       ]), 'Browser');
       return $this->drupalGet($url_target);
     }
-    $this->fail(SafeMarkup::format('Link %label does not exist on @url_before', [
+    $this->fail(format_string('Link %label does not exist on @url_before', [
       '%label' => $label,
       '@url_before' => $url_before,
     ]), 'Browser');

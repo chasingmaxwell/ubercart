@@ -7,7 +7,6 @@
  * Product kits are groups of products that are sold as a unit.
  */
 
-use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
@@ -114,7 +113,7 @@ function uc_product_kit_uc_form_alter(&$form, FormStateInterface $form_state, $f
 
     $form['products'] = ['#tree' => TRUE];
     foreach ($kit->products as $i => $product) {
-      $form['products'][$i] = ['#title' => SafeMarkup::checkPlain($product->label())];
+      $form['products'][$i] = ['#title' => $product->label()];
       $form['products'][$i]['nid'] = ['#type' => 'hidden', '#value' => $product->id()];
       $form['products'][$i]['qty'] = ['#type' => 'hidden', '#value' => $product->qty];
     }
@@ -130,7 +129,7 @@ function uc_product_kit_uc_form_alter(&$form, FormStateInterface $form_state, $f
 
     $form['products'] = ['#tree' => TRUE];
     foreach ($node->products as $i => $product) {
-      $form['products'][$i] = ['#title' => SafeMarkup::checkPlain($product->title)];
+      $form['products'][$i] = ['#title' => $product->title];
       $form['products'][$i]['nid'] = ['#type' => 'hidden', '#value' => $product->nid];
       $form['products'][$i]['qty'] = ['#type' => 'hidden', '#value' => $product->qty];
     }

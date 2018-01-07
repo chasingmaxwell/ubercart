@@ -1,3 +1,4 @@
+# uc_tax.* routes are for the old (but still working) tax rate code.
 uc_tax.methods:
   path: '/admin/store/config/taxes'
   defaults:
@@ -35,6 +36,7 @@ uc_tax.rate_delete:
   requirements:
     _permission: 'administer taxes'
 
+# entity.uc_tax_rate routes are for the new configurations/plugin architecture.
 entity.uc_tax_rate.collection:
   path: '/admin/store/config/tax'
   defaults:

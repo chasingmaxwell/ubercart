@@ -184,6 +184,7 @@ function uc_quote_form_node_form_alter(&$form, FormStateInterface $form_state) {
     $form['shipping']['shipping_address']['#tree'] = TRUE;
     $form['shipping']['shipping_address']['address'] = [
       '#type' => 'uc_address',
+      '#hide' => ['first_name', 'last_name', 'company', 'email'],
       '#default_value' => $form_state->getValue('shipping_address') ?: $address,
       '#required' => FALSE,
     ];

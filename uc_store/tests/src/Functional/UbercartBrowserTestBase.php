@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\uc_store\Functional;
 
-use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\uc_country\Entity\Country;
@@ -192,7 +191,7 @@ abstract class UbercartBrowserTestBase extends BrowserTestBase {
       ->execute();
     $order_id = reset($order_ids);
     if ($order_id) {
-      $this->pass(SafeMarkup::format('Order %order_id has been created', ['%order_id' => $order_id]));
+      $this->pass(format_string('Order %order_id has been created', ['%order_id' => $order_id]));
       $order = Order::load($order_id);
     }
     else {
@@ -281,7 +280,7 @@ abstract class UbercartBrowserTestBase extends BrowserTestBase {
    *   Number of emails to search for string, starting with most recent.
    * @param string $message
    *   (optional) A message to display with the assertion. Do not translate
-   *   messages: use SafeMarkup::format() to embed variables in the message
+   *   messages: use format_string() to embed variables in the message
    *   text, not t(). If left blank, a default message will be displayed.
    * @param string $group
    *   (optional) The group this message is in, which is displayed in a column
@@ -307,7 +306,7 @@ abstract class UbercartBrowserTestBase extends BrowserTestBase {
       }
     }
     if (!$message) {
-      $message = SafeMarkup::format('Expected text not found in @field of email message: "@expected".', ['@field' => $field_name, '@expected' => $string]);
+      $message = format_string('Expected text not found in @field of email message: "@expected".', ['@field' => $field_name, '@expected' => $string]);
     }
     return $this->assertFalse($string_found, $message, $group);
   }

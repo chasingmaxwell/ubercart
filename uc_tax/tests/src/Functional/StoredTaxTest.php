@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\uc_tax\Functional;
 
-use Drupal\Component\Utility\SafeMarkup;
 use Drupal\uc_order\Entity\Order;
 
 /**
@@ -71,7 +70,7 @@ class StoredTaxTest extends TaxTestBase {
     $order_id = reset($order_ids);
     if ($order_id) {
       $this->pass(
-        SafeMarkup::format('Order %order_id has been created', ['%order_id' => $order_id])
+        format_string('Order %order_id has been created', ['%order_id' => $order_id])
       );
 
       $this->drupalGet('admin/store/orders/' . $order_id . '/edit');

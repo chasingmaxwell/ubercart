@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\uc_store\FunctionalJavascript;
 
-use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\FunctionalJavascriptTests\JavascriptTestBase;
 use Drupal\uc_country\Entity\Country;
@@ -173,8 +172,10 @@ abstract class UbercartJavascriptTestBase extends JavascriptTestBase {
    *   The created order, or FALSE if the order could not be created.
    */
   protected function checkout(array $edit = []) {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
     $this->drupalPostForm('cart', [], 'Checkout');
-    $this->assertText(
+    $assert->pageTextContains(
       'Enter your billing address and information here.',
       'Viewed cart page: Billing pane has been displayed.'
     );
@@ -183,7 +184,7 @@ abstract class UbercartJavascriptTestBase extends JavascriptTestBase {
 
     // Submit the checkout page.
     $this->drupalPostForm('cart/checkout', $edit, 'Review order');
-    $this->assertText('Your order is almost complete.');
+    $assert->pageTextContains('Your order is almost complete.');
 
     // Complete the review page.
     $this->drupalPostForm(NULL, [], 'Submit order');
@@ -193,7 +194,7 @@ abstract class UbercartJavascriptTestBase extends JavascriptTestBase {
       ->execute();
     $order_id = reset($order_ids);
     if ($order_id) {
-      $this->pass(SafeMarkup::format('Order %order_id has been created', ['%order_id' => $order_id]));
+      $this->pass(format_string('Order %order_id has been created', ['%order_id' => $order_id]));
       $order = Order::load($order_id);
     }
     else {
@@ -282,7 +283,7 @@ abstract class UbercartJavascriptTestBase extends JavascriptTestBase {
    *   Number of emails to search for string, starting with most recent.
    * @param string $message
    *   (optional) A message to display with the assertion. Do not translate
-   *   messages: use SafeMarkup::format() to embed variables in the message
+   *   messages: use format_string() to embed variables in the message
    *   text, not t(). If left blank, a default message will be displayed.
    * @param string $group
    *   (optional) The group this message is in, which is displayed in a column
@@ -308,7 +309,7 @@ abstract class UbercartJavascriptTestBase extends JavascriptTestBase {
       }
     }
     if (!$message) {
-      $message = SafeMarkup::format('Expected text not found in @field of email message: "@expected".', ['@field' => $field_name, '@expected' => $string]);
+      $message = format_string('Expected text not found in @field of email message: "@expected".', ['@field' => $field_name, '@expected' => $string]);
     }
     return $this->assertFalse($string_found, $message, $group);
   }

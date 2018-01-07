@@ -137,10 +137,11 @@ class OrderInvoiceTest extends BrowserTestBase {
 
     // Check textfield 'email' exists and has customer e-mail filled in.
     $assert->fieldValueEquals('email', $this->order->getEmail());
-    // Check button 'Mail invoice' exists and press it.
+    // Check button 'Mail invoice' exists and press it - this will send an
+    // email using the test_mail_collector so we can examine it later.
     $assert->buttonExists('Mail invoice')->press();
 
-    // Collect email and check some of the contents.
+    // Examine the collected email and check some of the contents.
     $this->assertMailString('subject', 'Your Order Invoice', 1, 'Order invoice was sent via email');
   }
 
