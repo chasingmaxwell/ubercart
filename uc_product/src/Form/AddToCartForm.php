@@ -43,12 +43,12 @@ class AddToCartForm extends BuyItNowForm {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, NodeInterface $node = NULL) {
+    $form = parent::buildForm($form, $form_state, $node);
+
     $form['node'] = [
       '#type' => 'value',
       '#value' => $form_state->get('variant') ?: $node,
     ];
-
-    $form = parent::buildForm($form, $form_state, $node);
 
     if ($node->default_qty->value > 0) {
       if ($this->config('uc_product.settings')->get('add_to_cart_qty')) {

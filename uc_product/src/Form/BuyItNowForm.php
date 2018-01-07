@@ -61,6 +61,11 @@ class BuyItNowForm extends FormBase implements BaseFormIdInterface {
       '#value' => $node->id(),
     ];
 
+    $form['node'] = [
+      '#type' => 'value',
+      '#value' => $node,
+    ];
+
     $form['qty'] = [
       '#type' => 'value',
       '#value' => 1,

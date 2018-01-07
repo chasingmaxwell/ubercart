@@ -2,6 +2,8 @@
 
 namespace Drupal\Tests\uc_product_kit\Functional;
 
+use Drupal\Tests\uc_catalog\Traits\CatalogTestTrait;
+use Drupal\Tests\uc_product\Traits\ProductTestTrait;
 use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 
 /**
@@ -10,9 +12,15 @@ use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
  * @group ubercart
  */
 class ProductKitTest extends UbercartBrowserTestBase {
+  use CatalogTestTrait;
+  use ProductTestTrait;
 
-  public static $modules = ['uc_product_kit'];
-  public static $adminPermissions = ['create product_kit content', 'edit any product_kit content'];
+  public static $modules = ['uc_product_kit', 'uc_catalog'];
+  public static $adminPermissions = [
+    'create product_kit content',
+    'edit any product_kit content',
+    'view catalog',
+  ];
 
   /**
    * {@inheritdoc}
@@ -28,6 +36,9 @@ class ProductKitTest extends UbercartBrowserTestBase {
    * Tests creating product kits through the node form.
    */
   public function testProductKitNodeForm() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalLogin($this->adminUser);
 
     // Allow the default quantity to be set.
@@ -59,19 +70,22 @@ class ProductKitTest extends UbercartBrowserTestBase {
       ],
     ];
     $this->drupalPostForm('node/add/product_kit', $edit, 'Save');
-    $this->assertText(t('Product kit @title has been created.', ['@title' => $edit[$title_key]]));
-    $this->assertText($edit[$body_key], 'Product kit body found.');
-    $this->assertText('1 × ' . $products[0]->label(), 'Product 1 title found.');
-    $this->assertText('1 × ' . $products[1]->label(), 'Product 2 title found.');
-    $this->assertText('1 × ' . $products[2]->label(), 'Product 3 title found.');
+    $assert->pageTextContains(format_string('Product kit @title has been created.', ['@title' => $edit[$title_key]]));
+    $assert->pageTextContains($edit[$body_key], 'Product kit body found.');
+    $assert->pageTextContains('1 × ' . $products[0]->label(), 'Product 1 title found.');
+    $assert->pageTextContains('1 × ' . $products[1]->label(), 'Product 2 title found.');
+    $assert->pageTextContains('1 × ' . $products[2]->label(), 'Product 3 title found.');
     $total = $products[0]->price->value + $products[1]->price->value + $products[2]->price->value;
-    $this->assertText(uc_currency_format($total), 'Product kit total found.');
+    $assert->pageTextContains(uc_currency_format($total), 'Product kit total found.');
   }
 
   /**
    * Tests product kit discounting.
    */
   public function testProductKitDiscounts() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalLogin($this->adminUser);
 
     // Create some test products and a kit.
@@ -115,11 +129,11 @@ class ProductKitTest extends UbercartBrowserTestBase {
     // Check the discounted total.
     $total = $products[0]->price->value + $products[1]->price->value + $products[2]->price->value;
     $total += array_sum($discounts);
-    $this->assertText(uc_currency_format($total), 'Discounted product kit total found.');
+    $assert->pageTextContains(uc_currency_format($total), 'Discounted product kit total found.');
 
     // Check the discounts on the edit page.
     $this->drupalGet('node/' . $kit->id() . '/edit');
-    $this->assertText('Currently, the total price is ' . uc_currency_format($total), 'Discounted product kit total found.');
+    $assert->pageTextContains('Currently, the total price is ' . uc_currency_format($total), 'Discounted product kit total found.');
     $this->assertFieldByName('items[' . $products[0]->id() . '][discount]', $discounts[0]);
     $this->assertFieldByName('items[' . $products[1]->id() . '][discount]', $discounts[1]);
     $this->assertFieldByName('items[' . $products[2]->id() . '][discount]', $discounts[2]);
@@ -129,7 +143,7 @@ class ProductKitTest extends UbercartBrowserTestBase {
     $this->drupalPostForm('node/' . $kit->id() . '/edit', ['kit_total' => $total], 'Save');
 
     // Check the fixed total.
-    $this->assertText(uc_currency_format($total), 'Fixed product kit total found.');
+    $assert->pageTextContains(uc_currency_format($total), 'Fixed product kit total found.');
 
     // Check the discounts on the edit page.
     $this->drupalGet('node/' . $kit->id() . '/edit');
@@ -146,7 +160,7 @@ class ProductKitTest extends UbercartBrowserTestBase {
 
     // Check the kit total is still the same.
     $this->drupalGet('node/' . $kit->id());
-    $this->assertText(uc_currency_format($total), 'Fixed product kit total found.');
+    $assert->pageTextContains(uc_currency_format($total), 'Fixed product kit total found.');
 
     // Check the discounts are zeroed on the edit page.
     $this->drupalGet('node/' . $kit->id() . '/edit');
@@ -160,6 +174,9 @@ class ProductKitTest extends UbercartBrowserTestBase {
    * Tests product kit mutability.
    */
   public function testProductKitMutability() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalLogin($this->adminUser);
 
     // Create some test products and prepare a kit.
@@ -181,17 +198,17 @@ class ProductKitTest extends UbercartBrowserTestBase {
     $kit_data['mutable'] = UC_PRODUCT_KIT_UNMUTABLE_NO_LIST;
     $kit = $this->drupalCreateNode($kit_data);
     $this->drupalGet('node/' . $kit->id());
-    $this->assertText($kit->label(), 'Product kit title found.');
-    $this->assertNoText($products[0]->label(), 'Product 1 title not shown.');
-    $this->assertNoText($products[1]->label(), 'Product 2 title not shown.');
-    $this->assertNoText($products[2]->label(), 'Product 3 title not shown.');
+    $assert->pageTextContains($kit->label(), 'Product kit title found.');
+    $assert->pageTextNotContains($products[0]->label(), 'Product 1 title not shown.');
+    $assert->pageTextNotContains($products[1]->label(), 'Product 2 title not shown.');
+    $assert->pageTextNotContains($products[2]->label(), 'Product 3 title not shown.');
 
     $this->addToCart($kit);
     $this->drupalGet('cart');
-    $this->assertText($kit->label(), 'Product kit title found.');
-    $this->assertNoText($products[0]->label(), 'Product 1 title not shown.');
-    $this->assertNoText($products[1]->label(), 'Product 2 title not shown.');
-    $this->assertNoText($products[2]->label(), 'Product 3 title not shown.');
+    $assert->pageTextContains($kit->label(), 'Product kit title found.');
+    $assert->pageTextNotContains($products[0]->label(), 'Product 1 title not shown.');
+    $assert->pageTextNotContains($products[1]->label(), 'Product 2 title not shown.');
+    $assert->pageTextNotContains($products[2]->label(), 'Product 3 title not shown.');
 
     $total = $products[0]->price->value + $products[1]->price->value + $products[2]->price->value;
     $this->assertSession()->pageTextMatches('/Subtotal:\s*' . preg_quote(uc_currency_format($total)) . '/', 'Product kit total found.');
@@ -201,23 +218,23 @@ class ProductKitTest extends UbercartBrowserTestBase {
     $this->assertSession()->pageTextMatches('/Subtotal:\s*' . preg_quote(uc_currency_format($total * $qty)) . '/', 'Updated product kit total found.');
 
     $this->drupalPostForm(NULL, [], 'Remove');
-    $this->assertText('There are no products in your shopping cart.');
+    $assert->pageTextContains('There are no products in your shopping cart.');
 
     // Test kits with listing.
     $kit_data['mutable'] = UC_PRODUCT_KIT_UNMUTABLE_WITH_LIST;
     $kit = $this->drupalCreateNode($kit_data);
     $this->drupalGet('node/' . $kit->id());
-    $this->assertText($kit->label(), 'Product kit title found.');
-    $this->assertText($products[0]->label(), 'Product 1 title shown.');
-    $this->assertText($products[1]->label(), 'Product 2 title shown.');
-    $this->assertText($products[2]->label(), 'Product 3 title shown.');
+    $assert->pageTextContains($kit->label(), 'Product kit title found.');
+    $assert->pageTextContains($products[0]->label(), 'Product 1 title shown.');
+    $assert->pageTextContains($products[1]->label(), 'Product 2 title shown.');
+    $assert->pageTextContains($products[2]->label(), 'Product 3 title shown.');
 
     $this->addToCart($kit);
     $this->drupalGet('cart');
-    $this->assertText($kit->label(), 'Product kit title found.');
-    $this->assertText($products[0]->label(), 'Product 1 title shown.');
-    $this->assertText($products[1]->label(), 'Product 2 title shown.');
-    $this->assertText($products[2]->label(), 'Product 3 title shown.');
+    $assert->pageTextContains($kit->label(), 'Product kit title found.');
+    $assert->pageTextContains($products[0]->label(), 'Product 1 title shown.');
+    $assert->pageTextContains($products[1]->label(), 'Product 2 title shown.');
+    $assert->pageTextContains($products[2]->label(), 'Product 3 title shown.');
 
     $total = $products[0]->price->value + $products[1]->price->value + $products[2]->price->value;
     $this->assertSession()->pageTextMatches('/Subtotal:\s*' . preg_quote(uc_currency_format($total)) . '/', 'Product kit total found.');
@@ -227,23 +244,23 @@ class ProductKitTest extends UbercartBrowserTestBase {
     $this->assertSession()->pageTextMatches('/Subtotal:\s*' . preg_quote(uc_currency_format($total * $qty)) . '/', 'Updated product kit total found.');
 
     $this->drupalPostForm(NULL, [], 'Remove');
-    $this->assertText('There are no products in your shopping cart.');
+    $assert->pageTextContains('There are no products in your shopping cart.');
 
     // Test mutable kits.
     $kit_data['mutable'] = UC_PRODUCT_KIT_MUTABLE;
     $kit = $this->drupalCreateNode($kit_data);
     $this->drupalGet('node/' . $kit->id());
-    $this->assertText($kit->label(), 'Product kit title found.');
-    $this->assertText($products[0]->label(), 'Product 1 title shown.');
-    $this->assertText($products[1]->label(), 'Product 2 title shown.');
-    $this->assertText($products[2]->label(), 'Product 3 title shown.');
+    $assert->pageTextContains($kit->label(), 'Product kit title found.');
+    $assert->pageTextContains($products[0]->label(), 'Product 1 title shown.');
+    $assert->pageTextContains($products[1]->label(), 'Product 2 title shown.');
+    $assert->pageTextContains($products[2]->label(), 'Product 3 title shown.');
 
     $this->addToCart($kit);
     $this->drupalGet('cart');
-    $this->assertNoText($kit->label(), 'Product kit title not shown.');
-    $this->assertText($products[0]->label(), 'Product 1 title shown.');
-    $this->assertText($products[1]->label(), 'Product 2 title shown.');
-    $this->assertText($products[2]->label(), 'Product 3 title shown.');
+    $assert->pageTextNotContains($kit->label(), 'Product kit title not shown.');
+    $assert->pageTextContains($products[0]->label(), 'Product 1 title shown.');
+    $assert->pageTextContains($products[1]->label(), 'Product 2 title shown.');
+    $assert->pageTextContains($products[2]->label(), 'Product 3 title shown.');
 
     $total = $products[0]->price->value + $products[1]->price->value + $products[2]->price->value;
     $this->assertSession()->pageTextMatches('/Subtotal:\s*' . preg_quote(uc_currency_format($total)) . '/', 'Product kit total found.');
@@ -263,7 +280,32 @@ class ProductKitTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(NULL, [], 'Remove');
     $this->drupalPostForm(NULL, [], 'Remove');
     $this->drupalPostForm(NULL, [], 'Remove');
-    $this->assertText('There are no products in your shopping cart.');
+    $assert->pageTextContains('There are no products in your shopping cart.');
+  }
+
+  /**
+   * Verify uc_product_kit_uc_form_alter() doesn't break catalog view.
+   *
+   * @see https://www.drupal.org/project/ubercart/issues/2932702
+   */
+  public function testUcFormAlter() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
+    $this->drupalLogin($this->adminUser);
+
+    $term = $this->createCatalogTerm();
+    $product = $this->createProduct([
+      'taxonomy_catalog' => [$term->id()],
+    ]);
+
+    $this->drupalGet('catalog');
+    $assert->linkExists($term->label(), 0, 'The term is listed in the catalog.');
+
+    // Clicking this link generates a fatal error if the BuyItNowForm form
+    // element 'node' does not exist.
+    $this->clickLink($term->label());
+    $assert->linkExists($product->label(), 0, 'The product is listed in the catalog.');
   }
 
 }
