@@ -90,6 +90,12 @@ function uc_store_tokens($type, $tokens, array $data, array $options, Bubbleable
               '#theme' => 'image',
               '#uri' => $uri,
             ];
+            // Redefine $logo because '#theme' => 'image' always generates a
+            // relative URL for local files. @todo remove this when this is
+            // fixed by https://www.drupal.org/project/drupal/issues/2704597
+            $logo = [
+              '#markup' => '<img src="' . Url::fromUserInput($uri, ['absolute' => TRUE])->toString() . '" typeof="foaf:Image" />',
+            ];
             $replacements[$original] = drupal_render($logo);
           }
           break;
