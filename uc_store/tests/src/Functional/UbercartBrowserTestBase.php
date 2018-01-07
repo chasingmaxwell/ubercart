@@ -8,7 +8,7 @@ use Drupal\uc_country\Entity\Country;
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_order\Entity\OrderProduct;
 use Drupal\Tests\uc_attribute\Traits\AttributeTestTrait;
-use Drupal\Tests\uc_product\Traits\ProductTestTrait;
+use Drupal\Tests\uc_order\Traits\OrderTestTrait;
 
 /**
  * Base class for Ubercart PHPUnit browser tests.
@@ -16,7 +16,7 @@ use Drupal\Tests\uc_product\Traits\ProductTestTrait;
 abstract class UbercartBrowserTestBase extends BrowserTestBase {
   use AssertMailTrait;
   use AttributeTestTrait;
-  use ProductTestTrait;
+  use OrderTestTrait;
 
   /**
    * The profile to install as a basis for testing.
@@ -200,41 +200,6 @@ abstract class UbercartBrowserTestBase extends BrowserTestBase {
     }
 
     return $order;
-  }
-
-  /**
-   * Creates a new order directly, without going through checkout.
-   *
-   * @param array $edit
-   *   (optional) An associative array of order fields to change from the
-   *   defaults, keys are order field names. For example, 'price' => '12.34'.
-   *
-   * @return \Drupal\uc_order\OrderInterface
-   *   The created Order entity.
-   */
-  protected function createOrder(array $edit = []) {
-    if (empty($edit['primary_email'])) {
-      $edit['primary_email'] = $this->randomString() . '@example.org';
-    }
-
-    $order = Order::create($edit);
-
-    if (!isset($edit['products'])) {
-      $order->products[] = OrderProduct::create([
-        'nid' => $this->product->nid->target_id,
-        'title' => $this->product->title->value,
-        'model' => $this->product->model,
-        'qty' => 1,
-        'cost' => $this->product->cost->value,
-        'price' => $this->product->price->value,
-        'weight' => $this->product->weight,
-        'data' => [],
-      ]);
-    }
-
-    $order->save();
-
-    return Order::load($order->id());
   }
 
   /**
