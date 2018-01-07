@@ -2,16 +2,30 @@
 
 namespace Drupal\Tests\uc_order\Functional;
 
+use Drupal\Tests\BrowserTestBase;
 use Drupal\uc_country\Entity\Country;
 use Drupal\uc_order\Entity\Order;
-use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 
 /**
  * Tests customer administration page functionality.
  *
  * @group ubercart
  */
-class CustomerAdminTest extends UbercartBrowserTestBase {
+class CustomerAdminTest extends BrowserTestBase {
+
+  /**
+   * Modules to enable.
+   *
+   * @var string[]
+   */
+  public static $modules = ['uc_order', 'views'];
+
+  /**
+   * Don't check for or validate config schema.
+   *
+   * @var bool
+   */
+  protected $strictConfigSchema = FALSE;
 
   /**
    * A user with permission to view customers.
@@ -28,19 +42,13 @@ class CustomerAdminTest extends UbercartBrowserTestBase {
   protected $customer;
 
   /**
-   * Modules to enable.
-   *
-   * @var string[]
-   */
-  public static $modules = ['views'];
-
-  /**
    * {@inheritdoc}
    */
   protected function setUp() {
     parent::setUp();
 
     $this->adminUser = $this->drupalCreateUser([
+      'access administration pages',
       'access user profiles',
       'view customers',
     ]);
