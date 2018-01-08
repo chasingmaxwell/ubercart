@@ -140,7 +140,7 @@ class PoweredByBlock extends BlockBase implements ContainerFactoryPluginInterfac
    * Returns the default message options.
    */
   protected function options() {
-    $url = [':url' => Url::fromUri('http://www.ubercart.org/')->toString()];
+    $url = [':url' => Url::fromUri('https://www.drupal.org/project/ubercart')->toString()];
     return [
       1 => $this->t('<a href=":url">Powered by Ubercart</a>', $url),
       2 => $this->t('<a href=":url">Drupal e-commerce</a> provided by Ubercart.', $url),
