@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\uc_order\Event\OrderStatusUpdateEvent;
+use Drupal\uc_order\Event\OrderDeletedEvent;
 use Drupal\uc_order\OrderInterface;
 use Drupal\uc_store\Address;
 use Drupal\user\Entity\User;
@@ -190,6 +191,11 @@ class Order extends ContentEntityBase implements OrderInterface {
 
       // Log the action in the database.
       \Drupal::logger('uc_order')->notice('Order @order_id deleted by user @uid.', ['@order_id' => $order_id, '@uid' => \Drupal::currentUser()->id()]);
+
+      // Rules event.
+      // rules_invoke_event('uc_order_delete', $order);
+      $event = new OrderDeletedEvent($order);
+      \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
     }
   }
 
