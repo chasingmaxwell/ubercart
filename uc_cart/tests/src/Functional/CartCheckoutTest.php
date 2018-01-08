@@ -466,7 +466,7 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
     // Payment notification is received first.
     $order_data = [
       'uid' => 0,
-      'primary_email' => 'simpletest@ubercart.org',
+      'primary_email' => 'simpletest@example.com',
     ];
     $order = $this->createOrder($order_data);
     uc_payment_enter($order->id(), 'other', $order->getTotal());
@@ -490,7 +490,7 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
     // Different user, sees the checkout page first.
     $order_data = [
       'uid' => 0,
-      'primary_email' => 'simpletest2@ubercart.org',
+      'primary_email' => 'simpletest2@example.com',
     ];
     $order = $this->createOrder($order_data);
     $output = $this->cartManager->completeSale($order);
