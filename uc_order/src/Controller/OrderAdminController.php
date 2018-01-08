@@ -21,8 +21,8 @@ class OrderAdminController extends ControllerBase {
     $type = $request->request->get('type');
     $func = $request->request->get('func');
 
-    $form = \Drupal::formBuilder()->getForm('\Drupal\uc_order\Form\AddressBookForm', $uid, $type, $func);
-    return new Response(drupal_render($form));
+    $form = $this->formBuilder()->getForm('\Drupal\uc_order\Form\AddressBookForm', $uid, $type, $func);
+    return new Response(\Drupal::service('renderer')->render($form));
   }
 
   /**
@@ -113,7 +113,7 @@ class OrderAdminController extends ControllerBase {
               'name' => $name,
               'mail' => $email,
               'pass' => user_password(6),
-              'status' => \Drupal::config('uc_cart.settings')->get('new_customer_status_active') ? 1 : 0,
+              'status' => $this->config('uc_cart.settings')->get('new_customer_status_active') ? 1 : 0,
             ];
 
             $account = User::create($fields);
@@ -145,9 +145,9 @@ class OrderAdminController extends ControllerBase {
         break;
     }
 
-    $build['customer_select_form'] = \Drupal::formBuilder()->getForm('\Drupal\uc_order\Form\SelectCustomerForm', $operation, $options);
+    $build['customer_select_form'] = $this->formBuilder()->getForm('\Drupal\uc_order\Form\SelectCustomerForm', $operation, $options);
 
-    return new Response(drupal_render($build));
+    return new Response(\Drupal::service('renderer')->render($build));
   }
 
 }
