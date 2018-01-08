@@ -294,7 +294,7 @@ function uc_payment_balance(OrderInterface $order) {
 function uc_payment_load_payments($order_id) {
   $result = \Drupal::entityQuery('uc_payment_receipt')
     ->condition('order_id', $order_id)
-    ->sort('received')
+    ->sort('receipt_id')
     ->execute();
 
   if (!empty($result)) {
