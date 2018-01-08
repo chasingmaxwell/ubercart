@@ -59,11 +59,11 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
     // Goto order payments form and confirm order total and
     // payments total of $1 show up.
     $this->drupalGet('admin/store/orders/' . $order->id() . '/payments');
-    $this->assertRaw(
+    $assert->responseContains(
       '<span class="uc-price">' . uc_currency_format($order->getTotal()) . '</span>',
       'Order total is correct'
     );
-    $this->assertRaw(
+    $assert->responseContains(
       '<span class="uc-price">' . uc_currency_format($order->getTotal() - 1.0) . '</span>',
       'Current balance is correct'
     );
@@ -80,19 +80,19 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
       $edit,
       'Record payment'
     );
-    $this->assertText('Payment entered.');
+    $assert->pageTextContains('Payment entered.');
     // Verify partial payment shows up in table.
-    $this->assertRaw(
+    $assert->responseContains(
       '<span class="uc-price">' . uc_currency_format($first_payment) . '</span>',
       'Payment appears on page.'
     );
     // Verify balance.
-    $this->assertRaw(
+    $assert->responseContains(
       '<span class="uc-price">' . uc_currency_format($order->getTotal() - 1.0 - $first_payment) . '</span>',
       'Current balance is correct'
     );
     // Verify markup in comments.
-    $this->assertRaw(
+    $assert->responseContains(
       'Test <b>markup</b> in comments.',
       'Markup is preserved in payment receipt comments.'
     );
@@ -109,12 +109,12 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
       'Record payment'
     );
     // Verify partial payment shows up in table.
-    $this->assertRaw(
+    $assert->responseContains(
       '<span class="uc-price">' . uc_currency_format($second_payment) . '</span>',
       'Payment appears on page.'
     );
     // Verify balance.
-    $this->assertRaw(
+    $assert->responseContains(
       '<span class="uc-price">' . uc_currency_format($order->getTotal() - 1.0 - $first_payment - $second_payment) . '</span>',
       'Order total is correct'
     );
@@ -124,13 +124,13 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
     $this->clickLink('Delete');
     // Delete takes us to confirm page.
     $assert->addressEquals('admin/store/orders/' . $order->id() . '/payments/1/delete');
-    $this->assertText(
+    $assert->pageTextContains(
       'Are you sure you want to delete this payment?',
       'Deletion confirm question found.'
     );
     // "Cancel" returns to the payments list page.
     $this->clickLink('Cancel');
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/payments');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/payments');
 
     // Again with the "Delete".
     // Delete the first partial payment, not the $1 initial payment.
@@ -138,10 +138,10 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(NULL, [], 'Delete');
     // Delete returns to new payments page.
     $assert->addressEquals('admin/store/orders/' . $order->id() . '/payments');
-    $this->assertText('Payment deleted.');
+    $assert->pageTextContains('Payment deleted.');
 
     // Verify balance has increased.
-    $this->assertRaw(
+    $assert->responseContains(
       '<span class="uc-price">' . uc_currency_format($order->getTotal() - 1.0 - $second_payment) . '</span>',
       'Current balance is correct'
     );
@@ -149,15 +149,15 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
     // Go to order log and ensure two payments and
     // one payment deletion were logged.
     $this->drupalGet('admin/store/orders/' . $order->id() . '/log');
-    $this->assertText(
+    $assert->pageTextContains(
       'Check payment for ' . uc_currency_format($first_payment) . ' entered.',
       'First payment was logged'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       'Check payment for ' . uc_currency_format($second_payment) . ' entered.',
       'Second payment was logged'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       'Check payment for ' . uc_currency_format($first_payment) . ' deleted.',
       'Payment deletion was logged'
     );
