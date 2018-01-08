@@ -89,7 +89,7 @@ class AdminComments extends EditableOrderPanePluginBase {
   public function submitForm(OrderInterface $order, array &$form, FormStateInterface $form_state) {
     if (!$form_state->isValueEmpty('admin_comment')) {
       $uid = \Drupal::currentUser()->id();
-      uc_order_comment_save($form_state->getValue('order_id'), $uid, $form_state->getValue('admin_comment'));
+      uc_order_comment_save($order->id(), $uid, $form_state->getValue('admin_comment'));
     }
   }
 

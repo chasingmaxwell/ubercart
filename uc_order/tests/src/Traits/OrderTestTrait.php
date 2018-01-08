@@ -28,7 +28,7 @@ trait OrderTestTrait {
    */
   protected function createOrder(array $edit = []) {
     if (empty($edit['primary_email'])) {
-      $edit['primary_email'] = $this->randomString() . '@example.org';
+      $edit['primary_email'] = $this->randomMachineName(8) . '@example.org';
     }
 
     $order = Order::create($edit);
