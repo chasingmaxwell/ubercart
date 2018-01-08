@@ -69,18 +69,26 @@
 
 .order-pane.pos-left {
   float: left; /* LTR */
+  clear: right; /* LTR */
 }
 [dir="rtl"] .order-pane.pos-left {
   float: right;
+  clear: left;
+}
+
+.order-pane.pos-right {
+  float: right; /* LTR */
+  clear: left; /* LTR */
+}
+[dir="rtl"] .order-pane.pos-right {
+  float: left;
+  clear: right;
 }
 
 .order-pane.abs-left {
   border: 0;
-  clear: left; /* LTR */
+  clear: both;
   padding: .5em 0;
-}
-[dir="rtl"] .order-pane.abs-left {
-  clear: right;
 }
 
 .order-pane.abs-left .form-submit {
@@ -202,7 +210,7 @@
 .line-item-table .li-title {
   font-weight: bold;
   text-align: right; /* LTR */
-  width: 100%;
+  width: auto;
 }
 [dir="rtl"] .line-item-table .li-title {
   text-align: left;
