@@ -4,29 +4,13 @@ namespace Drupal\Tests\uc_fulfillment\Functional;
 
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_order\Entity\OrderProduct;
-use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 
 /**
  * Tests creating new packages from purchased products.
  *
  * @group ubercart
  */
-class PackageTest extends UbercartBrowserTestBase {
-
-  public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_fulfillment'];
-  public static $adminPermissions = ['fulfill orders'];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-
-    // Ensure test mails are logged.
-    \Drupal::configFactory()->getEditable('system.mail')
-      ->set('interface.uc_order', 'test_mail_collector')
-      ->save();
-  }
+class PackageTest extends FulfillmentTestBase {
 
   /**
    * Tests the User Interface for packaging products.

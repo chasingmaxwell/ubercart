@@ -2,29 +2,12 @@
 
 namespace Drupal\Tests\uc_fulfillment\Functional;
 
-use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
-
 /**
  * Tests fulfillment backend functionality.
  *
  * @group ubercart
  */
-class FulfillmentTest extends UbercartBrowserTestBase {
-
-  public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_fulfillment'];
-  public static $adminPermissions = ['fulfill orders'];
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function setUp() {
-    parent::setUp();
-
-    // Ensure test mails are logged.
-    \Drupal::configFactory()->getEditable('system.mail')
-      ->set('interface.uc_order', 'test_mail_collector')
-      ->save();
-  }
+class FulfillmentTest extends FulfillmentTestBase {
 
   /**
    * Tests packaging and shipping a simple order with the "Manual" plugin.
@@ -157,79 +140,9 @@ class FulfillmentTest extends UbercartBrowserTestBase {
       'Shipment data pane found.'
     );
 
-    $street = array_flip([
-      'Street',
-      'Avenue',
-      'Place',
-      'Way',
-      'Road',
-      'Boulevard',
-      'Court',
-    ]);
-
-    // Fill in the details and make the shipment.
-    // If we filled the addresses in when we created the order,
-    // those values should already be set here so we wouldn't
-    // have to fill them in again.
-    $form_values = [
-      'pickup_address[first_name]' => $this->randomMachineName(6),
-      'pickup_address[last_name]' => $this->randomMachineName(12),
-      'pickup_address[company]' => $this->randomMachineName(10) . ', Inc.',
-      'pickup_address[street1]' => mt_rand(10, 1000) . ' ' .
-                                   $this->randomMachineName(10) . ' ' .
-                                   array_rand($street),
-      'pickup_address[street2]' => 'Suite ' . mt_rand(100, 999),
-      'pickup_address[city]' => $this->randomMachineName(10),
-      'pickup_address[postal_code]' => mt_rand(10000, 99999),
-      'delivery_address[first_name]' => $this->randomMachineName(6),
-      'delivery_address[last_name]' => $this->randomMachineName(12),
-      'delivery_address[company]' => $this->randomMachineName(10) . ', Inc.',
-      'delivery_address[street1]' => mt_rand(10, 1000) . ' ' .
-                                     $this->randomMachineName(10) . ' ' .
-                                     array_rand($street),
-      'delivery_address[street2]' => 'Suite ' . mt_rand(100, 999),
-      'delivery_address[city]' => $this->randomMachineName(10),
-      'delivery_address[postal_code]' => mt_rand(10000, 99999),
-      'packages[1][pkg_type]' => 'envelope',
-      'packages[1][declared_value]' => '1234.56',
-      'packages[1][tracking_number]' => '4-8-15-16-23-42',
-      'packages[1][weight][weight]' => '3',
-      'packages[1][weight][units]' => array_rand(array_flip(['lb', 'kg', 'oz', 'g'])),
-      'packages[1][dimensions][length]' => '1',
-      'packages[1][dimensions][width]' => '1',
-      'packages[1][dimensions][height]' => '1',
-      'packages[1][dimensions][length]' => '1',
-      'packages[1][dimensions][units]' => array_rand(array_flip(['in', 'ft', 'cm', 'mm'])),
-      'carrier' => 'FedEx',
-      'accessorials' => 'Standard Overnight',
-      'transaction_id' => 'THX1138',
-      'tracking_number' => '1234567890ABCD',
-      'ship_date[date]' => '1985-10-26',
-      'expected_delivery[date]' => '2015-10-21',
-      'cost' => '12.34',
-    ];
-
-//@todo fix ajax and uncomment settings country and zone.
-    // Find available countries for our select.
-    $country_ids = \Drupal::service('country_manager')->getEnabledList();
-    $pickup_country = array_rand($country_ids);
-//    $this->drupalPostAjaxForm(NULL, ['pickup_address[country]' => $pickup_country], 'pickup_address[country]');
-
-    // Don't try to set the zone unless the country has zones!
-    $zone_list = \Drupal::service('country_manager')->getZoneList($pickup_country);
-    if (!empty($zone_list)) {
- //     $form_values['pickup_address[zone]'] = array_rand($zone_list);
-    }
-
-    $delivery_country = array_rand($country_ids);
-//    $this->drupalPostAjaxForm(NULL, ['delivery_address[country]' => $delivery_country], 'delivery_address[country]');
-    $zone_list = \Drupal::service('country_manager')->getZoneList($delivery_country);
-    if (!empty($zone_list)) {
-//      $form_values['delivery_address[zone]'] = array_rand($zone_list);
-    }
-
     // Make the shipment.
-    $this->drupalPostForm(NULL, $form_values, 'Save shipment');
+    $edit = $this->populateShipmentForm();
+    $this->drupalPostForm(NULL, $edit, 'Save shipment');
 
     // Check that we're now on the shipments overview page
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments');
