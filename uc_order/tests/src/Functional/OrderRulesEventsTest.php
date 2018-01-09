@@ -46,12 +46,16 @@ class OrderRulesEventsTest extends BrowserTestBase {
   protected $adminUser;
 
   /**
+   * Reaction Rules entity storage.
    *
+   * @var \Drupal\rules\Entity\ReactionRuleStorage
    */
   protected $rulesStorage;
 
   /**
+   * The Rules expression manager.
    *
+   * @var \Drupal\rules\Engine\ExpressionManager
    */
   protected $expressionManager;
 
