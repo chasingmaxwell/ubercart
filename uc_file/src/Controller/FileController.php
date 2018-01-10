@@ -64,13 +64,13 @@ class FileController extends ControllerBase {
     $build['file_action_form'] = $this->formBuilder->getForm('Drupal\uc_file\Form\FileActionForm');
 
     // Table of files to operate on.
-    $header = array(
+    $header = [
       // Fake out tableselect JavaScript into operating on our table.
-      array('data' => '', 'class' => array('select-all')),
-      'filename' => array('data' => $this->t('File'), 'field' => 'f.filename', 'sort' => 'asc'),
-      'title' => array('data' => $this->t('Product'), 'field' => 'n.title'),
-      'model' => array('data' => $this->t('SKU'), 'field' => 'fp.model', 'class' => array(RESPONSIVE_PRIORITY_LOW)),
-    );
+      ['data' => '', 'class' => ['select-all']],
+      'filename' => ['data' => $this->t('File'), 'field' => 'f.filename', 'sort' => 'asc'],
+      'title' => ['data' => $this->t('Product'), 'field' => 'n.title'],
+      'model' => ['data' => $this->t('SKU'), 'field' => 'fp.model', 'class' => [RESPONSIVE_PRIORITY_LOW]],
+    ];
 
     // Create pager.
     $query = $this->database->select('uc_files', 'f')
