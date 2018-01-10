@@ -45,9 +45,6 @@ class PackageTest extends FulfillmentTestBase {
     $order->save();
     $order = Order::load($order->id());
 
-    // Apparently this is needed so tests won't fail.
-    \Drupal::state()->set('system.test_mail_collector', []);
-
     uc_payment_enter($order->id(), 'other', $order->getTotal());
 
 // Order with 4 products shippable products. (where do we test not-shippable?)

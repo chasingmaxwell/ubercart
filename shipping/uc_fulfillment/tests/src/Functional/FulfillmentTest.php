@@ -28,9 +28,6 @@ class FulfillmentTest extends FulfillmentTestBase {
     $order->products[1]->data->shippable = 1;
     $order->save();
 
-    // Apparently this is needed so tests won't fail.
-    \Drupal::state()->set('system.test_mail_collector', []);
-
     // Check out with the test product.
     uc_payment_enter($order->id(), 'other', $order->getTotal());
 
@@ -115,7 +112,7 @@ class FulfillmentTest extends FulfillmentTestBase {
       'Manual shipping method selected.'
     );
 
-    // Select all packages and create shipment using the default "Manual" method..
+    // Select all packages and make shipment using the default "Manual" method.
     $this->drupalPostForm(
       NULL,
       ['shipping_types[small_package][table][' . $order->id() . '][checked]' => 1],
@@ -144,7 +141,7 @@ class FulfillmentTest extends FulfillmentTestBase {
     $edit = $this->populateShipmentForm();
     $this->drupalPostForm(NULL, $edit, 'Save shipment');
 
-    // Check that we're now on the shipments overview page
+    // Check that we're now on the shipments overview page.
     $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments');
     $this->assertText(
       'Shipment ID',
@@ -167,7 +164,7 @@ class FulfillmentTest extends FulfillmentTestBase {
       'Tracking number found.'
     );
 
-    // Delete Order and check to see that all Package/Shipment data has been removed.
+    // Delete Order and check to see all Package/Shipment data has been removed.
   }
 
 }
