@@ -79,7 +79,11 @@ class WeightQuote extends ShippingQuotePluginBase {
    * {@inheritdoc}
    */
   public function getDescription() {
-    return $this->t('@base_rate + @product_rate per @unit', ['@base_rate' => uc_currency_format($this->configuration['base_rate']), '@product_rate' => uc_currency_format($this->configuration['product_rate']), '@unit' => \Drupal::config('uc_store.settings')->get('weight.units')]);
+    return $this->t('@base_rate + @product_rate per @unit', [
+      '@base_rate' => uc_currency_format($this->configuration['base_rate']),
+      '@product_rate' => uc_currency_format($this->configuration['product_rate']),
+      '@unit' => \Drupal::config('uc_store.settings')->get('weight.units'),
+    ]);
   }
 
   /**

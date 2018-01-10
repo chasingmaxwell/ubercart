@@ -14,9 +14,20 @@ use Drupal\user\Entity\Role;
 class RoleTest extends UbercartBrowserTestBase {
   use CronRunTrait;
 
-  // editor.module caused a crash on non-shippable products.
-  // @see https://www.drupal.org/node/2695639
-  public static $modules = ['uc_payment', 'uc_payment_pack', 'uc_role', 'editor'];
+  /**
+   * Modules to enable.
+   *
+   * @var string[]
+   *
+   * Enable editor because that module caused a crash on non-shippable products.
+   * @see https://www.drupal.org/node/2695639
+   */
+  public static $modules = [
+    'uc_payment',
+    'uc_payment_pack',
+    'uc_role',
+    'editor',
+  ];
 
   /**
    * Tests purchase of role.

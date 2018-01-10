@@ -2,7 +2,6 @@
 
 namespace Drupal\uc_fulfillment\Controller;
 
-
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Link;
 use Drupal\Core\Url;

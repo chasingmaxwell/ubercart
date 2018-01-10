@@ -55,7 +55,8 @@ class PackageEditForm extends FormBase {
 
     $result = db_query('SELECT order_product_id, SUM(qty) AS quantity FROM {uc_packaged_products} pp LEFT JOIN {uc_packages} p ON pp.package_id = p.package_id WHERE p.order_id = :id GROUP BY order_product_id', [':id' => $uc_order->id()]);
     foreach ($result as $packaged_product) {
-      // Make already packaged products unavailable, except those in this package.
+      // Make already packaged products unavailable,
+      // except those in this package.
       $products[$packaged_product->order_product_id]->qty->value -= $packaged_product->quantity;
       if (isset($this->package->getProducts()[$packaged_product->order_product_id])) {
         $products[$packaged_product->order_product_id]->qty->value += $this->package->getProducts()[$packaged_product->order_product_id]->qty;

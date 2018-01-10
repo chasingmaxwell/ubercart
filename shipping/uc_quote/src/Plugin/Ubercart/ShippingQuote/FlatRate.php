@@ -77,7 +77,10 @@ class FlatRate extends ShippingQuotePluginBase {
    * {@inheritdoc}
    */
   public function getDescription() {
-    return $this->t('@base_rate + @product_rate per item', ['@base_rate' => uc_currency_format($this->configuration['base_rate']), '@product_rate' => uc_currency_format($this->configuration['product_rate'])]);
+    return $this->t('@base_rate + @product_rate per item', [
+      '@base_rate' => uc_currency_format($this->configuration['base_rate']),
+      '@product_rate' => uc_currency_format($this->configuration['product_rate']),
+    ]);
   }
 
   /**
