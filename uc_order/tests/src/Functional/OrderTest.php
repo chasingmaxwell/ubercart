@@ -75,8 +75,8 @@ class OrderTest extends UbercartBrowserTestBase {
     ]);
     $this->assertEquals($order->getOwnerId(), $this->customer->id(), 'New order has correct uid.');
     $this->assertEquals($order->getStatusId(), 'completed', 'New order is marked completed.');
-    $this->assertEquals($order->getAddress('billing')->first_name, $name, 'New order has correct name.');
-    $this->assertEquals($order->getAddress('billing')->last_name, $name, 'New order has correct name.');
+    $this->assertEquals($order->getAddress('billing')->getFirstName(), $name, 'New order has correct name.');
+    $this->assertEquals($order->getAddress('billing')->getLastName(), $name, 'New order has correct name.');
 
     // Test deletion.
     $order->save();
@@ -169,18 +169,25 @@ class OrderTest extends UbercartBrowserTestBase {
     $this->drupalGet('admin/store/orders/' . $order->id());
 
     $billing_address = $order->getAddress('billing');
-    $assert->pageTextContains(Unicode::strtoupper($billing_address->first_name), 'Billing first name found.');
-    $assert->pageTextContains(Unicode::strtoupper($billing_address->last_name), 'Billing last name found.');
-    $assert->pageTextContains(Unicode::strtoupper($billing_address->street1), 'Billing street 1 found.');
-    $assert->pageTextContains(Unicode::strtoupper($billing_address->street2), 'Billing street 2 found.');
-    $assert->pageTextContains(Unicode::strtoupper($billing_address->city), 'Billing city found.');
+    $assert->pageTextContains(Unicode::strtoupper($billing_address->getFirstName()), 'Billing first name found.');
+    $assert->pageTextContains(Unicode::strtoupper($billing_address->getLastName()), 'Billing last name found.');
+    $assert->pageTextContains(Unicode::strtoupper($billing_address->getStreet1()), 'Billing street 1 found.');
+    $assert->pageTextContains(Unicode::strtoupper($billing_address->getStreet2()), 'Billing street 2 found.');
+    // Some country formats don't use City in addresses.
+    $country = \Drupal::service('country_manager')->getCountry($billing_address->getCountry());
+    if (strpos(implode('', $country->getAddressFormat()), 'city') === FALSE) {
+      $assert->pageTextContains(Unicode::strtoupper($billing_address->getCity()), 'Billing city found.');
+    }
 
     $delivery_address = $order->getAddress('delivery');
-    $assert->pageTextContains(Unicode::strtoupper($delivery_address->first_name), 'Delivery first name found.');
-    $assert->pageTextContains(Unicode::strtoupper($delivery_address->last_name), 'Delivery last name found.');
-    $assert->pageTextContains(Unicode::strtoupper($delivery_address->street1), 'Delivery street 1 found.');
-    $assert->pageTextContains(Unicode::strtoupper($delivery_address->street2), 'Delivery street 2 found.');
-    $assert->pageTextContains(Unicode::strtoupper($delivery_address->city), 'Delivery city found.');
+    $assert->pageTextContains(Unicode::strtoupper($delivery_address->getFirstName()), 'Delivery first name found.');
+    $assert->pageTextContains(Unicode::strtoupper($delivery_address->getLastName()), 'Delivery last name found.');
+    $assert->pageTextContains(Unicode::strtoupper($delivery_address->getStreet1()), 'Delivery street 1 found.');
+    $assert->pageTextContains(Unicode::strtoupper($delivery_address->getStreet2()), 'Delivery street 2 found.');
+    $country = \Drupal::service('country_manager')->getCountry($delivery_address->getCountry());
+    if (strpos(implode('', $country->getAddressFormat()), 'city') === FALSE) {
+      $assert->pageTextContains(Unicode::strtoupper($delivery_address->getCity()), 'Delivery city found.');
+    }
 
     $assert->linkExists($order->getOwnerId(), 0, 'Link to customer account page found.');
     $assert->linkExists($order->getEmail(), 0, 'Link to customer email address found.');
@@ -208,8 +215,8 @@ class OrderTest extends UbercartBrowserTestBase {
     $this->drupalGet('user/' . $this->customer->id() . '/orders/' . $order->id());
     $assert->statusCodeEquals(200, 'Customer can view their own order.');
     $address = $order->getAddress('billing');
-    $assert->pageTextContains(Unicode::strtoupper($address->first_name), 'Found customer first name.');
-    $assert->pageTextContains(Unicode::strtoupper($address->last_name), 'Found customer last name.');
+    $assert->pageTextContains(Unicode::strtoupper($address->getFirstName()), 'Found customer first name.');
+    $assert->pageTextContains(Unicode::strtoupper($address->getLastName()), 'Found customer last name.');
 
     $this->drupalGet('admin/store/orders/' . $order->id());
     $assert->statusCodeEquals(403, 'Customer may not see the admin view of their order.');
