@@ -208,7 +208,8 @@ class OrderTest extends UbercartBrowserTestBase {
     $this->drupalGet('user/' . $this->customer->id() . '/orders/' . $order->id());
     $assert->statusCodeEquals(200, 'Customer can view their own order.');
     $address = $order->getAddress('billing');
-    $assert->pageTextContains(Unicode::strtoupper($address->first_name . ' ' . $address->last_name), 'Found customer name.');
+    $assert->pageTextContains(Unicode::strtoupper($address->first_name), 'Found customer first name.');
+    $assert->pageTextContains(Unicode::strtoupper($address->last_name), 'Found customer last name.');
 
     $this->drupalGet('admin/store/orders/' . $order->id());
     $assert->statusCodeEquals(403, 'Customer may not see the admin view of their order.');
