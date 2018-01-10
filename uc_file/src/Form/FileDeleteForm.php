@@ -61,7 +61,7 @@ class FileDeleteForm extends ConfirmFormBase {
     $file_ids = array_filter($form_state->getValue('file_select'));
 
     $form['file_ids'] = ['#type' => 'value', '#value' => $file_ids];
-    $form['action'] = ['#type' => 'value', '#value' => $form_state->getValue(['uc_file_action', 'action')];
+    $form['action'] = ['#type' => 'value', '#value' => $form_state->getValue(['uc_file_action', 'action'])];
 
     $file_ids = _uc_file_sort_names(_uc_file_get_dir_file_ids($file_ids, FALSE));
 
