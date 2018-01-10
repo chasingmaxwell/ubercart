@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\uc_order\Functional;
 
+use Drupal\Core\Url;
 use Drupal\Core\Test\AssertMailTrait;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\uc_country\Entity\Country;
@@ -79,7 +80,7 @@ class OrderInvoiceTest extends BrowserTestBase {
 
     // Ensure test mails are logged.
     \Drupal::configFactory()->getEditable('system.mail')
-      ->set('interface.uc_order', 'test_mail_collector')
+      ->set('interface.uc_order', 'test_html_mail_collector')
       ->save();
   }
 
@@ -138,11 +139,17 @@ class OrderInvoiceTest extends BrowserTestBase {
     // Check textfield 'email' exists and has customer e-mail filled in.
     $assert->fieldValueEquals('email', $this->order->getEmail());
     // Check button 'Mail invoice' exists and press it - this will send an
-    // email using the test_mail_collector so we can examine it later.
+    // email using the test_html_mail_collector so we can examine it later.
     $assert->buttonExists('Mail invoice')->press();
 
     // Examine the collected email and check some of the contents.
     $this->assertMailString('subject', 'Your Order Invoice', 1, 'Order invoice was sent via email');
+    $this->assertMailString('body', '<b>Billing Address:</b><br />', 1, 'Markup found in invoice mail.');
+    // Make sure the logo image uses an absolute URL.
+    // @see https://www.drupal.org/project/drupal/issues/2704597
+    $uri = theme_get_setting('logo.url');
+    $expected = Url::fromUserInput($uri, ['absolute' => TRUE])->toString();
+    $this->assertMailString('body', $expected, 1, 'Logo image has absolute URL.');
   }
 
 }
