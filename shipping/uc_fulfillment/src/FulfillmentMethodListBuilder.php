@@ -6,7 +6,6 @@ use Drupal\Core\Config\Entity\DraggableListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\uc_fulfillment\Plugin\FulfillmentMethodPluginManager;
@@ -15,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Defines a class to build a listing of fulfillment method entities.
  */
-class FulfillmentMethodListBuilder extends DraggableListBuilder implements FormInterface {
+class FulfillmentMethodListBuilder extends DraggableListBuilder {
 
   /**
    * The fulfillment method plugin manager.

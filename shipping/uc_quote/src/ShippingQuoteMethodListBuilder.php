@@ -6,7 +6,6 @@ use Drupal\Core\Config\Entity\DraggableListBuilder;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\Core\Form\FormInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\uc_quote\Plugin\ShippingQuotePluginManager;
@@ -15,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * Provides a listing of shipping quote method entities.
  */
-class ShippingQuoteMethodListBuilder extends DraggableListBuilder implements FormInterface {
+class ShippingQuoteMethodListBuilder extends DraggableListBuilder {
 
   /**
    * The shipping quote plugin manager.
