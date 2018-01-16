@@ -27,7 +27,7 @@ class OrderController extends ControllerBase {
     ]);
     $order->save();
 
-    uc_order_comment_save($order->id(), \Drupal::currentUser()->id(), $this->t('Order created by the administration.'), 'admin');
+    uc_order_comment_save($order->id(), $this->currentUser()->id(), $this->t('Order created by the administration.'), 'admin');
 
     return $this->redirect('entity.uc_order.edit_form', ['uc_order' => $order->id()]);
   }

@@ -184,7 +184,7 @@ class DownloadController extends ControllerBase {
       '#files' => $files,
     ];
 
-    if (\Drupal::currentUser()->hasPermission('administer users')) {
+    if ($this->currentUser()->hasPermission('administer users')) {
       $build['admin'] = $this->formBuilder()->getForm('Drupal\uc_file\Form\UserForm', $user);
     }
 
@@ -201,7 +201,7 @@ class DownloadController extends ControllerBase {
    *   The access result.
    */
   public function accessUserDownloads(AccountInterface $account) {
-    $user = \Drupal::currentUser();
+    $user = $this->currentUser();
     return AccessResult::allowedIf(
       $user->id() &&
      ($user->hasPermission('view all downloads') || $user->id() == $account->id())
@@ -217,7 +217,7 @@ class DownloadController extends ControllerBase {
    *   The request of the page.
    */
   public function download($fid, Request $request) {
-    $user = \Drupal::currentUser();
+    $user = $this->currentUser();
 
     // Error messages for various failed download states.
     $admin_message = $this->t('Please contact the site administrator if this message has been received in error.');
