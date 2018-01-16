@@ -143,7 +143,10 @@ function uc_payment_uc_payment_method_checkout_alter(array &$methods, OrderInter
  * @return string
  *   A unique ID identifying the PaymentReceipt entity.
  */
-function uc_payment_enter($order_id, $method, $amount, $uid = 0, array $data = NULL, $comment = '', $received = REQUEST_TIME) {
+function uc_payment_enter($order_id, $method, $amount, $uid = 0, array $data = NULL, $comment = '', $received = NULL) {
+  if (is_null($received)) {
+    $received = \Drupal::time()->getRequestTime();
+  }
   $order = Order::load($order_id);
   $receipt = PaymentReceipt::create([
     'order_id' => $order_id,

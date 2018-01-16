@@ -53,7 +53,7 @@ class BuyItNowForm extends FormBase implements BaseFormIdInterface {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state, NodeInterface $node = NULL) {
-    $query = \Drupal::request()->query->all();
+    $query = $this->getRequest()->query->all();
     $form['#action'] = Url::fromRoute('<current>')->setOptions(['query' => $query])->toString();
 
     $form['nid'] = [

@@ -290,7 +290,7 @@ function uc_order_comment_save($order_id, $uid, $message, $type = 'admin', $stat
         'order_id' => $order_id,
         'uid' => $uid,
         'message' => $message,
-        'created' => REQUEST_TIME,
+        'created' => \Drupal::time()->getRequestTime(),
       ])
       ->execute();
   }
@@ -302,7 +302,7 @@ function uc_order_comment_save($order_id, $uid, $message, $type = 'admin', $stat
         'message' => $message,
         'order_status' => $status,
         'notified' => $notify ? 1 : 0,
-        'created' => REQUEST_TIME,
+        'created' => \Drupal::time()->getRequestTime(),
       ])
       ->execute();
   }

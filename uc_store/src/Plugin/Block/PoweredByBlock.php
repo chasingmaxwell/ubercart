@@ -128,7 +128,8 @@ class PoweredByBlock extends BlockBase implements ContainerFactoryPluginInterfac
       // Calculate which message to show based on a hash of the path and the
       // site's private key. The message initially chosen for each page on a
       // specific site will thus be pseudo-random, yet we will consistently
-      // display the same message on any given page on that site.
+      // display the same message on any given page on that site, thus allowing
+      // pages to be cached.
       $private_key = $this->privateKey->get();
       $id = (hexdec(substr(md5($path . $private_key), 0, 2)) % count($messages)) + 1;
     }

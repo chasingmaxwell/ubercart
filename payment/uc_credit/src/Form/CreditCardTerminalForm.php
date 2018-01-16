@@ -194,9 +194,6 @@ class CreditCardTerminalForm extends FormBase {
     // Find any uncaptured authorizations.
     $options = [];
 
-    // Log a reference to the order for testing.
-    // $this->order->data = uc_credit_log_reference($this->order->id(), substr(md5(REQUEST_TIME), 0, 16), '4111111111111111');
-
     if (isset($this->order->data->cc_txns['references'])) {
       foreach ($this->order->data->cc_txns['references'] as $ref_id => $data) {
         $options[$ref_id] = $this->t('@ref_id - @date - (Last 4) @card', ['@ref_id' => strtoupper($ref_id), '@date' => $this->dateFormatter->format($data['created'], 'short'), '@card' => $data['card']]);
