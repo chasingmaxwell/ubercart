@@ -3,7 +3,6 @@
 namespace Drupal\Tests\uc_cart\Functional;
 
 use Drupal\rules\Context\ContextConfig;
-use Drupal\Tests\uc_product\Traits\ProductTestTrait;
 use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
 
 /**
@@ -15,7 +14,6 @@ use Drupal\Tests\uc_store\Functional\UbercartBrowserTestBase;
  * @see https://www.drupal.org/project/rules/issues/2922757
  */
 class CartRulesEventsTest extends UbercartBrowserTestBase {
-  use ProductTestTrait;
 
   /**
    * Additional modules required.
@@ -43,9 +41,6 @@ class CartRulesEventsTest extends UbercartBrowserTestBase {
    */
   protected function setUp() {
     parent::setUp();
-
-    // Need page_title_block because we test page titles.
-    $this->drupalPlaceBlock('page_title_block');
 
     $this->adminUser = $this->drupalCreateUser([
       'access administration pages',

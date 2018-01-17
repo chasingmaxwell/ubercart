@@ -58,7 +58,7 @@ trait ProductTestTrait {
   }
 
   /**
-   * Creates a new product class.
+   * Creates a new product node type, AKA 'product class'.
    *
    * @todo Fix this after adding a proper API call for saving a product class,
    * so that we don't have to do this through the UI.
@@ -67,8 +67,8 @@ trait ProductTestTrait {
    *   (optional) An associative array with possible keys of 'type', 'name',
    *   and 'description' to initialize the product class.
    *
-   * @return \Drupal\node\NodeInterface
-   *   Product node object.
+   * @return \Drupal\node\Entity\NodeType
+   *   Product class NodeType object.
    */
   protected function createProductClass(array $data = []) {
     $class = strtolower($this->randomMachineName(12));
@@ -80,7 +80,7 @@ trait ProductTestTrait {
     ];
     $this->drupalPostForm('admin/structure/types/add', $edit, 'Save content type');
 
-    return NodeType::load($class);
+    return NodeType::load($edit['type']);
   }
 
 }
