@@ -68,16 +68,10 @@ class PaymentRulesEventsTest extends UbercartBrowserTestBase {
   }
 
   /**
-   * Tests the four events provided by uc_order.
-   *
-   * This class tests all four events provided by uc_order, by creating four
-   * rules which are all active throughout the test. They are all checked in
-   * this one test class to make the tests stronger, as this will show not only
-   * that the correct events are triggered in the right places, but also
-   * that they are not triggered in the wrong places.
+   * Tests the one event provided by uc_payment.
    */
   public function testRulesEvents() {
-    // Create four reaction rules, one for each event that uc_order triggers.
+    // Create one reaction rule for each event that uc_payment triggers.
     $rule_data = [
       1 => ['uc_payment_entered', 'A payment gets entered for an order'],
     ];
