@@ -16,7 +16,13 @@ class ShipmentTest extends FulfillmentTestBase {
    * Tests the UI for creating new shipments.
    */
   public function testShipmentsUi() {
+    // Log on as administrator to fulfill order.
     $this->drupalLogin($this->adminUser);
+
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
+    // A payment method for the order.
     $method = $this->createPaymentMethod('other');
 
     // Process an anonymous, shippable order.
@@ -62,11 +68,11 @@ class ShipmentTest extends FulfillmentTestBase {
 
     // Test "Ship" operations for this package.
     $this->drupalGet('admin/store/orders/' . $order->id() . '/packages');
-    $this->assertLink('Ship');
+    $assert->linkExists('Ship');
     $this->clickLink('Ship');
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new?pkgs=1');
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/shipments/new?pkgs=1');
     foreach ($order->products as $sequence => $item) {
-      $this->assertText(
+      $assert->pageTextContains(
         $item->qty->value . ' x ' . $item->model->value,
         'Product quantity x SKU found.'
       );
@@ -74,40 +80,31 @@ class ShipmentTest extends FulfillmentTestBase {
     }
     // We're shipping a specific package, so it should already be checked.
     foreach ($order->products as $sequence => $item) {
-      $this->assertFieldByName(
-        'shipping_types[small_package][table][1][checked]',
-        1,
-        'Package is available for shipping.'
-      );
+      // Check that package is available for shipping.
+      $assert->fieldValueEquals('shipping_types[small_package][table][1][checked]', 1);
     }
-    $this->assertFieldByName(
-      'method',
-      'manual',
-      'Manual shipping method selected.'
-    );
+    // Check that manual shipping method is selected.
+    $assert->fieldValueEquals('method', 'manual');
 
     //
     // Test presence and operation of ship operation on order admin View.
     //
     $this->drupalGet('admin/store/orders/view');
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/shipments');
     // Test action.
     $this->clickLink('Ship');
-    $this->assertResponse(200);
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new');
-    $this->assertText(
+    $assert->statusCodeEquals(200);
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/shipments/new');
+    $assert->pageTextContains(
       'No shipments have been made for this order.',
       'Ship action found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       $order->products[1]->qty->value . ' x ' . $order->products[1]->model->value,
       'Product quantity x SKU found.'
     );
-    $this->assertFieldByName(
-      'method',
-      'manual',
-      'Manual shipping method selected.'
-    );
+    // Check that manual shipping method is selected.
+    $assert->fieldValueEquals('method', 'manual');
 
     // Test reaching this through the shipments tab too ...
 
@@ -119,20 +116,20 @@ class ShipmentTest extends FulfillmentTestBase {
       'Ship packages'
     );
     // Check that we're now on the shipment details page.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/ship?method_id=manual&0=1');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/ship?method_id=manual&0=1');
+    $assert->pageTextContains(
       'Origin address',
       'Origin address pane found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       'Destination address',
       'Destination address pane found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       'Package 1',
       'Packages data pane found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       'Shipment data',
       'Shipment data pane found.'
     );
@@ -142,12 +139,12 @@ class ShipmentTest extends FulfillmentTestBase {
     $this->drupalPostForm(NULL, $edit, 'Save shipment');
 
     // Check that we're now on the shipments overview page.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/shipments');
+    $assert->pageTextContains(
       'Shipment ID',
       'Shipment summary found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       '1234567890ABCD',
       'Shipment data present.'
     );
@@ -160,45 +157,39 @@ class ShipmentTest extends FulfillmentTestBase {
     // First, "View".
     $this->drupalGet('admin/store/orders/' . $order->id() . '/shipments');
     // (Use Href to distinguish View operation from View tab.)
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments/1');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/shipments/1');
     $this->drupalGet('admin/store/orders/' . $order->id() . '/shipments/1');
     // Should find four tabs here:
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments/1');
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments/1/edit');
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments/1/packing_slip');
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments/1/print');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/shipments/1');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/shipments/1/edit');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/shipments/1/packing_slip');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/shipments/1/print');
     // We're editing the shipment we already made, so all the
     // packages should be checked.
 //    foreach ($order->products as $sequence => $item) {
-//      $this->assertFieldByName(
-//        'products[' . $sequence . '][checked]',
-//        1,
-//        'Product is available for packaging.'
-//      );
+//      // Check that product is available for packaging.
+//      $assert->fieldValueEquals('products[' . $sequence . '][checked]', 1);
 //    }
 
     // Second, "Edit".
     $this->drupalGet('admin/store/orders/' . $order->id() . '/shipments');
     // (Use Href to distinguish Edit operation from Edit tab.)
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments/1/edit');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/shipments/1/edit');
     $this->drupalGet('admin/store/orders/' . $order->id() . '/shipments/1/edit');
     // We're editing the shipment we already made, so all the
     // packages should be checked.
 //    foreach ($order->products as $sequence => $item) {
-//      $this->assertFieldByName(
-//        'products[' . $sequence . '][checked]',
-//        1,
-//        'Product is available for packaging.'
-//      );
+//      // Check that product is available for packaging.
+//      $assert->fieldValueEquals('products[' . $sequence . '][checked]', 1);
 //    }
 
     // Third "Print".
     $this->drupalGet('admin/store/orders/' . $order->id() . '/shipments');
-    $this->assertLink('Print');
+    $assert->linkExists('Print');
     $this->clickLink('Print');
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/1/print');
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/shipments/1/print');
 //    foreach ($order->products as $sequence => $item) {
-//      $this->assertText(
+//      $assert->pageTextContains(
 //        $item->qty->value . ' x ' . $item->model->value,
 //        'Product quantity x SKU found.'
 //      );
@@ -206,13 +197,13 @@ class ShipmentTest extends FulfillmentTestBase {
 
     // Fourth "Packing slip".
     $this->drupalGet('admin/store/orders/' . $order->id() . '/shipments');
-    $this->assertLink('Packing slip');
+    $assert->linkExists('Packing slip');
     $this->clickLink('Packing slip');
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/1/packing_slip');
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/shipments/1/packing_slip');
     // Check for "Print packing slip" and "Back" buttons.
 
 //    foreach ($order->products as $sequence => $item) {
-//      $this->assertText(
+//      $assert->pageTextContains(
 //        $item->qty->value . ' x ' . $item->model->value,
 //        'Product quantity x SKU found.'
 //      );
@@ -220,33 +211,30 @@ class ShipmentTest extends FulfillmentTestBase {
 
     // Fifth, "Delete".
     $this->drupalGet('admin/store/orders/' . $order->id() . '/shipments');
-    $this->assertLink('Delete');
+    $assert->linkExists('Delete');
     $this->clickLink('Delete');
     // Delete takes us to confirm page.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/1/delete');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/shipments/1/delete');
+    $assert->pageTextContains(
       'The shipment will be canceled and the packages it contains will be available for reshipment.',
       'Deletion confirm question found.'
     );
     // "Cancel" returns to the shipment list page.
     $this->clickLink('Cancel');
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/shipments');
 
     // Again with the "Delete".
     $this->clickLink('Delete');
     $this->drupalPostForm(NULL, [], 'Delete');
     // Delete returns to new packages page with all packages unchecked.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/shipments/new');
+    $assert->pageTextContains(
       'Shipment 1 has been deleted.',
       'Shipment deleted message found.'
     );
 //    foreach ($order->products as $sequence => $item) {
-//      $this->assertFieldByName(
-//        'shipping_types[small_package][table][' . $sequence . '][checked]',
-//        0,
-//        'Package is available for shipping.'
-//      );
+//      // Check that package is available for shipping.
+//      $assert->fieldValueEquals('shipping_types[small_package][table][' . $sequence . '][checked]', 0);
 //    }
 
   }

@@ -16,6 +16,9 @@ class FulfillmentTest extends FulfillmentTestBase {
     // Log on as administrator to fulfill order.
     $this->drupalLogin($this->adminUser);
 
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // A payment method for the order.
     $method = $this->createPaymentMethod('other');
 
@@ -38,13 +41,13 @@ class FulfillmentTest extends FulfillmentTestBase {
     // Test Packages tab.
     $this->drupalGet('admin/store/orders/' . $order->id());
     // Test presence of tab to package products.
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/packages');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/packages');
     // Go to packages tab.
     $this->clickLink('Packages');
-    $this->assertResponse(200);
+    $assert->statusCodeEquals(200);
     // Check redirected path.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages/new');
+    $assert->pageTextContains(
       "This order's products have not been organized into packages.",
       'Packages tab found.'
     );
@@ -52,32 +55,29 @@ class FulfillmentTest extends FulfillmentTestBase {
     // Test Shipments tab.
     $this->drupalGet('admin/store/orders/' . $order->id());
     // Test presence of tab to make shipments.
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/shipments');
     // Go to Shipments tab.
     $this->clickLink('Shipments');
-    $this->assertResponse(200);
+    $assert->statusCodeEquals(200);
     // Check redirected path.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages/new');
+    $assert->pageTextContains(
       "This order's products have not been organized into packages.",
       'Shipments tab found.'
     );
 
     // Now package the products in this order.
     $this->drupalGet('admin/store/orders/' . $order->id() . '/packages');
-    $this->assertText(
+    $assert->pageTextContains(
       $order->products[1]->title->value,
       'Product title found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       $order->products[1]->model->value,
       'Product sku found.'
     );
-    $this->assertFieldByName(
-      'shipping_types[small_package][table][' . $order->id() . '][checked]',
-      0,
-      'Product is available for packaging.'
-    );
+    // Check that product is available for packaging.
+    $assert->fieldValueEquals('shipping_types[small_package][table][' . $order->id() . '][checked]', '');
 
     // Select product and create one package.
     $this->drupalPostForm(
@@ -86,8 +86,8 @@ class FulfillmentTest extends FulfillmentTestBase {
       'Create one package'
     );
     // Check that we're now on the package list page.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages');
+    $assert->pageTextContains(
       $order->products[1]->qty->value . ' x ' . $order->products[1]->model->value,
       'Product quantity x SKU found.'
     );
@@ -95,22 +95,19 @@ class FulfillmentTest extends FulfillmentTestBase {
     // Test the Shipments tab.
     $this->drupalGet('admin/store/orders/' . $order->id());
     $this->clickLink('Shipments');
-    $this->assertResponse(200);
+    $assert->statusCodeEquals(200);
     // Check redirected path.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/shipments/new');
+    $assert->pageTextContains(
       'No shipments have been made for this order.',
       'New shipments page reached.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       $order->products[1]->qty->value . ' x ' . $order->products[1]->model->value,
       'Product quantity x SKU found.'
     );
-    $this->assertFieldByName(
-      'method',
-      'manual',
-      'Manual shipping method selected.'
-    );
+    // Check that manual shipping method is selected.
+    $assert->fieldValueEquals('method', 'manual');
 
     // Select all packages and make shipment using the default "Manual" method.
     $this->drupalPostForm(
@@ -119,20 +116,20 @@ class FulfillmentTest extends FulfillmentTestBase {
       'Ship packages'
     );
     // Check that we're now on the shipment details page.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/ship?method_id=manual&0=1');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/ship?method_id=manual&0=1');
+    $assert->pageTextContains(
       'Origin address',
       'Origin address pane found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       'Destination address',
       'Destination address pane found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       'Package 1',
       'Packages data pane found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       'Shipment data',
       'Shipment data pane found.'
     );
@@ -142,12 +139,12 @@ class FulfillmentTest extends FulfillmentTestBase {
     $this->drupalPostForm(NULL, $edit, 'Save shipment');
 
     // Check that we're now on the shipments overview page.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/shipments');
+    $assert->pageTextContains(
       'Shipment ID',
       'Shipment summary found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       '1234567890ABCD',
       'Shipment data present.'
     );
@@ -155,11 +152,11 @@ class FulfillmentTest extends FulfillmentTestBase {
     // Check for "Tracking" order pane after this order has
     // been shipped and a tracking number entered.
     $this->drupalGet('admin/store/orders/' . $order->id());
-    $this->assertText(
+    $assert->pageTextContains(
       'Tracking numbers:',
       'Tracking order pane found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       '1234567890ABCD',
       'Tracking number found.'
     );

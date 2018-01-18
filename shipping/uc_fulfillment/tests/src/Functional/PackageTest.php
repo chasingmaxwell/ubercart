@@ -16,7 +16,13 @@ class PackageTest extends FulfillmentTestBase {
    * Tests the User Interface for packaging products.
    */
   public function testPackagesUi() {
+    // Log on as administrator to fulfill order.
     $this->drupalLogin($this->adminUser);
+
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
+    // A payment method for the order.
     $method = $this->createPaymentMethod('other');
 
     // Process an anonymous, shippable order.
@@ -68,33 +74,30 @@ class PackageTest extends FulfillmentTestBase {
     // Test presence and operation of package operation on order admin View.
     //
     $this->drupalGet('admin/store/orders/view');
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/packages');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/packages');
     // Test action.
     $this->clickLink('Package');
-    $this->assertResponse(200);
-    $this->assertText(
+    $assert->statusCodeEquals(200);
+    $assert->pageTextContains(
       "This order's products have not been organized into packages.",
       'Package action found.'
     );
 
     // Now package the products in this order.
     $this->drupalGet('admin/store/orders/' . $order->id() . '/packages');
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages/new');
     // First time through we'll be verbose - skip this on subsequent tests.
     foreach ($order->products as $sequence => $item) {
-      $this->assertText(
+      $assert->pageTextContains(
         $item->title->value,
         'Product title found.'
       );
-      $this->assertText(
+      $assert->pageTextContains(
         $item->model->value,
         'Product SKU found.'
       );
-      $this->assertFieldByName(
-        'shipping_types[small_package][table][' . $sequence . '][checked]',
-        0,
-        'Product is available for packaging.'
-      );
+      // Check that product is available for packaging.
+      $assert->fieldValueEquals('shipping_types[small_package][table][' . $sequence . '][checked]', '');
     }
 
     // Select all products and test the "Cancel" button.
@@ -109,18 +112,18 @@ class PackageTest extends FulfillmentTestBase {
       'Cancel'
     );
     // Go back to Packages tab and try something else.
-    $this->assertUrl('admin/store/orders/' . $order->id());
+    $assert->addressEquals('admin/store/orders/' . $order->id());
     $this->clickLink('Packages');
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages/new');
+    $assert->pageTextContains(
       "This order's products have not been organized into packages.",
       'Package action found.'
     );
 
     // Now test the "Create one package" button without selecting anything.
     $this->drupalPostForm(NULL, [], 'Create one package');
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages/new');
+    $assert->pageTextContains(
       'Packages must contain at least one product.',
       'Validation that there must be products in a package.'
     );
@@ -138,20 +141,20 @@ class PackageTest extends FulfillmentTestBase {
     );
 
     // Check that we're now on the package list page.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages');
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages');
     foreach ($order->products as $sequence => $item) {
-      $this->assertText(
+      $assert->pageTextContains(
         $item->qty->value . ' x ' . $item->model->value,
         'Product quantity x SKU found.'
       );
     }
 
     // The "Create packages" local action should now be available too.
-    $this->assertLink('Create packages');
+    $assert->linkExists('Create packages');
     $this->clickLink('Create packages');
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages/new');
     // But we've already packaged everything...
-    $this->assertText(
+    $assert->pageTextContains(
       'There are no products available for this type of package.',
       'Create packages local action found.'
     );
@@ -162,11 +165,11 @@ class PackageTest extends FulfillmentTestBase {
 
     // First "Ship".
     $this->drupalGet('admin/store/orders/' . $order->id() . '/packages');
-    $this->assertLink('Ship');
+    $assert->linkExists('Ship');
     $this->clickLink('Ship');
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/shipments/new?pkgs=1');
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/shipments/new?pkgs=1');
     foreach ($order->products as $sequence => $item) {
-      $this->assertText(
+      $assert->pageTextContains(
         $item->qty->value . ' x ' . $item->model->value,
         'Product quantity x SKU found.'
       );
@@ -175,50 +178,44 @@ class PackageTest extends FulfillmentTestBase {
     // Second, "Edit".
     $this->drupalGet('admin/store/orders/' . $order->id() . '/packages');
     // (Use Href to distinguish Edit operation from Edit tab.)
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/packages/1/edit');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/packages/1/edit');
     $this->drupalGet('admin/store/orders/' . $order->id() . '/packages/1/edit');
     // We're editing the package we already made, so all the
     // products should be checked.
     foreach ($order->products as $sequence => $item) {
-      $this->assertFieldByName(
-        'products[' . $sequence . '][checked]',
-        1,
-        'Product is available for packaging.'
-      );
+      // Check that product is available for packaging.
+      $assert->fieldValueEquals('products[' . $sequence . '][checked]', 1);
     }
     // Save the package to make sure the submit handler is working.
     $this->drupalPostForm(NULL, [], 'Save');
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/packages');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/packages');
 
     // Third, "Delete".
     $this->drupalGet('admin/store/orders/' . $order->id() . '/packages');
-    $this->assertLink('Delete');
+    $assert->linkExists('Delete');
     $this->clickLink('Delete');
     // Delete takes us to confirm page.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/1/delete');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages/1/delete');
+    $assert->pageTextContains(
       'The products it contains will be available for repackaging.',
       'Deletion confirm question found.'
     );
     // "Cancel" returns to the package list page.
     $this->clickLink('Cancel');
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/packages');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/packages');
 
     // Again with the "Delete".
     $this->clickLink('Delete');
     $this->drupalPostForm(NULL, [], 'Delete');
     // Delete returns to new packages page with all packages unchecked.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages/new');
+    $assert->pageTextContains(
       'Package 1 has been deleted.',
       'Package deleted message found.'
     );
     foreach ($order->products as $sequence => $item) {
-      $this->assertFieldByName(
-        'shipping_types[small_package][table][' . $sequence . '][checked]',
-        0,
-        'Product is available for packaging.'
-      );
+      // Check that product is available for packaging.
+      $assert->fieldValueEquals('shipping_types[small_package][table][' . $sequence . '][checked]', '');
     }
 
     // Back to no packages. Now test making more than one package.
@@ -233,41 +230,41 @@ class PackageTest extends FulfillmentTestBase {
     );
 
     // Check that we're now on the package list page.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages');
+    $assert->pageTextContains(
       $order->products[1]->qty->value . ' x ' . $order->products[1]->model->value,
       'Product quantity x SKU found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       $order->products[2]->qty->value . ' x ' . $order->products[2]->model->value,
       'Product quantity x SKU found.'
     );
-    $this->assertNoText(
+    $assert->pageTextNotContains(
       $order->products[3]->qty->value . ' x ' . $order->products[3]->model->value,
       'Product quantity x SKU not found.'
     );
-    $this->assertNoText(
+    $assert->pageTextNotContains(
       $order->products[4]->qty->value . ' x ' . $order->products[4]->model->value,
       'Product quantity x SKU not found.'
     );
 
     // Use "Create packages" to create a second package.
-    $this->assertLink('Create packages');
+    $assert->linkExists('Create packages');
     $this->clickLink('Create packages');
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
-    $this->assertNoText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages/new');
+    $assert->pageTextNotContains(
       $order->products[1]->model->value,
       'Product SKU not found.'
     );
-    $this->assertNoText(
+    $assert->pageTextNotContains(
       $order->products[2]->model->value,
       'Product SKU not found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       $order->products[3]->model->value,
       'Product SKU found.'
     );
-    $this->assertText(
+    $assert->pageTextContains(
       $order->products[4]->model->value,
       'Product SKU found.'
     );
@@ -279,30 +276,30 @@ class PackageTest extends FulfillmentTestBase {
       ],
       'Create one package'
     );
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/packages');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/packages');
     foreach ($order->products as $sequence => $item) {
-      $this->assertText(
+      $assert->pageTextContains(
         $item->qty->value . ' x ' . $item->model->value,
         'Product quantity x SKU found.'
       );
     }
 
     // How do we test for two packages? Look for two "Ship" links.
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments/new?pkgs=2');
-    $this->assertLinkByHref('admin/store/orders/' . $order->id() . '/shipments/new?pkgs=3');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/shipments/new?pkgs=2');
+    $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/shipments/new?pkgs=3');
 
     // Now delete both packages.
     $this->clickLink('Delete');
     $this->drupalPostForm(NULL, [], 'Delete');
-    $this->assertText(
+    $assert->pageTextContains(
       'Package 2 has been deleted.',
       'Package deleted message found.'
     );
     // There's still one left to delete...
     $this->clickLink('Delete');
     $this->drupalPostForm(NULL, [], 'Delete');
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages/new');
-    $this->assertText(
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages/new');
+    $assert->pageTextContains(
       'Package 3 has been deleted.',
       'Package deleted message found.'
     );
@@ -320,9 +317,9 @@ class PackageTest extends FulfillmentTestBase {
     );
 
     // Check that we're now on the package list page.
-    $this->assertUrl('admin/store/orders/' . $order->id() . '/packages');
+    $assert->addressEquals('admin/store/orders/' . $order->id() . '/packages');
     foreach ($order->products as $sequence => $item) {
-      $this->assertText(
+      $assert->pageTextContains(
         $item->qty->value . ' x ' . $item->model->value,
         'Product quantity x SKU found.'
       );
