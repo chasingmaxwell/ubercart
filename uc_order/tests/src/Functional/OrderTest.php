@@ -352,9 +352,11 @@ class OrderTest extends UbercartBrowserTestBase {
       ->setStreet1($this->randomMachineName(12))
       ->setStreet2($this->randomMachineName(12))
       ->setCity($this->randomMachineName(12))
-      ->setZone(array_rand($zones))
       ->setPostalCode(mt_rand(10000, 99999))
       ->setCountry($country);
+    if (!empty($zones)) {
+      $delivery_address->setZone(array_rand($zones));
+    }
 
     $billing_address = Address::create();
     $billing_address
@@ -363,9 +365,11 @@ class OrderTest extends UbercartBrowserTestBase {
       ->setStreet1($this->randomMachineName(12))
       ->setStreet2($this->randomMachineName(12))
       ->setCity($this->randomMachineName(12))
-      ->setZone(array_rand($zones))
       ->setPostalCode(mt_rand(10000, 99999))
       ->setCountry($country);
+    if (!empty($zones)) {
+      $billing_address->setZone(array_rand($zones));
+    }
 
     $order->setAddress('delivery', $delivery_address)
       ->setAddress('billing', $billing_address)
