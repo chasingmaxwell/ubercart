@@ -47,7 +47,7 @@ class ShipmentSaveEventTest extends EventTestBase {
     $this->assertSame('Order', $order_context_definition->getLabel());
 
     $shipment_context_definition = $event->getContextDefinition('shipment');
-    $this->assertSame('uc_shipment', $shipment_context_definition->getDataType());
+    $this->assertSame('any', $shipment_context_definition->getDataType());
     $this->assertSame('Shipment', $shipment_context_definition->getLabel());
   }
 

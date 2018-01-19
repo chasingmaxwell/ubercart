@@ -6,5 +6,5 @@ uc_fulfillment_shipment_save:
       type: 'entity:uc_order'
       label: 'Order'
     shipment:
-      type: 'uc_shipment'
+      type: 'any'
       label: 'Shipment'
