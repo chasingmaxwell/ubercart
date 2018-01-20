@@ -92,6 +92,54 @@ class RenewRole extends RulesActionBase implements ContainerFactoryPluginInterfa
   }
 
   /**
+   * Calculates the expiration time using a role_product object.
+   *
+   * @param $role_product
+   *   The role product object whose expiration times to calculate.
+   * @param int $quantity
+   *   Used to multiply any relative expiration time, if the $role_product
+   *   says to.
+   * @param int $time
+   *   The current time to use as a starting point for relative expiration
+   *   calculation.
+   *
+   * @return int
+   *   The expiration time as a Unix timestamp.
+   */
+  protected function getExpiration($role_product, $quantity, $time) {
+    // Override the end expiration?
+    if ($role_product->end_override) {
+
+      // Absolute times are easy...
+      if ($role_product->end_time) {
+        return $role_product->end_time;
+      }
+
+      // We're gonna have to calculate the relative time from $time.
+      $length = $role_product->duration * ($role_product->by_quantity ? $quantity : 1);
+      return _uc_role_get_expiration($length, $role_product->granularity, $time);
+    }
+
+    // No override, use the default expiration values.
+    else {
+      // Relative...
+      $roles_config = \Drupal::config('uc_role.settings');
+      if ($roles_config->get('default_end_expiration') === 'rel') {
+        $length = $roles_config->get('default_length') * ($role_product->by_quantity ? $quantity : 1);
+        return _uc_role_get_expiration($length, $roles_config->get('default_granularity'), $time);
+      }
+
+      // Absolute...
+      $end_time = $roles_config->get('default_end_time');
+      if ($end_time) {
+        $end_time = mktime(0, 0, 0, $end_time['month'], $end_time['day'], $end_time['year']);
+      }
+
+      return $end_time;
+    }
+  }
+
+  /**
    * Renews an order's product roles.
    *
    * This function updates expiration time on all roles found on all products
@@ -127,7 +175,7 @@ class RenewRole extends RulesActionBase implements ContainerFactoryPluginInterfa
         $existing_role = $this->database->query('SELECT * FROM {uc_roles_expirations} WHERE uid = :uid AND rid = :rid', [':uid' => $account->id(), ':rid' => $role->rid])->fetchObject();
 
         // Determine the expiration timestamp for the role.
-        $expiration = _uc_role_product_get_expiration($role, $product->qty, isset($existing_role->expiration) ? $existing_role->expiration : NULL);
+        $expiration = $this->getExpiration($role, $product->qty, isset($existing_role->expiration) ? $existing_role->expiration : NULL);
 
         // Leave an order comment.
         if (isset($existing_role->expiration)) {
