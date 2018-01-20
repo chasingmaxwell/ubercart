@@ -5,8 +5,7 @@ namespace Drupal\uc_file\Controller;
 use Drupal\Core\Access\AccessResult;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Database\Connection;
-use Drupal\Core\Extension\ModuleHandlerInterface;
-use Drupal\Core\Form\FormBuilderInterface;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\Core\Link;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\Url;
@@ -50,18 +49,24 @@ class DownloadController extends ControllerBase {
   protected $database;
 
   /**
-   * The module handler service.
+   * The file_system service.
    *
-   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   * @var \Drupal\Core\File\FileSystemInterface
    */
-  protected $moduleHandler;
+  protected $fileSystem;
 
   /**
-   * The form builder service.
+   * Constructs a DownloadController object.
    *
-   * @var \Drupal\Core\Form\FormBuilderInterface
+   * @param \Drupal\Core\Database\Connection $database
+   *   A database connection.
+   * @param \Drupal\Core\File\FileSystemInterface $file_system
+   *   The file_system service.
    */
-  protected $formBuilder;
+  public function __construct(Connection $database, FileSystemInterface $file_system) {
+    $this->database = $database;
+    $this->fileSystem = $file_system;
+  }
 
   /**
    * {@inheritdoc}
@@ -69,25 +74,8 @@ class DownloadController extends ControllerBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('database'),
-      $container->get('module_handler'),
-      $container->get('form_builder')
+      $container->get('file_system')
     );
-  }
-
-  /**
-   * Constructs a DownloadController object.
-   *
-   * @param \Drupal\Core\Database\Connection $database
-   *   A database connection.
-   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   A module handler.
-   * @param \Drupal\Core\Form\FormBuilderInterface $form_builder
-   *   The form builder service.
-   */
-  public function __construct(Connection $database, ModuleHandlerInterface $module_handler, FormBuilderInterface $form_builder) {
-    $this->database = $database;
-    $this->moduleHandler = $module_handler;
-    $this->formBuilder = $form_builder;
   }
 
   /**
@@ -153,17 +141,17 @@ class DownloadController extends ControllerBase {
 
       // Expiration set to 'never'.
       if ($file->expiration == FALSE) {
-        $file_link = Link::createFromRoute(\Drupal::service('file_system')->basename($file->filename), 'uc_file.download_file', ['file' => $file->fid], $onclick)->toString();
+        $file_link = Link::createFromRoute($this->fileSystem->basename($file->filename), 'uc_file.download_file', ['file' => $file->fid], $onclick)->toString();
       }
 
       // Expired.
       elseif (REQUEST_TIME > $file->expiration) {
-        $file_link = \Drupal::service('file_system')->basename($file->filename);
+        $file_link = $this->fileSystem->basename($file->filename);
       }
 
       // Able to be downloaded.
       else {
-        $file_link = Link::createFromRoute(\Drupal::service('file_system')->basename($file->filename), 'uc_file.download_file', ['file' => $file->fid], $onclick)->toString() . ' (' . $this->t('expires on @date', ['@date' => \Drupal::service('date.formatter')->format($file->expiration, 'uc_store')]) . ')';
+        $file_link = Link::createFromRoute($this->fileSystem->basename($file->filename), 'uc_file.download_file', ['file' => $file->fid], $onclick)->toString() . ' (' . $this->t('expires on @date', ['@date' => \Drupal::service('date.formatter')->format($file->expiration, 'uc_store')]) . ')';
       }
 
       $files[] = [
@@ -297,7 +285,7 @@ class DownloadController extends ControllerBase {
       cache()->set('uc_file_' . $ip, $requests, REQUEST_TIME + 86400);
       if ($requests == UC_FILE_REQUEST_LIMIT) {
         // $message_user has already been sanitized.
-        \Drupal::logger('uc_file')->warning('@username has been temporarily banned from file downloads.', ['@username' => $message_user]);
+        $this->getLogger('uc_file')->warning('@username has been temporarily banned from file downloads.', ['@username' => $message_user]);
       }
 
       return UC_FILE_ERROR_INVALID_DOWNLOAD;
@@ -308,7 +296,7 @@ class DownloadController extends ControllerBase {
     // Check the number of locations.
     if (!empty($file_download->address_limit) && !in_array($ip, $addresses) && count($addresses) >= $file_download->address_limit) {
       // $message_user has already been sanitized.
-      \Drupal::logger('uc_file')->warning('@username has been denied a file download by downloading it from too many IP addresses.', ['@username' => $message_user]);
+      $this->getLogger('uc_file')->warning('@username has been denied a file download by downloading it from too many IP addresses.', ['@username' => $message_user]);
 
       return UC_FILE_ERROR_TOO_MANY_LOCATIONS;
     }
@@ -316,7 +304,7 @@ class DownloadController extends ControllerBase {
     // Check the downloads so far.
     if (!empty($file_download->download_limit) && $file_download->accessed >= $file_download->download_limit) {
       // $message_user has already been sanitized.
-      \Drupal::logger('uc_file')->warning('@username has been denied a file download by downloading it too many times.', ['@username' => $message_user]);
+      $this->getLogger('uc_file')->warning('@username has been denied a file download by downloading it too many times.', ['@username' => $message_user]);
 
       return UC_FILE_ERROR_TOO_MANY_DOWNLOADS;
     }
@@ -324,7 +312,7 @@ class DownloadController extends ControllerBase {
     // Check if it's expired.
     if ($file_download->expiration && REQUEST_TIME >= $file_download->expiration) {
       // $message_user has already been sanitized.
-      \Drupal::logger('uc_file')->warning('@username has been denied an expired file download.', ['@username' => $message_user]);
+      $this->getLogger('uc_file')->warning('@username has been denied an expired file download.', ['@username' => $message_user]);
 
       return UC_FILE_ERROR_EXPIRED;
     }
@@ -341,7 +329,7 @@ class DownloadController extends ControllerBase {
 
     // Everything's ok!
     // $message_user has already been sanitized.
-    \Drupal::logger('uc_file')->notice('@username has started download of the file %filename.', ['@username' => $message_user, '%filename' => \Drupal::service('file_system')->basename($file_download->filename)]);
+    $this->getLogger('uc_file')->notice('@username has started download of the file %filename.', ['@username' => $message_user, '%filename' => $this->fileSystem->basename($file_download->filename)]);
   }
 
   /**
