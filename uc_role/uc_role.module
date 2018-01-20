@@ -319,17 +319,6 @@ function uc_role_user_view(array &$build, UserInterface $account, EntityViewDisp
       (($user->id() == $account->id() && $show_expiration) || $user->hasPermission('view all role expirations')) ) {
 
     $expirations = db_query('SELECT * FROM {uc_roles_expirations} WHERE uid = :uid', [':uid' => $account->id()]);
-    if (count($expirations)) {
-      // No role expirations, so nothing to show.
-      return;
-    }
-
-    $build['uc_role'] = [
-      '#type' => 'item',
-      '#weight' => '-1',
-      '#title' => t('Expiring roles'),
-    ];
-
     foreach ($expirations as $expiration) {
       $build['uc_role'][$expiration->rid] = [
         '#type' => 'item',
@@ -337,7 +326,16 @@ function uc_role_user_view(array &$build, UserInterface $account, EntityViewDisp
         '#markup' => t('This role will expire on @date', ['@date' => \Drupal::service('date.formatter')->format($expiration->expiration, 'short')]),
       ];
     }
+    if (isset($build['uc_role'])) {
+      // There are role expirations, so need a container.
+      $build['uc_role'] += [
+        '#type' => 'item',
+        '#weight' => '-1',
+        '#title' => t('Expiring roles'),
+      ];
+    }
   }
+
 }
 
 /**
