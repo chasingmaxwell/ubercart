@@ -1203,7 +1203,7 @@ function _uc_attribute_alter_form($id, &$product, $use_ajax) {
         switch ($price_format) {
           case 'total':
             // Only display total price for non-checkbox options.
-            // !TODO Fix attribute option total price display for product kits.
+            // @todo Fix attribute option total price display for product kits.
             if ($attribute->display != 3 && !isset($product->data['kit_id'])) {
               $use_ajax = $use_ajax || (count($priced_attributes) > 1);
               $data['attributes'] = [$attribute->aid => $option->oid] + $data['attributes'];

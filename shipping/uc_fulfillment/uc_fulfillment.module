@@ -193,7 +193,7 @@ function obsolete_uc_fulfillment_shipment_print(array $variables) {
     foreach ($shipment->packages as $id => $package) {
       if (isset($package->label_image) &&
           file_exists($package->label_image->uri)) {
-        // TODO: Find a way to store these magic numbers specifically for UPS.
+        // @todo Find a way to store these magic numbers specifically for UPS.
         list($width, $height) = [672, 392];
         $output .= '<br class="page-break" />' . "\n";
         $output .= theme('image', [

@@ -30,13 +30,11 @@ use Drupal\uc_store\Ajax\CommandWrapper;
  * may be either the name of a single ajax callback to be attached to that
  * element, or an array of ajax callbacks, optionally keyed by wrapper.
  * For example:
- *
  * @code
  *   $form_state->set(['uc_ajax', 'mymodule', 'panes][quotes][quote_button'], array(
  *     'quotes-pane' => '::ajaxReplaceCheckoutPane',
  *   ));
  * @endcode
- *
  * This will cause the contents of 'quotes-pane' to be replaced by the return
  * value of ajaxReplaceCheckoutPane(). Note that if more than one module
  * assign a callback to the same wrapper key, the heavier module or pane will
@@ -45,7 +43,6 @@ use Drupal\uc_store\Ajax\CommandWrapper;
  * Implementors need not provide a wrapper key for each callback, in which case
  * the callback must return an array of ajax commands rather than a renderable
  * form element. For example:
- *
  * @code
  *   $form_state->set(['uc_ajax', 'mymodule', 'panes][quotes][quote_button'], [
  *     '::myAjaxCallback',
@@ -57,7 +54,6 @@ use Drupal\uc_store\Ajax\CommandWrapper;
  *     return $response;
  *   }
  * @endcode
- *
  * However, using a wrapper key where appropriate will reduce redundant
  * replacements of the same element.
  *
@@ -69,7 +65,6 @@ use Drupal\uc_store\Ajax\CommandWrapper;
  * or when replacing data that lie outside a checkout pane. Note also that you
  * may combine both formulations by mixing numeric and string keys.
  * For example:
- *
  * @code
  *   $form_state->set(['uc_ajax', 'mymodule', 'panes][quotes][quote_button'], [
  *     '::myAjaxCallback',
@@ -203,13 +198,13 @@ trait AjaxAttachTrait {
   /**
    * Ajax callback to replace a whole checkout pane.
    *
-   * @param $form
+   * @param array $form
    *   The checkout form.
-   * @param $form_state
+   * @param FormStateInterface $form_state
    *   The current form state.
    * @param $wrapper
    *   Special third parameter passed for uc_ajax callbacks containing the ajax
-   *   wrapper for this callback.  Here used to determine which pane to replace.
+   *   wrapper for this callback. Here used to determine which pane to replace.
    *
    * @return array|null
    *   The form element representing the pane, suitable for ajax rendering. If

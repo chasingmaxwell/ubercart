@@ -770,7 +770,7 @@ function uc_form_alter(&$form, &$form_state, $form_id) {
 function uc_store_uc_store_status() {
   $messages = [];
 
-  // @TODO Does it make sense to check for updated config files (check uuid?)
+  // @todo Does it make sense to check for updated config files (check uuid?)
   // How else do we know if Ubercart has corrected country data? Wouldn't want
   // to hook_update it I don't think, because then we'd overwrite any site
   // customizations. Leaving this as a dead code block for now...

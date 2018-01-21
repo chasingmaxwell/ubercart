@@ -155,7 +155,7 @@ class Order extends ContentEntityBase implements OrderInterface {
         ],
       ]);
 
-      // rules_invoke_event('uc_order_status_update', $this->original, $this);
+      /* rules_invoke_event('uc_order_status_update', $this->original, $this); */
       $event = new OrderStatusUpdateEvent($this->original, $this);
       \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
     }
@@ -192,8 +192,7 @@ class Order extends ContentEntityBase implements OrderInterface {
       // Log the action in the database.
       \Drupal::logger('uc_order')->notice('Order @order_id deleted by user @uid.', ['@order_id' => $order_id, '@uid' => \Drupal::currentUser()->id()]);
 
-      // Rules event.
-      // rules_invoke_event('uc_order_delete', $order);
+      /* rules_invoke_event('uc_order_delete', $order); */
       $event = new OrderDeletedEvent($order);
       \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
     }

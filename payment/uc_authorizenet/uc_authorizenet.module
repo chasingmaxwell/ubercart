@@ -313,7 +313,7 @@ function _uc_authorizenet_substr_between($string, $element) {
 }
 
 /*
- * @TODO: Remove!
+ * @todo Remove!
  */
 if (!function_exists('variable_get')) {
 

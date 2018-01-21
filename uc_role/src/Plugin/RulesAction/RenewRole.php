@@ -205,7 +205,7 @@ class RenewRole extends RulesActionBase implements ContainerFactoryPluginInterfa
         uc_order_comment_save($order->id(), $account->id(), $comment);
 
         // Trigger role email.
-        // rules_invoke_event('uc_role_notify_' . $op, $order, $new_expiration);
+        /* rules_invoke_event('uc_role_notify_' . $op, $order, $new_expiration); */
         if ($op == 'grant') {
           $event = new NotifyGrantEvent($order, $new_expiration);
         }

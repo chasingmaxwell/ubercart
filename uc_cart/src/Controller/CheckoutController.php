@@ -187,7 +187,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
     $this->moduleHandler()->invokeAll('uc_cart_checkout_start', [$order]);
 
     // Trigger the checkout start event.
-    // rules_invoke_event('uc_cart_checkout_start', $order);
+    /* rules_invoke_event('uc_cart_checkout_start', $order); */
     $event = new CheckoutStartEvent($order);
     \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
 
@@ -241,7 +241,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
     $this->moduleHandler()->invokeAll('uc_cart_checkout_review_order', [$order]);
 
     // Trigger the checkout review order event.
-    // rules_invoke_event('uc_cart_checkout_review_order', $order);
+    /* rules_invoke_event('uc_cart_checkout_review_order', $order); */
     $event = new CheckoutReviewOrderEvent($order);
     \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
 

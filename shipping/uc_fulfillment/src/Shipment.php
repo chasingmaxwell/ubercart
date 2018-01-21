@@ -494,7 +494,7 @@ class Shipment implements ShipmentInterface {
 
     \Drupal::moduleHandler()->invokeAll('uc_shipment', ['save', $this]);
     $order = Order::load($this->orderId);
-    // rules_invoke_event('uc_shipment_save', $order, $this);
+    /* rules_invoke_event('uc_shipment_save', $order, $this); */
     $event = new ShipmentSaveEvent($order, $this);
     \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
   }

@@ -174,7 +174,7 @@ function uc_payment_uc_payment_receipt_insert(PaymentReceiptInterface $payment) 
   $order->logChanges([$log_message]);
 
   //\Drupal::moduleHandler()->invokeAll('uc_payment_entered', [$order, $method, $amount, $order->getOwner(), $data, $comment]);
-  // rules_invoke_event('uc_payment_entered', $order, $account);
+  /* rules_invoke_event('uc_payment_entered', $order, $account); */
   $event = new PaymentEnteredEvent($order, $order->getOwner());
   \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
 

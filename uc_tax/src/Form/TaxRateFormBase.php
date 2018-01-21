@@ -68,7 +68,7 @@ class TaxRateFormBase extends EntityForm {
       '#default_value' => (int) $rate->isForShippable(),
     ];
 
-    // TODO: Remove the need for a special case for product kit module.
+    // @todo Remove the need for a special case for product kit module.
     $options = [];
     foreach (node_type_get_names() as $type => $name) {
       if ($type != 'product_kit' && uc_product_is_product($type)) {
@@ -131,7 +131,7 @@ class TaxRateFormBase extends EntityForm {
     parent::validate($form, $form_state);
     $rate = $form_state->getValue('rate');
     $rate = trim($rate);
-    // @TODO Would be nice to better validate rate, maybe with preg_match
+    // @todo Would be nice to better validate rate, maybe with preg_match
     if (floatval($rate) < 0) {
       $form_state->setErrorByName('rate', $this->t('Rate must be a positive number. No commas and only one decimal point.'));
     }
@@ -156,7 +156,7 @@ class TaxRateFormBase extends EntityForm {
     $tax_rate->setProductTypes(array_filter($form_state->getValue('product_types')));
     $tax_rate->setLineItemTypes(array_filter($form_state->getValue('line_item_types')));
 
-    // @TODO When Rules is working in D8 ..
+    // @todo When Rules is working in D8 ..
     // Update the name of the associated conditions.
     // $conditions = rules_config_load('uc_tax_' . $form_state->getValue('id'));
     // if ($conditions) {

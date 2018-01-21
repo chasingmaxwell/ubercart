@@ -468,8 +468,6 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
    *   The name of the server to send request to - 'production' or 'developer'.
    * @param string $xml
    *   The XML to send to Authorize.Net.
-   * @param string $callback
-   *   The name of the function that should process the response.
    *
    * @return bool
    *   TRUE or FALSE indicating the success of the API request.

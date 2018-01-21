@@ -134,7 +134,7 @@ class OrderUpdateForm extends FormBase {
     // Let Rules send email if requested.
     if ($form_state->getValue('notify')) {
       $order = Order::load($form_state->getValue('order_id'));
-      // rules_invoke_event('uc_order_status_email_update', $order);
+      /* rules_invoke_event('uc_order_status_email_update', $order); */
       $event = new OrderStatusEmailUpdateEvent($order);
       $this->eventDispatcher->dispatch($event::EVENT_NAME, $event);
     }

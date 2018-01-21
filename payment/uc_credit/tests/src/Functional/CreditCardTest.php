@@ -78,7 +78,7 @@ class CreditCardTest extends UbercartBrowserTestBase {
    * Tests security settings configuration.
    */
   public function testSecuritySettings() {
-    // TODO:  Still need tests with existing key file
+    // @todo Still need tests with existing key file
     // where key file is not readable or doesn't contain a valid key.
 
     // Create key directory, make it readable and writeable.
@@ -131,15 +131,15 @@ class CreditCardTest extends UbercartBrowserTestBase {
     );
     $this->assertText('Cannot write to directory, please verify the directory permissions.');
 
-    // Next, specify writeable directory, but with excess whitespace
-    // and trailing /
+    // Next, specify writeable directory, but with trailing '/' and
+    // excess whitespace.
     $this->drupalPostForm(
       'admin/store/config/payment/credit',
       ['uc_credit_encryption_path' => '  sites/default/files/testkey/ '],
       'Save configuration'
     );
     // See that the directory has been properly re-written to remove
-    // whitespace and trailing /
+    // trailing '/' and whitespace.
     $this->assertFieldByName(
       'uc_credit_encryption_path',
       'sites/default/files/testkey',

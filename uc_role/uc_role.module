@@ -67,7 +67,7 @@ function uc_role_cron() {
 
     // Role expired.
     elseif ($expiration->expiration <= \Drupal::time()->getRequestTime()) {
-      // rules_invoke_event('uc_role_notify_revoke', $account, $expiration);
+      /* rules_invoke_event('uc_role_notify_revoke', $account, $expiration); */
       $event = new NotifyRevokeEvent($account, $expiration);
       \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
       uc_role_revoke($account, $expiration->rid);
@@ -75,7 +75,7 @@ function uc_role_cron() {
 
     // Remind the user about an upcoming expiration.
     elseif ($reminder_granularity != 'never') {
-      // rules_invoke_event('uc_role_notify_reminder', $account, $expiration);
+      /* rules_invoke_event('uc_role_notify_reminder', $account, $expiration); */
       $event = new NotifyReminderEvent($account, $expiration);
       \Drupal::service('event_dispatcher')->dispatch($event::EVENT_NAME, $event);
       db_update('uc_roles_expirations')

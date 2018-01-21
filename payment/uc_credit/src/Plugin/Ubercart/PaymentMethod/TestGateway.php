@@ -81,10 +81,10 @@ class TestGateway extends CreditCardPaymentMethodBase {
     // All other transactions will succeed.
     if ($order->payment_details['cc_number'] == '0000000000000000' ||
       (isset($order->payment_details['cc_cvv']) && $order->payment_details['cc_cvv'] == '000') ||
-      ($expiration_date - REQUEST_TIME) <= 0                     ||
-      $amount == 12.34                                           ||
-      $order->billing_first_name == 'Fictitious'                 ||
-      $order->billing_phone == '8675309'                            ) {
+      ($expiration_date - REQUEST_TIME) <= 0     ||
+      $amount == 12.34                           ||
+      $order->billing_first_name == 'Fictitious' ||
+      $order->billing_phone == '8675309'            ) {
       $success = FALSE;
     }
     else {

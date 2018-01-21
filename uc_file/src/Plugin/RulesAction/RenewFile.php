@@ -145,7 +145,7 @@ class RenewFile extends RulesActionBase implements ContainerFactoryPluginInterfa
 
     // Notify the user of their download(s).
     if ($user_downloads) {
-      // rules_invoke_event('uc_file_notify_grant', $order, $user_downloads);
+      /* rules_invoke_event('uc_file_notify_grant', $order, $user_downloads); */
       $event = new NotifyGrantEvent($order, $user_downloads);
       $this->eventDispatcher->dispatch($event::EVENT_NAME, $event);
     }

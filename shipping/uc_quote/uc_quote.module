@@ -194,7 +194,7 @@ function uc_quote_form_node_form_alter(&$form, FormStateInterface $form_state) {
 /**
  * Implements hook_uc_cart_pane().
  *
- * @TODO: Replace with block implementation.
+ * @todo Replace with block implementation.
  */
 function uc_quote_uc_cart_pane($items) {
   if (\Drupal::routeMatch()->getRouteName() == 'uc_cart.cart') {

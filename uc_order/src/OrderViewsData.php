@@ -364,7 +364,7 @@ class OrderViewsData extends EntityViewsData {
     ];
 
     // Order comments table.
-    // TODO: refactor this into a groupwise max relationship.
+    // @todo Refactor this into a groupwise max relationship.
     $data['uc_order_comments']['table']['group'] = $this->t('Order comments');
     $data['uc_order_comments']['table']['join'] = [
       'uc_orders' => [

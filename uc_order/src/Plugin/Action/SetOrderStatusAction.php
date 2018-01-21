@@ -68,7 +68,7 @@ class SetOrderStatusAction extends ConfigurableActionBase {
   public function execute($order = NULL) {
     $order->setStatusId($this->configuration['status'])->save();
     if ($this->configuration['notify']) {
-      // rules_invoke_event('uc_order_status_email_update', $order);
+      /* rules_invoke_event('uc_order_status_email_update', $order); */
     }
   }
 

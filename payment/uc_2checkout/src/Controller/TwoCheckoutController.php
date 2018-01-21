@@ -146,9 +146,9 @@ class TwoCheckoutController extends ControllerBase {
 
       if ($values->get('message_type') == 'FRAUD_STATUS_CHANGED') {
         switch ($values->get('fraud_status')) {
-          // @todo: I think this still needs a lot of work, I don't see anywhere that it
-          // validates the INS against an order in the DB then changes order status if the
-          // payment was successful, like PayPal IPN does ...
+          // @todo: I think this still needs a lot of work, I don't see anywhere
+          // that it validates the INS against an order in the DB then changes
+          // order status if the payment was successful, like PayPal IPN does.
           case 'pass':
             break;
 
