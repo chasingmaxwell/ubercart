@@ -213,7 +213,10 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
           'success' => TRUE,
           'comment' => $this->t('PayPal transaction ID: @transactionid', ['@transactionid' => $nvp_response['TRANSACTIONID']]),
           'message' => $message,
-          'data' => SafeMarkup::checkPlain($nvp_response['TRANSACTIONID']),
+          'data' => [
+            'module' => 'uc_paypal',
+            'txn_id' => (string) SafeMarkup::checkPlain($nvp_response['TRANSACTIONID']),
+          ],
           'uid' => \Drupal::currentUser()->id(),
         ];
 

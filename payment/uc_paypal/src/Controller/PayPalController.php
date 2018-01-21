@@ -7,7 +7,6 @@ use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Link;
-use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_payment\Plugin\PaymentMethodManager;
 use GuzzleHttp\Exception\TransferException;
@@ -36,13 +35,6 @@ class PayPalController extends ControllerBase implements ContainerInjectionInter
   protected $session;
 
   /**
-   * The logger.factory service.
-   *
-   * @var \Drupal\Core\Logger\LoggerChannelFactoryInterface
-   */
-  protected $logger;
-
-  /**
    * The datetime.time service.
    *
    * @var \Drupal\Component\Datetime\TimeInterface
@@ -56,15 +48,12 @@ class PayPalController extends ControllerBase implements ContainerInjectionInter
    *   The payment method manager.
    * @param \Symfony\Component\HttpFoundation\Session\SessionInterface $session
    *   The session.
-   * @param \Drupal\Core\Logger\LoggerChannelFactoryInterface $logger
-   *   The logger.factory service.
    * @param \Drupal\Component\Datetime\TimeInterface $date_time
    *   The datetime.time service.
    */
-  public function __construct(PaymentMethodManager $payment_method_manager, SessionInterface $session, LoggerChannelFactoryInterface $logger, TimeInterface $date_time) {
+  public function __construct(PaymentMethodManager $payment_method_manager, SessionInterface $session, TimeInterface $date_time) {
     $this->paymentMethodManager = $payment_method_manager;
     $this->session = $session;
-    $this->logger = $logger;
     $this->dateTime = $date_time;
   }
 
@@ -75,7 +64,6 @@ class PayPalController extends ControllerBase implements ContainerInjectionInter
     return new static(
       $container->get('plugin.manager.uc_payment.method'),
       $container->get('session'),
-      $container->get('logger.factory'),
       $container->get('datetime.time')
     );
   }
@@ -106,7 +94,7 @@ class PayPalController extends ControllerBase implements ContainerInjectionInter
     $txn_id = $ipn['txn_id'];
 
     if (!isset($ipn['invoice'])) {
-      $this->logger('uc_paypal')->error('IPN attempted with invalid order ID.');
+      $this->getLogger('uc_paypal')->error('IPN attempted with invalid order ID.');
       return;
     }
 
@@ -119,7 +107,7 @@ class PayPalController extends ControllerBase implements ContainerInjectionInter
 
     $order = Order::load($order_id);
     if (!$order) {
-      $this->logger('uc_paypal')->error('IPN attempted for non-existent order @order_id.', ['@order_id' => $order_id]);
+      $this->getLogger('uc_paypal')->error('IPN attempted for non-existent order @order_id.', ['@order_id' => $order_id]);
       return;
     }
 
@@ -128,7 +116,7 @@ class PayPalController extends ControllerBase implements ContainerInjectionInter
 
     // Optionally log IPN details.
     if (!empty($config['wps_debug_ipn'])) {
-      $this->logger('uc_paypal')->notice('Receiving IPN at URL for order @order_id. <pre>@debug</pre>', [
+      $this->getLogger('uc_paypal')->notice('Receiving IPN at URL for order @order_id. <pre>@debug</pre>', [
         '@order_id' => $order_id,
         '@debug' => print_r($ipn, TRUE),
       ]);
@@ -137,7 +125,7 @@ class PayPalController extends ControllerBase implements ContainerInjectionInter
     // Express Checkout IPNs may not have the WPS email stored. But if it is,
     // make sure that the right account is being paid.
     if (!empty($config['wps_email']) && Unicode::strtolower($email) != Unicode::strtolower($config['wps_email'])) {
-      $this->logger('uc_paypal')->error('IPN for a different PayPal account attempted.');
+      $this->getLogger('uc_paypal')->error('IPN for a different PayPal account attempted.');
       return;
     }
 
@@ -156,13 +144,13 @@ class PayPalController extends ControllerBase implements ContainerInjectionInter
       ]);
     }
     catch (TransferException $e) {
-      $this->logger('uc_paypal')->error('IPN validation failed with HTTP error %error.', ['%error' => $e->getMessage()]);
+      $this->getLogger('uc_paypal')->error('IPN validation failed with HTTP error %error.', ['%error' => $e->getMessage()]);
       return;
     }
 
     // Check IPN validation response to determine if the IPN was valid..
     if ($response->getBody() != 'VERIFIED') {
-      $this->logger('uc_paypal')->error('IPN transaction failed verification.');
+      $this->getLogger('uc_paypal')->error('IPN transaction failed verification.');
       uc_order_comment_save($order_id, 0, $this->t('An IPN transaction failed verification for this order.'), 'admin');
       return;
     }
@@ -171,7 +159,7 @@ class PayPalController extends ControllerBase implements ContainerInjectionInter
     $duplicate = (bool) db_query_range('SELECT 1 FROM {uc_payment_paypal_ipn} WHERE txn_id = :id AND status <> :status', 0, 1, [':id' => $txn_id, ':status' => 'Pending'])->fetchField();
     if ($duplicate) {
       if ($order->getPaymentMethodId() != 'credit') {
-        $this->logger('uc_paypal')->notice('IPN transaction ID has been processed before.');
+        $this->getLogger('uc_paypal')->notice('IPN transaction ID has been processed before.');
       }
       return;
     }
@@ -196,7 +184,7 @@ class PayPalController extends ControllerBase implements ContainerInjectionInter
 
       case 'Completed':
         if (abs($amount - $order->getTotal()) > 0.01) {
-          $this->logger('uc_paypal')->warning('Payment @txn_id for order @order_id did not equal the order total.', ['@txn_id' => $txn_id, '@order_id' => $order->id(), 'link' => Link::createFromRoute($this->t('view'), 'entity.uc_order.canonical', ['uc_order' => $order->id()])->toString()]);
+          $this->getLogger('uc_paypal')->warning('Payment @txn_id for order @order_id did not equal the order total.', ['@txn_id' => $txn_id, '@order_id' => $order->id(), 'link' => Link::createFromRoute($this->t('view'), 'entity.uc_order.canonical', ['uc_order' => $order->id()])->toString()]);
         }
         $comment = $this->t('PayPal transaction ID: @txn_id', ['@txn_id' => $txn_id]);
         uc_payment_enter($order_id, 'paypal_wps', $amount, $order->getOwnerId(), NULL, $comment);
@@ -227,7 +215,7 @@ class PayPalController extends ControllerBase implements ContainerInjectionInter
         break;
 
       case 'Reversed':
-        $this->logger('uc_paypal')->error('PayPal has reversed a payment!');
+        $this->getLogger('uc_paypal')->error('PayPal has reversed a payment!');
         uc_order_comment_save($order_id, 0, $this->t('Payment has been reversed by PayPal: @reason', ['@reason' => $this->reversalMessage($ipn['reason_code'])]), 'admin');
         break;
 
