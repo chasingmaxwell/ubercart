@@ -23,7 +23,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *       label = @Translation("Product Classes"),
  *       list_options_callback = "productClassOptions",
  *       multiple = TRUE,
- *       restriction  = "input"
+ *       assignment_restriction  = "input"
  *     ),
  *     "required" = @ContextDefinition("boolean",
  *       label = @Translation("Require all selected product classes"),

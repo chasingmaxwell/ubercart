@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *       list_options_callback = "countryOptions",
  *       multiple = TRUE,
  *       required = TRUE,
- *       restriction = "input"
+ *       assignment_restriction = "input"
  *     )
  *   }
  * )

@@ -19,7 +19,7 @@ use Drupal\uc_order\OrderInterface;
  *       label = @Translation("Products"),
  *       list_options_callback = "productsOptions",
  *       multiple = TRUE,
- *       restriction = "input"
+ *       assignment_restriction = "input"
  *     ),
  *     "product_count_value" = @ContextDefinition("integer",
  *       label = @Translation("Product count value")

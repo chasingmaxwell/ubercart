@@ -20,7 +20,7 @@ use Drupal\uc_order\OrderInterface;
  *       label = @Translation("Products"),
  *       list_options_callback = "hasProductsOptions",
  *       multiple = TRUE,
- *       restriction  = "input"
+ *       assignment_restriction  = "input"
  *     ),
  *     "required" = @ContextDefinition("boolean",
  *       label = @Translation("Require all selected products"),

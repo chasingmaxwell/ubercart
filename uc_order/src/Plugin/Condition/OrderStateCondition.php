@@ -20,7 +20,7 @@ use Drupal\uc_order\OrderStatusInterface;
  *     "order_state" = @ContextDefinition("entity:uc_order_status",
  *       label = @Translation("Order state"),
  *       list_options_callback = "orderStateOptions",
- *       restriction = "input"
+ *       assignment_restriction = "input"
  *     )
  *   }
  * )

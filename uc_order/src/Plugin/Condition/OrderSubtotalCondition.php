@@ -20,7 +20,7 @@ use Drupal\uc_order\OrderInterface;
  *       description = @Translation("The comparison operator."),
  *       default_value = "==",
  *       list_options_callback = "comparisonOptions",
- *       restriction = "input"
+ *       assignment_restriction = "input"
  *     ),
  *     "value" = @ContextDefinition("float",
  *       label = @Translation("Data value"),

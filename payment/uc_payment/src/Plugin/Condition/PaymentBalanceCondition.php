@@ -20,13 +20,13 @@ use Drupal\rules\Core\RulesConditionBase;
  *       label = @Translation("Operator"),
  *       description = @Translation("The comparison operator."),
  *       list_options_callback = "balanceOptions",
- *       restriction = "input"
+ *       assignment_restriction = "input"
  *     ),
  *     "include_authorizations" = @ContextDefinition("boolean",
  *       label = @Translation("Include authorizations?"),
  *       description = @Translation("Should 'authorization only' credit card transactions be used in calculating the order balance?"),
  *       list_options_callback = "booleanOptions",
- *       restriction = "input"
+ *       assignment_restriction = "input"
  *     )
  *   }
  * )
