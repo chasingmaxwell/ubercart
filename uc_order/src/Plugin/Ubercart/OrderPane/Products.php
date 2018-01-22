@@ -177,23 +177,34 @@ class Products extends EditableOrderPanePluginBase {
     if (\Drupal::moduleHandler()->moduleExists('uc_stock')) {
       $qtys = [];
       foreach ($order->products as $product) {
-        $qtys[$product->order_product_id] = $product->qty;
+        $qtys[$product->id()] = intval($product->qty->value);
       }
     }
 
     if (is_array($form_state->getValue('products'))) {
       foreach ($form_state->getValue('products') as $product) {
         if (isset($order->products[$product['order_product_id']])) {
-          foreach (['qty', 'title', 'model', 'weight', 'weight_units', 'cost', 'price'] as $field) {
-            $order->products[$product['order_product_id']]->$field = $product[$field];
+          foreach (['qty', 'title', 'model', 'cost', 'price'] as $field) {
+            if (!empty($product[$field])) {
+              $order->products[$product['order_product_id']]->{$field}->value = $product[$field];
+            }
+          }
+
+          // Weight is stored as an array, so we should handle it another way.
+          if (!empty($product['weight']) && !empty($product['weight_units'])) {
+            $weight = [
+              'value' => $product['weight'],
+              'units' => $product['weight_units'],
+            ];
+
+            $order->products[$product['order_product_id']]->weight->setValue($weight);
           }
 
           if (\Drupal::moduleHandler()->moduleExists('uc_stock')) {
-            $product = (object) $product;
-            $temp = $product->qty;
-            $product->qty = $product->qty - $qtys[$product->order_product_id];
-            uc_stock_adjust_product_stock($product, 0, $order);
-            $product->qty = $temp;
+            $temp = $product['qty'];
+            $order->products[$product['order_product_id']]->qty->value = $product['qty'] - $qtys[$product['order_product_id']];
+            uc_stock_adjust_product_stock($order->products[$product['order_product_id']], 0, $order);
+            $order->products[$product['order_product_id']]->qty->value = $temp;
           }
         }
       }
@@ -521,7 +532,12 @@ class Products extends EditableOrderPanePluginBase {
     $product->save();
 
     $order->products[] = $product;
-    $order->logChanges([$this->t('Added (@qty) @title to order.', ['@qty' => $product->qty->value, '@title' => $product->title->value])]);
+    $order->logChanges([
+      $this->t('Added (@qty) @title to order.', [
+        '@qty' => $product->qty->value,
+        '@title' => $product->title->value,
+      ]),
+    ]);
 
     // Decrement stock.
     if (\Drupal::moduleHandler()->moduleExists('uc_stock')) {

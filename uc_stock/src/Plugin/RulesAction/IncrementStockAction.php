@@ -39,13 +39,14 @@ class IncrementStockAction extends RulesActionBase {
    *
    * @param \Drupal\uc_order\OrderProductInterface $product
    *   The product whose stock is being adjusted.
-   * @param $key
-   *   Internal, so this function can be used as a callback of array_walk().
+   * @param mixed $key
+   *   The array key currently being modified, needed so this function can be
+   *   used as a callback of array_walk().
    * @param \Drupal\uc_order\OrderInterface $order
    *   Order object.
    */
   protected function incrementCallback(OrderProductInterface $product, $key, OrderInterface $order) {
-    $product->qty = -$product->qty;
+    $product->qty->value = -$product->qty->value;
     return uc_stock_adjust_product_stock($product, $key, $order);
   }
 

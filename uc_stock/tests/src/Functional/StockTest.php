@@ -117,4 +117,50 @@ class StockTest extends UbercartBrowserTestBase {
     $this->assertTrue(strpos($mail['body'], 'has reached ' . $qty) !== FALSE, 'Mail body contains quantity.');
   }
 
+  /**
+   * Tests stock increment/decrement when admin edits order.
+   */
+  public function testStockChangeAfterEditingOrder() {
+    // Set stock level.
+    $prefix = 'stock[' . $this->product->model->value . ']';
+    $stock = rand(100, 1000);
+    $edit = [
+      $prefix . '[active]' => 1,
+      $prefix . '[stock]' => $stock,
+    ];
+    $this->drupalPostForm('node/' . $this->product->id() . '/edit/stock', $edit, 'Save changes');
+
+    // Enable product quantity field.
+    $edit = ['uc_product_add_to_cart_qty' => TRUE];
+    $this->drupalPostForm('admin/store/config/products', $edit, 'Save configuration');
+
+    // Add the product to the cart and place an order.
+    $qty = rand(1, 50);
+    $edit = ['qty' => $qty];
+    $this->addToCart($this->product, $edit);
+    $order = $this->checkout();
+
+    // Go to the order page.
+    $this->drupalGet('admin/store/orders/' . $order->id() . '/edit');
+    // Get the first OrderProduct entity's id.
+    $order_products = $order->products;
+    reset($order_products);
+    $order_product_id = key($order_products);
+
+    // Check the product's quantity.
+    $this->assertFieldByName('products[' . $order_product_id . '][qty]', (string) $qty, "Product's quantity is found.");
+
+    // Increase the quantity of the product on order edit form.
+    $increased_qty = $qty + rand(1, 50);
+    $edit = [
+      'products[' . $order_product_id . '][qty]' => $increased_qty,
+    ];
+    $this->drupalPostForm('admin/store/orders/' . $order->id() . '/edit', $edit, 'Save changes');
+
+    // Check the updated product's quantity.
+    $this->assertFieldByName('products[' . $order_product_id . '][qty]', (string) $increased_qty, "Product's quantity is updated.");
+
+    $this->assertEquals($stock - $increased_qty, uc_stock_level($this->product->model->value));
+  }
+
 }
