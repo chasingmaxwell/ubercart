@@ -71,26 +71,26 @@ class EcController extends ControllerBase {
     $address = $order->getAddress('delivery');
     $shipname = $response['SHIPTONAME'];
     if (strpos($shipname, ' ') > 0) {
-      $address->first_name = substr($shipname, 0, strrpos(trim($shipname), ' '));
-      $address->last_name = substr($shipname, strrpos(trim($shipname), ' ') + 1);
+      $address->setFirstName(substr($shipname, 0, strrpos(trim($shipname), ' ')));
+      $address->setLastName(substr($shipname, strrpos(trim($shipname), ' ') + 1));
     }
     else {
-      $address->first_name = $shipname;
-      $address->last_name = '';
+      $address->setFirstName($shipname);
+      $address->setLastName('');
     }
-    $address->street1 = $response['SHIPTOSTREET'];
-    $address->street2 = isset($response['SHIPTOSTREET2']) ? $response['SHIPTOSTREET2'] : '';
-    $address->city = $response['SHIPTOCITY'];
-    $address->zone = $response['SHIPTOSTATE'];
-    $address->postal_code = $response['SHIPTOZIP'];
-    $address->country = $response['SHIPTOCOUNTRYCODE'];
+    $address->setStreet1($response['SHIPTOSTREET']);
+    $address->setStreet2(isset($response['SHIPTOSTREET2']) ? $response['SHIPTOSTREET2'] : '');
+    $address->setCity($response['SHIPTOCITY']);
+    $address->setZone($response['SHIPTOSTATE']);
+    $address->setPostalCode($response['SHIPTOZIP']);
+    $address->setCountry($response['SHIPTOCOUNTRYCODE']);
     $order->setAddress('delivery', $address);
 
     // Store billing details.
     $address = $order->getAddress('billing');
-    $address->first_name = $response['FIRSTNAME'];
-    $address->last_name = $response['LASTNAME'];
-    $address->country = $response['COUNTRYCODE'];
+    $address->setFirstName($response['FIRSTNAME']);
+    $address->setLastName($response['LASTNAME']);
+    $address->setCountry($response['COUNTRYCODE']);
     $order->setAddress('billing', $address);
     $order->setEmail($response['EMAIL']);
 

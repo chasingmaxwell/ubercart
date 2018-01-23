@@ -87,13 +87,13 @@ class TwoCheckoutController extends ControllerBase {
     }
 
     $address = $order->getAddress('billing');
-    $address->street1 = $request->request->get('street_address');
-    $address->street2 = $request->request->get('street_address2');
-    $address->city = $request->request->get('city');
-    $address->postal_code = $request->request->get('zip');
-    $address->phone = $request->request->get('phone');
-    $address->zone = $request->request->get('state');
-    $address->country = $request->request->get('country');
+    $address->setStreet1($request->request->get('street_address'));
+    $address->setStreet2($request->request->get('street_address2'));
+    $address->setCity($request->request->get('city'));
+    $address->setPostalCode($request->request->get('zip'));
+    $address->setPhone($request->request->get('phone'));
+    $address->setZone($request->request->get('state'));
+    $address->setCountry($request->request->get('country'));
     $order->setAddress('billing', $address);
     $order->save();
 

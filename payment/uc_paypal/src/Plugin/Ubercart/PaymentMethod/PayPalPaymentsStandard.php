@@ -210,11 +210,12 @@ class PayPalPaymentsStandard extends PayPalPaymentMethodPluginBase implements Of
 
     $address = $order->getAddress($this->configuration['wps_address_selection']);
 
-    $country = $address->country;
+    $country = $address->getCountry();
+    $full_phone = trim($address->getPhone());
     $phone = '';
-    for ($i = 0; $i < strlen($address->phone); $i++) {
-      if (is_numeric($address->phone[$i])) {
-        $phone .= $address->phone[$i];
+    for ($i = 0; $i < strlen($full_phone); $i++) {
+      if (is_numeric($full_phone[$i])) {
+        $phone .= $full_phone[$i];
       }
     }
 
@@ -267,15 +268,15 @@ class PayPalPaymentsStandard extends PayPalPaymentMethodPluginBase implements Of
       'lc' => $this->configuration['wps_language'],
 
       // Prepopulating forms/address overriding.
-      'address1' => substr($address->street1, 0, 100),
-      'address2' => substr($address->street2, 0, 100),
-      'city' => substr($address->city, 0, 40),
+      'address1' => substr($address->getStreet1(), 0, 100),
+      'address2' => substr($address->getStreet2(), 0, 100),
+      'city' => substr($address->getCity(), 0, 40),
       'country' => $country,
       'email' => $order->getEmail(),
-      'first_name' => substr($address->first_name, 0, 32),
-      'last_name' => substr($address->last_name, 0, 64),
-      'state' => $address->zone,
-      'zip' => $address->postal_code,
+      'first_name' => substr($address->getFirstName(), 0, 32),
+      'last_name' => substr($address->getLastName(), 0, 64),
+      'state' => $address->getZone(),
+      'zip' => $address->getPostalCode(),
       'night_phone_a' => $phone_a,
       'night_phone_b' => $phone_b,
       'night_phone_c' => $phone_c,

@@ -160,8 +160,8 @@ abstract class AddressPaneBase extends CheckoutPanePluginBase {
     $pane = $this->pluginDefinition['id'];
     $address = $order->getAddress($pane);
     $review[] = ['title' => $this->t('Address'), 'data' => ['#markup' => $address]];
-    if (uc_address_field_enabled('phone') && !empty($address->phone)) {
-      $review[] = ['title' => $this->t('Phone'), 'data' => ['#plain_text' => $address->phone]];
+    if (uc_address_field_enabled('phone') && !empty($address->getPhone())) {
+      $review[] = ['title' => $this->t('Phone'), 'data' => ['#plain_text' => $address->getPhone()]];
     }
     return $review;
   }

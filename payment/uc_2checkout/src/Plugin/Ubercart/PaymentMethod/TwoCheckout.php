@@ -176,8 +176,8 @@ class TwoCheckout extends PaymentMethodPluginBase implements OffsitePaymentMetho
    */
   public function buildRedirectForm(array $form, FormStateInterface $form_state, OrderInterface $order = NULL) {
     $address = $order->getAddress('billing');
-    if ($address->country) {
-      $country = \Drupal::service('country_manager')->getCountry($address->country)->getAlpha3();
+    if ($address->getCountry()) {
+      $country = \Drupal::service('country_manager')->getCountry($address->getCountry())->getAlpha3();
     }
     else {
       $country = '';
@@ -186,15 +186,15 @@ class TwoCheckout extends PaymentMethodPluginBase implements OffsitePaymentMetho
     $data = [
       'sid' => $this->configuration['sid'],
       'mode' => '2CO',
-      'card_holder_name' => Unicode::substr($address->first_name . ' ' . $address->last_name, 0, 128),
-      'street_address' => Unicode::substr($address->street1, 0, 64),
-      'street_address2' => Unicode::substr($address->street2, 0, 64),
-      'city' => Unicode::substr($address->city, 0, 64),
-      'state' => $address->zone,
-      'zip' => Unicode::substr($address->postal_code, 0, 16),
+      'card_holder_name' => Unicode::substr($address->getFirstName() . ' ' . $address->getLastName(), 0, 128),
+      'street_address' => Unicode::substr($address->getStreet1(), 0, 64),
+      'street_address2' => Unicode::substr($address->getStreet2(), 0, 64),
+      'city' => Unicode::substr($address->getCity(), 0, 64),
+      'state' => $address->getZone(),
+      'zip' => Unicode::substr($address->getPostalCode(), 0, 16),
       'country' => $country,
       'email' => Unicode::substr($order->getEmail(), 0, 64),
-      'phone' => Unicode::substr($address->phone, 0, 16),
+      'phone' => Unicode::substr($address->getPhone(), 0, 16),
       'purchase_step' => 'payment-method',
 
       'demo' => $this->configuration['demo'] ? 'Y' : 'N',

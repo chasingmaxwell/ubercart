@@ -243,7 +243,7 @@ function uc_order_tokens($type, $tokens, array $data, array $options, Bubbleable
           break;
 
         case 'shipping-phone':
-          $replacements[$original] = $order->getAddress('delivery')->phone;
+          $replacements[$original] = $order->getAddress('delivery')->getPhone();
           break;
 
         case 'billing-address':
@@ -253,24 +253,24 @@ function uc_order_tokens($type, $tokens, array $data, array $options, Bubbleable
           break;
 
         case 'billing-phone':
-          $replacements[$original] = $order->getAddress('billing')->phone;
+          $replacements[$original] = $order->getAddress('billing')->getPhone();
           break;
 
         case 'first-name':
           if (\Drupal::config('uc_store.settings')->get('customer_address') == 'shipping') {
-            $replacements[$original] = $order->getAddress('delivery')->first_name;
+            $replacements[$original] = $order->getAddress('delivery')->getFirstName();
           }
           else {
-            $replacements[$original] = $order->getAddress('billing')->first_name;
+            $replacements[$original] = $order->getAddress('billing')->getFirstName();
           }
           break;
 
         case 'last-name':
           if (\Drupal::config('uc_store.settings')->get('customer_address') == 'shipping') {
-            $replacements[$original] = $order->getAddress('delivery')->last_name;
+            $replacements[$original] = $order->getAddress('delivery')->getLastName();
           }
           else {
-            $replacements[$original] = $order->getAddress('billing')->last_name;
+            $replacements[$original] = $order->getAddress('billing')->getLastName();
           }
           break;
 

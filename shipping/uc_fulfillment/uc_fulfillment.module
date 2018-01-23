@@ -85,9 +85,9 @@ function template_preprocess_uc_packing_slip(&$variables) {
   $variables['order_link'] = Link::createFromRoute($order->id(), 'uc_order.user_view', ['user' => $order->getOwnerId(), 'uc_order' => $order->id()], ['absolute' => TRUE])->toString();
   $variables['order_email'] = $order->getEmail();
   $variables['billing_address'] = ['#markup' => $order->getAddress('billing')];
-  $variables['billing_phone'] = $order->getAddress('billing')->phone;
+  $variables['billing_phone'] = $order->getAddress('billing')->getPhone();
   $variables['shipping_address'] = ['#markup' => $order->getAddress('delivery')];
-  $variables['shipping_phone'] = $order->getAddress('delivery')->phone;
+  $variables['shipping_phone'] = $order->getAddress('delivery')->getPhone();
 
   if (\Drupal::moduleHandler()->moduleExists('uc_payment')) {
     $variables['payment_method'] = \Drupal::service('plugin.manager.uc_payment.method')->createFromOrder($order)->cartReviewTitle();

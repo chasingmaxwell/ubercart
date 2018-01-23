@@ -164,14 +164,14 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
       'ADDROVERRIDE' => 1,
       'BUTTONSOURCE' => 'Ubercart_ShoppingCart_EC_US',
       'NOTIFYURL' => Url::fromRoute('uc_paypal.ipn', [], ['absolute' => TRUE])->toString(),
-      'SHIPTONAME' => substr($address->first_name . ' ' . $address->last_name, 0, 32),
-      'SHIPTOSTREET' => substr($address->street1, 0, 100),
-      'SHIPTOSTREET2' => substr($address->street2, 0, 100),
-      'SHIPTOCITY' => substr($address->city, 0, 40),
-      'SHIPTOSTATE' => $address->zone,
-      'SHIPTOCOUNTRYCODE' => $address->country,
-      'SHIPTOZIP' => substr($address->postal_code, 0, 20),
-      'PHONENUM' => substr($address->phone, 0, 20),
+      'SHIPTONAME' => substr($address->getFirstName() . ' ' . $address->getLastName(), 0, 32),
+      'SHIPTOSTREET' => substr($address->getStreet1(), 0, 100),
+      'SHIPTOSTREET2' => substr($address->getStreet2(), 0, 100),
+      'SHIPTOCITY' => substr($address->getCity(), 0, 40),
+      'SHIPTOSTATE' => $address->getZone(),
+      'SHIPTOCOUNTRYCODE' => $address->getCountry(),
+      'SHIPTOZIP' => substr($address->getPostalCode(), 0, 20),
+      'PHONENUM' => substr($address->getPhone(), 0, 20),
       'LANDINGPAGE' => $this->configuration['ec_landingpage_style'],
     ];
 
@@ -349,7 +349,7 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
         '#type' => 'textfield',
         '#title' => $this->t('Company'),
         '#description' => $order->isShippable() ? $this->t('Leave blank if shipping to a residence.') : '',
-        '#default_value' => $address->company,
+        '#default_value' => $address->getCompany(),
       ];
     }
 
@@ -358,7 +358,7 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
       $form['delivery_phone'] = [
         '#type' => 'textfield',
         '#title' => $this->t('Contact phone number'),
-        '#default_value' => $address->phone,
+        '#default_value' => $address->getPhone(),
         '#size' => 24,
       ];
     }
@@ -387,10 +387,10 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
 
     $address = $order->getAddress('delivery');
     if ($this->configuration['ec_review_company']) {
-      $address->company = $form_state->getValue('delivery_company');
+      $address->setCompany($form_state->getValue('delivery_company'));
     }
     if ($this->configuration['ec_review_phone']) {
-      $address->phone = $form_state->getValue('delivery_phone');
+      $address->setPhone($form_state->getValue('delivery_phone'));
     }
     $order->setAddress('delivery', $address);
 

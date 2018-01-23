@@ -8,6 +8,7 @@
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
+use Drupal\uc_store\AddressInterface;
 use Drupal\uc_ups\UPSUtilities;
 
 /**
@@ -333,9 +334,9 @@ function uc_ups_access_request() {
  *
  * @param array $packages
  *   Array of packages received from the cart.
- * @param $origin
+ * @param \Drupal\uc_store\AddressInterface $origin
  *   Delivery origin address information.
- * @param $destination
+ * @param \Drupal\uc_store\AddressInterface $destination
  *   Delivery destination address information.
  * @param string $ups_service
  *   UPS service code (refers to UPS Ground, Next-Day Air, etc.).
@@ -343,7 +344,7 @@ function uc_ups_access_request() {
  * @return string
  *   RatingServiceSelectionRequest XML document to send to UPS.
  */
-function uc_ups_shipping_quote(array $packages, $origin, $destination, $ups_service) {
+function uc_ups_shipping_quote(array $packages, AddressInterface $origin, AddressInterface $destination, $ups_service) {
   $ups_config = \Drupal::config('uc_ups.settings');
   $ua = explode(' ', $_SERVER['HTTP_USER_AGENT']);
   $user_agent = $ua[0];
@@ -357,12 +358,12 @@ function uc_ups_shipping_quote(array $packages, $origin, $destination, $ups_serv
   $shipper_zone = $store_config->get('address.zone');
   $shipper_country = $store_config->get('address.country');
   $shipper_zip = $store_config->get('address.postal_code');
-  $shipto_zone = $destination->zone;
-  $shipto_country = $destination->country;
-  $shipto_zip = $destination->postal_code;
-  $shipfrom_zone = $origin->zone;
-  $shipfrom_country = $origin->country;
-  $shipfrom_zip = $origin->postal_code;
+  $shipto_zone = $destination->getZone();
+  $shipto_country = $destination->getCountry();
+  $shipto_zip = $destination->getPostalCode();
+  $shipfrom_zone = $origin->getZone();
+  $shipfrom_country = $origin->getCountry();
+  $shipfrom_zip = $origin->getPostalCode();
 
   $ups_units = $ups_config->get('unit_system');
   switch ($ups_units) {
@@ -536,9 +537,9 @@ function uc_ups_quote(array $products, $details, $method) {
   // filled out the destination address, so check to see whether the address
   // has all needed fields. If not, abort.
   $destination = (object) $details;
-  if (empty($destination->zone)        ||
-      empty($destination->postal_code) ||
-      empty($destination->country)       ) {
+  if (empty($destination->getZone())       ||
+      empty($destination->getPostalCode()) ||
+      empty($destination->getCountry())       ) {
     // Skip this shipping method.
     return [];
   }

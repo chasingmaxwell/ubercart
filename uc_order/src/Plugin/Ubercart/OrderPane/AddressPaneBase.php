@@ -24,7 +24,7 @@ abstract class AddressPaneBase extends EditableOrderPanePluginBase {
   public function view(OrderInterface $order, $view_mode) {
     $pane = $this->pluginDefinition['id'];
     $address = $order->getAddress($pane);
-    return ['#markup' => $address . '<br />' . $address->phone];
+    return ['#markup' => $address . '<br />' . $address->getPhone()];
   }
 
   /**

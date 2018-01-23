@@ -74,9 +74,9 @@ class AddressTest extends UbercartBrowserTestBase {
     }
     $this->assertEquals($formatted, $expected, 'Formatted address matches expected value.');
 
-    $address->city = 'Victoria';
-    $address->zone = 'BC';
-    $address->country = 'CA';
+    $address->setCity('Victoria');
+    $address->setZone('BC');
+    $address->setCountry('CA');
     $formatted = (string) $address;
     if ($store_country == 'CA') {
       $expected = "CTW, INC.<br>\nELMO MONSTER<br>\n123 SESAME STREET<br>\nVICTORIA BC  10010";
@@ -98,7 +98,7 @@ class AddressTest extends UbercartBrowserTestBase {
     $address = clone($this->testAddresses[0]);
 
     // Modify phone number and test equality.
-    $address->phone = 'this is not a valid phone number';
+    $address->setPhone('this is not a valid phone number');
     $this->assertTrue(
       $this->testAddresses[0]->isSamePhysicalLocation($address),
       'Physical address comparison ignores non-physical fields.'
@@ -106,22 +106,22 @@ class AddressTest extends UbercartBrowserTestBase {
 
     // Use a specific address modified to our needs.
     $original = clone($this->testAddresses[1]);
-    $original->city = 'Victoria';
-    $original->zone = 'BC';
-    $original->country = 'CA';
+    $original->setCity('Victoria');
+    $original->setZone('BC');
+    $original->setCountry('CA');
 
     // Address to modify.
     $address = clone($original);
 
     // Modify city and test equality.
-    $address->city = 'vIcToRia';
+    $address->setCity('vIcToRia');
     $this->assertTrue(
       $address->isSamePhysicalLocation($original),
       'Case-insensitive address comparison works.'
     );
 
     // Modify city and test equality.
-    $address->city = '		vic toria ';
+    $address->setCity('		vic toria ');
     $this->assertTrue(
       $address->isSamePhysicalLocation($original),
       'Whitespace-insensitive address comparison works.'
