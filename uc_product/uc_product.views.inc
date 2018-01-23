@@ -16,7 +16,7 @@ function uc_product_views_data() {
       'left_field' => 'nid',
       'field' => 'nid',
     ],
-// @todo: get revisions to work
+// @todo Get revisions to work.
 //    'node_revisions' => [
 //      'left_field' => 'vid',
 //      'field' => 'vid',

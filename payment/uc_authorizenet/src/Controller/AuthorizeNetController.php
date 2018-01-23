@@ -32,7 +32,7 @@ class AuthorizeNetController extends ControllerBase {
     $login_data = _uc_authorizenet_login_data();
 
     /*
-     * @todo: Modify the MD5 hash to accommodate differences from AIM to ARB.
+     * @todo Modify the MD5 hash to accommodate differences from AIM to ARB.
      */
 
     // This is an ARB notification.

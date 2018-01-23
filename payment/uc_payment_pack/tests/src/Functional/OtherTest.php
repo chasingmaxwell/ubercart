@@ -41,7 +41,7 @@ class OtherTest extends PaymentPackTestBase {
     $this->assertFieldByName('payment_method', $other['id'], 'Other payment method is selected in the order edit form.');
     $edit = ['payment_details[description]' => $this->randomString()];
     $this->drupalPostForm(NULL, [], 'Save changes');
-    // @todo: Test storage of payment details.
+    // @todo Test storage of payment details.
   }
 
 }

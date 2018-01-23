@@ -116,7 +116,7 @@ class PackageCancelForm extends ConfirmFormBase {
     $methods = $this->moduleHandler->invokeAll('uc_fulfillment_method');
     // The notion of "cancel" is specific to the fulfillment method, therefore
     // we delegate all the work to the plugin.
-    // @todo: Replace this with calls to the plugin cancel method instead of hooks.
+    // @todo Replace this with calls to the plugin cancel method instead of hooks.
     if (isset($methods[$shipment->getShippingMethod()]['cancel']) &&
         function_exists($methods[$shipment->getShippingMethod()]['cancel'])) {
       $result = call_user_func($methods[$shipment->getShippingMethod()]['cancel'], $shipment->getTrackingNumber(), [$this->package->getTrackingNumber()]);

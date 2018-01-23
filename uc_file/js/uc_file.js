@@ -32,7 +32,7 @@ Drupal.behaviors.ucFileDeleteList = {
 /**
  * Give visual feedback to the user about download numbers.
  *
- * TODO: would be to use AJAX to get the new download key and
+ * @todo Would be to use AJAX to get the new download key and
  * insert it into the link if the user hasn't exceeded download limits.
  * I dunno if that's technically feasible though.
  */

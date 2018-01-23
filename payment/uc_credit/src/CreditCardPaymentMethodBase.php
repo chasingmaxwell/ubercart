@@ -660,7 +660,7 @@ abstract class CreditCardPaymentMethodBase extends PaymentMethodPluginBase {
    *     payment log.
    *   - "data": Any data that should be serialized and stored with the payment.
    *
-   * @todo: Replace the return array with a typed object.
+   * @todo Replace the return array with a typed object.
    */
   abstract protected function chargeCard(OrderInterface $order, $amount, $txn_type, $reference = NULL);
 

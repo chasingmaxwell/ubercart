@@ -75,7 +75,7 @@ class TaxRateForm extends EntityForm {
       '#default_value' => (int) $this->entity->isForShippable(),
     ];
 
-    // TODO: Remove the need for a special case for product kit module.
+    // @todo Remove the need for a special case for product kit module.
     $options = [];
     foreach (node_type_get_names() as $type => $name) {
       if ($type != 'product_kit' && uc_product_is_product($type)) {

@@ -39,7 +39,7 @@ class AddressBookForm extends FormBase {
     }
     else {
       $form['addresses'] = uc_select_address($uid, $type, $func, $this->t('Select an address'));
-// @todo: remove the CSS, put into uc_order.css
+      // @todo Remove the CSS, put into uc_order.css
       $form['addresses']['#prefix'] = '<div style="float: left; margin-right: 1em;">';
       $form['addresses']['#suffix'] = '</div>';
     }

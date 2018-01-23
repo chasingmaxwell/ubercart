@@ -321,7 +321,7 @@ function uc_quote_get_shipping_type($id_type, $id) {
   if (!isset($types[$id_type][$id])) {
     $types[$id_type][$id] = db_query('SELECT shipping_type FROM {uc_quote_shipping_types} WHERE id_type = :type AND id = :id', [':type' => $id_type, ':id' => $id])->fetchField();
   }
-  // @todo: shouldn't have to test here and add the small_package default -
+  // @todo Shouldn't have to test here and add the small_package default -
   // there should always be a value like there was in D7.
   return isset($types[$id_type][$id]) ? $types[$id_type][$id] : 'small_package';
 }

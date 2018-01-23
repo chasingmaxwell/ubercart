@@ -38,7 +38,7 @@ class TaxRateController extends ControllerBase {
     // Tweak the name and unset the rate ID.
     $cloned_rate = $uc_tax_rate->createDuplicate();
     $cloned_rate->setLabel($this->t('Copy of @name', ['@name' => $name]));
-    // @todo: Have to check for uniqueness of name first - in case we have
+    // @todo Have to check for uniqueness of name first - in case we have
     // cloned this rate before ...
     $cloned_rate->setId($uc_tax_rate->id() . "_clone");
 

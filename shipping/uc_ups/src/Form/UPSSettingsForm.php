@@ -370,9 +370,9 @@ class UPSSettingsForm extends ConfigFormBase {
 
     drupal_set_message($this->t('The configuration options have been saved.'));
 
-    // @todo: Still need these two lines?
-    //cache_clear_all();
-    //drupal_theme_rebuild();
+    // @todo Still need these two lines?
+    // cache_clear_all();
+    // drupal_theme_rebuild();
 
     parent::submitForm($form, $form_state);
   }

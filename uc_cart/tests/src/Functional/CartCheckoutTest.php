@@ -557,7 +557,7 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
       $this->assertEquals($order_id, $new_order_id, 'Original order_id was reused.');
 
       // Jump 10 minutes into the future.
-      // @todo: Can we set changed through the Entity API rather than DBTNG?
+      // @todo Can we set changed through the Entity API rather than DBTNG?
       db_update('uc_orders')
         ->fields(['changed' => \Drupal::time()->getCurrentTime() - CartInterface::ORDER_TIMEOUT - 1])
         ->condition('order_id', $order_id)

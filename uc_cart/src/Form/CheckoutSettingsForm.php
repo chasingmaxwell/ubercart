@@ -102,7 +102,7 @@ class CheckoutSettingsForm extends ConfigFormBase {
       '#default_value' => $cart_config->get('checkout_enabled'),
     ];
 
-    // @todo: Uncomment this conditional when Rules actually works.
+    // @todo Uncomment this conditional when Rules actually works.
     // if (!$this->moduleHandler->moduleExists('rules')) {
       $form['checkout']['uc_checkout_email_customer'] = [
         '#type' => 'checkbox',
@@ -279,7 +279,7 @@ class CheckoutSettingsForm extends ConfigFormBase {
     $cart_config
       ->set('checkout_enabled', $form_state->getValue('uc_checkout_enabled'));
 
-    // @todo: Uncomment this conditional when Rules actually works.
+    // @todo Uncomment this conditional when Rules actually works.
     // if (!$this->moduleHandler->moduleExists('rules')) {
       $cart_config
         ->set('checkout_email_customer', $form_state->getValue('uc_checkout_email_customer'))

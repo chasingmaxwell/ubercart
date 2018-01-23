@@ -323,8 +323,8 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
     // Required by QuotePane::prepare().
     $form['#tree'] = TRUE;
 
-    // @todo: Replace with PayPal shipping callback?
-    // @todo: Make a simpler way of getting and applying shipping quotes.
+    // @todo Replace with PayPal shipping callback?
+    // @todo Make a simpler way of getting and applying shipping quotes.
     if ($this->configuration['ec_review_shipping'] && \Drupal::moduleHandler()->moduleExists('uc_quote') && $order->isShippable()) {
       /** @var \Drupal\uc_cart\CheckoutPanePluginInterface $pane */
       $pane = \Drupal::service('plugin.manager.uc_cart.checkout_pane')->createInstance('quotes');
@@ -343,7 +343,7 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
 
     $address = $order->getAddress('delivery');
 
-    // @todo: Replace with "BUSINESS" from PayPal
+    // @todo Replace with "BUSINESS" from PayPal.
     if ($this->configuration['ec_review_company']) {
       $form['delivery_company'] = [
         '#type' => 'textfield',
@@ -353,7 +353,7 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
       ];
     }
 
-    // @todo: Replace with "SHIPTOPHONENUM" from PayPal
+    // @todo Replace with "SHIPTOPHONENUM" from PayPal.
     if ($this->configuration['ec_review_phone']) {
       $form['delivery_phone'] = [
         '#type' => 'textfield',
@@ -363,7 +363,7 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
       ];
     }
 
-    // @todo: Replace with "NOTE" from PayPal
+    // @todo Replace with "NOTE" from PayPal.
     if ($this->configuration['ec_review_comment']) {
       $form['order_comments'] = [
         '#type' => 'textarea',

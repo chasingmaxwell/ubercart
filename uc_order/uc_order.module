@@ -167,7 +167,7 @@ function uc_order_mail($key, &$message, $params) {
       $body = $token_service->replace($params['message'], $params['replacements'], $langcode ? ['language' => $message['language']] : []);
 
       // Strip newline characters from e-mail subjects.
-      // @todo: Maybe drupal_mail_send() should do this?
+      // @todo Maybe drupal_mail_send() should do this?
       $message['subject'] = str_replace(["\r\n", "\r", "\n"], ' ', $subject);
 
       // Apply an input format to the message body if specified.
@@ -400,8 +400,8 @@ function template_preprocess_uc_order_invoice(&$variables) {
     $replacements[$type] = $token_service->generate($type, array_combine($tokens, $tokens), $types, [], $bubbleable_metadata);
   }
 
-  // @todo: Where do we apply the metadata to?
-  //$bubbleable_metadata->applyTo($build);
+  // @todo Where do we apply the metadata to?
+  // $bubbleable_metadata->applyTo($build);
 
   foreach ($replacements as $type => $tokens) {
     foreach ($tokens as $token => $value) {

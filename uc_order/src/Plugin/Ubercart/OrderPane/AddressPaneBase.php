@@ -57,7 +57,7 @@ abstract class AddressPaneBase extends EditableOrderPanePluginBase {
     ];
 
     // An empty <div> to put our address book select into.
-    // @todo: This can be done with core Ajax.
+    // @todo This can be done with core Ajax.
     $form['icons'] = [
       '#type' => 'markup',
       '#markup' => '<div id="' . $pane . '-address-select"></div>',

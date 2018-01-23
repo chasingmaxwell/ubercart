@@ -212,7 +212,7 @@ class TwoCheckout extends PaymentMethodPluginBase implements OffsitePaymentMetho
     foreach ($order->products as $product) {
       $i++;
       $data['li_' . $i . '_type'] = 'product';
-      $data['li_' . $i . '_name'] = $product->title->value; // @todo: HTML escape and limit to 128 chars
+      $data['li_' . $i . '_name'] = $product->title->value; // @todo HTML escape and limit to 128 chars.
       $data['li_' . $i . '_quantity'] = $product->qty->value;
       $data['li_' . $i . '_product_id'] = $product->model->value;
       $data['li_' . $i . '_price'] = uc_currency_format($product->price->value, FALSE, FALSE, '.');

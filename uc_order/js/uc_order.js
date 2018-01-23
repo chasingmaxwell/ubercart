@@ -85,7 +85,7 @@
   /**
    * Closes the address book div.
    *
-   * @todo: Replace with core Ajax.
+   * @todo Replace with core Ajax.
    */
   function close_address_select(div) {
     $(div).empty().removeClass('address-select-box');
@@ -95,7 +95,7 @@
   /**
    * Loads the address book div on the order edit screen.
    *
-   * @todo: Replace with core Ajax.
+   * @todo Replace with core Ajax.
    *
    * @type {Drupal~behavior}
    */
@@ -179,7 +179,7 @@
   /**
    * Loads the customer select div on the order edit screen.
    *
-   * @todo: Replace with core Ajax.
+   * @todo Replace with core Ajax.
    *
    * @type {Drupal~behavior}
    */
@@ -233,7 +233,7 @@
   /**
    * Displays the new customer form.
    *
-   * @todo: Replace with core Ajax.
+   * @todo Replace with core Ajax.
    *
    * @type {Drupal~behavior}
    */

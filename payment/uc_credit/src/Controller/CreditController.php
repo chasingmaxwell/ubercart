@@ -23,7 +23,7 @@ class CreditController extends ControllerBase {
     $types = $uc_payment_method->getPlugin()->getEnabledTypes();
 
     $build['#attached']['library'][] = 'uc_credit/uc_credit.styles';
-    // @todo: Move the embedded CSS below into uc_credit.css.
+    // @todo Move the embedded CSS below into uc_credit.css.
     $build['title'] = [
       '#prefix' => '<strong>',
       '#markup' => $this->t('What is the CVV?'),
@@ -87,7 +87,7 @@ class CreditController extends ControllerBase {
     ];
 
     $renderer = \Drupal::service('bare_html_page_renderer');
-    // @todo: Make our own theme function to use instead of 'page'?
+    // @todo Make our own theme function to use instead of 'page'?
     return $renderer->renderBarePage($build, $this->t('CVV Info'), 'page');
   }
 

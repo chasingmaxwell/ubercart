@@ -758,8 +758,8 @@ class CartLinksTest extends UbercartTestBase {
     // Load the attributes back.
     $loaded_attributes = uc_attribute_load_multiple($aids);
 
-    // @todo: add attributes of all 4 types.
-    // @todo: create both required and not required attributes.
+    // @todo Add attributes of all 4 types.
+    // @todo Create both required and not required attributes.
 
     // Add the selected attributes to the product.
     foreach ($loaded_attributes as $loaded_attribute) {

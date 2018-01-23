@@ -643,7 +643,7 @@ function uc_product_kit_form_node_form_alter(&$form, FormStateInterface $form_st
 /**
  * Entity form builder to add product kit information to the node.
  *
- * @todo: Remove this in favor of an entity field.
+ * @todo Remove this in favor of an entity field.
  */
 function uc_product_kit_node_builder($entity_type, $entity, &$form, FormStateInterface $form_state) {
   $entity->mutable = $form_state->getValue('mutable');

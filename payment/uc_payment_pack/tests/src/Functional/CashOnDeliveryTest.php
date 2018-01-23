@@ -21,7 +21,7 @@ class CashOnDeliveryTest extends PaymentPackTestBase {
     $cod = $this->createPaymentMethod('cod', [
       'settings[policy]' => $this->randomString(),
     ]);
-    // @todo: Test enabling delivery date on settings page.
+    // @todo Test enabling delivery date on settings page.
 
     // Test checkout page.
     $this->drupalGet('cart/checkout');

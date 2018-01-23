@@ -914,7 +914,7 @@ function uc_product_feature_load_multiple($nid) {
 /**
  * Loads a product feature object.
  *
- * @todo: should return an object instead of array.
+ * @todo Should return an object instead of array.
  *
  * @param $pfid
  *   The product feature ID.

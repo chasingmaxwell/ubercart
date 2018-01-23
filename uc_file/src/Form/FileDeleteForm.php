@@ -135,7 +135,7 @@ class FileDeleteForm extends ConfirmFormBase {
   }
 
   /**
-   * TODO: Replace with == operator?
+   * @todo Replace with == operator?
    */
   protected function displayArraysEquivalent($recur, $no_recur) {
 

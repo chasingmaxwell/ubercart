@@ -144,7 +144,7 @@ class UserForm extends FormBase {
       ];
 
       // Incrementally add behaviors.
-      // @todo: _uc_file_download_table_behavior($behavior++, $file_download->fid);
+      // @todo _uc_file_download_table_behavior($behavior++, $file_download->fid);
       $form['#attached']['drupalSettings']['behavior'][$behavior++] = $file_download->fid;
 
       // Store old values for comparing to see if we actually made any changes.

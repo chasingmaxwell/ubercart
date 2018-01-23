@@ -67,7 +67,8 @@ class AuthorizeNet extends CreditCardPaymentMethodBase {
       uc_store_encryption_errors($crypt, 'uc_authorizenet');
     }
     else {
-      // @todo: Need to set a form error - can't configure Authorize.net without CC encryption set up.
+      // @todo Need to set a form error - can't configure Authorize.net without
+      // CC encryption set up.
     }
 
     // Allow admin to set duplicate window.

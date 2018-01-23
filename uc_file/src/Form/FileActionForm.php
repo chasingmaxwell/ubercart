@@ -138,7 +138,7 @@ class FileActionForm extends FormBase {
         break;
 
       default:
-        // @todo: Deal with validating hook-provided actions.
+        // @todo Deal with validating hook-provided actions.
         break;
     }
   }
@@ -157,7 +157,7 @@ class FileActionForm extends FormBase {
         break;
 
       default:
-        // @todo: Deal with submitting hook-provided actions.
+        // @todo Deal with submitting hook-provided actions.
         break;
     }
   }

@@ -38,7 +38,7 @@ function uc_stock_help($route_name, RouteMatchInterface $route_match) {
 function uc_stock_menu_links_discovered_alter(&$links) {
   // Remove uc_stock.reports link if the uc_report module is not enabled.
   // See https://www.drupal.org/node/2315801.
-  // @todo: Remove this hook when the above core issue is fixed.
+  // @todo Remove this hook when the above core issue is fixed.
   if (!\Drupal::moduleHandler()->moduleExists('uc_report')) {
     unset($links['uc_stock.reports']);
   }
@@ -174,7 +174,7 @@ function _uc_stock_send_mail(OrderInterface $order, NodeInterface $node, $stock)
  * Decrements stock if Rules is not installed.
  */
 function uc_stock_uc_checkout_complete($order) {
-  // @todo: When Rules actually works, we can uncomment this conditional.
+  // @todo When Rules actually works, we can uncomment this conditional.
   //if (!\Drupal::moduleHandler()->moduleExists('rules')) {
     array_walk($order->products, 'uc_stock_adjust_product_stock', $order);
   //}
