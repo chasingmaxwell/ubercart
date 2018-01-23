@@ -254,7 +254,7 @@ function uc_ups_fulfill_order_validate($form, FormStateInterface $form_state) {
   }
 
   // This is a total hack to work around changes made in the return value
-  // from uc_shipping_address_form().  That function needs to be fixed, but
+  // from uc_shipping_address_form(). That function needs to be fixed, but
   // until then this should do the trick.
   $origin        = $form_state->getValue('pickup_address');
   $origin->phone = $form_state->getValue('phone');
@@ -771,7 +771,7 @@ Select Print from the File menu in this browser window to print the label below.
 Fold the printed label at the dotted line.</b> &nbsp;
 Place the label in a UPS Shipping Pouch. If you do not have a pouch, affix the folded label using clear plastic shipping tape over the entire label.<br /><br /><li><b>GETTING YOUR SHIPMENT TO UPS<br />
 Customers without a Daily Pickup</b><ul><li>Ground, 3 Day Select, and Standard to Canada shipments must be dropped off at an authorized UPS location, or handed to a UPS driver. Pickup service is not available for these services. To find the nearest drop-off location, select the Drop-off icon from the UPS tool bar.<li>
-Air shipments (including Worldwide Express and Expedited) can be picked up or dropped off. To schedule a pickup, or to find a drop-off location, select the Pickup or Drop-off icon from the UPS tool bar.  </ul> <br />
+Air shipments (including Worldwide Express and Expedited) can be picked up or dropped off. To schedule a pickup, or to find a drop-off location, select the Pickup or Drop-off icon from the UPS tool bar.</ul> <br />
 <b>Customers with a Daily Pickup</b><ul><li>
 Your driver will pickup your shipment(s) as usual. </ul>
 </ol></td></tr></table><table border="0" cellpadding="0" cellspacing="0" width="600">

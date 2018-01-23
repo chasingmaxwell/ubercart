@@ -110,7 +110,7 @@ function uc_ups_form_node_form_alter(&$form, FormStateInterface $form_state) {
     $ups['pkg_type'] = [
       '#type' => 'select',
       '#title' => t('Package type'),
-      '#options' => \Drupal\uc_ups\UPSUtilities::packageTypes(),
+      '#options' => UPSUtilities::packageTypes(),
       '#default_value' => isset($node->ups['pkg_type']) ? $node->ups['pkg_type'] : $ups_config->get('pkg_type'),
     ];
 
@@ -306,8 +306,10 @@ function uc_ups_uc_store_status() {
 }
 
 /**
- * Returns XML access request to be prepended to all requests to the
- * UPS webservice.
+ * Prepares XML access request string.
+ *
+ * @return string
+ *   XML access request to be prepended to all requests to the UPS webservice.
  */
 function uc_ups_access_request() {
   $ups_config = \Drupal::config('uc_ups.settings');

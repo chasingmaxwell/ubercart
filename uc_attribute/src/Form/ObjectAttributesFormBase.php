@@ -82,7 +82,7 @@ abstract class ObjectAttributesFormBase extends FormBase {
         '#maxlength' => 255,
       ];
       $form['attributes'][$aid]['option'] = [
-        '#markup' => $option ? ($option->name . ' (' . uc_currency_format($option->price) . ')' ) : $this->t('n/a'),
+        '#markup' => $option ? ($option->name . ' (' . uc_currency_format($option->price) . ')') : $this->t('n/a'),
       ];
       $form['attributes'][$aid]['required'] = [
         '#type' => 'checkbox',
