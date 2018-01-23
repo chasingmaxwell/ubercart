@@ -301,7 +301,7 @@ class USPSInternationalRate extends USPSRateBase {
    */
   public function intlRateRequest(array $packages, $origin, $destination) {
     $usps_config = \Drupal::config('uc_usps.settings');
-    module_load_include('inc', 'uc_usps', 'uc_usps.countries');
+    \Drupal::moduleHandler()->loadInclude('uc_usps', 'inc', 'uc_usps.countries');
     $request  = '<IntlRateV2Request USERID="' . $usps_config->get('user_id') . '">';
     $request .= '<Revision>2</Revision>';
 

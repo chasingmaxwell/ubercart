@@ -403,7 +403,7 @@ function uc_cart_pane_quotes($form, FormStateInterface $form_state, $items) {
     ],
   ];
 
-  module_load_include('inc', 'uc_quote', 'uc_quote.pages');
+  \Drupal::moduleHandler()->loadInclude('uc_quote', 'inc', 'uc_quote.pages');
   $quotes = uc_quote_assemble_quotes($order);
 
   $quote_options = [];
@@ -436,7 +436,7 @@ function uc_quote_build_quote_form($order, $show_errors = TRUE) {
   $return = [];
   $quote_config = \Drupal::config('uc_quote.settings');
 
-  module_load_include('inc', 'uc_quote', 'uc_quote.pages');
+  \Drupal::moduleHandler()->loadInclude('uc_quote', 'inc', 'uc_quote.pages');
   $quotes = uc_quote_assemble_quotes($order);
   $quote_options = [];
 
