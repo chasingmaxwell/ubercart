@@ -131,10 +131,10 @@ class PayPalController extends ControllerBase implements ContainerInjectionInter
 
     // Determine server.
     if (empty($ipn['test_ipn'])) {
-      $host = 'https://www.paypal.com/cgi-bin/webscr';
+      $host = 'https://ipnpb.paypal.com/cgi-bin/webscr';
     }
     else {
-      $host = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
+      $host = 'https://ipnpb.sandbox.paypal.com/cgi-bin/webscr';
     }
 
     // POST IPN data back to PayPal to validate.
