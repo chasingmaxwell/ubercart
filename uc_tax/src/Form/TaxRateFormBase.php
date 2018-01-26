@@ -160,7 +160,7 @@ class TaxRateFormBase extends EntityForm {
     // Update the name of the associated conditions.
     // $conditions = rules_config_load('uc_tax_' . $form_state->getValue('id'));
     // if ($conditions) {
-    //   $conditions->label = $form_state->getVolue('name');
+    //   $conditions->label = $form_state->getValue('name');
     //   $conditions->save();
     // }
 

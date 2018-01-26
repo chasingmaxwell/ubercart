@@ -177,7 +177,8 @@ function uc_tax_node_type_update(EntityInterface $info) {
  *
  * @param $tax
  *   A tax object as returned by hook_uc_tax_calculate().
- * @return
+ *
+ * @return array
  *   A line item array suitable for returning from line item callbacks.
  */
 function _uc_tax_to_line_item($tax) {
@@ -197,7 +198,7 @@ function _uc_tax_to_line_item($tax) {
  *
  * @param $rate
  *   The tax rate object to be saved.
- * @param $reset
+ * @param bool $reset
  *   If TRUE, resets the Rules cache after saving. Defaults to TRUE.
  *
  * @return
@@ -268,10 +269,10 @@ function uc_tax_rate_save($rate, $reset = TRUE) {
  * checkout, any tax can apply. For orders out of checkout, only taxes
  * originally saved as line items can apply.
  *
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   The order that taxes are being calculated for.
  */
-function uc_tax_filter_rates($order) {
+function uc_tax_filter_rates(OrderInterface $order = NULL) {
   $taxes = [];
 
   // If no order, then just return all rates.
@@ -387,13 +388,13 @@ function uc_tax_rate_delete($rate_id) {
 /**
  * Calculates the taxes for an order based on enabled tax modules.
  *
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   The full order object for the order want to calculate taxes for.
  *
- * @return
+ * @return array
  *   An array of taxes for the order.
  */
-function uc_tax_calculate($order) {
+function uc_tax_calculate(OrderInterface $order) {
   // Find any taxes specified by enabled modules.
   $taxes = \Drupal::moduleHandler()->invokeAll('uc_calculate_tax', [$order]);
 
@@ -402,8 +403,11 @@ function uc_tax_calculate($order) {
 
 /**
  * Calculates the amount and types of taxes that apply to an order.
+ *
+ * @param \Drupal\uc_order\OrderInterface $order
+ *   The full order object for the order want to calculate taxes for.
  */
-function uc_tax_uc_calculate_tax($order) {
+function uc_tax_uc_calculate_tax(OrderInterface $order) {
   if (!is_object($order)) {
     return [];
   }
@@ -476,15 +480,15 @@ function uc_tax_apply_item_tax($item, $tax) {
 /**
  * Applies taxes to an order.
  *
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   The order object being considered.
  * @param $tax
  *   The tax rule calculating the amount.
  *
- * @return
+ * @return array
  *   The line item array representing the amount of tax.
  */
-function uc_tax_apply_tax($order, $tax) {
+function uc_tax_apply_tax(OrderInterface $order, $tax) {
   $taxable_amount = 0;
   if (is_array($order->products)) {
     foreach ($order->products as $item) {
@@ -533,12 +537,14 @@ function uc_tax_apply_tax($order, $tax) {
  *
  * @param $product
  *   The product whose included taxes are to be calculated.
+ * @param \Drupal\uc_order\OrderInterface $order
+ *   The order object being considered.
  *
  * @return array
  *   An array with two items: the taxed amount and any suffixes that should
  *   be printed after the product price.
  */
-function uc_tax_get_included_tax($product, $order = NULL) {
+function uc_tax_get_included_tax($product, OrderInterface $order = NULL) {
   $amount = 0;
   $suffixes = [];
   foreach (uc_tax_filter_rates($order) as $tax) {
