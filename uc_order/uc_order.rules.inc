@@ -2,11 +2,11 @@
 
 /**
  * @file
- * This file contains the Rules hooks and functions necessary to make the order
- * related entity, conditions, events, and actions work.
+ * Rules integration for order-related entity events, conditions, and actions.
  */
 
 use Drupal\node\Entity\Node;
+use Drupal\uc_order\OrderInterface;
 
 /**
  * Implements hook_rules_data_info().
@@ -181,7 +181,7 @@ function uc_order_condition_billing_country($order, $countries) {
 /**
  * Checks that the order has the selected combination of product classes.
  *
- * @param object $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   The order to check.
  * @param array $product_classes
  *   An array of strings containing the product classes (node content
@@ -196,7 +196,7 @@ function uc_order_condition_billing_country($order, $countries) {
  * @return bool
  *   Whether the order meets the specified conditions.
  */
-function uc_order_condition_has_product_class($order, $product_classes, $required, $forbidden) {
+function uc_order_condition_has_product_class(OrderInterface $order, array $product_classes, $required, $forbidden) {
   $order_product_classes = [];
   foreach ($order->products as $product) {
     if (!empty($product->type)) {
@@ -262,11 +262,11 @@ function uc_order_condition_has_products($order, $products, $required, $forbidde
     $required_check = $required_products == $products;
   }
   else {
-    $required_check = (bool)count($required_products);
+    $required_check = (bool) count($required_products);
   }
   if ($forbidden) {
     $forbidden_products = array_diff($order_products, $products);
-    $forbidden_check = (bool)count($forbidden_products);
+    $forbidden_check = (bool) count($forbidden_products);
   }
   else {
     $forbidden_check = FALSE;
@@ -439,7 +439,7 @@ function uc_order_action_email($order, $from, $addresses, $subject, $message, $f
     'format' => $format,
   ];
 
-  // Token replacements for the subject and body
+  // Token replacements for the subject and body.
   $settings['replacements'] = [
     'uc_order' => $order,
   ];
@@ -456,7 +456,7 @@ function uc_order_action_email($order, $from, $addresses, $subject, $message, $f
   $recipients = [];
   foreach (explode("\n", $addresses) as $address) {
     $address = trim($address);
-    // Remove blank lines
+    // Remove blank lines.
     if (!empty($address)) {
       $recipients[] = $address;
     }
@@ -501,7 +501,7 @@ function uc_order_action_email_invoice($order, $from, $addresses, $subject, $tem
     'template' => $template,
     'view' => $view,
   ];
-  // Token replacements for the from, subject and body
+  // Token replacements for the from, subject and body.
   $settings['replacements'] = [
     'uc_order' => $order,
   ];
@@ -518,7 +518,7 @@ function uc_order_action_email_invoice($order, $from, $addresses, $subject, $tem
   $recipients = [];
   foreach (explode("\n", $addresses) as $address) {
     $address = trim($address);
-    // Remove blank lines
+    // Remove blank lines.
     if (!empty($address)) {
       $recipients[] = $address;
     }

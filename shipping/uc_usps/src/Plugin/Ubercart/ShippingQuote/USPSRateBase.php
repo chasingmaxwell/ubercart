@@ -116,7 +116,6 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
       $rate += $product->price->value * floatval($product_rate) / 100;
     }
 
-
     return [$rate];
   }
 
@@ -131,7 +130,7 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
    *   component products.
    *
    * @return array
-   *   Array of packaged products. Packages are separated by shipping address and
+   *   Array of packaged products. Packages are separated by shipping address,
    *   weight or quantity limits imposed by the shipping method or the products.
    */
   protected function packageProducts(array $products, array $addresses) {
@@ -221,7 +220,7 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
         if (!isset($product->pkg_qty) || !$product->pkg_qty) {
           $product->pkg_qty = 1;
         }
-        $num_of_pkgs = (int)($product->qty / $product->pkg_qty);
+        $num_of_pkgs = (int) ($product->qty / $product->pkg_qty);
         if ($num_of_pkgs) {
           $package = clone $product;
           $package->description = $product->model;
@@ -427,8 +426,8 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
    * @return
    *   JSON object containing rate, error, and debugging information.
    */
-  //public function getQuotes(OrderInterface $order) {
   public function quote($products, $details, $method) {
+    // Use public function getQuotes(OrderInterface $order) in D8 plugin.
     $usps_config = \Drupal::config('uc_usps.settings');
     $quote_config = \Drupal::config('uc_quote.settings');
     // The uc_quote AJAX query can fire before the customer has completely
@@ -513,7 +512,6 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
         }
       }
 
-
       if (isset($response->Package)) {
         foreach ($response->Package as $package) {
           if (isset($package->Error)) {
@@ -550,7 +548,7 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
                 }
                 $services[$classid]['label'] = t('U.S.P.S. @service', ['@service' => (string) $postage->MailService]);
                 // Markup rate before customer sees it.
-                // Rates are stored differently if ONLINE $rate_type is requested.
+                // Rates are stored differently if ONLINE $rate_type requested.
                 // First Class doesn't have online rates, so if CommercialRate
                 // is missing use Rate instead.
                 if ($rate_type && !empty($postage->CommercialRate)) {
@@ -586,7 +584,7 @@ abstract class USPSRateBase extends ShippingQuotePluginBase {
 
     uasort($services, 'uc_quote_price_sort');
 
-    // Merge debug data into $services.  This is necessary because
+    // Merge debug data into $services. This is necessary because
     // $debug_data is not sortable by a 'rate' key, so it has to be
     // kept separate from the $services data until this point.
     if (isset($debug_data['debug']) ||

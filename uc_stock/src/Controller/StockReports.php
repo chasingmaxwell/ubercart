@@ -48,7 +48,6 @@ class StockReports extends ControllerBase {
     $query->condition('active', 1)
       ->condition('title', '', '<>');
 
-
     // @todo Replace arg().
     // if (arg(4) == 'threshold') {
     //   $query->where('threshold >= stock');

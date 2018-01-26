@@ -111,7 +111,8 @@ define('UC_STORE_IN_TO_CM', 2.54);
  */
 define('UC_STORE_IN_TO_MM', 25.4);
 
-/** Converts feet to feet.
+/**
+ * Converts feet to feet.
  */
 define('UC_STORE_FT_TO_FT', 1);
 /**
@@ -347,7 +348,7 @@ function uc_weight_format($value, $unit = NULL, $thou = NULL, $dec = NULL) {
       return t('@valuekg', ['@value' => $output]);
 
     case 'g':
-       return t('@valueg', ['@value' => $output]);
+      return t('@valueg', ['@value' => $output]);
 
     default:
       return $value;
@@ -464,7 +465,7 @@ function uc_address_field_enabled($field = NULL) {
  *
  * @param $uid
  *   The user's ID to search for in the orders table.
- * @param $type
+ * @param string $type
  *   Choose either 'shipping' or 'billing'.
  */
 function uc_select_address($uid, $type = 'billing', $onchange = '', $title = NULL) {
@@ -718,7 +719,7 @@ function uc_store_encryption_errors(&$crypt, $module) {
       $items[] = $message;
     }
     \Drupal::logger('encryption')->error('Encryption failed.');
-    // @todo Fix formatting of logger message
+    // @todo Fix formatting of logger message.
     //\Drupal::logger('encryption')->error('Encryption failed. @messages', ['@messages' => drupal_render(['#theme' => 'item_list', '#items' => $items])]);
   }
 }
@@ -783,7 +784,7 @@ function uc_store_uc_store_status() {
       'desc'   => t('No countries are enabled. You may enable countries on the <a href=":url">country settings</a> page.', [':url' => Url::fromRoute('entity.uc_country.collection')->toString()]),
     ];
   }
-  elseif (count($updates)) { // This will always == FALSE
+  elseif (count($updates)) { // This will always == FALSE.
     $messages[] = [
       'status' => 'warning',
       'title'  => t('Countries'),

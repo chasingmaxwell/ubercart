@@ -66,17 +66,17 @@ function hook_uc_order_actions(OrderInterface $order) {
  *
  * @param &$actions
  *   A set of actions as defined in hook_uc_order_actions().
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   An order object.
  */
-function hook_uc_order_actions_alter(&$actions, $order) {
+function hook_uc_order_actions_alter(&$actions, OrderInterface $order) {
   $actions['view']['title'] = t('Display');
 }
 
 /**
  * Verifies whether an order may be deleted.
  *
- * @param $order
+ * @param \Drupal\uc_order\OrderInterface $order
  *   An order object.
  *
  * @return bool
@@ -103,7 +103,7 @@ function hook_uc_order_pane_alter(&$panes) {
  *
  * Nothing should be returned. Hook implementations should receive the
  * $product object by reference and alter it directly.
-
+ *
  * @param \Drupal\uc_order\OrderProductInterface &$product
  *   The product object as found in the $order object.
  * @param \Drupal\uc_order\OrderInterface $order
@@ -165,9 +165,9 @@ function hook_uc_order_product_presave(OrderProductInterface $order_product) {
 }
 
 /**
- * Responds to an order product being updated.
+ * Hook for responding to an order product being updated.
  *
- * This hook is invoked after the order product has been updated in the database.
+ * Invoked after the order product has been updated in the database.
  *
  * @param \Drupal\uc_order\OrderProductInterface $order_product
  *   The order product that is being updated.
@@ -204,6 +204,7 @@ function hook_uc_order_product_delete(OrderProductInterface $order_product) {
  *
  * @param \Drupal\uc_order\OrderProductInterface|\Drupal\uc_cart\CartItemInterface $product
  *   The product to check. May be a cart item or an order product.
+ *
  * @return bool
  *   TRUE to specify that this product is shippable.
  */
