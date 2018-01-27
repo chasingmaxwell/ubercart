@@ -76,7 +76,13 @@ class OrderWorkflowForm extends ConfigFormBase {
     ];
     $form['order_statuses']['order_statuses'] = [
       '#type' => 'table',
-      '#header' => [$this->t('ID'), $this->t('Title'), $this->t('List position'), $this->t('State'), $this->t('Remove')],
+      '#header' => [
+        $this->t('ID'),
+        $this->t('Title'),
+        $this->t('List position'),
+        $this->t('State'),
+        $this->t('Remove'),
+      ],
     ];
 
     foreach ($statuses as $status) {

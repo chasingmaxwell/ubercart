@@ -10,13 +10,15 @@ use Drupal\Core\Render\Element;
 use Drupal\uc_store\Ajax\CommandWrapper;
 
 /**
+ * Helper functions for ajax behaviors on the checkout and order-edit forms.
+ *
  * Contains logic to aid in attaching multiple ajax behaviors to form
  * elements on the checkout and order-edit forms.
  *
  * Both the checkout and the order edit forms are made up of multiple panes,
  * many supplied by contrib modules. Any pane may wish to update its own
  * display or that of another pane based on user input from input elements
- * anywhere on the form. The mechanism here described enables modules
+ * anywhere on the form. The mechanism described here enables modules
  * to add ajax behaviors to the form in an orderly and efficient manner.
  *
  * Generally, an implementing pane should not add #ajax keys to existing form
@@ -31,9 +33,9 @@ use Drupal\uc_store\Ajax\CommandWrapper;
  * element, or an array of ajax callbacks, optionally keyed by wrapper.
  * For example:
  * @code
- *   $form_state->set(['uc_ajax', 'mymodule', 'panes][quotes][quote_button'], array(
+ *   $form_state->set(['uc_ajax', 'mymodule', 'panes][quotes][quote_button'], [
  *     'quotes-pane' => '::ajaxReplaceCheckoutPane',
- *   ));
+ *   ]);
  * @endcode
  * This will cause the contents of 'quotes-pane' to be replaced by the return
  * value of ajaxReplaceCheckoutPane(). Note that if more than one module
@@ -200,7 +202,7 @@ trait AjaxAttachTrait {
    *
    * @param array $form
    *   The checkout form.
-   * @param FormStateInterface $form_state
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
    *   The current form state.
    * @param $wrapper
    *   Special third parameter passed for uc_ajax callbacks containing the ajax

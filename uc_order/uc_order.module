@@ -151,7 +151,11 @@ function uc_order_mail($key, &$message, $params) {
       $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
       $message['subject'] = t('Your Order Invoice', [], ['langcode' => $langcode]);
       $message['from'] = uc_store_email_from();
-      $body = ['#theme' => 'uc_order_invoice', '#order' => $params['order'], '#op' => 'admin-mail'];
+      $body = [
+        '#theme' => 'uc_order_invoice',
+        '#order' => $params['order'],
+        '#op' => 'admin-mail',
+      ];
       $message['body'][] = \Drupal::service('renderer')->render($body);
       break;
 
@@ -372,7 +376,10 @@ function template_preprocess_uc_order_invoice(&$variables) {
       if (!empty($product->data->attributes)) {
         $attributes = [];
         foreach ($product->data->attributes as $attribute => $option) {
-          $attributes[] = t('@attribute: @options', ['@attribute' => $attribute, '@options' => implode(', ', (array) $option)]);
+          $attributes[] = t('@attribute: @options', [
+            '@attribute' => $attribute,
+            '@options' => implode(', ', (array) $option),
+          ]);
         }
         $variables['products'][$id]->details = [
           '#theme' => 'item_list',

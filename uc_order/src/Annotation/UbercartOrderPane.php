@@ -21,9 +21,9 @@ class UbercartOrderPane extends Plugin {
   /**
    * The administrative label of the pane.
    *
-   * @ingroup plugin_translatable
-   *
    * @var \Drupal\Core\Annotation\Translation
+   *
+   * @ingroup plugin_translatable
    */
   public $title;
 

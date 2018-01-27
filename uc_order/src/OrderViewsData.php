@@ -387,8 +387,8 @@ class OrderViewsData extends EntityViewsData {
       ],
     ];
 
-    // Support for any module's line item, if new modules defines other line items
-    // the views cache will have to be rebuilt
+    // Support for any module's line item, if new modules defines other line
+    // items the views cache will have to be rebuilt.
     // Although new line items views support should be defined on each module,
     // I don't think this wider apporach would harm. At most, it will duplicate
     // line items.

@@ -56,7 +56,14 @@ class CatalogSettingsForm extends ConfigFormBase {
       $catalog = Vocabulary::load($vid);
 
       $form['catalog_vid'] = [
-        '#markup' => '<p>' . $this->t('The taxonomy vocabulary <a href=":edit-url">%name</a> is set as the product catalog.', [':edit-url' => Url::fromRoute('entity.taxonomy_vocabulary.edit_form', ['taxonomy_vocabulary' => $catalog->id()])->toString(), '%name' => $catalog->label()]) . '</p>',
+        '#prefix' => '<p>',
+        '#markup' => $this->t('The taxonomy vocabulary <a href=":edit-url">%name</a> is set as the product catalog.', [
+          ':edit-url' => Url::fromRoute('entity.taxonomy_vocabulary.edit_form', [
+            'taxonomy_vocabulary' => $catalog->id()
+          ])->toString(),
+          '%name' => $catalog->label(),
+        ]),
+        '#suffix' => '</p>',
       ];
     }
 

@@ -34,7 +34,7 @@ class UcAddress extends FormElement {
   }
 
   /**
-   * #process callback for address fields.
+   * Callback for the address field #process property.
    *
    * @param array $element
    *   An associative array containing the properties and children of the

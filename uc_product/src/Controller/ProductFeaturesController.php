@@ -26,8 +26,22 @@ class ProductFeaturesController extends ControllerBase {
     $features = uc_product_feature_load_multiple($node->id());
     foreach ($features as $feature) {
       $operations = [
-        'edit' => ['title' => $this->t('Edit'), 'url' => Url::fromRoute('uc_product.feature_edit', ['node' => $node->id(), 'fid' => $feature->fid, 'pfid' => $feature->pfid])],
-        'delete' => ['title' => $this->t('Delete'), 'url' => Url::fromRoute('uc_product.feature_delete', ['node' => $node->id(), 'fid' => $feature->fid, 'pfid' => $feature->pfid])],
+        'edit' => [
+          'title' => $this->t('Edit'),
+          'url' => Url::fromRoute('uc_product.feature_edit', [
+            'node' => $node->id(),
+            'fid' => $feature->fid,
+            'pfid' => $feature->pfid,
+          ]),
+        ],
+        'delete' => [
+          'title' => $this->t('Delete'),
+          'url' => Url::fromRoute('uc_product.feature_delete', [
+            'node' => $node->id(),
+            'fid' => $feature->fid,
+            'pfid' => $feature->pfid,
+          ]),
+        ],
       ];
       $rows[] = [
         ['data' => uc_product_feature_data($feature->fid, 'title')],

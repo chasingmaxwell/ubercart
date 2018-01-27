@@ -99,7 +99,14 @@ class UcPrice extends Element\FormElement {
     if (empty($element['#allow_negative'])) {
       $element['#attributes']['min'] = 0;
     }
-    Element::setAttributes($element, ['id', 'name', 'value', 'size', 'maxlength', 'placeholder']);
+    Element::setAttributes($element, [
+      'id',
+      'name',
+      'value',
+      'size',
+      'maxlength',
+      'placeholder',
+    ]);
     static::setAttributes($element, ['form-uc-price']);
 
     return $element;

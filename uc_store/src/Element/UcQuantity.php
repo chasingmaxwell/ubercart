@@ -65,7 +65,17 @@ class UcQuantity extends Element\FormElement {
     $element['#attributes']['type'] = 'number';
     $element['#attributes']['min'] = 0;
     $element['#attributes']['step'] = 1;
-    Element::setAttributes($element, ['id', 'name', 'value', 'size', 'maxlength', 'placeholder', 'min', 'max', 'step']);
+    Element::setAttributes($element, [
+      'id',
+      'name',
+      'value',
+      'size',
+      'maxlength',
+      'placeholder',
+      'min',
+      'max',
+      'step',
+    ]);
     static::setAttributes($element, ['form-uc-quantity']);
 
     return $element;

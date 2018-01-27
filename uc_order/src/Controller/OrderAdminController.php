@@ -134,8 +134,9 @@ class OrderAdminController extends ControllerBase {
               'userEmail' => $account->getEmail(),
             ];
             $build['result'] = [
-              '#markup' => '<strong>' . $this->t('Use this account now?') . '</strong><br />'
-                . $this->t('User @uid - @mail', ['@uid' => $account->id(), '@mail' => $account->getEmail()]) . ' <input type="button" ' . 'id="select-existing-customer" value="' . $this->t('Apply') . '" /><br /><br /><hr /><br/>',
+              '#markup' => '<strong>' . $this->t('Use this account now?') . '</strong><br />' .
+                $this->t('User @uid - @mail', ['@uid' => $account->id(), '@mail' => $account->getEmail()]) .
+                ' <input type="button" ' . 'id="select-existing-customer" value="' . $this->t('Apply') . '" /><br /><br /><hr /><br/>',
             ];
           }
         }

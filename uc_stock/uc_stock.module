@@ -4,11 +4,11 @@
  * @file
  * Allow ubercart products to have stock levels associated with their SKU.
  *
- * uc_stock enables ubercart to manage stock for products. Store admins can set
- * the stock levels on a product edit page and a threshold for each SKU value
- * When that threshold is reached admins can be optionally notified about the
- * current stock level. Store admins can view all stock levels in the reports
- * section of Ubercart.
+ * This module enables ubercart to manage stock for products. Store admins can
+ * set the stock levels on a product edit page and a threshold for each SKU
+ * value. When that threshold is reached admins can be optionally notified
+ * about the current stock level. Store admins can view all stock levels in the
+ * reports section of Ubercart.
  */
 
 use Drupal\Core\Routing\RouteMatchInterface;
@@ -144,7 +144,12 @@ function _uc_stock_send_mail(OrderInterface $order, NodeInterface $node, $stock)
   $token_service = \Drupal::token();
 
   $account = $order->getOwner();
-  $token_filters = ['uc_order' => $order, 'user' => $account, 'uc_stock' => $stock, 'node' => $node];
+  $token_filters = [
+    'uc_order' => $order,
+    'user' => $account,
+    'uc_stock' => $stock,
+    'node' => $node,
+  ];
 
   $to = \Drupal::config('uc_stock.settings')->get('recipients');
   $to = $token_service->replace($to, $token_filters);
@@ -173,7 +178,7 @@ function _uc_stock_send_mail(OrderInterface $order, NodeInterface $node, $stock)
  *
  * Decrements stock if Rules is not installed.
  */
-function uc_stock_uc_checkout_complete($order) {
+function uc_stock_uc_checkout_complete(OrderInterface $order) {
   // @todo When Rules actually works, we can uncomment this conditional.
   //if (!\Drupal::moduleHandler()->moduleExists('rules')) {
     array_walk($order->products, 'uc_stock_adjust_product_stock', $order);
@@ -183,14 +188,14 @@ function uc_stock_uc_checkout_complete($order) {
 /**
  * Decrement a product's stock.
  *
- * @param $product
+ * @param \Drupal\node\NodeInterface $product
  *   The product whose stock is being adjusted.
  * @param $key
  *   Internal, so this function can be used as a callback of array_walk().
  * @param \Drupal\uc_order\OrderInterface $order
  *   Order object.
  */
-function uc_stock_adjust_product_stock($product, $key, $order) {
+function uc_stock_adjust_product_stock(NodeInterface $product, $key, OrderInterface $order) {
   // Product has an active stock?
   if (!uc_stock_is_active($product->model->value)) {
     return;
@@ -214,5 +219,10 @@ function uc_stock_adjust_product_stock($product, $key, $order) {
   }
 
   // Save a comment about the stock level.
-  uc_order_comment_save($order->id(), 0, t('The stock level for %model_name has been @action to @qty.', ['%model_name' => $product->model->value, '@qty' => $stock->stock, '@action' => (-$product->qty->value <= 0) ? t('decreased') : t('increased')]));
+  $comment = t('The stock level for %model_name has been @action to @qty.', [
+    '%model_name' => $product->model->value,
+    '@qty' => $stock->stock,
+    '@action' => (-$product->qty->value <= 0) ? t('decreased') : t('increased'),
+  ]);
+  uc_order_comment_save($order->id(), 0, $comment);
 }

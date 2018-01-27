@@ -30,11 +30,13 @@ class UcDimensionsWidget extends WidgetBase {
 
     $element += [
       '#type' => 'fieldset',
-      '#attributes' => ['class' => [
-        'container-inline',
-        'fieldgroup',
-        'form-composite',
-      ]],
+      '#attributes' => [
+        'class' => [
+          'container-inline',
+          'fieldgroup',
+          'form-composite',
+        ],
+      ],
     ];
 
     $element['length'] = [
