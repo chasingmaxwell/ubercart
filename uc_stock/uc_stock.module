@@ -188,14 +188,14 @@ function uc_stock_uc_checkout_complete(OrderInterface $order) {
 /**
  * Decrement a product's stock.
  *
- * @param \Drupal\node\NodeInterface $product
+ * @param \Drupal\uc_order\OrderProductInterface $product
  *   The product whose stock is being adjusted.
  * @param $key
  *   Internal, so this function can be used as a callback of array_walk().
  * @param \Drupal\uc_order\OrderInterface $order
  *   Order object.
  */
-function uc_stock_adjust_product_stock(NodeInterface $product, $key, OrderInterface $order) {
+function uc_stock_adjust_product_stock(OrderProductInterface $product, $key, OrderProduct $order) {
   // Product has an active stock?
   if (!uc_stock_is_active($product->model->value)) {
     return;
