@@ -8,7 +8,7 @@
 /**
  * Returns the country name formatted according to the USPS requirements.
  *
- * USPS uses the ISO 3166 English short names in most cases.  This function
+ * USPS uses the ISO 3166 English short names in most cases. This function
  * handles the exceptions.
  *
  * @param string $code

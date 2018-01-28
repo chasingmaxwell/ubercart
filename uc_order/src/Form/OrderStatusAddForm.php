@@ -80,7 +80,7 @@ class OrderStatusAddForm extends FormBase {
     }
 
     if (OrderStatus::load($id)) {
-      $form_state->setErrorByName('id', $this->t('This ID is already in use.  Please specify a unique ID.'));
+      $form_state->setErrorByName('id', $this->t('This ID is already in use. Please specify a unique ID.'));
     }
   }
 

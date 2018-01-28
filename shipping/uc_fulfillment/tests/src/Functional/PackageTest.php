@@ -68,7 +68,8 @@ class PackageTest extends FulfillmentTestBase {
 // After packages made and check for # (check make one and make shipment, use sep. as well)
 // Can use edit/delete actions to package then start over with the same order.
 // and check for full table at /packages and check for action on /packages page,
-// goto shipments tab and look for No shipments have been made for this order.  as well as a list of all the packages.
+// goto shipments tab and look for No shipments have been made for this order.
+// As well as a list of all the packages.
 
     //
     // Test presence and operation of package operation on order admin View.

@@ -181,7 +181,7 @@ function hook_uc_file_action($op, array $args) {
  *
  * Stores, either for customization, copy protection or other reasons, might
  * want to send customized downloads to customers. This hook will allow this
- * to happen.  Before a file is opened to be transferred to a customer, this
+ * to happen. Before a file is opened to be transferred to a customer, this
  * hook will be called to make any altercations to the file that will be used
  * to transfer the download to the customer. This, in effect, will allow a
  * developer to create a new, personalized, file that will get transferred to

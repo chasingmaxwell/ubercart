@@ -187,10 +187,10 @@ function uc_order_condition_billing_country($order, $countries) {
  *   An array of strings containing the product classes (node content
  *   types) to check against.
  * @param bool $required
- *   TRUE to require all product classes be present in the order.  FALSE
+ *   TRUE to require all product classes be present in the order. FALSE
  *   to require at least one be present.
  * @param bool $forbidden
- *   TRUE to require that only the listed product classes be present.  FALSE
+ *   TRUE to require that only the listed product classes be present. FALSE
  *   to allow products with other classes.
  *
  * @return bool
@@ -204,7 +204,7 @@ function uc_order_condition_has_product_class(OrderInterface $order, array $prod
       $order_product_classes[] = $product->type;
     }
     else {
-      // Otherwise, use the node type.  If the node can't be loaded, ignore
+      // Otherwise, use the node type. If the node can't be loaded, ignore
       // this product.
       $node = Node::load($product->nid);
       if (!empty($node)) {

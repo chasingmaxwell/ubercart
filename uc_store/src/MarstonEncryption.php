@@ -11,7 +11,7 @@ use Drupal\Core\Url;
  * @deprecated in Ubercart 8.x-4.x. This class is provided only for
  *   backwards compatibility with Drupal 6 and Drupal 7 Ubercart sites.
  *
- * Trimmed down version of GPL class by Tony Marston.  Details available at
+ * Trimmed down version of GPL class by Tony Marston. Details available at
  * http://www.tonymarston.co.uk/php-mysql/encryption.html
  *
  * Usage:

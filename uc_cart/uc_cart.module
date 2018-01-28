@@ -5,8 +5,8 @@
  * Handles all things concerning Ubercart's shopping cart.
  *
  * The Ubercart cart system functions much like the e-commerce cart at its base
- * level... in fact, most carts do.  This module handles the cart display,
- * adding items to a cart, and checking out.  The module enables the cart,
+ * level... in fact, most carts do. This module handles the cart display,
+ * adding items to a cart, and checking out. The module enables the cart,
  * products, and checkout to be extensible.
  */
 

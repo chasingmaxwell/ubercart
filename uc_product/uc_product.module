@@ -231,7 +231,7 @@ function uc_product_node_delete($node) {
  * @param \Drupal\Core\Ajax\AjaxResponse $response
  *   The response object to add the Ajax commands to.
  * @param $form_state
- *   The current form state.  This must contain a 'variant' entry in the
+ *   The current form state. This must contain a 'variant' entry in the
  *   'storage' array which represents the product as configured by user input
  *   data. In most cases, this is provided automatically by
  *   AddToCartForm::validateForm().
@@ -267,7 +267,7 @@ function uc_product_node_view(array &$build, NodeInterface $node, EntityViewDisp
  * Renders product related content for product-type modules.
  */
 function uc_product_view_product(array &$build, NodeInterface $node, EntityViewDisplayInterface $display, $view_mode) {
-  // Give modules a chance to alter this product.  If it is a variant, this will
+  // Give modules a chance to alter this product. If it is a variant, this will
   // have been done already by uc_product_load_variant(), so we check a flag to
   // be sure not to alter twice -- cf. entity_prepare_view().
   $variant = empty($node->variant) ? _uc_product_get_variant($node) : $node;

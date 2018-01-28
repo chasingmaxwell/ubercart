@@ -24,7 +24,7 @@ use Drupal\uc_order\OrderInterface;
  *     ),
  *     "required" = @ContextDefinition("boolean",
  *       label = @Translation("Require all selected products"),
- *       description = @Translation("Select to require that order must contain all selected products.  Otherwise, order must contain at least one of the selected products."),
+ *       description = @Translation("Select to require that order must contain all selected products. Otherwise, order must contain at least one of the selected products."),
  *       list_options_callback = "booleanOptions"
  *     ),
  *     "forbidden" = @ContextDefinition("boolean",

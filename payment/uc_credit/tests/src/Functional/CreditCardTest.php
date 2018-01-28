@@ -267,7 +267,7 @@ class CreditCardTest extends UbercartBrowserTestBase {
     // Create key directory, make it readable and writeable.
     // Putting this under sites/default/files because SimpleTest needs to be
     // able to create the directory - this is NOT where you'd put the key file
-    // on a live site.  On a live site, it should be outside the web root.
+    // on a live site. On a live site, it should be outside the web root.
     \Drupal::service('file_system')->mkdir('sites/default/files/simpletest.keys', 0755);
 
     $this->drupalPostForm(

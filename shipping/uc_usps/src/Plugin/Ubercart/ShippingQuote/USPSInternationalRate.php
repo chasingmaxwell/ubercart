@@ -275,7 +275,7 @@ class USPSInternationalRate extends USPSRateBase {
 
     uasort($services, 'uc_quote_price_sort');
 
-    // Merge debug data into $services.  This is necessary because
+    // Merge debug data into $services. This is necessary because
     // $debug_data is not sortable by a 'rate' key, so it has to be
     // kept separate from the $services data until this point.
     if (isset($debug_data['debug']) ||

@@ -87,7 +87,7 @@ function uc_ajax_admin_table($trigger_options, $wrapper_options, $config) {
  * @param $element
  *   The element to check.
  * @param $list
- *   The list being built.  When complete will be an array of the form
+ *   The list being built. When complete will be an array of the form:
  *     'element_name' => 'Element title'
  *   where 'element_name' is the name of the element as would be specified for
  *   form_set_error(), and 'Element title' is a best guess at the human readable
