@@ -1139,12 +1139,15 @@ function uc_attribute_option_ajax($form, FormStateInterface $form_state) {
  *   FALSE, if there are multiple attributes and one or more of them is set to
  *   display total price.
  *
+ * @return array
+ *   Form API array with attribute elements to add to the product form.
+ *
  * @see uc_attribute_option_ajax()
  */
 function _uc_attribute_alter_form($id, &$product, $use_ajax) {
   // If the product doesn't have attributes, return the form as it is.
   if (empty($product->attributes) || !is_array($product->attributes)) {
-    return NULL;
+    return [];
   }
 
   $nid = $product->id();
