@@ -282,6 +282,12 @@ function uc_attribute_node_update_index($node) {
 
 /**
  * Implements hook_uc_product_models().
+ *
+ * @param int $nid
+ *   Node number for product type node.
+ *
+ * @return array
+ *   Array of SKUs (model numbers) for this $nid.
  */
 function uc_attribute_uc_product_models($nid) {
   // Get all the SKUs for all the attributes on this node.
@@ -479,11 +485,11 @@ function uc_attribute_load_multiple(array $aids = [], $type = '', $id = NULL) {
  *
  * @param int $aid
  *   The ID of the attribute.
+ * @param int $id
+ *   The ID of the product/class this attribute belongs to.
  * @param string $type
  *   The type of attribute: 'product' or 'class'. Any other type will fetch
  *   a base attribute.
- * @param int $id
- *   The ID of the product/class this attribute belongs to.
  *
  * @return object|false
  *   The attribute object, or FALSE if it doesn't exist.
@@ -958,11 +964,11 @@ function uc_attribute_adjustments_delete(array $fields) {
  *
  * @param int $aid
  *   The base attribute ID.
- * @param int $id
- *   The product/class attribute's ID.
  * @param string $type
  *   The type of attribute: 'product' or 'class'. Any other type will fetch
  *   a base attribute.
+ * @param int $id
+ *   The product/class attribute's ID.
  *
  * @return bool
  *   TRUE if the attribute exists.
@@ -1317,6 +1323,9 @@ function _uc_attribute_alter_form($id, &$product, $use_ajax) {
 
 /**
  * Returns an array of display types used as options when creating attributes.
+ *
+ * @return array
+ *   Array of display types used as options when creating attributes.
  */
 function _uc_attribute_display_types() {
   return [

@@ -5,7 +5,7 @@
  * Contains global Ubercart functions and store administration functionality.
  *
  * The store module is a container of sorts for various helper functions used
- * in different parts of the Ubercart core.  It also provides screens and
+ * in different parts of the Ubercart core. It also provides screens and
  * settings pages for use in store administration.
  */
 

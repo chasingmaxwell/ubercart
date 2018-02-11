@@ -12,21 +12,29 @@ abstract class ObjectAttributesFormBase extends FormBase {
 
   /**
    * The attribute table that this form will write to.
+   *
+   * @var string
    */
   protected $attributeTable;
 
   /**
    * The option table that this form will write to.
+   *
+   * @var string
    */
   protected $optionTable;
 
   /**
    * The identifier field that this form will use.
+   *
+   * @var string
    */
   protected $idField;
 
   /**
    * The identifier value that this form will use.
+   *
+   * @var string
    */
   protected $idValue;
 

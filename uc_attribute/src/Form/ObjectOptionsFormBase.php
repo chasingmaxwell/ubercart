@@ -12,21 +12,29 @@ abstract class ObjectOptionsFormBase extends FormBase {
 
   /**
    * The attribute table that this form will write to.
+   *
+   * @var string
    */
   protected $attributeTable;
 
   /**
    * The option table that this form will write to.
+   *
+   * @var string
    */
   protected $optionTable;
 
   /**
    * The identifier field that this form will use.
+   *
+   * @var string
    */
   protected $idField;
 
   /**
    * The identifier value that this form will use.
+   *
+   * @var string
    */
   protected $idValue;
 
@@ -80,12 +88,7 @@ abstract class ObjectOptionsFormBase extends FormBase {
         $query->addField('ao', 'weight', 'default_weight');
         $query->addField('ao', 'ordering', 'default_ordering');
 
-        $query->fields('po', [
-            'cost',
-            'price',
-            'weight',
-            'ordering',
-          ])
+        $query->fields('po', ['cost', 'price', 'weight', 'ordering'])
           ->addExpression('CASE WHEN po.ordering IS NULL THEN 1 ELSE 0 END', 'null_order');
 
         $query->condition('aid', $aid)
