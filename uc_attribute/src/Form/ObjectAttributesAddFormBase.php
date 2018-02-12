@@ -11,6 +11,13 @@ use Drupal\Core\Form\FormStateInterface;
 abstract class ObjectAttributesAddFormBase extends FormBase {
 
   /**
+   * The attributes.
+   *
+   * @var array
+   */
+  protected $attributes = [];
+
+  /**
    * The attribute table that this form will write to.
    *
    * @var string
@@ -46,11 +53,19 @@ abstract class ObjectAttributesAddFormBase extends FormBase {
   }
 
   /**
-   * {@inheritdoc}
+   * Constructs Attributes Add Form array on behalf of subclasses.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   *
+   * @return array
+   *   The form structure.
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $attributes = NULL) {
+  protected function buildBaseForm(array $form, FormStateInterface $form_state) {
     $used_aids = [];
-    foreach ($attributes as $attribute) {
+    foreach ($this->attributes as $attribute) {
       $used_aids[] = $attribute->aid;
     }
 

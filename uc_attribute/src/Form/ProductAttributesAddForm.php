@@ -18,9 +18,9 @@ class ProductAttributesAddForm extends ObjectAttributesAddFormBase {
     $this->optionTable = 'uc_product_options';
     $this->idField = 'nid';
     $this->idValue = $node->id();
+    $this->attributes = uc_product_get_attributes($this->idValue);
 
-    $attributes = uc_product_get_attributes($node->id());
-    return parent::buildForm($form, $form_state, $attributes);
+    return parent::buildBaseForm($form, $form_state);
   }
 
   /**

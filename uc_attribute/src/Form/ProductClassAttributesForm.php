@@ -18,9 +18,9 @@ class ProductClassAttributesForm extends ObjectAttributesFormBase {
     $this->optionTable = 'uc_class_attribute_options';
     $this->idField = 'pcid';
     $this->idValue = $node_type->id();
+    $this->attributes = uc_class_get_attributes($this->idValue);
 
-    $attributes = uc_class_get_attributes($node_type->id());
-    return parent::buildForm($form, $form_state, $attributes);
+    return parent::buildBaseForm($form, $form_state);
   }
 
 }

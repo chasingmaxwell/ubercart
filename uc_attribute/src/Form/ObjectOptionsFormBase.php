@@ -11,6 +11,13 @@ use Drupal\Core\Form\FormStateInterface;
 abstract class ObjectOptionsFormBase extends FormBase {
 
   /**
+   * The attributes.
+   *
+   * @var array
+   */
+  protected $attributes = [];
+
+  /**
    * The attribute table that this form will write to.
    *
    * @var string
@@ -46,12 +53,20 @@ abstract class ObjectOptionsFormBase extends FormBase {
   }
 
   /**
-   * {@inheritdoc}
+   * Constructs Options Form array on behalf of subclasses.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   *
+   * @return array
+   *   The form structure.
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $attributes = NULL) {
+  public function buildBaseForm(array $form, FormStateInterface $form_state) {
     $form['attributes']['#tree'] = TRUE;
 
-    foreach ($attributes as $aid => $attribute) {
+    foreach ($this->attributes as $aid => $attribute) {
       $base_attr = uc_attribute_load($aid);
       if ($base_attr->options) {
         $form['attributes'][$aid]['options'] = [

@@ -11,6 +11,13 @@ use Drupal\Core\Form\FormStateInterface;
 abstract class ObjectAttributesFormBase extends FormBase {
 
   /**
+   * The attributes.
+   *
+   * @var array
+   */
+  protected $attributes = [];
+
+  /**
    * The attribute table that this form will write to.
    *
    * @var string
@@ -46,9 +53,17 @@ abstract class ObjectAttributesFormBase extends FormBase {
   }
 
   /**
-   * {@inheritdoc}
+   * Constructs Attributes Form array on behalf of subclasses.
+   *
+   * @param array $form
+   *   An associative array containing the structure of the form.
+   * @param \Drupal\Core\Form\FormStateInterface $form_state
+   *   The current state of the form.
+   *
+   * @return array
+   *   The form structure.
    */
-  public function buildForm(array $form, FormStateInterface $form_state, $attributes = NULL) {
+  protected function buildBaseForm(array $form, FormStateInterface $form_state) {
     $form['attributes'] = [
       '#type' => 'table',
       '#header' => [
@@ -70,7 +85,7 @@ abstract class ObjectAttributesFormBase extends FormBase {
       ],
     ];
 
-    foreach ($attributes as $aid => $attribute) {
+    foreach ($this->attributes as $aid => $attribute) {
       $option = isset($attribute->options[$attribute->default_option]) ? $attribute->options[$attribute->default_option] : NULL;
       $form['attributes'][$aid]['#attributes']['class'][] = 'draggable';
       $form['attributes'][$aid]['remove'] = [
