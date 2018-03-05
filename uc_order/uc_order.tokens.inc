@@ -65,7 +65,8 @@ function uc_order_token_info() {
     'name' => t('Email'),
     'description' => t('The primary e-mail address of the order.'),
   ];
-  // Duplicate [uc_order:email] as [uc_order:mail] as VBO validates tokens ending in :mail.
+  // Duplicate the [uc_order:email] token as [uc_order:mail] because the Views
+  // Bulk Operations module validates tokens ending in :mail.
   $tokens['mail'] = $tokens['email'];
   $tokens['shipping-method'] = [
     'name' => t('Shipping method'),

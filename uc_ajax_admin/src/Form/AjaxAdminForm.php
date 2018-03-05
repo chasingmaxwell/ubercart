@@ -13,7 +13,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  * Configures Ajax behaviours on the Ubercart checkout page.
  */
 class AjaxAdminForm extends FormBase {
-
   use AjaxAttachTrait;
 
   /**

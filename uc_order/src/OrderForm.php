@@ -13,7 +13,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Form controller for the Ubercart order form.
  */
 class OrderForm extends ContentEntityForm {
-
   use AjaxAttachTrait;
 
   /**

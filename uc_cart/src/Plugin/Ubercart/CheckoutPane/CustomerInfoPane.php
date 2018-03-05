@@ -18,7 +18,6 @@ use Drupal\uc_order\OrderInterface;
  * )
  */
 class CustomerInfoPane extends CheckoutPanePluginBase {
-
   use RedirectDestinationTrait;
 
   /**

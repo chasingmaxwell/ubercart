@@ -16,10 +16,10 @@ use Drupal\uc_order\OrderProductInterface;
 /**
  * Alters the line item plugin definitions.
  *
- * @param &$items
+ * @param array &$items
  *   Array of line item plugin definitions passed by reference.
  */
-function hook_uc_line_item_alter(&$items) {
+function hook_uc_line_item_alter(array &$items) {
   // Tax amounts are added in to other line items, so the actual tax line
   // items should not be added to the order total.
   $items['tax']['calculated'] = FALSE;
@@ -64,12 +64,12 @@ function hook_uc_order_actions(OrderInterface $order) {
 /**
  * Allows the local task icons for orders to be altered.
  *
- * @param &$actions
+ * @param array &$actions
  *   A set of actions as defined in hook_uc_order_actions().
  * @param \Drupal\uc_order\OrderInterface $order
  *   An order object.
  */
-function hook_uc_order_actions_alter(&$actions, OrderInterface $order) {
+function hook_uc_order_actions_alter(array &$actions, OrderInterface $order) {
   $actions['view']['title'] = t('Display');
 }
 
@@ -91,10 +91,10 @@ function hook_uc_order_can_delete(OrderInterface $order) {
 /**
  * Alters order pane plugin definitions.
  *
- * @param array[] $panes
+ * @param array $panes
  *   Keys are plugin IDs. Values are plugin definitions.
  */
-function hook_uc_order_pane_alter(&$panes) {
+function hook_uc_order_pane_alter(array &$panes) {
   $panes['payment']['title'] = 'Payment information';
 }
 

@@ -196,6 +196,9 @@ function uc_credit_encryption_key() {
 
 /**
  * Returns an array of default credit card transaction types.
+ *
+ * @return array
+ *   Associative array of transaction types, keyed by defined constant value.
  */
 function uc_credit_transaction_types() {
   $types = [

@@ -55,8 +55,8 @@ function hook_ucga_display() {
  * to Google Analytics. Additional arguments passed to implementations of this
  * hook are provided for context.
  *
- *   Nothing should be returned. Hook implementations should receive the $item
- *   array by reference and alter it directly.
+ * Nothing should be returned. Hook implementations should receive the $item
+ * array by reference and alter it directly.
  *
  * @param array $item
  *   An array of arguments being passed to Google Analytics representing an item

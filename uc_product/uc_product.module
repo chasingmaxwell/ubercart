@@ -396,7 +396,7 @@ function uc_product_form_node_type_form_alter(&$form, FormStateInterface $form_s
 /**
  * Entity builder for the node type form with product options.
  *
- * @see uc_product_form_node_type_form_alter().
+ * @see uc_product_form_node_type_form_alter()
  */
 function uc_product_form_node_type_form_builder($entity_type, NodeTypeInterface $type, &$form, FormStateInterface $form_state) {
   $type->setThirdPartySetting('uc_product', 'product', (bool) $form_state->getValue(['uc_product', 'product']));
@@ -783,7 +783,7 @@ function uc_product_get_models($nid, $add_blank = TRUE) {
 /**
  * Returns a product node's first attached image.
  *
- * @param int $node_id
+ * @param int $nid
  *   The node's id.
  * @param string $style
  *   The image style used to format the image. 'uc_product' by default.
@@ -879,7 +879,7 @@ function uc_product_feature_data($fid, $key) {
  *   - fid: The string ID of the feature type.
  *   - description: The string describing the feature for the overview table.
  */
-function uc_product_feature_save(&$data) {
+function uc_product_feature_save(array &$data) {
   if (empty($data['pfid'])) {
     unset($data['pfid']);
     $data['pfid'] = db_insert('uc_product_features')
@@ -899,7 +899,7 @@ function uc_product_feature_save(&$data) {
 /**
  * Loads all product feature for a node.
  *
- * @param $nid
+ * @param int $nid
  *   The product node ID.
  *
  * @return array

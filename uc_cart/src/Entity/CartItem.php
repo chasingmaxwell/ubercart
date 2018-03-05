@@ -34,7 +34,6 @@ use Drupal\uc_order\Entity\OrderProduct;
  * )
  */
 class CartItem extends ContentEntityBase implements CartItemInterface {
-
   use EntityChangedTrait;
 
   /**
