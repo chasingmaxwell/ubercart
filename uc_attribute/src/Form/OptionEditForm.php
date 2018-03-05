@@ -2,6 +2,7 @@
 
 namespace Drupal\uc_attribute\Form;
 
+use Drupal\Core\Link;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -39,9 +40,14 @@ class OptionEditForm extends OptionFormBase {
       ->key(['aid' => $form_state->getValue('aid'), 'oid' => $form_state->getValue('oid')])
       ->fields($form_state->getValues())
       ->execute();
-    drupal_set_message($this->t('Updated option %option.', ['%option' => $form_state->getValue('name')]));
-    $this->logger('uc_attribute')->notice('Updated option %option.', ['%option' => $form_state->getValue('name'), 'link' => 'admin/store/products/attributes/' . $form_state->getValue('aid') . '/options/' . $form_state->getValue('oid')]);
-    $form_state->setRedirect('uc_attribute.options', ['aid' => $form_state->getValue('aid')]);
+
+    $aid = $form_state->getValue('aid');
+    $option_name = $form_state->getValue('name');
+    $edit_option_link = Link::createFromRoute($this->t('Edit option'), 'uc_attribute.option_edit', ['aid' => $aid, 'oid' => $oid])->toString();
+
+    drupal_set_message($this->t('Updated option %option.', ['%option' => $option_name]));
+    $this->logger('uc_attribute')->notice('Updated option %option.', ['%option' => $option_name, 'link' => $edit_option_link]);
+    $form_state->setRedirect('uc_attribute.options', ['aid' => $aid]);
   }
 
 }

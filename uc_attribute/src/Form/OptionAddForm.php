@@ -2,6 +2,7 @@
 
 namespace Drupal\uc_attribute\Form;
 
+use Drupal\Core\Link;
 use Drupal\Core\Form\FormStateInterface;
 
 /**
@@ -29,9 +30,14 @@ class OptionAddForm extends OptionFormBase {
     // Remove Form API elements from $form_state.
     $form_state->cleanValues();
     $oid = db_insert('uc_attribute_options')->fields($form_state->getValues())->execute();
-    drupal_set_message($this->t('Created new option %option.', ['%option' => $form_state->getValue('name')]));
-    $this->logger('uc_attribute')->notice('Created new option %option.', ['%option' => $form_state->getValue('name'), 'link' => 'admin/store/products/attributes/' . $form_state->getValue('aid') . '/options/add']);
-    $form_state->setRedirect('uc_attribute.option_add', ['aid' => $form_state->getValue('aid')]);
+
+    $aid = $form_state->getValue('aid');
+    $option_name = $form_state->getValue('name');
+    $edit_option_link = Link::createFromRoute($this->t('Edit option'), 'uc_attribute.option_edit', ['aid' => $aid, 'oid' => $oid])->toString();
+
+    drupal_set_message($this->t('Created new option %option.', ['%option' => $option_name]));
+    $this->logger('uc_attribute')->notice('Created new option %option.', ['%option' => $option_name, 'link' => $edit_option_link]);
+    $form_state->setRedirect('uc_attribute.option_add', ['aid' => $aid]);
   }
 
 }
