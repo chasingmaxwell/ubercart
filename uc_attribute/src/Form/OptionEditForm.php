@@ -36,8 +36,9 @@ class OptionEditForm extends OptionFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     // Remove Form API elements from $form_state.
     $form_state->cleanValues();
+    $oid = $form_state->getValue('oid');
     db_merge('uc_attribute_options')
-      ->key(['aid' => $form_state->getValue('aid'), 'oid' => $form_state->getValue('oid')])
+      ->key(['aid' => $form_state->getValue('aid'), 'oid' => $oid])
       ->fields($form_state->getValues())
       ->execute();
 
