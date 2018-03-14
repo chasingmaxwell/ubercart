@@ -8,7 +8,7 @@ use Symfony\Component\EventDispatcher\Event;
 /**
  * Event that is fired when an order comment is added.
  */
-class OrderCommentAdded extends Event {
+class OrderCommentAddedEvent extends Event {
 
   const EVENT_NAME = 'uc_order_comment_added';
 
