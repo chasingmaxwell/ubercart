@@ -41,6 +41,9 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
   protected function setUp() {
     parent::setUp();
 
+    // Need page_title_block because we test page titles.
+    $this->drupalPlaceBlock('page_title_block');
+
     // Get a reference to the cart.
     $this->cartManager = \Drupal::service('uc_cart.manager');
     $this->cart = $this->cartManager->get();
@@ -117,9 +120,9 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
   }
 
   /**
-   * Tests basic cart functionality.
+   * Tests basic cart page functionality.
    */
-  public function testCart() {
+  public function testCartPage() {
     \Drupal::service('module_installer')->install(['uc_cart_entity_test'], FALSE);
 
     // Test the empty cart.
@@ -131,7 +134,7 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
     $this->assertText(t('@label added to your shopping cart.', ['@label' => $this->product->label()]));
     $this->assertText('hook_uc_cart_item_insert fired');
 
-    // Test the cart page.
+    // Test that the item shows up in the cart.
     $this->drupalGet('cart');
     $this->assertText($this->product->label(), 'The product is in the cart.');
     $this->assertFieldByName('items[0][qty]', 1, 'The product quantity is 1.');
@@ -141,7 +144,7 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
     $this->assertText('Your item(s) have been updated.');
     $this->assertText('hook_uc_cart_item_update fired');
 
-    // Test the cart page again.
+    // Test that there are now two of the item in the cart.
     $this->drupalGet('cart');
     $this->assertFieldByName('items[0][qty]', 2, 'The product quantity is 2.');
 
@@ -168,10 +171,15 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
     // Test the empty cart button.
     $this->addToCart($this->product);
     $this->drupalGet('cart');
+    // Test that the empty cart button is not shown by default.
     $this->assertNoText('Empty cart');
+    // Enable the empty cart button.
     \Drupal::configFactory()->getEditable('uc_cart.settings')->set('empty_button', TRUE)->save();
     $this->drupalPostForm('cart', [], 'Empty cart');
+    // Verify that we get a confirmation page.
+    $this->assertText('Are you sure you want to empty your shopping cart?');
     $this->drupalPostForm(NULL, [], 'Confirm');
+    // Verify that the cart is now empty.
     $this->assertText('There are no products in your shopping cart.');
     $this->assertText('hook_uc_cart_item_delete fired');
   }

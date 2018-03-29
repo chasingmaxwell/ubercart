@@ -19,7 +19,12 @@ class CartSettingsTest extends UbercartBrowserTestBase {
    */
   protected function setUp() {
     parent::setUp();
+
+    // Need system_breadcrumb_block because we test breadcrumbs.
     $this->drupalPlaceBlock('system_breadcrumb_block');
+
+    // Need page_title_block because we test page titles.
+    $this->drupalPlaceBlock('page_title_block');
   }
 
   /**
@@ -56,11 +61,7 @@ class CartSettingsTest extends UbercartBrowserTestBase {
       'Save configuration'
     );
 
-    $this->drupalPostForm(
-      'node/' . $this->product->id(),
-      [],
-      'Add to cart'
-    );
+    $this->drupalPostForm('node/' . $this->product->id(), [], 'Add to cart');
     $url_pass = ($this->getUrl() == Url::fromUri('base:' . $redirect, ['absolute' => TRUE])->toString());
     $this->assertTrue(
       $url_pass,
@@ -82,6 +83,28 @@ class CartSettingsTest extends UbercartBrowserTestBase {
     $this->drupalPostForm('node/' . $this->product->id(), [], 'Add to cart', ['query' => ['test' => 'querystring']]);
     $url = $this->product->toUrl('canonical', ['absolute' => TRUE, 'query' => ['test' => 'querystring']])->toString();
     $this->assertTrue($this->getUrl() == $url, 'Add to cart no-redirect preserves the query string.');
+  }
+
+  /**
+   * Tests that "Empty cart" button on the cart page works.
+   */
+  public function testEmptyCart() {
+    // Test that the feature is not enabled by default.
+    $this->drupalPostForm('node/' . $this->product->id(), [], 'Add to cart');
+    $this->assertNoRaw('Empty cart');
+
+    // Test the admin settings itself.
+    $this->drupalLogin($this->adminUser);
+    $this->drupalGet('admin/store/config/cart');
+    $this->assertField('uc_cart_empty_button', 'Empty cart button checkbox found.');
+    $this->drupalPostForm(NULL, ['uc_cart_empty_button' => TRUE], 'Save configuration');
+
+    // Test the feature itself.
+    $this->drupalGet('cart');
+    $this->drupalPostForm(NULL, [], 'Empty cart');
+    $this->assertText('Are you sure you want to empty your shopping cart?');
+    $this->drupalPostForm(NULL, [], 'Confirm');
+    $this->assertText('There are no products in your shopping cart.');
   }
 
   /**
@@ -113,10 +136,7 @@ class CartSettingsTest extends UbercartBrowserTestBase {
       [],
       'Add to cart'
     );
-    $this->drupalPostForm('cart',
-      [],
-      'Checkout'
-    );
+    $this->drupalPostForm('cart', [], 'Checkout');
     $this->assertRaw(
       'The minimum order subtotal for checkout is',
       'Prevented checkout below the minimum order total.'
@@ -129,11 +149,7 @@ class CartSettingsTest extends UbercartBrowserTestBase {
       [],
       'Add to cart'
     );
-    $this->drupalPostForm(
-      'cart',
-      [],
-      'Checkout'
-    );
+    $this->drupalPostForm('cart', [], 'Checkout');
     $this->assertText('Enter your billing address and information here.');
   }
 
@@ -175,17 +191,8 @@ class CartSettingsTest extends UbercartBrowserTestBase {
       'uc_continue_shopping_use_last_url' => FALSE,
       'uc_continue_shopping_url' => 'admin/store',
     ];
-    $this->drupalPostForm(
-      NULL,
-      $settings,
-      'Save configuration'
-    );
-
-    $this->drupalPostForm(
-      'cart',
-      [],
-      'Continue shopping'
-    );
+    $this->drupalPostForm(NULL, $settings, 'Save configuration');
+    $this->drupalPostForm('cart', [], 'Continue shopping');
     $url_pass = ($this->getUrl() == Url::fromUri('base:' . $settings['uc_continue_shopping_url'], ['absolute' => TRUE])->toString());
     $this->assertTrue(
       $url_pass,
@@ -212,17 +219,9 @@ class CartSettingsTest extends UbercartBrowserTestBase {
       'uc_cart_breadcrumb_text' => $this->randomMachineName(8),
       'uc_cart_breadcrumb_url' => $this->randomMachineName(8),
     ];
-    $this->drupalPostForm(
-      NULL,
-      $settings,
-      'Save configuration'
-    );
+    $this->drupalPostForm(NULL, $settings, 'Save configuration');
 
-    $this->drupalPostForm(
-      'node/' . $this->product->id(),
-      [],
-      'Add to cart'
-    );
+    $this->drupalPostForm('node/' . $this->product->id(), [], 'Add to cart');
     $this->assertLink(
       $settings['uc_cart_breadcrumb_text'],
       0,
