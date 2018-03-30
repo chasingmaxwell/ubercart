@@ -4,12 +4,14 @@ namespace Drupal\uc_cart;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\PluginBase;
+use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\uc_order\OrderInterface;
 
 /**
  * Defines a base checkout pane plugin implementation.
  */
 abstract class CheckoutPanePluginBase extends PluginBase implements CheckoutPanePluginInterface {
+  use MessengerTrait;
 
   /**
    * Whether the pane is enabled or not.

@@ -71,6 +71,6 @@ function uc_store_install() {
 function uc_store_uninstall() {
   $format = DateFormat::load('uc_store');
   if ($format) {
-    drupal_set_message(t('The date format %format has not been deleted. If you need to delete it, <a href=":url">please do so manually</a>.', ['%format' => $format->label(), ':url' => Url::fromRoute('entity.date_format.collection')->toString()]), 'warning');
+    \Drupal::messenger()->addWarning(t('The date format %format has not been deleted. If you need to delete it, <a href=":url">please do so manually</a>.', ['%format' => $format->label(), ':url' => Url::fromRoute('entity.date_format.collection')->toString()]));
   }
 }

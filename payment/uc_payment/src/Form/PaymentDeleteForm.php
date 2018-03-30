@@ -68,7 +68,7 @@ class PaymentDeleteForm extends ConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->payment->delete();
-    drupal_set_message($this->t('Payment deleted.'));
+    $this->messenger()->addMessage($this->t('Payment deleted.'));
     $form_state->setRedirectUrl($this->getCancelUrl());
 
   }

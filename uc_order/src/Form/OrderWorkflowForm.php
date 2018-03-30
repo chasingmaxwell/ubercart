@@ -134,7 +134,7 @@ class OrderWorkflowForm extends ConfigFormBase {
       $status = OrderStatus::load($id);
       if (!empty($value['remove'])) {
         $status->delete();
-        drupal_set_message($this->t('Order status %status removed.', ['%status' => $status->getName()]));
+        $this->messenger()->addMessage($this->t('Order status %status removed.', ['%status' => $status->getName()]));
       }
       else {
         $status->setName($value['name']);

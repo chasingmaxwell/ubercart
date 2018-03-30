@@ -139,14 +139,14 @@ function uc_file_uc_add_to_cart($nid, $qty, $data) {
       // download limit or expiration time.
       if ($old_limits['download_limit'] || $old_limits['expiration']) {
         // But still show the message if it does.
-        drupal_set_message(t('You already have privileges to <a href=":url">download %file</a>. If you complete the purchase of this item, your new download limit will be %download_limit, your access location limit will be %address_limit, and your new expiration time will be %expiration.',
+        \Drupal::messenger()->addWarning(t('You already have privileges to <a href=":url">download %file</a>. If you complete the purchase of this item, your new download limit will be %download_limit, your access location limit will be %address_limit, and your new expiration time will be %expiration.',
           [
             ':url' => $user->id() ? Url::fromRoute('uc_file.user_downloads', ['user' => $user->id()])->toString() : Url::fromRoute('user.login')->toString(),
             '%file' => $product_feature->filename,
             '%download_limit' => $file_user['download_limit'] ? $file_user['download_limit'] : t('unlimited'),
             '%address_limit'  => $file_user['address_limit' ] ? $file_user['address_limit' ] : t('unlimited'),
             '%expiration'     => $file_user['expiration'    ] ? \Drupal::service('date.formatter')->format($file_user['expiration'], 'small') : t('never'),
-          ]), 'warning');
+          ]));
       }
       else {
         return [[
@@ -508,16 +508,16 @@ function uc_file_remove_by_id($fid, $recur) {
       if (empty($dir_contents)) {
 
         if (rmdir($dir)) {
-          drupal_set_message(t('The directory %dir was deleted.', ['%dir' => $filename]));
+          \Drupal::messenger()->addMessage(t('The directory %dir was deleted.', ['%dir' => $filename]));
           $remove_fields = TRUE;
         }
         else {
-          drupal_set_message(t('The directory %dir could not be deleted.', ['%dir' => $filename]), 'warning');
+          \Drupal::messenger()->addWarning(t('The directory %dir could not be deleted.', ['%dir' => $filename]));
           $result = FALSE;
         }
       }
       else {
-        drupal_set_message(t('The directory %dir could not be deleted because it is not empty.', ['%dir' => $filename]), 'warning');
+        \Drupal::messenger()->addWarning(t('The directory %dir could not be deleted because it is not empty.', ['%dir' => $filename]));
         $result = FALSE;
       }
     }
@@ -525,10 +525,10 @@ function uc_file_remove_by_id($fid, $recur) {
 
       if (unlink($dir)) {
         $remove_fields = TRUE;
-        drupal_set_message(t('The file %dir was deleted.', ['%dir' => $filename]));
+        \Drupal::messenger()->addMessage(t('The file %dir was deleted.', ['%dir' => $filename]));
       }
       else {
-        drupal_set_message(t('The file %dir could not be deleted.', ['%dir' => $filename]), 'error');
+        \Drupal::messenger()->addError(t('The file %dir could not be deleted.', ['%dir' => $filename]));
         $result = FALSE;
       }
     }
@@ -707,7 +707,7 @@ function uc_file_remove_user($user) {
       '#theme' => 'username',
       '#account' => $user,
     ];
-    drupal_set_message(t('@user has had all of his/her downloadable files removed.', ['@user' => drupal_render($userlink)]));
+    \Drupal::messenger()->addMessage(t('@user has had all of his/her downloadable files removed.', ['@user' => drupal_render($userlink)]));
   }
 }
 
@@ -731,7 +731,7 @@ function uc_file_remove_user_file_by_id($user, $fid) {
       '#theme' => 'username',
       '#account' => $user,
     ];
-    drupal_set_message(t('@user has had %file removed from his/her downloadable file list.', ['@user' => drupal_render($userlink), '%file' => $file->filename]));
+    \Drupal::messenger()->addMessage(t('@user has had %file removed from his/her downloadable file list.', ['@user' => drupal_render($userlink), '%file' => $file->filename]));
   }
 }
 

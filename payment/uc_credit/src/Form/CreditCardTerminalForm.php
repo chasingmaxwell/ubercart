@@ -325,10 +325,10 @@ class CreditCardTerminalForm extends FormBase {
     $plugin->orderSave($this->order);
 
     if ($result) {
-      drupal_set_message($this->t('The credit card was processed successfully. See the admin comments for more details.'));
+      $this->messenger()->addMessage($this->t('The credit card was processed successfully. See the admin comments for more details.'));
     }
     else {
-      drupal_set_message($this->t('There was an error processing the credit card. See the admin comments for details.'), 'error');
+      $this->messenger()->addError($this->t('There was an error processing the credit card. See the admin comments for details.'));
     }
 
     $form_state->setRedirect('entity.uc_order.canonical', ['uc_order' => $this->order->id()]);

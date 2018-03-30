@@ -196,7 +196,7 @@ abstract class ObjectOptionsFormBase extends FormBase {
     }
 
     if ($error) {
-      drupal_set_message($this->t('All attributes with enabled options must specify an enabled option as default.'), 'error');
+      $this->messenger()->addError($this->t('All attributes with enabled options must specify an enabled option as default.'));
     }
   }
 
@@ -238,7 +238,7 @@ abstract class ObjectOptionsFormBase extends FormBase {
       }
     }
 
-    drupal_set_message($this->t('The changes have been saved.'));
+    $this->messenger()->addMessage($this->t('The changes have been saved.'));
   }
 
   /**

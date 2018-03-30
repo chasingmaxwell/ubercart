@@ -22,7 +22,7 @@ class EcController extends ControllerBase {
       $session->remove('cart_order');
       $session->remove('TOKEN');
       $session->remove('PAYERID');
-      drupal_set_message($this->t('An error has occurred in your PayPal payment. Please review your cart and try again.'));
+      $this->messenger()->addMessage($this->t('An error has occurred in your PayPal payment. Please review your cart and try again.'));
       return $this->redirect('uc_cart.cart');
     }
 
@@ -55,7 +55,7 @@ class EcController extends ControllerBase {
       $session->remove('cart_order');
       $session->remove('TOKEN');
       $session->remove('PAYERID');
-      drupal_set_message($this->t('An error has occurred in your PayPal payment. Please review your cart and try again.'));
+      $this->messenger()->addMessage($this->t('An error has occurred in your PayPal payment. Please review your cart and try again.'));
       return $this->redirect('uc_cart.cart');
     }
 

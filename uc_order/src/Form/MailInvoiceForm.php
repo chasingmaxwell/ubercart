@@ -83,7 +83,7 @@ class MailInvoiceForm extends FormBase {
     $this->mailManager->mail('uc_order', 'invoice', $recipient, uc_store_mail_recipient_langcode($recipient), $params, uc_store_email_from());
 
     $message = $this->t('Invoice e-mailed to @email.', ['@email' => $recipient]);
-    drupal_set_message($message);
+    $this->messenger()->addMessage($message);
     $this->order->logChanges([$message]);
   }
 

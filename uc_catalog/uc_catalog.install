@@ -25,7 +25,7 @@ function uc_catalog_install() {
 function uc_catalog_uninstall() {
   if ($vid = \Drupal::config('uc_catalog.settings')->get('vocabulary')) {
     $vocab = Vocabulary::load($vid);
-    drupal_set_message(t('The Ubercart %catalog vocabulary has not been deleted. If you need to delete it, <a href=":url">please do so manually</a>.', ['%catalog' => $vocab->label(), ':url' => Url::fromRoute('entity.taxonomy_vocabulary.edit_form', ['taxonomy_vocabulary' => $vocab->id()])->toString()]), 'warning');
+    \Drupal::messenger()->addWarning(t('The Ubercart %catalog vocabulary has not been deleted. If you need to delete it, <a href=":url">please do so manually</a>.', ['%catalog' => $vocab->label(), ':url' => Url::fromRoute('entity.taxonomy_vocabulary.edit_form', ['taxonomy_vocabulary' => $vocab->id()])->toString()]));
   }
 
   $styles = ImageStyle::loadMultiple(['uc_category', 'uc_product_list']);
@@ -34,7 +34,7 @@ function uc_catalog_uninstall() {
     foreach ($styles as $style) {
       $style_names[] = $style->label();
     }
-    drupal_set_message(\Drupal::translation()->formatPlural(count($style_names),
+    \Drupal::messenger()->addWarning(\Drupal::translation()->formatPlural(count($style_names),
       'The image style %style has not been deleted. If you need to delete it, <a href=":url">please do so manually</a>.',
       'The image styles %styles have not been deleted. If you need to delete them, <a href=":url">please do so manually</a>.',
       [
@@ -42,6 +42,6 @@ function uc_catalog_uninstall() {
         '%styles' => implode(', ', $style_names),
         ':url' => Url::fromRoute('entity.image_style.collection')->toString(),
       ]
-    ), 'warning');
+    ));
   }
 }

@@ -134,7 +134,7 @@ class CreditSettingsForm extends ConfigFormBase {
 
       if (!file_exists($key_file)) {
         if (!$file = fopen($key_file, 'wb')) {
-          drupal_set_message($this->t('Credit card encryption key file creation failed for file @file. Check your filepath settings and directory permissions.', ['@file' => $key_file]), 'error');
+          $this->messenger()->addError($this->t('Credit card encryption key file creation failed for file @file. Check your filepath settings and directory permissions.', ['@file' => $key_file]));
           $this->logger('uc_credit')->error('Credit card encryption key file creation failed for file @file. Check your filepath settings and directory permissions.', ['@file' => $key_file]);
         }
         else {
@@ -143,7 +143,7 @@ class CreditSettingsForm extends ConfigFormBase {
           fwrite($file, md5(\Drupal::csrfToken()->get(serialize($_REQUEST) . serialize($_SERVER) . REQUEST_TIME)));
           fclose($file);
 
-          drupal_set_message($this->t('Credit card encryption key file generated. Card data will now be encrypted.'));
+          $this->messenger()->addMessage($this->t('Credit card encryption key file generated. Card data will now be encrypted.'));
           $this->logger('uc_credit')->notice('Credit card encryption key file generated. Card data will now be encrypted.');
         }
       }

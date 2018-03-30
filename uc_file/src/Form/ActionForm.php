@@ -234,10 +234,10 @@ class ActionForm extends FormBase {
         $status = uc_file_remove_by_id($form_state->getValue('file_ids'), !$form_state->isValueEmpty('recurse_directories')) && $status;
 
         if ($status) {
-          drupal_set_message($this->t('The selected file(s) have been deleted.'));
+          $this->messenger()->addMessage($this->t('The selected file(s) have been deleted.'));
         }
         else {
-          drupal_set_message($this->t('One or more files could not be deleted.'), 'warning');
+          $this->messenger()->addWarning($this->t('One or more files could not be deleted.'));
         }
 
         break;
@@ -264,14 +264,14 @@ class ActionForm extends FormBase {
             // Update the file list.
             uc_file_refresh();
 
-            drupal_set_message($this->t('The file %file has been uploaded to %dir', ['%file' => $file_object->filename, '%dir' => $dir]));
+            $this->messenger()->addMessage($this->t('The file %file has been uploaded to %dir', ['%file' => $file_object->filename, '%dir' => $dir]));
           }
           else {
-            drupal_set_message($this->t('An error occurred while copying the file to %dir', ['%dir' => $dir]), 'error');
+            $this->messenger()->addError($this->t('An error occurred while copying the file to %dir', ['%dir' => $dir]));
           }
         }
         else {
-          drupal_set_message($this->t('Can not move file to %dir', ['%dir' => $dir]), 'error');
+          $this->messenger()->addError($this->t('Can not move file to %dir', ['%dir' => $dir]));
         }
 
         break;

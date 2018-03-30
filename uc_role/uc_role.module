@@ -483,14 +483,14 @@ function uc_role_delete(UserInterface $account, $rid = NULL, $silent = FALSE) {
   // Echo the deletion only if something was actually deleted.
   if ($query->execute() && !$silent) {
     if (\Drupal::currentUser()->id() == $account->id()) {
-      drupal_set_message(t('The expiration of your %role_name role has been deleted.', ['%role_name' => _uc_role_get_name($rid)]));
+      \Drupal::messenger()->addMessage(t('The expiration of your %role_name role has been deleted.', ['%role_name' => _uc_role_get_name($rid)]));
     }
     else {
       $username = [
         '#theme' => 'username',
         '#account' => $account,
       ];
-      drupal_set_message(t('The expiration of %role_name role for the user @user has been deleted.', [
+      \Drupal::messenger()->addMessage(t('The expiration of %role_name role for the user @user has been deleted.', [
         '@user' => drupal_render($username),
         '%role_name' => _uc_role_get_name($rid),
       ]));
@@ -524,14 +524,14 @@ function uc_role_revoke(UserInterface &$account, $rid, $silent = FALSE) {
 
   if (!$silent) {
     if (\Drupal::currentUser()->id() == $account->id()) {
-      drupal_set_message(t('Your %role role has been revoked.', ['%role' => $role_name]));
+      \Drupal::messenger()->addMessage(t('Your %role role has been revoked.', ['%role' => $role_name]));
     }
     else {
       $username = [
         '#theme' => 'username',
         '#account' => $account,
       ];
-      drupal_set_message(t('@user has had the %role role revoked.', [
+      \Drupal::messenger()->addMessage(t('@user has had the %role role revoked.', [
         '@user' => drupal_render($username),
         '%role' => $role_name,
       ]));
@@ -604,7 +604,7 @@ function uc_role_grant(UserInterface &$account, $rid, $timestamp, $save_user = T
       $message .= ' ' . t('It will expire on %date', ['%date' => \Drupal::service('date.formatter')->format($timestamp, 'short')]);
     }
 
-    drupal_set_message($message);
+    \Drupal::messenger()->addMessage($message);
   }
 }
 
@@ -665,7 +665,7 @@ function uc_role_renew(UserInterface $account, $rid, $timestamp, $silent = FALSE
       ]);
     }
 
-    drupal_set_message($message);
+    \Drupal::messenger()->addMessage($message);
   }
 }
 

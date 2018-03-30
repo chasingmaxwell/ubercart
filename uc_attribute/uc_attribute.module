@@ -180,7 +180,7 @@ function uc_attribute_form_uc_product_buy_it_now_form_alter(&$form, FormStateInt
 function uc_attribute_buy_it_now_form_validate(&$form, FormStateInterface $form_state) {
   $attributes = uc_product_get_attributes($form_state->getValue('nid'));
   if (!empty($attributes)) {
-    drupal_set_message(t('This product has options that need to be selected before purchase. Please select them in the form below.'), 'error');
+    \Drupal::messenger()->addError(t('This product has options that need to be selected before purchase. Please select them in the form below.'));
     $form_state->setRedirect('entity.node.canonical', ['node' => $form_state->getValue('nid')]);
 
     // Prevent submit handlers from running.

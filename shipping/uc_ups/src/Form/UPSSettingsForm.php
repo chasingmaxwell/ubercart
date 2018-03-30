@@ -308,7 +308,7 @@ class UPSSettingsForm extends ConfigFormBase {
     ];
 
     if (!empty($_POST) && $form_state->getErrors()) {
-      drupal_set_message($this->t('The settings have not been saved because of the errors.'), 'error');
+      $this->messenger()->addError($this->t('The settings have not been saved because of the errors.'));
     }
     if (!isset($form['#theme'])) {
       $form['#theme'] = 'system_settings_form';
@@ -368,7 +368,7 @@ class UPSSettingsForm extends ConfigFormBase {
       ->set('insurance', $values['insurance'])
       ->save();
 
-    drupal_set_message($this->t('The configuration options have been saved.'));
+    $this->messenger()->addMessage($this->t('The configuration options have been saved.'));
 
     // @todo Still need these two lines?
     // cache_clear_all();

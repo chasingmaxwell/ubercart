@@ -55,7 +55,7 @@ class TaxRateController extends ControllerBase {
     // entity_flush_caches();
 
     // Display a message and redirect back to the methods page.
-    drupal_set_message($this->t('Tax rate %name was cloned.', ['%name' => $name]));
+    $this->messenger()->addMessage($this->t('Tax rate %name was cloned.', ['%name' => $name]));
 
     return $this->redirect('entity.uc_tax_rate.collection');
   }
@@ -75,10 +75,10 @@ class TaxRateController extends ControllerBase {
     $uc_tax_rate->$op()->save();
 
     if ($op == 'enable') {
-      drupal_set_message($this->t('The %label tax rate has been enabled.', ['%label' => $uc_tax_rate->label()]));
+      $this->messenger()->addMessage($this->t('The %label tax rate has been enabled.', ['%label' => $uc_tax_rate->label()]));
     }
     elseif ($op == 'disable') {
-      drupal_set_message($this->t('The %label tax rate has been disabled.', ['%label' => $uc_tax_rate->label()]));
+      $this->messenger()->addMessage($this->t('The %label tax rate has been disabled.', ['%label' => $uc_tax_rate->label()]));
     }
 
     $url = $uc_tax_rate->toUrl('collection');

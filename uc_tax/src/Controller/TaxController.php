@@ -36,7 +36,7 @@ class TaxController extends ControllerBase {
     // entity_flush_caches();
 
     // Display a message and redirect back to the methods page.
-    drupal_set_message($this->t('Tax rate %name was cloned.', ['%name' => $name]));
+    $this->messenger()->addMessage($this->t('Tax rate %name was cloned.', ['%name' => $name]));
 
     return $this->redirect('entity.uc_tax_rate.collection');
   }

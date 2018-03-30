@@ -225,7 +225,7 @@ class RoleFeatureForm extends FormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     // Invalid quantity?
     if ($form_state->getValue('expiration') === 'abs') {
-      drupal_set_message(var_export($form_state->getValue('expire_absolute'), TRUE));
+      $this->messenger()->addMessage(var_export($form_state->getValue('expire_absolute'), TRUE));
       if ($form_state->getValue('expire_absolute')->getTimestamp() <= REQUEST_TIME) {
         $form_state->setErrorByName('expire_absolute', $this->t('The specified date @date has already occurred. Please choose another.', ['@date' => $this->dateFormatter->format($form_state->getValue('expire_absolute')->getTimestamp())]));
       }

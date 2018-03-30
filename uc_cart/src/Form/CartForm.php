@@ -238,7 +238,7 @@ class CartForm extends FormBase {
     if (substr($triggering_element['#name'], 0, 7) == 'remove-') {
       $item = substr($triggering_element['#name'], 7);
       $form_state->setValue(['items', $item, 'qty'], 0);
-      drupal_set_message($this->t('<strong>@product</strong> removed from your shopping cart.', ['@product' => $form['data'][$item]['title']['#value']]));
+      $this->messenger()->addMessage($this->t('<strong>@product</strong> removed from your shopping cart.', ['@product' => $form['data'][$item]['title']['#value']]));
     }
 
     // Update the items in the shopping cart based on the form values, but only
@@ -257,7 +257,7 @@ class CartForm extends FormBase {
    * Displays "cart updated" message for the cart form.
    */
   public function displayUpdateMessage(array &$form, FormStateInterface $form_state) {
-    drupal_set_message($this->t('Your cart has been updated.'));
+    $this->messenger()->addMessage($this->t('Your cart has been updated.'));
   }
 
   /**

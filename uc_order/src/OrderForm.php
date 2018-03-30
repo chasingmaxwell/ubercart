@@ -139,7 +139,7 @@ class OrderForm extends ContentEntityForm {
 
     $order->save();
 
-    drupal_set_message($this->t('Order changes saved.'));
+    $this->messenger()->addMessage($this->t('Order changes saved.'));
   }
 
 }

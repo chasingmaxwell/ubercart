@@ -106,7 +106,7 @@ class TwoCheckoutController extends ControllerBase {
       uc_payment_enter($order->id(), '2checkout', $request->request->get('total'), 0, NULL, $comment);
     }
     else {
-      drupal_set_message($this->t('Your order will be processed as soon as your payment clears at 2Checkout.com.'));
+      $this->messenger()->addMessage($this->t('Your order will be processed as soon as your payment clears at 2Checkout.com.'));
       uc_order_comment_save($order->id(), 0, $this->t('@type payment is pending approval at 2Checkout.com.', ['@type' => $request->request->get('pay_method') == 'CC' ? $this->t('Credit card') : $this->t('eCheck')]), 'admin');
     }
 

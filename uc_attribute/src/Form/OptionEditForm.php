@@ -46,7 +46,7 @@ class OptionEditForm extends OptionFormBase {
     $option_name = $form_state->getValue('name');
     $edit_option_link = Link::createFromRoute($this->t('Edit option'), 'uc_attribute.option_edit', ['aid' => $aid, 'oid' => $oid])->toString();
 
-    drupal_set_message($this->t('Updated option %option.', ['%option' => $option_name]));
+    $this->messenger()->addMessage($this->t('Updated option %option.', ['%option' => $option_name]));
     $this->logger('uc_attribute')->notice('Updated option %option.', ['%option' => $option_name, 'link' => $edit_option_link]);
     $form_state->setRedirect('uc_attribute.options', ['aid' => $aid]);
   }

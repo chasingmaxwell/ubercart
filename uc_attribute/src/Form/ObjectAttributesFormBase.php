@@ -174,11 +174,11 @@ abstract class ObjectAttributesFormBase extends FormBase {
 
       $this->attributesRemoved();
 
-      drupal_set_message($this->formatPlural(count($remove_aids), '1 attribute has been removed.', '@count attributes have been removed.'));
+      $this->messenger()->addMessage($this->formatPlural(count($remove_aids), '1 attribute has been removed.', '@count attributes have been removed.'));
     }
 
     if ($changed) {
-      drupal_set_message($this->t('The changes have been saved.'));
+      $this->messenger()->addMessage($this->t('The changes have been saved.'));
     }
   }
 

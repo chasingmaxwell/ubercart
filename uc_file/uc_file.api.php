@@ -30,12 +30,12 @@ use Drupal\Core\Session\AccountInterface;
  * @return bool
  *   TRUE or FALSE depending on whether the user is to be permitted download of
  *   the requested files. When a implementation returns FALSE it should set an
- *   error message in Drupal using drupal_set_message() to inform customers of
+ *   error message in Drupal using \Drupal::messenger() to inform customers of
  *   what is going on.
  */
 function hook_uc_download_authorize(AccountInterface $user, $file_download) {
   if (!$user->status) {
-    drupal_set_message(t("This account has been banned and can't download files anymore."), 'error');
+    \Drupal::messenger()->addError(t("This account has been banned and can't download files anymore."));
     return FALSE;
   }
   else {

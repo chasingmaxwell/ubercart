@@ -179,7 +179,7 @@ function hook_uc_cart_item_presave(CartItemInterface $entity) {
  *   The cart item entity object.
  */
 function hook_uc_cart_item_insert(CartItemInterface $entity) {
-  drupal_set_message(t('An item was added to your cart'));
+  \Drupal::messenger()->addMessage(t('An item was added to your cart'));
 }
 
 /**
@@ -189,7 +189,7 @@ function hook_uc_cart_item_insert(CartItemInterface $entity) {
  *   The cart item entity object.
  */
 function hook_uc_cart_item_update(CartItemInterface $entity) {
-  drupal_set_message(t('An item was updated in your cart'));
+  \Drupal::messenger()->addMessage(t('An item was updated in your cart'));
 }
 
 /**
@@ -199,7 +199,7 @@ function hook_uc_cart_item_update(CartItemInterface $entity) {
  *   The cart item entity object.
  */
 function hook_uc_cart_item_delete(CartItemInterface $entity) {
-  drupal_set_message(t('An item was deleted from your cart'));
+  \Drupal::messenger()->addMessage(t('An item was deleted from your cart'));
 }
 
 /**
@@ -245,7 +245,7 @@ function hook_uc_checkout_complete(OrderInterface $order, AccountInterface $acco
  */
 function hook_uc_cart_checkout_start(OrderInterface $order) {
   if (in_array('administrator', $order->getOwner()->roles)) {
-    drupal_set_message(t('Administrators may not purchase products.', 'error'));
+    \Drupal::messenger()->addError(t('Administrators may not purchase products.'));
     drupal_goto('cart');
   }
 }

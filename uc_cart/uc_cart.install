@@ -21,7 +21,7 @@ function uc_cart_uninstall() {
       // Allow this status to be deleted manually.
       $status->setLocked(FALSE)->save();
     }
-    drupal_set_message(\Drupal::translation()->formatPlural(count($status_names),
+    \Drupal::messenger()->addWarning(\Drupal::translation()->formatPlural(count($status_names),
       'The order status %status has not been deleted. If you need to delete it, <a href=":url">please do so manually</a>.',
       'The order statuses %statuses have not been deleted. If you need to delete them, <a href=":url">please do so manually</a>.',
       [
@@ -29,7 +29,7 @@ function uc_cart_uninstall() {
         '%statuses' => implode(', ', $status_names),
         ':url' => Url::fromRoute('uc_order.workflow')->toString(),
       ]
-    ), 'warning');
+    ));
   }
 
   $styles = ImageStyle::loadMultiple(['uc_cart']);
@@ -38,7 +38,7 @@ function uc_cart_uninstall() {
     foreach ($styles as $style) {
       $style_names[] = $style->label();
     }
-    drupal_set_message(\Drupal::translation()->formatPlural(count($style_names),
+    \Drupal::messenger()->addWarning(\Drupal::translation()->formatPlural(count($style_names),
       'The image style %style has not been deleted. If you need to delete it, <a href=":url">please do so manually</a>.',
       'The image styles %styles have not been deleted. If you need to delete them, <a href=":url">please do so manually</a>.',
       [
@@ -46,6 +46,6 @@ function uc_cart_uninstall() {
         '%styles' => implode(', ', $style_names),
         ':url' => Url::fromRoute('entity.image_style.collection')->toString(),
       ]
-    ), 'warning');
+    ));
   }
 }

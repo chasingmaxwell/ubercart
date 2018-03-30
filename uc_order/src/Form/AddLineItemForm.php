@@ -92,7 +92,7 @@ class AddLineItemForm extends FormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     uc_order_line_item_add($form_state->getValue('order_id'), $form_state->getValue('line_item_id'), $form_state->getValue('title'), $form_state->getValue('amount'));
-    drupal_set_message($this->t('Line item added to order.'));
+    $this->messenger()->addMessage($this->t('Line item added to order.'));
     $form_state->setRedirect('entity.uc_order.edit_form', ['uc_order' => $form_state->getValue('order_id')]);
   }
 

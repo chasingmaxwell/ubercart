@@ -4,12 +4,14 @@ namespace Drupal\uc_payment;
 
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Plugin\PluginBase;
+use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\uc_order\OrderInterface;
 
 /**
  * Defines a base payment method plugin implementation.
  */
 abstract class PaymentMethodPluginBase extends PluginBase implements PaymentMethodPluginInterface {
+  use MessengerTrait;
 
   /**
    * {@inheritdoc}

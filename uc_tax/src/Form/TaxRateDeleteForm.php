@@ -37,7 +37,7 @@ class TaxRateDeleteForm extends EntityConfirmFormBase {
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->entity->delete();
-    drupal_set_message($this->t('Tax rate %name has been deleted.', ['%name' => $this->entity->label()]));
+    $this->messenger()->addMessage($this->t('Tax rate %name has been deleted.', ['%name' => $this->entity->label()]));
     $form_state->setRedirectUrl($this->getCancelUrl());
   }
 

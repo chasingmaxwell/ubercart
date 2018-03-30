@@ -2,12 +2,16 @@
 
 namespace Drupal\uc_fulfillment;
 
+use Drupal\Core\Messenger\MessengerTrait;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\uc_order\Entity\OrderProduct;
 
 /**
  * Defines the Package class.
  */
 class Package implements PackageInterface {
+  use MessengerTrait;
+  use StringTranslationTrait;
 
   /* These variables map to DB columns. */
 
@@ -619,7 +623,7 @@ class Package implements PackageInterface {
       }
     }
 
-    drupal_set_message(t('Package @id has been deleted.', ['@id' => $this->package_id]));
+    $this->messenger()->addMessage($this->t('Package @id has been deleted.', ['@id' => $this->package_id]));
   }
 
 }

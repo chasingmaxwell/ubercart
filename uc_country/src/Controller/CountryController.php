@@ -22,7 +22,7 @@ class CountryController extends ControllerBase {
   public function enableConfig(Country $uc_country) {
     $uc_country->enable()->save();
 
-    drupal_set_message($this->t('The country %label has been enabled.', ['%label' => $uc_country->label()]));
+    $this->messenger()->addMessage($this->t('The country %label has been enabled.', ['%label' => $uc_country->label()]));
 
     return $this->redirect('entity.uc_country.collection');
   }
@@ -39,7 +39,7 @@ class CountryController extends ControllerBase {
   public function disableConfig(Country $uc_country) {
     $uc_country->disable()->save();
 
-    drupal_set_message($this->t('The country %label has been disabled.', ['%label' => $uc_country->label()]));
+    $this->messenger()->addMessage($this->t('The country %label has been disabled.', ['%label' => $uc_country->label()]));
 
     return $this->redirect('entity.uc_country.collection');
   }

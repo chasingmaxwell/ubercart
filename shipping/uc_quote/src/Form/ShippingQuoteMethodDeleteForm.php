@@ -38,7 +38,7 @@ class ShippingQuoteMethodDeleteForm extends EntityConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->entity->delete();
 
-    drupal_set_message($this->t('Deleted the %label shipping quote method.', [
+    $this->messenger()->addMessage($this->t('Deleted the %label shipping quote method.', [
       '%label' => $this->entity->label(),
     ]));
 

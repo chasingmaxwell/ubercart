@@ -846,7 +846,7 @@ function uc_ups_void_shipment($shipment_number, array $tracking_numbers = []) {
     }
     if (isset($response->Response->Error)) {
       foreach ($response->Response->Error as $error) {
-        drupal_set_message((string) $error->ErrorSeverity . ' ' . (string) $error->ErrorCode . ': ' . (string) $error->ErrorDescription, 'error');
+        \Drupal::messenger()->addError((string) $error->ErrorSeverity . ' ' . (string) $error->ErrorCode . ': ' . (string) $error->ErrorDescription);
       }
     }
   }

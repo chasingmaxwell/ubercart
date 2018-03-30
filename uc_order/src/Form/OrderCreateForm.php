@@ -277,7 +277,7 @@ class OrderCreateForm extends FormBase {
           // Manually set the password so it appears in the e-mail.
           $account->password = $fields['pass'];
           $this->mailManager->mail('user', 'register_admin_created', $email, uc_store_mail_recipient_langcode($email), ['account' => $account], uc_store_email_from());
-          drupal_set_message($this->t('A welcome message has been e-mailed to the new user.'));
+          $this->messenger()->addMessage($this->t('A welcome message has been e-mailed to the new user.'));
         }
         break;
 

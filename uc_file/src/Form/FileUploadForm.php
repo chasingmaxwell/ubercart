@@ -171,15 +171,15 @@ class FileUploadForm extends ConfirmFormBase {
           // Update the file list.
           uc_file_refresh();
 
-          drupal_set_message($this->t('The file %file has been uploaded to %dir', ['%file' => $file_object->getFilename(), '%dir' => $dir]));
+          $this->messenger()->addMessage($this->t('The file %file has been uploaded to %dir', ['%file' => $file_object->getFilename(), '%dir' => $dir]));
         }
         else {
-          drupal_set_message($this->t('An error occurred while copying the file to %dir', ['%dir' => $dir]), 'error');
+          $this->messenger()->addError($this->t('An error occurred while copying the file to %dir', ['%dir' => $dir]));
         }
       }
     }
     else {
-      drupal_set_message($this->t('Can not move file to %dir', ['%dir' => $dir]), 'error');
+      $this->messenger()->addError($this->t('Can not move file to %dir', ['%dir' => $dir]));
     }
 
     $form_state->setRedirectUrl($this->getCancelUrl());

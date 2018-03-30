@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\Url;
 use Drupal\uc_payment\Plugin\PaymentMethodManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -15,6 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Defines a class to build a listing of payment method configuration entities.
  */
 class PaymentMethodListBuilder extends DraggableListBuilder {
+  use MessengerTrait;
 
   /**
    * The payment method manager.
@@ -154,7 +156,7 @@ class PaymentMethodListBuilder extends DraggableListBuilder {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     parent::submitForm($form, $form_state);
 
-    drupal_set_message($this->t('The configuration options have been saved.'));
+    $this->messenger()->addMessage($this->t('The configuration options have been saved.'));
   }
 
   /**

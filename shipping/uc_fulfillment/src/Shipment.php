@@ -2,6 +2,8 @@
 
 namespace Drupal\uc_fulfillment;
 
+use Drupal\Core\Messenger\MessengerTrait;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\uc_fulfillment\Event\ShipmentSaveEvent;
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_store\Address;
@@ -11,6 +13,8 @@ use Drupal\uc_store\AddressInterface;
  * Defines the Shipment class.
  */
 class Shipment implements ShipmentInterface {
+  use MessengerTrait;
+  use StringTranslationTrait;
 
   /**
    * Shipment ID.
@@ -524,7 +528,7 @@ class Shipment implements ShipmentInterface {
     }
 
     \Drupal::moduleHandler()->invokeAll('uc_shipment', ['delete', $this]);
-    drupal_set_message(t('Shipment @id has been deleted.', ['@id' => $this->sid]));
+    $this->messenger()->addMessage($this->t('Shipment @id has been deleted.', ['@id' => $this->sid]));
   }
 
 }

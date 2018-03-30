@@ -139,7 +139,7 @@ class OrderUpdateForm extends FormBase {
       $this->eventDispatcher->dispatch($event::EVENT_NAME, $event);
     }
 
-    drupal_set_message($this->t('Order updated.'));
+    $this->messenger()->addMessage($this->t('Order updated.'));
   }
 
 }

@@ -119,7 +119,7 @@ class PackageController extends ControllerBase {
     }
 
     if (empty($rows)) {
-      drupal_set_message($this->t("This order's products have not been organized into packages."), 'warning');
+      $this->messenger()->addWarning($this->t("This order's products have not been organized into packages."));
       return $this->redirect('uc_fulfillment.new_package', ['uc_order' => $uc_order->id()]);
     }
 

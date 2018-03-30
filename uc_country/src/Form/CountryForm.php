@@ -79,7 +79,7 @@ class CountryForm extends EntityForm {
     $this->entity->setAddressFormat(explode("\r\n", $address_format));
 
     $this->entity->save();
-    drupal_set_message($this->t('Country settings saved.'));
+    $this->messenger()->addMessage($this->t('Country settings saved.'));
     $form_state->setRedirect('entity.uc_country.collection');
   }
 

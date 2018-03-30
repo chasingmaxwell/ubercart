@@ -4,6 +4,8 @@ namespace Drupal\uc_cart;
 
 use Drupal\Component\Utility\UrlHelper;
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Messenger\MessengerTrait;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\Url;
 use Drupal\node\Entity\Node;
 use Drupal\uc_cart\Entity\CartItem;
@@ -12,6 +14,8 @@ use Drupal\uc_cart\Entity\CartItem;
  * Utility class providing methods for the manangement of shopping carts.
  */
 class Cart implements CartInterface {
+  use MessengerTrait;
+  use StringTranslationTrait;
 
   /**
    * The cart ID.
@@ -79,13 +83,13 @@ class Cart implements CartInterface {
             $message = $row['message'];
           }
           else {
-            $message = t('Sorry, that item is not available for purchase at this time.');
+            $message = $this->t('Sorry, that item is not available for purchase at this time.');
           }
           if (isset($row['silent']) && ($row['silent'] === TRUE)) {
             return $this->getAddItemRedirect();
           }
           else {
-            drupal_set_message($message, 'error');
+            $this->messenger()->addError($message);
           }
           // Stay on this page.
           $query = \Drupal::request()->query;
@@ -113,13 +117,13 @@ class Cart implements CartInterface {
       ]);
       $item_entity->save();
       if ($msg) {
-        drupal_set_message(t('<strong>@product-title</strong> added to <a href=":url">your shopping cart</a>.', ['@product-title' => $node->label(), ':url' => Url::fromRoute('uc_cart.cart')->toString()]));
+        $this->messenger()->addMessage($this->t('<strong>@product-title</strong> added to <a href=":url">your shopping cart</a>.', ['@product-title' => $node->label(), ':url' => Url::fromRoute('uc_cart.cart')->toString()]));
       }
     }
     else {
       // If it is in the cart, update the item instead.
       if ($msg) {
-        drupal_set_message(t('Your item(s) have been updated.'));
+        $this->messenger()->addMessage($this->t('Your item(s) have been updated.'));
       }
       $item_entity = CartItem::load(current(array_keys($result)));
       $qty += $item_entity->qty->value;

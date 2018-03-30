@@ -41,10 +41,10 @@ class ShippingQuoteMethodController extends ControllerBase {
     $uc_quote_method->$op()->save();
 
     if ($op == 'enable') {
-      drupal_set_message($this->t('The %label shipping method has been enabled.', ['%label' => $uc_quote_method->label()]));
+      $this->messenger()->addMessage($this->t('The %label shipping method has been enabled.', ['%label' => $uc_quote_method->label()]));
     }
     elseif ($op == 'disable') {
-      drupal_set_message($this->t('The %label shipping method has been disabled.', ['%label' => $uc_quote_method->label()]));
+      $this->messenger()->addMessage($this->t('The %label shipping method has been disabled.', ['%label' => $uc_quote_method->label()]));
     }
 
     $url = $uc_quote_method->toUrl('collection');

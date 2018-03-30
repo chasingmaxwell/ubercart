@@ -41,10 +41,10 @@ class FulfillmentMethodController extends ControllerBase {
     $uc_fulfillment_method->$op()->save();
 
     if ($op == 'enable') {
-      drupal_set_message($this->t('The %label fulfillment method has been enabled.', ['%label' => $uc_fulfillment_method->label()]));
+      $this->messenger()->addMessage($this->t('The %label fulfillment method has been enabled.', ['%label' => $uc_fulfillment_method->label()]));
     }
     elseif ($op == 'disable') {
-      drupal_set_message($this->t('The %label fulfillment method has been disabled.', ['%label' => $uc_fulfillment_method->label()]));
+      $this->messenger()->addMessage($this->t('The %label fulfillment method has been disabled.', ['%label' => $uc_fulfillment_method->label()]));
     }
 
     $url = $uc_fulfillment_method->toUrl('collection');

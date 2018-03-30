@@ -885,14 +885,14 @@ function uc_product_feature_save(array &$data) {
     $data['pfid'] = db_insert('uc_product_features')
       ->fields($data)
       ->execute();
-    drupal_set_message(t('The product feature has been added.'));
+    \Drupal::messenger()->addMessage(t('The product feature has been added.'));
   }
   else {
     db_merge('uc_product_features')
       ->key(['pfid' => $data['pfid']])
       ->fields($data)
       ->execute();
-    drupal_set_message(t('The product feature has been updated.'));
+    \Drupal::messenger()->addMessage(t('The product feature has been updated.'));
   }
 }
 

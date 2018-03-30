@@ -25,7 +25,7 @@ class WpsController extends ControllerBase {
     // gets processed correctly. We'll leave an ambiguous message just in case.
     $session = \Drupal::service('session');
     if (!$session->has('cart_order') || intval($session->get('cart_order')) != $uc_order->id()) {
-      drupal_set_message($this->t('Thank you for your order! PayPal will notify us once your payment has been processed.'));
+      $this->messenger()->addMessage($this->t('Thank you for your order! PayPal will notify us once your payment has been processed.'));
       return $this->redirect('uc_cart.cart');
     }
 

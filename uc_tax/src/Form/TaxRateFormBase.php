@@ -171,12 +171,12 @@ class TaxRateFormBase extends EntityForm {
 
     if ($status == SAVED_UPDATED) {
       // If we edited an existing entity...
-      drupal_set_message($this->t('Tax rate %label has been updated.', ['%label' => $tax_rate->label()]));
+      $this->messenger()->addMessage($this->t('Tax rate %label has been updated.', ['%label' => $tax_rate->label()]));
       $this->logger('uc_tax')->notice('Tax rate %label has been updated.', ['%label' => $tax_rate->label(), 'link' => $edit_link]);
     }
     else {
       // If we created a new entity...
-      drupal_set_message($this->t('Tax rate %label has been added.', ['%label' => $tax_rate->label()]));
+      $this->messenger()->addMessage($this->t('Tax rate %label has been added.', ['%label' => $tax_rate->label()]));
       $this->logger('uc_tax')->notice('Tax rate %label has been added.', ['%label' => $tax_rate->label(), 'link' => $edit_link]);
     }
 

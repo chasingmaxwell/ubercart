@@ -20,7 +20,7 @@ class CatalogAdminController extends ControllerBase {
     }
     uc_catalog_add_image_field();
 
-    drupal_set_message($this->t('The catalog taxonomy reference field has been repaired.'));
+    $this->messenger()->addMessage($this->t('The catalog taxonomy reference field has been repaired.'));
 
     return $this->redirect('uc_store.admin');
   }

@@ -245,7 +245,7 @@ class DownloadController extends ControllerBase {
 
     // Some error state came back, so report it.
     else {
-      drupal_set_message($error_messages[$status] . $admin_message, 'error');
+      $this->messenger()->addError($error_messages[$status] . $admin_message);
 
       // Kick 'em to the curb. >:)
       $this->redirectDownload($user->id());

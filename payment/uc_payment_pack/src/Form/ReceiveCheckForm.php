@@ -102,7 +102,7 @@ class ReceiveCheckForm extends FormBase {
         'clear_date' => $clear_date,
       ])
       ->execute();
-    drupal_set_message($this->t('Check received, expected clear date of @date.', ['@date' => $this->dateFormatter->format($clear_date, 'uc_store')]));
+    $this->messenger()->addMessage($this->t('Check received, expected clear date of @date.', ['@date' => $this->dateFormatter->format($clear_date, 'uc_store')]));
 
     $form_state->setRedirect('entity.uc_order.canonical', ['uc_order' => $form_state->getValue('order_id')]);
   }

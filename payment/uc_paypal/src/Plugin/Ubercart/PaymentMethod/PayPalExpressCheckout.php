@@ -272,7 +272,7 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
     $items = \Drupal::service('uc_cart.manager')->get()->getContents();
 
     if (empty($items)) {
-      drupal_set_message($this->t('You do not have any items in your shopping cart.'));
+      $this->messenger()->addMessage($this->t('You do not have any items in your shopping cart.'));
       return;
     }
 
@@ -303,7 +303,7 @@ class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements Exp
 
     if ($response['ACK'] != 'Success') {
       \Drupal::logger('uc_paypal')->error('NVP API request failed with @code: @message', ['@code' => $response['L_ERRORCODE0'], '@message' => $response['L_LONGMESSAGE0']]);
-      drupal_set_message($this->t('PayPal reported an error: @code: @message', ['@code' => $response['L_ERRORCODE0'], '@message' => $response['L_LONGMESSAGE0']]), 'error');
+      $this->messenger()->addError($this->t('PayPal reported an error: @code: @message', ['@code' => $response['L_ERRORCODE0'], '@message' => $response['L_LONGMESSAGE0']]));
       return;
     }
 

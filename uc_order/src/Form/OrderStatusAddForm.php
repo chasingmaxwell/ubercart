@@ -95,7 +95,7 @@ class OrderStatusAddForm extends FormBase {
       'weight' => (int) $form_state->getValue('weight'),
     ])->save();
 
-    drupal_set_message($this->t('Custom order status created.'));
+    $this->messenger()->addMessage($this->t('Custom order status created.'));
 
     $form_state->setRedirect('uc_order.workflow');
   }

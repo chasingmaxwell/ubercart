@@ -140,7 +140,7 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
       if (is_null($cc_type)) {
         $cc_type = $this->cardType($order->payment_details['cc_number']);
         if ($cc_type === FALSE) {
-          drupal_set_message($this->t('The credit card type did not pass validation.'), 'error');
+          $this->messenger()->addError($this->t('The credit card type did not pass validation.'));
           \Drupal::logger('uc_paypal')->error('Could not figure out cc type: @number / @type', ['@number' => $order->payment_details['cc_number'], '@type' => $order->payment_details['cc_type']]);
           return ['success' => FALSE];
         }

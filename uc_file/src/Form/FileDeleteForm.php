@@ -125,10 +125,10 @@ class FileDeleteForm extends ConfirmFormBase {
     $status = uc_file_remove_by_id($form_state->getValue('file_ids'), !$form_state->isValueEmpty('recurse_directories')) && $status;
 
     if ($status) {
-      drupal_set_message($this->t('The selected file(s) have been deleted.'));
+      $this->messenger()->addMessage($this->t('The selected file(s) have been deleted.'));
     }
     else {
-      drupal_set_message($this->t('One or more files could not be deleted.'), 'warning');
+      $this->messenger()->addWarning($this->t('One or more files could not be deleted.'));
     }
 
     $form_state->setRedirectUrl($this->getCancelUrl());

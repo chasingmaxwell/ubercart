@@ -294,7 +294,7 @@ class CartLinksForm extends ConfirmFormBase {
           // Parse the message key and display it if it exists.
           $mkey = intval(Unicode::substr($action, 1));
           if (!empty($messages[$mkey])) {
-            drupal_set_message($messages[$mkey]);
+            $this->messenger()->addMessage($messages[$mkey]);
           }
           break;
       }

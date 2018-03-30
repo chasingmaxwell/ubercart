@@ -190,7 +190,7 @@ class OrderPaymentsForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $payment = $form_state->getValues();
     uc_payment_enter($this->order->id(), $payment['method'], $payment['amount'], $this->currentUser()->id(), NULL, $payment['comment'], $payment['received']->getTimestamp());
-    drupal_set_message($this->t('Payment entered.'));
+    $this->messenger()->addMessage($this->t('Payment entered.'));
   }
 
 }

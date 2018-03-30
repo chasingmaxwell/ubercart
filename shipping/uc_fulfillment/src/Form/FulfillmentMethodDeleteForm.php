@@ -38,7 +38,7 @@ class FulfillmentMethodDeleteForm extends EntityConfirmFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $this->entity->delete();
 
-    drupal_set_message($this->t('Deleted the %label fulfillment method.', [
+    $this->messenger()->addMessage($this->t('Deleted the %label fulfillment method.', [
       '%label' => $this->entity->label(),
     ]));
 

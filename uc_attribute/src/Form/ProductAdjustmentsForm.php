@@ -189,7 +189,7 @@ class ProductAdjustmentsForm extends FormBase {
           ->execute();
       }
     }
-    drupal_set_message($this->t('Product adjustments have been saved.'));
+    $this->messenger()->addMessage($this->t('Product adjustments have been saved.'));
   }
 
 }

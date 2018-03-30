@@ -376,7 +376,7 @@ function uc_product_kit_node_update($node) {
   $obj->model = rtrim($obj->model, ' / ');
 
   if ($node->mutable == UC_PRODUCT_KIT_MUTABLE && !empty($discount)) {
-    drupal_set_message(t('Product kit discounts are not applied because the customer can remove components from their cart.'));
+    \Drupal::messenger()->addMessage(t('Product kit discounts are not applied because the customer can remove components from their cart.'));
   }
 
   db_merge('uc_products')
@@ -730,7 +730,7 @@ function uc_product_kit_add_to_cart_form_validate($form, FormStateInterface $for
 function uc_product_kit_add_to_cart_form_submit($form, FormStateInterface $form_state) {
   if (\Drupal::config('uc_cart.settings')->get('add_item_msg')) {
     $node = Node::load($form_state->getValue('nid'));
-    drupal_set_message(t('<strong>@product-title</strong> added to <a href=":url">your shopping cart</a>.', ['@product-title' => $node->label(), ':url' => Url::fromRoute('uc_cart.cart')->toString()]));
+    \Drupal::messenger()->addMessage(t('<strong>@product-title</strong> added to <a href=":url">your shopping cart</a>.', ['@product-title' => $node->label(), ':url' => Url::fromRoute('uc_cart.cart')->toString()]));
   }
   $cart = \Drupal::service('uc_cart.manager')->get();
   $redirect = $cart->addItem($form_state->getValue('nid'), $form_state->getValue('qty'), $form_state->getValues());
@@ -751,7 +751,7 @@ function uc_product_kit_buy_it_now_form_validate($form, FormStateInterface $form
       foreach ($node->products as $nid => $product) {
         $attributes = uc_product_get_attributes($nid);
         if (!empty($attributes)) {
-          drupal_set_message(t('This product has options that need to be selected before purchase. Please select them in the form below.'), 'error');
+          \Drupal::messenger()->addError(t('This product has options that need to be selected before purchase. Please select them in the form below.'));
           return new RedirectResponse(Url::fromRoute('entity.node.canonical', ['node' => $form_state->getValue('nid')])->toString());
         }
       }
@@ -769,7 +769,7 @@ function uc_product_kit_buy_it_now_form_submit($form, FormStateInterface $form_s
   if (\Drupal::moduleHandler()->moduleExists('uc_attribute')) {
     $attributes = uc_product_get_attributes($node->nid);
     if (!empty($attributes)) {
-      drupal_set_message(t('This product has options that need to be selected before purchase. Please select them in the form below.'), 'error');
+      \Drupal::messenger()->addError(t('This product has options that need to be selected before purchase. Please select them in the form below.'));
       $form_state->setRedirect('entity.node.canonical', ['node' => $form_state->getValue('nid')]);
       return;
     }
@@ -777,7 +777,7 @@ function uc_product_kit_buy_it_now_form_submit($form, FormStateInterface $form_s
       foreach ($node->products as $nid => $product) {
         $attributes = uc_product_get_attributes($nid);
         if (!empty($attributes)) {
-          drupal_set_message(t('This product has options that need to be selected before purchase. Please select them in the form below.'), 'error');
+          \Drupal::messenger()->addError(t('This product has options that need to be selected before purchase. Please select them in the form below.'));
           $form_state->setRedirect('entity.node.canonical', ['node' => $form_state->getValue('nid')]);
           return;
         }

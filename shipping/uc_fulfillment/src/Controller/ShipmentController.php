@@ -69,7 +69,7 @@ class ShipmentController extends ControllerBase {
       return $plugin->fulfillOrder($uc_order, $package_ids);
     }
     else {
-      drupal_set_message($this->t('There is no sense in making a shipment with no packages on it, right?'), 'warning');
+      $this->messenger()->addWarning($this->t('There is no sense in making a shipment with no packages on it, right?'));
       return $this->redirect('uc_fulfillment.new_shipment', ['uc_order' => $uc_order->id()]);
     }
   }
@@ -193,11 +193,11 @@ class ShipmentController extends ControllerBase {
 
     if (empty($rows)) {
       if (count(Package::loadByOrder($uc_order->id())) == 0) {
-        drupal_set_message($this->t("This order's products have not been organized into packages."), 'warning');
+        $this->messenger()->addWarning($this->t("This order's products have not been organized into packages."));
         return $this->redirect('uc_fulfillment.new_package', ['uc_order' => $uc_order->id()]);
       }
       else {
-        drupal_set_message($this->t('No shipments have been made for this order.'), 'warning');
+        $this->messenger()->addWarning($this->t('No shipments have been made for this order.'));
         return $this->redirect('uc_fulfillment.new_shipment', ['uc_order' => $uc_order->id()]);
       }
     }

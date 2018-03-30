@@ -935,7 +935,7 @@ class Reports extends ControllerBase {
     $csv_data = \Drupal::cache()->get('uc_report_' . $report_id . '_' . $user_id);
 
     if (!$csv_data || $user_id != $user_check) {
-      drupal_set_message($this->t("The CSV data could not be retrieved. It's possible the data might have expired. Refresh the report page and try to retrieve the CSV file again."), 'error');
+      $this->messenger()->addError($this->t("The CSV data could not be retrieved. It's possible the data might have expired. Refresh the report page and try to retrieve the CSV file again."));
       throw new NotFoundHttpException();
     }
     else {

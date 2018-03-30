@@ -312,7 +312,7 @@ function uc_ups_fulfill_order_validate($form, FormStateInterface $form_state) {
       return FALSE;
     }
     else {
-      drupal_set_message($error_msg, 'error');
+      \Drupal::messenger()->addError($error_msg);
     }
   }
   $charge = new stdClass();
@@ -638,7 +638,7 @@ function uc_ups_confirm_shipment_submit($form, FormStateInterface $form_state) {
     $error_severity = (string) $error->ErrorSeverity;
     $error_code = (string) $error->ErrorCode;
     $error_description = (string) $error->ErrorDescription;
-    drupal_set_message(t('(@severity error @code) @description', ['@severity' => $error_severity, '@code' => $error_code, '@description' => $error_description]), 'error');
+    \Drupal::messenger()->addError(t('(@severity error @code) @description', ['@severity' => $error_severity, '@code' => $error_code, '@description' => $error_description]));
     if ($error_severity == 'HardError') {
       $form_state['redirect'] = 'admin/store/orders/' . $order_id . '/shipments/ups/' . implode('/', $packages);
       return;
@@ -681,11 +681,11 @@ function uc_ups_confirm_shipment_submit($form, FormStateInterface $form_state) {
         $package->label_image = $label_file;
       }
       else {
-        drupal_set_message(t('Could not open a file to save the label image.'), 'error');
+        \Drupal::messenger()->addError(t('Could not open a file to save the label image.'));
       }
     }
     else {
-      drupal_set_message(t('Could not find or create the directory %directory in the file system path.', ['%directory' => $directory]), 'error');
+      \Drupal::messenger()->addError(t('Could not find or create the directory %directory in the file system path.', ['%directory' => $directory]));
     }
     unset($package);
     next($shipment->packages);

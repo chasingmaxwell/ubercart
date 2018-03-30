@@ -59,7 +59,7 @@ class ProductController extends ControllerBase {
   public function setImageDefaults() {
     uc_product_add_default_image_field();
 
-    drupal_set_message($this->t('Default image support configured for Ubercart products.'));
+    $this->messenger()->addMessage($this->t('Default image support configured for Ubercart products.'));
 
     return $this->redirect('uc_store.admin');
   }

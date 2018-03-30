@@ -92,9 +92,9 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
 
     // Send anonymous users to login page when anonymous checkout is disabled.
     if ($this->currentUser()->isAnonymous() && !$cart_config->get('checkout_anonymous')) {
-      drupal_set_message($this->t('You must login before you can proceed to checkout.'));
+      $this->messenger()->addMessage($this->t('You must login before you can proceed to checkout.'));
       if ($this->config('user.settings')->get('register') != USER_REGISTER_ADMINISTRATORS_ONLY) {
-        drupal_set_message($this->t('If you do not have an account yet, you should <a href=":url">register now</a>.', [':url' => Url::fromRoute('user.register', [], ['query' => $this->getDestinationArray()])->toString()]));
+        $this->messenger()->addMessage($this->t('If you do not have an account yet, you should <a href=":url">register now</a>.', [':url' => Url::fromRoute('user.register', [], ['query' => $this->getDestinationArray()])->toString()]));
       }
       return $this->redirect('user.login', [], ['query' => $this->getDestinationArray()]);
     }
@@ -120,7 +120,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
       else {
         // Ghost session.
         $this->session->remove('cart_order');
-        drupal_set_message($this->t('Your session has expired or is no longer valid.  Please review your order and try again.'));
+        $this->messenger()->addMessage($this->t('Your session has expired or is no longer valid.  Please review your order and try again.'));
         return $this->redirect('uc_cart.cart');
       }
     }
@@ -129,11 +129,11 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
     if (isset($_POST['form_id']) && $_POST['form_id'] == 'uc_cart_checkout_form') {
       // If this is a form submission, make sure the cart order is still valid.
       if (!isset($order)) {
-        drupal_set_message($this->t('Your session has expired or is no longer valid.  Please review your order and try again.'));
+        $this->messenger()->addMessage($this->t('Your session has expired or is no longer valid.  Please review your order and try again.'));
         return $this->redirect('uc_cart.cart');
       }
       elseif ($this->session->has('uc_cart_order_rebuild')) {
-        drupal_set_message($this->t('Your shopping cart contents have changed. Please review your order and try again.'));
+        $this->messenger()->addMessage($this->t('Your shopping cart contents have changed. Please review your order and try again.'));
         return $this->redirect('uc_cart.cart');
       }
     }
@@ -172,14 +172,14 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
         $this->session->remove('uc_cart_order_rebuild');
       }
       elseif (!uc_order_product_revive($order->products)) {
-        drupal_set_message($this->t('Some of the products in this order are no longer available.'), 'error');
+        $this->messenger()->addError($this->t('Some of the products in this order are no longer available.'));
         return $this->redirect('uc_cart.cart');
       }
     }
 
     $min = $cart_config->get('minimum_subtotal');
     if ($min > 0 && $order->getSubtotal() < $min) {
-      drupal_set_message($this->t('The minimum order subtotal for checkout is @min.', ['@min' => uc_currency_format($min)]), 'error');
+      $this->messenger()->addError($this->t('The minimum order subtotal for checkout is @min.', ['@min' => uc_currency_format($min)]));
       return $this->redirect('uc_cart.cart');
     }
 
@@ -209,7 +209,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
       return $this->redirect('uc_cart.checkout');
     }
     elseif (!uc_order_product_revive($order->products)) {
-      drupal_set_message($this->t('Some of the products in this order are no longer available.'), 'error');
+      $this->messenger()->addError($this->t('Some of the products in this order are no longer available.'));
       return $this->redirect('uc_cart.cart');
     }
 
@@ -260,7 +260,7 @@ class CheckoutController extends ControllerBase implements ContainerInjectionInt
 
     if (empty($order)) {
       // If order was lost, display customer message and log the occurrence.
-      drupal_set_message($this->t("We're sorry.  An error occurred while processing your order that prevents us from completing it at this time. Please contact us and we will resolve the issue as soon as possible."), 'error');
+      $this->messenger()->addError($this->t("We're sorry.  An error occurred while processing your order that prevents us from completing it at this time. Please contact us and we will resolve the issue as soon as possible."));
       $this->getLogger('uc_cart')->error('An empty order made it to checkout! Cart order ID: @cart_order', ['@cart_order' => $this->session->get('cart_order')]);
       return $this->redirect('uc_cart.cart');
     }

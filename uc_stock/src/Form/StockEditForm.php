@@ -99,7 +99,7 @@ class StockEditForm extends FormBase {
         ->execute();
     }
 
-    drupal_set_message($this->t('Stock settings saved.'));
+    $this->messenger()->addMessage($this->t('Stock settings saved.'));
   }
 
 }

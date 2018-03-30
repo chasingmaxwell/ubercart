@@ -105,7 +105,7 @@ class AjaxAdminForm extends FormBase {
     $this->configFactory()->getEditable('uc_cart.settings')
       ->set('ajax.' . $form['#uc_ajax_target'], $config)
       ->save();
-    drupal_set_message($this->t('Your changes have been saved.'));
+    $this->messenger()->addMessage($this->t('Your changes have been saved.'));
   }
 
 }

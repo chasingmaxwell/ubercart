@@ -125,7 +125,7 @@ class CustomerInfoPane extends CheckoutPanePluginBase {
       if ($cart_config->get('new_account_name') || $cart_config->get('new_account_password')) {
         // Skip if an account already exists for this e-mail address.
         if ($cart_config->get('mail_existing') && $mail_taken) {
-          drupal_set_message($this->t('An account already exists for your e-mail address. The new account details you entered will be disregarded.'));
+          $this->messenger()->addMessage($this->t('An account already exists for your e-mail address. The new account details you entered will be disregarded.'));
         }
         else {
           // Validate the username.

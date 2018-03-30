@@ -106,7 +106,7 @@ class AttributeOptionsForm extends FormBase {
         ->execute();
     }
 
-    drupal_set_message($this->t('The changes have been saved.'));
+    $this->messenger()->addMessage($this->t('The changes have been saved.'));
   }
 
 }
