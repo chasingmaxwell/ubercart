@@ -31,16 +31,19 @@ class CartSettingsTest extends UbercartBrowserTestBase {
    * Tests add-to-cart message.
    */
   public function testAddToCartMessage() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalLogin($this->adminUser);
 
     $this->addToCart($this->product);
-    $this->assertText($this->product->getTitle() . ' added to your shopping cart.');
+    $assert->pageTextContains($this->product->getTitle() . ' added to your shopping cart.');
 
     $this->drupalPostForm('cart', [], 'Remove');
     $this->drupalPostForm('admin/store/config/cart', ['uc_cart_add_item_msg' => FALSE], 'Save configuration');
 
     $this->addToCart($this->product);
-    $this->assertNoText($this->product->getTitle() . ' added to your shopping cart.');
+    $assert->pageTextNotContains($this->product->getTitle() . ' added to your shopping cart.');
   }
 
   /**
@@ -89,9 +92,12 @@ class CartSettingsTest extends UbercartBrowserTestBase {
    * Tests that "Empty cart" button on the cart page works.
    */
   public function testEmptyCart() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // Test that the feature is not enabled by default.
     $this->drupalPostForm('node/' . $this->product->id(), [], 'Add to cart');
-    $this->assertNoRaw('Empty cart');
+    $assert->responseNotContains('Empty cart');
 
     // Test the admin settings itself.
     $this->drupalLogin($this->adminUser);
@@ -102,15 +108,18 @@ class CartSettingsTest extends UbercartBrowserTestBase {
     // Test the feature itself.
     $this->drupalGet('cart');
     $this->drupalPostForm(NULL, [], 'Empty cart');
-    $this->assertText('Are you sure you want to empty your shopping cart?');
+    $assert->pageTextContains('Are you sure you want to empty your shopping cart?');
     $this->drupalPostForm(NULL, [], 'Confirm');
-    $this->assertText('There are no products in your shopping cart.');
+    $assert->pageTextContains('There are no products in your shopping cart.');
   }
 
   /**
    * Tests minimum subtotal for checkout.
    */
   public function testMinimumSubtotal() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('admin/store/config/cart');
     $this->assertField(
@@ -137,10 +146,8 @@ class CartSettingsTest extends UbercartBrowserTestBase {
       'Add to cart'
     );
     $this->drupalPostForm('cart', [], 'Checkout');
-    $this->assertRaw(
-      'The minimum order subtotal for checkout is',
-      'Prevented checkout below the minimum order total.'
-    );
+    // Checks that checkout below the minimum order total was prevented.
+    $assert->responseContains('The minimum order subtotal for checkout is');
 
     // Add another product to the cart and verify that we end up on the
     // checkout page.
@@ -150,24 +157,20 @@ class CartSettingsTest extends UbercartBrowserTestBase {
       'Add to cart'
     );
     $this->drupalPostForm('cart', [], 'Checkout');
-    $this->assertText('Enter your billing address and information here.');
+    $assert->pageTextContains('Enter your billing address and information here.');
   }
 
   /**
    * Tests that continue shopping link returns customer to the correct place.
    */
   public function testContinueShopping() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // Continue shopping link should take you back to the product page.
-    $this->drupalPostForm(
-      'node/' . $this->product->id(),
-      [],
-      'Add to cart'
-    );
-    $this->assertLink(
-      'Continue shopping',
-      0,
-      'Continue shopping link appears on the page.'
-    );
+    $this->drupalPostForm('node/' . $this->product->id(), [], 'Add to cart');
+    // Check that 'Continue shopping' link appears on the page.
+    $assert->linkExists('Continue shopping');
     $links = $this->xpath('//a[@href="' . $this->product->toUrl()->toString() . '"]');
     $this->assertTrue(
       isset($links[0]),
@@ -204,6 +207,9 @@ class CartSettingsTest extends UbercartBrowserTestBase {
    * Tests the shopping cart page breadcrumb.
    */
   public function testCartBreadcrumb() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('admin/store/config/cart');
     $this->assertField(
@@ -222,11 +228,8 @@ class CartSettingsTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(NULL, $settings, 'Save configuration');
 
     $this->drupalPostForm('node/' . $this->product->id(), [], 'Add to cart');
-    $this->assertLink(
-      $settings['uc_cart_breadcrumb_text'],
-      0,
-      'The breadcrumb link text is set correctly.'
-    );
+    // Test that the breadcrumb link text is set correctly.
+    $assert->linkExists($settings['uc_cart_breadcrumb_text'], 0);
     $links = $this->xpath('//a[@href="' . Url::fromUri('internal:/' . $settings['uc_cart_breadcrumb_url'], ['absolute' => TRUE])->toString() . '"]');
     $this->assertTrue(
       isset($links[0]),

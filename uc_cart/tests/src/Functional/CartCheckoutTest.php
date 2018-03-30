@@ -123,26 +123,29 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
    * Tests basic cart page functionality.
    */
   public function testCartPage() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     \Drupal::service('module_installer')->install(['uc_cart_entity_test'], FALSE);
 
     // Test the empty cart.
     $this->drupalGet('cart');
-    $this->assertText('There are no products in your shopping cart.');
+    $assert->pageTextContains('There are no products in your shopping cart.');
 
     // Add an item to the cart.
     $this->addToCart($this->product);
-    $this->assertText(t('@label added to your shopping cart.', ['@label' => $this->product->label()]));
-    $this->assertText('hook_uc_cart_item_insert fired');
+    $assert->pageTextContains($this->product->label() . ' added to your shopping cart.');
+    $assert->pageTextContains('hook_uc_cart_item_insert fired');
 
     // Test that the item shows up in the cart.
     $this->drupalGet('cart');
-    $this->assertText($this->product->label(), 'The product is in the cart.');
+    $assert->pageTextContains($this->product->label(), 'The product is in the cart.');
     $this->assertFieldByName('items[0][qty]', 1, 'The product quantity is 1.');
 
     // Add the item again.
     $this->addToCart($this->product);
-    $this->assertText('Your item(s) have been updated.');
-    $this->assertText('hook_uc_cart_item_update fired');
+    $assert->pageTextContains('Your item(s) have been updated.');
+    $assert->pageTextContains('hook_uc_cart_item_update fired');
 
     // Test that there are now two of the item in the cart.
     $this->drupalGet('cart');
@@ -151,57 +154,60 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
     // Update the quantity.
     $qty = mt_rand(3, 100);
     $this->drupalPostForm('cart', ['items[0][qty]' => $qty], 'Update cart');
-    $this->assertText('Your cart has been updated.');
+    $assert->pageTextContains('Your cart has been updated.');
     $this->assertFieldByName('items[0][qty]', $qty, 'The product quantity was updated.');
-    $this->assertText('hook_uc_cart_item_update fired');
+    $assert->pageTextContains('hook_uc_cart_item_update fired');
 
     // Update the quantity to zero.
     $this->drupalPostForm('cart', ['items[0][qty]' => 0], 'Update cart');
-    $this->assertText('Your cart has been updated.');
-    $this->assertText('There are no products in your shopping cart.');
-    $this->assertText('hook_uc_cart_item_delete fired');
+    $assert->pageTextContains('Your cart has been updated.');
+    $assert->pageTextContains('There are no products in your shopping cart.');
+    $assert->pageTextContains('hook_uc_cart_item_delete fired');
 
     // Test the remove item button.
     $this->addToCart($this->product);
     $this->drupalPostForm('cart', [], 'Remove');
-    $this->assertText(t('@label removed from your shopping cart.', ['@label' => $this->product->label()]));
-    $this->assertText('There are no products in your shopping cart.');
-    $this->assertText('hook_uc_cart_item_delete fired');
+    $assert->pageTextContains($this->product->label() . ' removed from your shopping cart.');
+    $assert->pageTextContains('There are no products in your shopping cart.');
+    $assert->pageTextContains('hook_uc_cart_item_delete fired');
 
     // Test the empty cart button.
     $this->addToCart($this->product);
     $this->drupalGet('cart');
     // Test that the empty cart button is not shown by default.
-    $this->assertNoText('Empty cart');
+    $assert->pageTextNotContains('Empty cart');
     // Enable the empty cart button.
     \Drupal::configFactory()->getEditable('uc_cart.settings')->set('empty_button', TRUE)->save();
     $this->drupalPostForm('cart', [], 'Empty cart');
     // Verify that we get a confirmation page.
-    $this->assertText('Are you sure you want to empty your shopping cart?');
+    $assert->pageTextContains('Are you sure you want to empty your shopping cart?');
     $this->drupalPostForm(NULL, [], 'Confirm');
     // Verify that the cart is now empty.
-    $this->assertText('There are no products in your shopping cart.');
-    $this->assertText('hook_uc_cart_item_delete fired');
+    $assert->pageTextContains('There are no products in your shopping cart.');
+    $assert->pageTextContains('hook_uc_cart_item_delete fired');
   }
 
   /**
    * Tests that anonymous cart is merged into authenticated cart upon login.
    */
   public function testCartMerge() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // Add an item to the cart as an anonymous user.
     $this->drupalLogin($this->customer);
     $this->addToCart($this->product);
-    $this->assertText(t('@label added to your shopping cart.', ['@label' => $this->product->label()]));
+    $assert->pageTextContains($this->product->label() . ' added to your shopping cart.');
     $this->drupalLogout();
 
     // Add an item to the cart as an anonymous user.
     $this->addToCart($this->product);
-    $this->assertText(t('@label added to your shopping cart.', ['@label' => $this->product->label()]));
+    $assert->pageTextContains($this->product->label() . ' added to your shopping cart.');
 
     // Log in and check the items are merged.
     $this->drupalLogin($this->customer);
     $this->drupalGet('cart');
-    $this->assertText($this->product->label(), 'The product remains in the cart after logging in.');
+    $assert->pageTextContains($this->product->label(), 'The product remains in the cart after logging in.');
     $this->assertFieldByName('items[0][qty]', 2, 'The product quantity is 2.');
   }
 
@@ -209,20 +215,26 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
    * Tests that cart automatically removes products that have been deleted.
    */
   public function testDeletedCartItem() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // Add a product to the cart, then delete the node.
     $this->addToCart($this->product);
     $this->product->delete();
 
     // Test that the cart is empty.
     $this->drupalGet('cart');
-    $this->assertText('There are no products in your shopping cart.');
-    $this->assertIdentical($this->cart->getContents(), [], 'There are no items in the cart.');
+    $assert->pageTextContains('There are no products in your shopping cart.');
+    $this->assertSame([], $this->cart->getContents(), 'There are no items in the cart.');
   }
 
   /**
    * Tests cart pane on checkout page.
    */
   public function testCheckoutCartPane() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // Add a product to the cart.
     $this->addToCart($this->product);
     $this->drupalGet('cart');
@@ -230,24 +242,27 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
 
     // Test the checkout pane.
     $this->drupalPostForm(NULL, [], 'Checkout');
-    $this->assertText($this->product->label(), 'The product title is displayed.');
-    $this->assertText('1 ×', 'The product quantity is displayed.');
-    $this->assertText(uc_currency_format($this->product->price->value), 'The product price is displayed.');
+    $assert->pageTextContains($this->product->label(), 'The product title is displayed.');
+    $assert->pageTextContains('1 ×', 'The product quantity is displayed.');
+    $assert->pageTextContains(uc_currency_format($this->product->price->value), 'The product price is displayed.');
 
     // Change the quantity.
     $qty = mt_rand(3, 100);
     $this->drupalPostForm('cart', ['items[0][qty]' => $qty], 'Checkout');
 
     // Test the checkout pane.
-    $this->assertText($this->product->label(), 'The product title is displayed.');
-    $this->assertText($qty . ' ×', 'The updated product quantity is displayed.');
-    $this->assertText(uc_currency_format($qty * $this->product->price->value), 'The updated product price is displayed.');
+    $assert->pageTextContains($this->product->label(), 'The product title is displayed.');
+    $assert->pageTextContains($qty . ' ×', 'The updated product quantity is displayed.');
+    $assert->pageTextContains(uc_currency_format($qty * $this->product->price->value), 'The updated product price is displayed.');
   }
 
   /**
    * Tests Rule integration for uc_cart_maximum_product_qty reaction rule.
    */
   // public function testMaximumQuantityRule() {
+  //   /** @var \Drupal\Tests\WebAssert $assert */
+  //   $assert = $this->assertSession();
+  //
   //   // Enable the example maximum quantity rule.
   //   $rule = rules_config_load('uc_cart_maximum_product_qty');
   //   $rule->active = TRUE;
@@ -258,7 +273,7 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
   //   $this->drupalPostForm('cart', ['items[0][qty]' => 11], 'Update cart');
 
   //   // Test the restriction was applied.
-  //   $this->assertText(t('You are only allowed to order a maximum of 10 of @label.', ['@label' => $this->product->label()]));
+  //   $assert->pageTextContains('You are only allowed to order a maximum of 10 of '. $this->product->label());
   //   $this->assertFieldByName('items[0][qty]', 10);
   // }
 
@@ -266,26 +281,32 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
    * Tests authenticated user checkout.
    */
   public function testAuthenticatedCheckout() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalLogin($this->customer);
     $this->addToCart($this->product);
     $order = $this->checkout();
-    $this->assertRaw('Your order is complete!');
-    $this->assertRaw('While logged in');
+    $assert->responseContains('Your order is complete!');
+    $assert->responseContains('While logged in');
     $this->assertEquals($order->getOwnerId(), $this->customer->id(), 'Order has the correct user ID.');
     $this->assertEquals($order->getEmail(), $this->customer->getEmail(), 'Order has the correct email address.');
 
     // Check that cart is now empty.
     $this->drupalGet('cart');
-    $this->assertText('There are no products in your shopping cart.');
+    $assert->pageTextContains('There are no products in your shopping cart.');
   }
 
   /**
    * Tests generating a user account upon anonymous checkout.
    */
   public function testAnonymousCheckoutAccountGenerated() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->addToCart($this->product);
     $this->checkout();
-    $this->assertRaw('Your order is complete!');
+    $assert->responseContains('Your order is complete!');
 
     // Test new account email.
     $mails = $this->getMails(['id' => 'user_register_no_approval_required']);
@@ -302,12 +323,12 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
     $this->assertTrue(strpos($mail['body'], $account->password) !== FALSE, 'Invoice body contains password.');
 
     // We can check the password now we know it.
-    $this->assertText($account->name->value, 'Username is shown on screen.');
-    $this->assertText($account->password, 'Password is shown on screen.');
+    $assert->pageTextContains($account->name->value, 'Username is shown on screen.');
+    $assert->pageTextContains($account->password, 'Password is shown on screen.');
 
     // Check that cart is now empty.
     $this->drupalGet('cart');
-    $this->assertText('There are no products in your shopping cart.');
+    $assert->pageTextContains('There are no products in your shopping cart.');
 
     // Check that the password works.
     $edit = [
@@ -321,6 +342,9 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
    * Tests anonymous checkout with an existing account.
    */
   public function testAnonymousCheckoutAccountProvided() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $settings = [
       // Allow customer to specify username and password.
       'uc_cart_new_account_name' => TRUE,
@@ -339,9 +363,9 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
       'panes[customer][new_account][pass]' => $password,
       'panes[customer][new_account][pass_confirm]' => $password,
     ]);
-    $this->assertRaw('Your order is complete!');
-    $this->assertText($username, 'Username is shown on screen.');
-    $this->assertNoText($password, 'Password is not shown on screen.');
+    $assert->responseContains('Your order is complete!');
+    $assert->pageTextContains($username, 'Username is shown on screen.');
+    $assert->pageTextNotContains($password, 'Password is not shown on screen.');
 
     // Test new account email.
     $mails = $this->getMails(['id' => 'user_register_no_approval_required']);
@@ -356,7 +380,7 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
 
     // Check that cart is now empty.
     $this->drupalGet('cart');
-    $this->assertText('There are no products in your shopping cart.');
+    $assert->pageTextContains('There are no products in your shopping cart.');
 
     // Check that the password works.
     $edit = [
@@ -370,20 +394,26 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
    * Tests associating an anonymous order with an existing account.
    */
   public function testAnonymousCheckoutAccountExists() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->addToCart($this->product);
     $this->checkout(['panes[customer][primary_email]' => $this->customer->getEmail()]);
-    $this->assertRaw('Your order is complete!');
-    $this->assertRaw('order has been attached to the account we found');
+    $assert->responseContains('Your order is complete!');
+    $assert->responseContains('order has been attached to the account we found');
 
     // Check that cart is now empty.
     $this->drupalGet('cart');
-    $this->assertText('There are no products in your shopping cart.');
+    $assert->pageTextContains('There are no products in your shopping cart.');
   }
 
   /**
    * Tests generating a new account at checkout.
    */
   public function testCheckoutNewUsername() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // Configure the checkout for this test.
     $this->drupalLogin($this->adminUser);
     $settings = [
@@ -403,7 +433,7 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
       'panes[customer][new_account][name]' => $this->adminUser->name->value,
     ];
     $this->drupalPostForm('cart/checkout', $edit, 'Review order');
-    $this->assertText(t('The username @username is already taken.', ['@username' => $this->adminUser->name->value]));
+    $assert->pageTextContains('The username ' . $this->adminUser->name->value . ' is already taken.');
 
     // Let the account be automatically created instead.
     $edit = [
@@ -412,14 +442,17 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
     ];
     $this->drupalPostForm('cart/checkout', $edit, 'Review order');
     $this->drupalPostForm(NULL, [], 'Submit order');
-    $this->assertText('Your order is complete!');
-    $this->assertText('A new account has been created');
+    $assert->pageTextContains('Your order is complete!');
+    $assert->pageTextContains('A new account has been created');
   }
 
   /**
    * Tests blocked user checkout.
    */
   public function testCheckoutBlockedUser() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // Block user after checkout.
     $settings = [
       'uc_new_customer_status_active' => FALSE,
@@ -431,7 +464,7 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
     // Test as anonymous user.
     $this->addToCart($this->product);
     $this->checkout();
-    $this->assertRaw('Your order is complete!');
+    $assert->responseContains('Your order is complete!');
 
     // Test new account email.
     $mails = $this->getMails(['id' => 'user_register_pending_approval']);
@@ -444,6 +477,9 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
    * Tests logging in the customer after checkout.
    */
   public function testCheckoutLogin() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // Log in after checkout.
     $settings = [
       'uc_new_customer_login' => TRUE,
@@ -455,22 +491,25 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
     // Test checkout.
     $this->addToCart($this->product);
     $this->checkout();
-    $this->assertRaw('Your order is complete!');
-    $this->assertRaw('you are already logged in');
+    $assert->responseContains('Your order is complete!');
+    $assert->responseContains('you are already logged in');
 
     // Confirm login.
     $this->drupalGet('<front>');
-    $this->assertText('Member for ', 'User is logged in.');
+    $assert->pageTextContains('Member for ', 'User is logged in.');
 
     // Check that cart is now empty.
     $this->drupalGet('cart');
-    $this->assertText('There are no products in your shopping cart.');
+    $assert->pageTextContains('There are no products in your shopping cart.');
   }
 
   /**
    * Tests checkout complete functioning.
    */
   public function testCheckoutComplete() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // Payment notification is received first.
     $order_data = [
       'uid' => 0,
@@ -534,9 +573,12 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
    * Tests that cart orders are marked abandoned after a timeout.
    */
   public function testCartOrderTimeout() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->addToCart($this->product);
     $this->drupalPostForm('cart', [], 'Checkout');
-    $this->assertText(
+    $assert->pageTextContains(
       'Enter your billing address and information here.',
       'Viewed cart page: Billing pane has been displayed.'
     );
@@ -556,7 +598,8 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
       $this->drupalGet('<front>');
       $this->addToCart($this->product);
       $this->drupalPostForm('cart', [], 'Checkout');
-      $this->assertRaw($oldname, 'Customer name was unchanged.');
+      // Check that customer name was unchanged.
+      $assert->responseContains($oldname);
       $this->drupalPostForm('cart/checkout', $edit, 'Review order');
       $new_order_ids = \Drupal::entityQuery('uc_order')
         ->condition('delivery_first_name', $edit['panes[delivery][first_name]'])
@@ -575,7 +618,8 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
       // using a new order.
       $this->drupalGet('<front>');
       $this->drupalPostForm('cart', [], 'Checkout');
-      $this->assertNoRaw($oldname, 'Customer name was cleared after timeout.');
+      // Check that customer name was cleared after timeout.
+      $assert->responseNotContains($oldname);
       $newname = $this->randomMachineName(10);
       $edit['panes[delivery][first_name]'] = $newname;
       $this->drupalPostForm('cart/checkout', $edit, 'Review order');
@@ -584,7 +628,7 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
         ->condition('delivery_first_name', $newname)
         ->execute();
       $new_order_id = reset($new_order_ids);
-      $this->assertNotEqual($order_id, $new_order_id, 'New order was created after timeout.');
+      $this->assertNotEquals($order_id, $new_order_id, 'New order was created after timeout.');
 
       // Force the order to load from the DB instead of the entity cache.
       $old_order = \Drupal::entityTypeManager()->getStorage('uc_order')->loadUnchanged($order_id);
@@ -600,6 +644,9 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
    * Tests functioning of customer information pane on checkout page.
    */
   public function testCustomerInformationCheckoutPane() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // Log in as a customer and add an item to the cart.
     $this->drupalLogin($this->customer);
     $this->addToCart($this->product);
@@ -607,9 +654,9 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
 
     // Test the customer information pane.
     $mail = $this->customer->getEmail();
-    $this->assertText('Customer information');
-    $this->assertText('Order information will be sent to your account e-mail listed below.');
-    $this->assertText('E-mail address: ' . $mail);
+    $assert->pageTextContains('Customer information');
+    $assert->pageTextContains('Order information will be sent to your account e-mail listed below.');
+    $assert->pageTextContains('E-mail address: ' . $mail);
 
     // Use the 'edit' link to change the email address on the account.
     $new_mail = $this->randomMachineName() . '@example.com';
@@ -621,9 +668,9 @@ class CartCheckoutTest extends UbercartBrowserTestBase {
     $this->drupalPostForm(NULL, $data, 'Save');
 
     // Test the updated email address.
-    $this->assertText('Order information will be sent to your account e-mail listed below.');
-    $this->assertNoText('E-mail address: ' . $mail);
-    $this->assertText('E-mail address: ' . $new_mail);
+    $assert->pageTextContains('Order information will be sent to your account e-mail listed below.');
+    $assert->pageTextNotContains('E-mail address: ' . $mail);
+    $assert->pageTextContains('E-mail address: ' . $new_mail);
   }
 
 }

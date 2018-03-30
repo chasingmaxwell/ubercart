@@ -32,81 +32,93 @@ class CartBlockTest extends UbercartBrowserTestBase {
    * Test cart block functionality.
    */
   public function testCartBlock() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // Test the empty cart block.
     $this->drupalGet('');
 
-    $this->assertRaw('empty');
-    $this->assertText('There are no products in your shopping cart.');
-    $this->assertText('0 Items');
-    $this->assertText('Total: $0.00');
-    $this->assertNoLink('View cart');
-    $this->assertNoLink('Checkout');
+    $assert->responseContains('empty');
+    $assert->pageTextContains('There are no products in your shopping cart.');
+    $assert->pageTextContains('0 Items');
+    $assert->pageTextContains('Total: $0.00');
+    $assert->linkNotExists('View cart');
+    $assert->linkNotExists('Checkout');
 
     // Test the cart block with an item.
     $this->addToCart($this->product);
     $this->drupalGet('');
 
-    $this->assertNoRaw('empty');
-    $this->assertNoText('There are no products in your shopping cart.');
-    $this->assertText('1 ×');
-    $this->assertText($this->product->label());
+    $assert->responseNotContains('empty');
+    $assert->pageTextNotContains('There are no products in your shopping cart.');
+    $assert->pageTextContains('1 ×');
+    $assert->pageTextContains($this->product->label());
     $this->assertNoUniqueText(uc_currency_format($this->product->price->value));
-    $this->assertText('1 Item');
-    $this->assertText('Total: ' . uc_currency_format($this->product->price->value));
-    $this->assertLink('View cart');
-    $this->assertLink('Checkout');
+    $assert->pageTextContains('1 Item');
+    $assert->pageTextContains('Total: ' . uc_currency_format($this->product->price->value));
+    $assert->linkExists('View cart');
+    $assert->linkExists('Checkout');
   }
 
   /**
    * Test hide cart when empty functionality.
    */
   public function testHiddenCartBlock() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->block->getPlugin()->setConfigurationValue('hide_empty', TRUE);
     $this->block->save();
 
     // Test the empty cart block.
     $this->drupalGet('');
-    $this->assertNoText($this->block->label());
+    $assert->pageTextNotContains($this->block->label());
 
     // Test the cart block with an item.
     $this->addToCart($this->product);
     $this->drupalGet('');
-    $this->assertText($this->block->label());
+    $assert->pageTextContains($this->block->label());
   }
 
   /**
    * Test show cart icon functionality.
    */
   public function testCartIcon() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalGet('');
-    $this->assertRaw('cart-block-icon');
+    $assert->responseContains('cart-block-icon');
 
     $this->block->getPlugin()->setConfigurationValue('show_image', FALSE);
     $this->block->save();
 
     $this->drupalGet('');
-    $this->assertNoRaw('cart-block-icon');
+    $assert->responseNotContains('cart-block-icon');
   }
 
   /**
    * Test cart block collapse functionality.
    */
   public function testCartCollapse() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalGet('');
-    $this->assertRaw('cart-block-arrow');
-    $this->assertRaw('collapsed');
+    $assert->responseContains('cart-block-arrow');
+    $assert->responseContains('collapsed');
 
     $this->block->getPlugin()->setConfigurationValue('collapsed', FALSE);
     $this->block->save();
 
     $this->drupalGet('');
-    $this->assertNoRaw('collapsed');
+    $assert->responseNotContains('collapsed');
 
     $this->block->getPlugin()->setConfigurationValue('collapsible', FALSE);
     $this->block->save();
 
     $this->drupalGet('');
-    $this->assertNoRaw('cart-block-arrow');
+    $assert->responseNotContains('cart-block-arrow');
   }
 
 }

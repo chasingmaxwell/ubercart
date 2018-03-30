@@ -15,6 +15,9 @@ class CheckoutSettingsTest extends UbercartBrowserTestBase {
    * Tests enabling checkout functionality.
    */
   public function testEnableCheckout() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('admin/store/config/checkout');
     $this->assertField(
@@ -29,7 +32,7 @@ class CheckoutSettingsTest extends UbercartBrowserTestBase {
     );
 
     $this->drupalPostForm('node/' . $this->product->id(), [], 'Add to cart');
-    $this->assertNoRaw('Checkout');
+    $assert->responseNotContains('Checkout');
     $buttons = $this->xpath('//input[@value="Checkout"]');
     $this->assertFalse(
       isset($buttons[0]),
@@ -41,6 +44,9 @@ class CheckoutSettingsTest extends UbercartBrowserTestBase {
    * Tests anonymous checkout functionality.
    */
   public function testAnonymousCheckout() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalLogin($this->adminUser);
     $this->drupalGet('admin/store/config/checkout');
     $this->assertField(
@@ -57,10 +63,8 @@ class CheckoutSettingsTest extends UbercartBrowserTestBase {
     $this->drupalLogout();
     $this->drupalPostForm('node/' . $this->product->id(), [], 'Add to cart');
     $this->drupalPostForm('cart', [], 'Checkout');
-    $this->assertNoText(
-      'Enter your billing address and information here.',
-      'The checkout page is not displayed.'
-    );
+    // Tests that the checkout page is not displayed.
+    $assert->pageTextNotContains('Enter your billing address and information here.');
   }
 
 }
