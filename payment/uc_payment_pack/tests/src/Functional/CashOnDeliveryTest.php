@@ -15,6 +15,9 @@ class CashOnDeliveryTest extends PaymentPackTestBase {
    * Tests for CashOnDelivery payment method.
    */
   public function testCashOnDelivery() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalGet('admin/store/config/payment/add/cod');
     $this->assertFieldByName('settings[policy]', 'Full payment is expected upon delivery or prior to pick-up.', 'Default COD policy found.');
 
@@ -26,11 +29,12 @@ class CashOnDeliveryTest extends PaymentPackTestBase {
     // Test checkout page.
     $this->drupalGet('cart/checkout');
     $this->assertFieldByName('panes[payment][payment_method]', $cod['id'], 'COD payment method is selected at checkout.');
-    $this->assertSession()->assertEscaped($cod['settings[policy]'], 'COD policy found at checkout.');
+    $assert->assertEscaped($cod['settings[policy]'], 'COD policy found at checkout.');
 
     // Test review order page.
     $this->drupalPostForm(NULL, [], 'Review order');
-    $this->assertText('Cash on delivery', 'COD payment method found on review page.');
+    // Check that COD payment method was found on the review order page.
+    $assert->pageTextContains('Cash on delivery');
     $this->drupalPostForm(NULL, [], 'Submit order');
 
     // Test user order view.
@@ -38,11 +42,13 @@ class CashOnDeliveryTest extends PaymentPackTestBase {
     $this->assertEquals($order->getPaymentMethodId(), $cod['id'], 'Order has COD payment method.');
 
     $this->drupalGet('user/' . $order->getOwnerId() . '/orders/' . $order->id());
-    $this->assertText('Method: Cash on delivery', 'COD payment method displayed.');
+    // Check that COD payment method is displayed on user orders page.
+    $assert->pageTextContains('Method: Cash on delivery');
 
     // Test admin order view.
     $this->drupalGet('admin/store/orders/' . $order->id());
-    $this->assertText('Method: Cash on delivery', 'COD payment method displayed.');
+    // Check that COD payment method is displayed on admin orders page.
+    $assert->pageTextContains('Method: Cash on delivery');
   }
 
 }

@@ -120,14 +120,12 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
     );
 
     // Delete first partial payment.
-    $this->assertLink('Delete');
+    $assert->linkExists('Delete');
     $this->clickLink('Delete');
     // Delete takes us to confirm page.
     $assert->addressEquals('admin/store/orders/' . $order->id() . '/payments/1/delete');
-    $assert->pageTextContains(
-      'Are you sure you want to delete this payment?',
-      'Deletion confirm question found.'
-    );
+    // Check that the deletion confirm question was found.
+    $assert->pageTextContains('Are you sure you want to delete this payment?');
     // "Cancel" returns to the payments list page.
     $this->clickLink('Cancel');
     $assert->linkByHrefExists('admin/store/orders/' . $order->id() . '/payments');
@@ -149,18 +147,12 @@ class OrderPaymentsFormTest extends UbercartBrowserTestBase {
     // Go to order log and ensure two payments and
     // one payment deletion were logged.
     $this->drupalGet('admin/store/orders/' . $order->id() . '/log');
-    $assert->pageTextContains(
-      'Check payment for ' . uc_currency_format($first_payment) . ' entered.',
-      'First payment was logged'
-    );
-    $assert->pageTextContains(
-      'Check payment for ' . uc_currency_format($second_payment) . ' entered.',
-      'Second payment was logged'
-    );
-    $assert->pageTextContains(
-      'Check payment for ' . uc_currency_format($first_payment) . ' deleted.',
-      'Payment deletion was logged'
-    );
+    // Check that the first payment was logged.
+    $assert->pageTextContains('Check payment for ' . uc_currency_format($first_payment) . ' entered.');
+    // Check that the second payment was logged.
+    $assert->pageTextContains('Check payment for ' . uc_currency_format($second_payment) . ' entered.');
+    // Check that the payment deletion was logged.
+    $assert->pageTextContains('Check payment for ' . uc_currency_format($first_payment) . ' deleted.');
   }
 
 }

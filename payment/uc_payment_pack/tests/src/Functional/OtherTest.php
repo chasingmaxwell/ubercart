@@ -15,6 +15,9 @@ class OtherTest extends PaymentPackTestBase {
    * Tests for Other payment method.
    */
   public function testOther() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $other = $this->createPaymentMethod('other');
 
     // Test checkout page.
@@ -23,7 +26,8 @@ class OtherTest extends PaymentPackTestBase {
 
     // Test review order page.
     $this->drupalPostForm(NULL, [], 'Review order');
-    $this->assertText('Other', 'Other payment method found on review page.');
+    // Check that the Other payment method was found on the review page.
+    $assert->pageTextContains('Other');
     $this->drupalPostForm(NULL, [], 'Submit order');
 
     // Test user order view.
@@ -31,11 +35,13 @@ class OtherTest extends PaymentPackTestBase {
     $this->assertEquals($order->getPaymentMethodId(), $other['id'], 'Order has other payment method.');
 
     $this->drupalGet('user/' . $order->getOwnerId() . '/orders/' . $order->id());
-    $this->assertText('Method: Other', 'Other payment method displayed.');
+    // Check that the Other payment method was found on the user order page.
+    $assert->pageTextContains('Method: Other');
 
     // Test admin order view.
     $this->drupalGet('admin/store/orders/' . $order->id());
-    $this->assertText('Method: Other', 'Other payment method displayed.');
+    // Check that the Other payment method was found on the admin order page.
+    $assert->pageTextContains('Method: Other');
 
     $this->drupalGet('admin/store/orders/' . $order->id() . '/edit');
     $this->assertFieldByName('payment_method', $other['id'], 'Other payment method is selected in the order edit form.');

@@ -27,7 +27,7 @@ class CreditCardTest extends UbercartBrowserTestBase {
    *
    * @var string[]
    */
-  protected static $test_cards = [
+  protected static $cardTestNumbers = [
     '378282246310005',  // American Express
     '371449635398431',
     '370000000000002',
@@ -78,6 +78,9 @@ class CreditCardTest extends UbercartBrowserTestBase {
    * Tests security settings configuration.
    */
   public function testSecuritySettings() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // @todo Still need tests with existing key file
     // where key file is not readable or doesn't contain a valid key.
 
@@ -91,7 +94,7 @@ class CreditCardTest extends UbercartBrowserTestBase {
     $config->set('encryption_path', '')->save();
 
     $this->drupalGet('admin/store');
-    $this->assertText('You must review your credit card security settings and enable encryption before you can accept credit card payments.');
+    $assert->pageTextContains('You must review your credit card security settings and enable encryption before you can accept credit card payments.');
 
     $this->drupalPostForm(
       'admin/store/config/payment/credit',
@@ -112,7 +115,7 @@ class CreditCardTest extends UbercartBrowserTestBase {
       ['uc_credit_encryption_path' => ''],
       'Save configuration'
     );
-    $this->assertText('Key path must be specified in security settings tab.');
+    $assert->pageTextContains('Key path must be specified in security settings tab.');
 
     // Specify non-existent directory.
     $this->drupalPostForm(
@@ -120,7 +123,7 @@ class CreditCardTest extends UbercartBrowserTestBase {
       ['uc_credit_encryption_path' => 'sites/default/ljkh/asdfasfaaaaa'],
       'Save configuration'
     );
-    $this->assertText('You have specified a non-existent directory.');
+    $assert->pageTextContains('You have specified a non-existent directory.');
 
     // Next, specify existing directory that's write protected.
     // Use /dev, as that should never be accessible.
@@ -129,7 +132,7 @@ class CreditCardTest extends UbercartBrowserTestBase {
       ['uc_credit_encryption_path' => '/dev'],
       'Save configuration'
     );
-    $this->assertText('Cannot write to directory, please verify the directory permissions.');
+    $assert->pageTextContains('Cannot write to directory, please verify the directory permissions.');
 
     // Next, specify writeable directory, but with trailing '/' and
     // excess whitespace.
@@ -145,10 +148,10 @@ class CreditCardTest extends UbercartBrowserTestBase {
       'sites/default/files/testkey',
       'Key file path has been set.'
     );
-    $this->assertText('Credit card encryption key file generated.');
+    $assert->pageTextContains('Credit card encryption key file generated.');
 
     // Check that warning about needing key file goes away.
-    $this->assertNoText('Credit card security settings must be configured in the security settings tab.');
+    $assert->pageTextNotContains('Credit card security settings must be configured in the security settings tab.');
     // Remove key file.
     \Drupal::service('file_system')->unlink('sites/default/files/testkey/' . UC_CREDIT_KEYFILE_NAME);
 
@@ -158,7 +161,7 @@ class CreditCardTest extends UbercartBrowserTestBase {
       ['uc_credit_encryption_path' => 'sites/default/files/testkey'],
       'Save configuration'
     );
-    $this->assertText('Credit card encryption key file generated.');
+    $assert->pageTextContains('Credit card encryption key file generated.');
 
     // Test contents - must contain 32-character hexadecimal string.
     $this->assertTrue(
@@ -176,10 +179,12 @@ class CreditCardTest extends UbercartBrowserTestBase {
   }
 
   /**
-   * Tests that an order can be placed using the test gateway even if
-   * the user changes their mind and fails a payment attempt.
+   * Tests that an order can be placed using the test gateway.
    */
   public function testCheckout() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->addToCart($this->product);
 
     // Submit the checkout page. Note that because of the Ajax on the country
@@ -188,14 +193,16 @@ class CreditCardTest extends UbercartBrowserTestBase {
     // yet. But we need to make sure that the next time we post this page
     // (which now has the country set from the first post) we include the zones.
     $edit = $this->populateCheckoutForm([
-      'panes[payment][details][cc_number]' => array_rand(array_flip(self::$test_cards)),
+      'panes[payment][details][cc_number]' => array_rand(array_flip(self::$cardTestNumbers)),
       'panes[payment][details][cc_cvv]' => mt_rand(100, 999),
       'panes[payment][details][cc_exp_month]' => mt_rand(1, 12),
       'panes[payment][details][cc_exp_year]' => mt_rand(date('Y') + 1, 2022),
     ]);
     $this->drupalPostForm('cart/checkout', $edit, 'Review order');
-    $this->assertText('(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4), 'Truncated credit card number found.');
-    $this->assertText($edit['panes[payment][details][cc_exp_year]'], 'Expiry date found.');
+    // Confirm that truncated credit card number was found.
+    $assert->pageTextContains('(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4));
+    // Confirm that expiry date was found.
+    $assert->pageTextContains($edit['panes[payment][details][cc_exp_year]']);
 
     // Go back. Form will still be populated, but verify that the credit
     // card number is truncated and CVV is masked for security.
@@ -206,16 +213,17 @@ class CreditCardTest extends UbercartBrowserTestBase {
     $this->assertFieldByName('panes[payment][details][cc_exp_year]', $edit['panes[payment][details][cc_exp_year]'], 'Expiry year found.');
 
     // Change the card number and fail with a known-bad CVV.
-    $edit['panes[payment][details][cc_number]'] = array_rand(array_flip(self::$test_cards));
+    $edit['panes[payment][details][cc_number]'] = array_rand(array_flip(self::$cardTestNumbers));
     $edit['panes[payment][details][cc_cvv]'] = '000';
     // If zones were set, we must re-submit them here to work around the Ajax
     // situation described above. So we just re-submit all the data to be safe.
     $this->drupalPostForm(NULL, $edit, 'Review order');
-    $this->assertText('(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4), 'Truncated updated credit card number found.');
+    // Confirm that truncated updated credit card number was found.
+    $assert->pageTextContains('(Last 4) ' . substr($edit['panes[payment][details][cc_number]'], -4));
 
     // Try to submit the bad CVV.
     $this->drupalPostForm(NULL, [], 'Submit order');
-    $this->assertText('We were unable to process your credit card payment. Please verify your details and try again.');
+    $assert->pageTextContains('We were unable to process your credit card payment. Please verify your details and try again.');
 
     // Go back. Again check for truncated card number and masked CVV.
     $this->drupalPostForm(NULL, [], 'Back');
@@ -228,13 +236,16 @@ class CreditCardTest extends UbercartBrowserTestBase {
 
     // Check for success.
     $this->drupalPostForm(NULL, [], 'Submit order');
-    $this->assertText('Your order is complete!');
+    $assert->pageTextContains('Your order is complete!');
   }
 
   /**
    * Tests that expiry date validation functions correctly.
    */
   public function testExpiryDate() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $order = $this->createOrder(['payment_method' => $this->paymentMethod['id']]);
 
     $year = date('Y');
@@ -251,10 +262,12 @@ class CreditCardTest extends UbercartBrowserTestBase {
         $this->drupalPostForm('admin/store/orders/' . $order->id() . '/credit/' . $this->paymentMethod['id'], $edit, 'Charge amount');
 
         if ($y > $year || $m >= $month) {
-          $this->assertText('The credit card was processed successfully.', format_string('Card with expiry date @month/@year passed validation.', ['@month' => $m, '@year' => $y]));
+          // Check that expiry date in the future passed validation.
+          $assert->pageTextContains('The credit card was processed successfully.');
         }
         else {
-          $this->assertNoText('The credit card was processed successfully.', format_string('Card with expiry date @month/@year correctly failed validation.', ['@month' => $m, '@year' => $y]));
+          // Check that expiry date in the past failed validation.
+          $assert->pageTextNotContains('The credit card was processed successfully.');
         }
       }
     }

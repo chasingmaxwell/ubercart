@@ -17,8 +17,11 @@ class CheckTest extends PaymentPackTestBase {
    * Tests for Check payment method.
    */
   public function testCheck() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalGet('admin/store/config/payment/add/check');
-    $this->assertText('Check');
+    $assert->pageTextContains('Check');
     $this->assertFieldByName('settings[policy]', 'Personal and business checks will be held for up to 10 business days to ensure payment clears before an order is shipped.', 'Default check payment policy found.');
 
     $edit = [
@@ -55,15 +58,19 @@ class CheckTest extends PaymentPackTestBase {
     // Test that check settings show up on checkout page.
     $this->drupalGet('cart/checkout');
     $this->assertFieldByName('panes[payment][payment_method]', $edit['id'], 'Check payment method is selected at checkout.');
-    $this->assertText('Checks should be made out to:');
-    $this->assertRaw((string) $address, 'Properly formatted check mailing address found.');
-    $this->assertSession()->assertEscaped($edit['settings[policy]'], 'Check payment policy found at checkout.');
+    $assert->pageTextContains('Checks should be made out to:');
+    // Test for properly formatted check mailing address.
+    $assert->responseContains((string) $address);
+    $assert->assertEscaped($edit['settings[policy]'], 'Check payment policy found at checkout.');
 
-    // Test that check settings show up on review order page.
+    // Test that check settings show up on the review order page.
     $this->drupalPostForm(NULL, [], 'Review order');
-    $this->assertText('Check', 'Check payment method found on review page.');
-    $this->assertText('Mail to', 'Check payment method help text found on review page.');
-    $this->assertRaw((string) $address, 'Properly formatted check mailing address found.');
+    // Test that Check payment method was found on the review page.
+    $assert->pageTextContains('Check');
+    // Test that Check payment method help text was found on the review page.
+    $assert->pageTextContains('Mail to');
+    // Test for properly formatted check mailing address.
+    $assert->responseContains((string) $address);
     $this->drupalPostForm(NULL, [], 'Submit order');
 
     // Test user order view.
@@ -71,12 +78,14 @@ class CheckTest extends PaymentPackTestBase {
     $this->assertEquals($order->getPaymentMethodId(), $edit['id'], 'Order has check payment method.');
 
     $this->drupalGet('user/' . $order->getOwnerId() . '/orders/' . $order->id());
-    $this->assertText('Method: Check', 'Check payment method displayed.');
+    // Test that Check payment method is displayed on user orders page.
+    $assert->pageTextContains('Method: Check');
 
     // Test admin order view - receive check.
     $this->drupalGet('admin/store/orders/' . $order->id());
-    $this->assertText('Method: Check', 'Check payment method displayed.');
-    $this->assertLink('Receive Check');
+    // Test that Check payment method is displayed on admin orders page.
+    $assert->pageTextContains('Method: Check');
+    $assert->linkExists('Receive Check');
     $this->clickLink('Receive Check');
     $this->assertFieldByName('amount', number_format($order->getTotal(), 2, '.', ''), 'Amount field defaults to order total.');
 
@@ -89,14 +98,15 @@ class CheckTest extends PaymentPackTestBase {
       'clear_date[date]' => date('Y-m-d', $receive_date),
     ];
     $this->drupalPostForm(NULL, $edit, 'Receive check');
-    $this->assertNoLink('Receive Check');
-    $this->assertText('Clear Date: ' . $formatted, 'Check clear date found.');
+    $assert->linkNotExists('Receive Check');
+    // Test that expected Check clear data is found.
+    $assert->pageTextContains('Clear Date: ' . $formatted);
 
     // Test that user order view shows check received.
     $this->drupalGet('user/' . $order->getOwnerId() . '/orders/' . $order->id());
-    $this->assertText('Check received');
-    $this->assertText('Expected clear date:');
-    $this->assertText($formatted, 'Check clear date found.');
+    $assert->pageTextContains('Check received');
+    $assert->pageTextContains('Expected clear date:');
+    $assert->pageTextContains($formatted, 'Check clear date found.');
   }
 
 }

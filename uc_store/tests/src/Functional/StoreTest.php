@@ -15,6 +15,7 @@ class StoreTest extends UbercartBrowserTestBase {
   public function testStoreAdmin() {
     /** @var \Drupal\Tests\WebAssert $assert */
     $assert = $this->assertSession();
+
     $this->drupalLogin($this->adminUser);
 
     $this->drupalGet('admin/store');

@@ -170,17 +170,18 @@ abstract class UbercartBrowserTestBase extends BrowserTestBase {
    *   The created order, or FALSE if the order could not be created.
    */
   protected function checkout(array $edit = []) {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalPostForm('cart', [], 'Checkout');
-    $this->assertText(
-      'Enter your billing address and information here.',
-      'Viewed cart page: Billing pane has been displayed.'
-    );
+    // Check for billing pane text on cart page.
+    $assert->pageTextContains('Enter your billing address and information here.');
 
     $edit = $this->populateCheckoutForm($edit);
 
     // Submit the checkout page.
     $this->drupalPostForm('cart/checkout', $edit, 'Review order');
-    $this->assertText('Your order is almost complete.');
+    $assert->pageTextContains('Your order is almost complete.');
 
     // Complete the review page.
     $this->drupalPostForm(NULL, [], 'Submit order');

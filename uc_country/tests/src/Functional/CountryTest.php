@@ -17,6 +17,9 @@ class CountryTest extends BrowserTestBase {
    * Test enable/disable of countries.
    */
   public function testCountryUi() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalLogin($this->drupalCreateUser(['administer countries', 'administer store']));
 
     // Testing all countries is too much, so we just enable a random selection
@@ -29,7 +32,7 @@ class CountryTest extends BrowserTestBase {
     foreach ($country_ids as $country_id) {
       // Verify this country isn't already enabled.
       $this->drupalGet('admin/store/config/country');
-      $this->assertSession()->linkByHrefExists(
+      $assert->linkByHrefExists(
         'admin/store/config/country/' . $country_id . '/enable',
         0,
         format_string('%country is not enabled by default.', ['%country' => $countries[$country_id]])
@@ -37,8 +40,8 @@ class CountryTest extends BrowserTestBase {
 
       // Enable this country.
       $this->clickLinkInRow($countries[$country_id], 'Enable');
-      $this->assertSession()->pageTextContains(t('The country @country has been enabled.', ['@country' => $countries[$country_id]]));
-      $this->assertSession()->linkByHrefExists(
+      $assert->pageTextContains(t('The country @country has been enabled.', ['@country' => $countries[$country_id]]));
+      $assert->linkByHrefExists(
         'admin/store/config/country/' . $country_id . '/disable',
         0,
         format_string('%country is now enabled.', ['%country' => $countries[$country_id]])
@@ -49,16 +52,13 @@ class CountryTest extends BrowserTestBase {
     $this->drupalGet('admin/store/config/store');
     // Test that $countries[$last_country] is not listed in uc_address
     // select country field.
-    $this->assertSession()->optionNotExists(
-      'edit-address-country',
-      $last_country
-    );
+    $assert->optionNotExists('edit-address-country', $last_country);
 
     // Enable the last country.
     $this->drupalGet('admin/store/config/country');
     $this->clickLinkInRow($countries[$last_country], 'Enable');
-    $this->assertSession()->pageTextContains(t('The country @country has been enabled.', ['@country' => $countries[$last_country]]));
-    $this->assertSession()->linkByHrefExists(
+    $assert->pageTextContains(t('The country @country has been enabled.', ['@country' => $countries[$last_country]]));
+    $assert->linkByHrefExists(
       'admin/store/config/country/' . $last_country . '/disable',
       0,
       format_string('%country is now enabled.', ['%country' => $countries[$last_country]])
@@ -68,17 +68,14 @@ class CountryTest extends BrowserTestBase {
     $this->drupalGet('admin/store/config/store');
     // Test that $countries[$last_country] now IS listed in uc_address
     // select country field.
-    $this->assertSession()->optionExists(
-      'edit-address-country',
-      $last_country
-    );
+    $assert->optionExists('edit-address-country', $last_country);
 
     // Disable the last country using the operations button.
     $this->drupalGet('admin/store/config/country');
     // Click the 8th Disable link.
     $this->clickLink('Disable', 7);
-    $this->assertSession()->pageTextContains(t('The country @country has been disabled.', ['@country' => $countries[$last_country]]));
-    $this->assertSession()->linkByHrefExists(
+    $assert->pageTextContains(t('The country @country has been disabled.', ['@country' => $countries[$last_country]]));
+    $assert->linkByHrefExists(
       'admin/store/config/country/' . $last_country . '/enable',
       0,
       format_string('%country is now disabled.', ['%country' => $countries[$last_country]])
@@ -89,6 +86,9 @@ class CountryTest extends BrowserTestBase {
    * Test functionality with all countries disabled.
    */
   public function testAllDisabled() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalLogin($this->drupalCreateUser([
       'administer countries',
       'administer store',
@@ -104,12 +104,12 @@ class CountryTest extends BrowserTestBase {
 
     // Verify that an error is shown.
     $this->drupalGet('admin/store');
-    $this->assertSession()->pageTextContains('No countries are enabled.');
+    $assert->pageTextContains('No countries are enabled.');
 
     // Verify that the country fields are hidden.
     $this->drupalGet('admin/store/config/store');
-    $this->assertSession()->pageTextNotContains('State/Province');
-    $this->assertSession()->pageTextNotContains('Country');
+    $assert->pageTextNotContains('State/Province');
+    $assert->pageTextNotContains('Country');
   }
 
   /**
