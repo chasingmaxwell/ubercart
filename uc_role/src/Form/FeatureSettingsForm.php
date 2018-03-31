@@ -2,11 +2,13 @@
 
 namespace Drupal\uc_role\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\user\RoleInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Grants roles upon accepted payment of products.
@@ -17,6 +19,32 @@ use Drupal\user\RoleInterface;
  * expire/need to be renewed/etc.
  */
 class FeatureSettingsForm extends ConfigFormBase {
+
+  /**
+   * The datetime.time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The datetime.time service.
+   */
+  public function __construct(TimeInterface $time) {
+    $this->time = $time;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('datetime.time')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -118,7 +146,7 @@ class FeatureSettingsForm extends ConfigFormBase {
       ],
     ];
     $date = (int) $roles_config->get('default_end_time');
-    $date = !empty($date) ? DrupalDateTime::createFromTimestamp($date) : DrupalDateTime::createFromTimestamp(REQUEST_TIME);
+    $date = !empty($date) ? DrupalDateTime::createFromTimestamp($date) : DrupalDateTime::createFromTimestamp($this->time->getRequestTime());
     $form['role_lifetime']['absolute']['default_end_time'] = [
       '#type' => 'datetime',
       '#description' => $this->t('Expire the role at the beginning of this day.'),

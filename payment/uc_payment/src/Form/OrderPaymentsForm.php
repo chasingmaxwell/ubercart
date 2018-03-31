@@ -2,6 +2,7 @@
 
 namespace Drupal\uc_payment\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormBase;
@@ -31,6 +32,13 @@ class OrderPaymentsForm extends FormBase {
   protected $paymentMethodManager;
 
   /**
+   * The datetime.time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
    * The date.formatter service.
    *
    * @var \Drupal\Core\Datetime\DateFormatterInterface
@@ -42,11 +50,14 @@ class OrderPaymentsForm extends FormBase {
    *
    * @param \Drupal\uc_payment\Plugin\PaymentMethodManager $payment_method_manager
    *   The payment method plugin manager.
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The datetime.time service.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   The date.formatter service.
    */
-  public function __construct(PaymentMethodManager $payment_method_manager, DateFormatterInterface $date_formatter) {
+  public function __construct(PaymentMethodManager $payment_method_manager, TimeInterface $time, DateFormatterInterface $date_formatter) {
     $this->paymentMethodManager = $payment_method_manager;
+    $this->time = $time;
     $this->dateFormatter = $date_formatter;
   }
 
@@ -56,6 +67,7 @@ class OrderPaymentsForm extends FormBase {
   public static function create(ContainerInterface $container) {
     return new static(
       $container->get('plugin.manager.uc_payment.method'),
+      $container->get('datetime.time'),
       $container->get('date.formatter')
     );
   }
@@ -172,7 +184,7 @@ class OrderPaymentsForm extends FormBase {
         '#title' => $this->t('Date'),
         '#date_date_element' => 'date',
         '#date_time_element' => 'time',
-        '#default_value' => DrupalDateTime::createFromTimestamp(REQUEST_TIME),
+        '#default_value' => DrupalDateTime::createFromTimestamp($this->time->getRequestTime()),
       ];
       $form['new']['action'] = ['#type' => 'actions'];
       $form['new']['action']['action'] = [

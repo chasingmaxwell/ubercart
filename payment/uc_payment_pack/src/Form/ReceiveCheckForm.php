@@ -2,6 +2,7 @@
 
 namespace Drupal\uc_payment_pack\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormBase;
@@ -15,6 +16,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ReceiveCheckForm extends FormBase {
 
   /**
+   * The datetime.time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
    * The date.formatter service.
    *
    * @var \Drupal\Core\Datetime\DateFormatterInterface
@@ -24,10 +32,13 @@ class ReceiveCheckForm extends FormBase {
   /**
    * Form constructor.
    *
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The datetime.time service.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   The date.formatter service.
    */
-  public function __construct(DateFormatterInterface $date_formatter) {
+  public function __construct(TimeInterface $time, DateFormatterInterface $date_formatter) {
+    $this->time = $time;
     $this->dateFormatter = $date_formatter;
   }
 
@@ -36,6 +47,7 @@ class ReceiveCheckForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
+      $container->get('datetime.time'),
       $container->get('date.formatter')
     );
   }
@@ -77,7 +89,7 @@ class ReceiveCheckForm extends FormBase {
       '#title' => $this->t('Expected clear date'),
       '#date_date_element' => 'date',
       '#date_time_element' => 'none',
-      '#default_value' => DrupalDateTime::createFromTimestamp(REQUEST_TIME),
+      '#default_value' => DrupalDateTime::createFromTimestamp($this->time->getRequestTime()),
     ];
 
     $form['actions'] = ['#type' => 'actions'];

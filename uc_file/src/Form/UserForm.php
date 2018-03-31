@@ -2,6 +2,7 @@
 
 namespace Drupal\uc_file\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -22,6 +23,13 @@ class UserForm extends FormBase {
   protected $account;
 
   /**
+   * The datetime.time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
    * The date.formatter service.
    *
    * @var \Drupal\Core\Datetime\DateFormatterInterface
@@ -31,10 +39,13 @@ class UserForm extends FormBase {
   /**
    * Form constructor.
    *
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The datetime.time service.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   The date.formatter service.
    */
-  public function __construct(DateFormatterInterface $date_formatter) {
+  public function __construct(TimeInterface $time, DateFormatterInterface $date_formatter) {
+    $this->time = $time;
     $this->dateFormatter = $date_formatter;
   }
 
@@ -43,6 +54,7 @@ class UserForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
+      $container->get('datetime.time'),
       $container->get('date.formatter')
     );
   }
@@ -219,7 +231,7 @@ class UserForm extends FormBase {
         // start from right now.
         $new_expiration = _uc_file_expiration_date($download_modification, $download_modification['expiration']);
 
-        if ($new_expiration <= REQUEST_TIME) {
+        if ($new_expiration <= $this->time->getRequestTime()) {
           $form_state->setErrorByName('file_download][' . $key . '][time_quantity', $this->t('The date %date has already occurred.', ['%date' => $this->dateFormatter->format($new_expiration, 'short')]));
         }
 
@@ -274,7 +286,7 @@ class UserForm extends FormBase {
           'time_polarity' => '+',
           'time_quantity' => $file_config->get('duration_qty'),
           'time_granularity' => $file_config->get('duration_granularity'),
-        ], REQUEST_TIME);
+        ], $this->time->getRequestTime());
 
         // Renew. (Explicit overwrite.)
         uc_file_user_renew($fid, $this->account, NULL, $download_modification, TRUE);

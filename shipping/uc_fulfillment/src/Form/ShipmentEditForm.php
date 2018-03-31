@@ -2,6 +2,7 @@
 
 namespace Drupal\uc_fulfillment\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormBase;
 use Drupal\Core\Form\FormStateInterface;
@@ -9,6 +10,7 @@ use Drupal\uc_fulfillment\Package;
 use Drupal\uc_fulfillment\ShipmentInterface;
 use Drupal\uc_order\OrderInterface;
 use Drupal\uc_store\Address;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Creates or edits a shipment.
@@ -28,6 +30,32 @@ class ShipmentEditForm extends FormBase {
    * @var \Drupal\uc_fulfillment\Shipment
    */
   protected $shipment;
+
+  /**
+   * The datetime.time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
+   * Form constructor.
+   *
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The datetime.time service.
+   */
+  public function __construct(TimeInterface $time) {
+    $this->time = $time;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static(
+      $container->get('datetime.time')
+    );
+  }
 
   /**
    * {@inheritdoc}
@@ -231,11 +259,11 @@ class ShipmentEditForm extends FormBase {
       '#default_value' => $this->shipment->getTrackingNumber(),
     ];
 
-    $ship_date = REQUEST_TIME;
+    $ship_date = $this->time->getRequestTime();
     if ($this->shipment->getShipDate()) {
       $ship_date = $this->shipment->getShipDate();
     }
-    $exp_delivery = REQUEST_TIME;
+    $exp_delivery = $this->time->getRequestTime();
     if ($this->shipment->getExpectedDelivery()) {
       $exp_delivery = $this->shipment->getExpectedDelivery();
     }

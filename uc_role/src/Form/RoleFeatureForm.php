@@ -2,6 +2,7 @@
 
 namespace Drupal\uc_role\Form;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Datetime\DateFormatterInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Form\FormBase;
@@ -17,6 +18,13 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class RoleFeatureForm extends FormBase {
 
   /**
+   * The datetime.time service.
+   *
+   * @var \Drupal\Component\Datetime\TimeInterface
+   */
+  protected $time;
+
+  /**
    * The date.formatter service.
    *
    * @var \Drupal\Core\Datetime\DateFormatterInterface
@@ -26,10 +34,13 @@ class RoleFeatureForm extends FormBase {
   /**
    * Form constructor.
    *
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   *   The datetime.time service.
    * @param \Drupal\Core\Datetime\DateFormatterInterface $date_formatter
    *   The date.formatter service.
    */
-  public function __construct(DateFormatterInterface $date_formatter) {
+  public function __construct(TimeInterface $time, DateFormatterInterface $date_formatter) {
+    $this->time = $time;
     $this->dateFormatter = $date_formatter;
   }
 
@@ -38,6 +49,7 @@ class RoleFeatureForm extends FormBase {
    */
   public static function create(ContainerInterface $container) {
     return new static(
+      $container->get('datetime.time'),
       $container->get('date.formatter')
     );
   }
@@ -195,7 +207,7 @@ class RoleFeatureForm extends FormBase {
       ],
     ];
 
-    $date = empty($end_time) ? DrupalDateTime::createFromTimestamp(REQUEST_TIME) : DrupalDateTime::createFromTimestamp($end_time);
+    $date = empty($end_time) ? DrupalDateTime::createFromTimestamp($this->time->getRequestTime()) : DrupalDateTime::createFromTimestamp($end_time);
     $form['role_lifetime']['absolute']['expire_absolute'] = [
       '#type' => 'datetime',
       '#description' => $this->t('Expire the role at the beginning of this day.'),
@@ -226,7 +238,7 @@ class RoleFeatureForm extends FormBase {
     // Invalid quantity?
     if ($form_state->getValue('expiration') === 'abs') {
       $this->messenger()->addMessage(var_export($form_state->getValue('expire_absolute'), TRUE));
-      if ($form_state->getValue('expire_absolute')->getTimestamp() <= REQUEST_TIME) {
+      if ($form_state->getValue('expire_absolute')->getTimestamp() <= $this->time->getRequestTime()) {
         $form_state->setErrorByName('expire_absolute', $this->t('The specified date @date has already occurred. Please choose another.', ['@date' => $this->dateFormatter->format($form_state->getValue('expire_absolute')->getTimestamp())]));
       }
     }
