@@ -30,7 +30,7 @@ function uc_role_help($route_name, RouteMatchInterface $route_match) {
 
     case 'uc_product.feature_add':
       if ($route_match->getRawParameter('fid') == 'role') {
-        return '<p>' . t('Add roles through this page and then use the <a href=":url">Rules interface</a> to limit which orders they are applied to. Most important is the order status on which role granting will be triggered.', [':url' => Url::fromUri('base:admin/config/workflow/rules')->toString()]) . '</p>';
+        return '<p>' . t('Add roles through this page and then use the <a href=":url">Rules interface</a> to limit which orders they are applied to. Most important is the order status on which role granting will be triggered.', [':url' => Url::fromRoute('entity.rules_reaction_rule.collection')->toString()]) . '</p>';
       }
       break;
   }
