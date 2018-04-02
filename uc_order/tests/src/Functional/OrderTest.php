@@ -169,24 +169,30 @@ class OrderTest extends UbercartBrowserTestBase {
     $this->drupalGet('admin/store/orders/' . $order->id());
 
     $billing_address = $order->getAddress('billing');
-    $assert->pageTextContains(Unicode::strtoupper($billing_address->getFirstName()), 'Billing first name found.');
-    $assert->pageTextContains(Unicode::strtoupper($billing_address->getLastName()), 'Billing last name found.');
-    $assert->pageTextContains(Unicode::strtoupper($billing_address->getStreet1()), 'Billing street 1 found.');
-    $assert->pageTextContains(Unicode::strtoupper($billing_address->getStreet2()), 'Billing street 2 found.');
+    // Check for billing first name, billing last name, billing street1
+    // and billing street2.
+    $assert->pageTextContains(Unicode::strtoupper($billing_address->getFirstName()));
+    $assert->pageTextContains(Unicode::strtoupper($billing_address->getLastName()));
+    $assert->pageTextContains(Unicode::strtoupper($billing_address->getStreet1()));
+    $assert->pageTextContains(Unicode::strtoupper($billing_address->getStreet2()));
     // Some country formats don't use City in addresses.
     $country = \Drupal::service('country_manager')->getCountry($billing_address->getCountry());
     if (strpos(implode('', $country->getAddressFormat()), 'city') === FALSE) {
-      $assert->pageTextContains(Unicode::strtoupper($billing_address->getCity()), 'Billing city found.');
+      // Check for billing city.
+      $assert->pageTextContains(Unicode::strtoupper($billing_address->getCity()));
     }
 
     $delivery_address = $order->getAddress('delivery');
-    $assert->pageTextContains(Unicode::strtoupper($delivery_address->getFirstName()), 'Delivery first name found.');
-    $assert->pageTextContains(Unicode::strtoupper($delivery_address->getLastName()), 'Delivery last name found.');
-    $assert->pageTextContains(Unicode::strtoupper($delivery_address->getStreet1()), 'Delivery street 1 found.');
-    $assert->pageTextContains(Unicode::strtoupper($delivery_address->getStreet2()), 'Delivery street 2 found.');
+    // Check for delivery first name, delivery last name, delivery street1
+    // and delivery street2.
+    $assert->pageTextContains(Unicode::strtoupper($delivery_address->getFirstName()));
+    $assert->pageTextContains(Unicode::strtoupper($delivery_address->getLastName()));
+    $assert->pageTextContains(Unicode::strtoupper($delivery_address->getStreet1()));
+    $assert->pageTextContains(Unicode::strtoupper($delivery_address->getStreet2()));
     $country = \Drupal::service('country_manager')->getCountry($delivery_address->getCountry());
     if (strpos(implode('', $country->getAddressFormat()), 'city') === FALSE) {
-      $assert->pageTextContains(Unicode::strtoupper($delivery_address->getCity()), 'Delivery city found.');
+      // Check for delivery city.
+      $assert->pageTextContains(Unicode::strtoupper($delivery_address->getCity()));
     }
 
     $assert->linkExists($order->getOwnerId(), 0, 'Link to customer account page found.');
@@ -215,8 +221,9 @@ class OrderTest extends UbercartBrowserTestBase {
     $this->drupalGet('user/' . $this->customer->id() . '/orders/' . $order->id());
     $assert->statusCodeEquals(200, 'Customer can view their own order.');
     $address = $order->getAddress('billing');
-    $assert->pageTextContains(Unicode::strtoupper($address->getFirstName()), 'Found customer first name.');
-    $assert->pageTextContains(Unicode::strtoupper($address->getLastName()), 'Found customer last name.');
+    // Check for customer first and last name.
+    $assert->pageTextContains(Unicode::strtoupper($address->getFirstName()));
+    $assert->pageTextContains(Unicode::strtoupper($address->getLastName()));
 
     $this->drupalGet('admin/store/orders/' . $order->id());
     $assert->statusCodeEquals(403, 'Customer may not see the admin view of their order.');
@@ -300,7 +307,8 @@ class OrderTest extends UbercartBrowserTestBase {
 
     // Confirm the updated label is displayed.
     $this->drupalGet('admin/store/orders/view');
-    $assert->pageTextContains($title, 'Order displays updated status title.');
+    // Check that order displays updated status title.
+    $assert->pageTextContains($title);
 
     // Create a custom order status.
     $this->drupalGet('admin/store/config/orders');
