@@ -49,8 +49,11 @@ function uc_stock_menu_links_discovered_alter(&$links) {
  * Implements hook_mail().
  */
 function uc_stock_mail($key, &$message, $params) {
+  $langcode = isset($message['language']) ? $message['language']->language : NULL;
+
   switch ($key) {
     case 'threshold':
+      $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
       $message['subject'] = $params['subject'];
       $message['body'][] = $params['body'];
       break;
