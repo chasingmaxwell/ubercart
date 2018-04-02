@@ -24,7 +24,7 @@ function uc_report_help($route_name, RouteMatchInterface $route_match) {
   $route = \Drupal::routeMatch()->getRouteName();
   //if (substr($route, 0, 10) == 'uc_report.') {
 
-  if (strncmp($route_name, '/admin/store/reports/', 20) === 0) {
+  if (strncmp($route_name, 'uc_report', 9) === 0) {
     $include_statuses = $include_offset = FALSE;
 
     // Include order status info?
@@ -78,7 +78,7 @@ function uc_report_help($route_name, RouteMatchInterface $route_match) {
     if ($include_statuses) {
       $statuses = [];
       foreach (uc_report_order_statuses() as $status) {
-        $statuses[] = SafeMarkup::checkPlain(OrderStatus::load($status)->name);
+        $statuses[] = SafeMarkup::checkPlain(OrderStatus::load($status)->label());
       }
       $order_statuses = t('<b>Order statuses used:</b> @statuses', ['@statuses' => implode(', ', array_filter($statuses))]);
 
