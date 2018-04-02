@@ -27,11 +27,13 @@ class UPSUtilities {
       '54' => t('UPS Worldwide Express Plus'),
       '65' => t('UPS Worldwide Saver'),
       // Poland to Poland shipments only.
-      //'82' => t('UPS Today Standard'),
-      //'83' => t('UPS Today Dedicated Courrier'),
-      //'84' => t('UPS Today Intercity'),
-      //'85' => t('UPS Today Express'),
-      //'86' => t('UPS Today Express Saver'),
+      /*
+      '82' => t('UPS Today Standard'),
+      '83' => t('UPS Today Dedicated Courrier'),
+      '84' => t('UPS Today Intercity'),
+      '85' => t('UPS Today Express'),
+      '86' => t('UPS Today Express Saver'),
+      */
     ];
   }
 
