@@ -35,12 +35,16 @@ class StockTest extends UbercartBrowserTestBase {
    * Tests stock settings on product edit page.
    */
   public function testProductStock() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $sku = $this->product->model->value;
     $prefix = 'stock[' . $sku . ']';
 
     $this->drupalGet('node/' . $this->product->id() . '/edit/stock');
-    $this->assertText($this->product->label());
-    $this->assertText($this->product->model->value, 'Product SKU found.');
+    $assert->pageTextContains($this->product->label());
+    // Check for SKU on product edit page.
+    $assert->pageTextContains($this->product->model->value);
 
     $this->assertNoFieldChecked('edit-stock-' . strtolower($sku) . '-active', 'Stock tracking is not active.');
     $this->assertFieldByName($prefix . '[stock]', '0', 'Default stock level found.');
@@ -53,7 +57,7 @@ class StockTest extends UbercartBrowserTestBase {
       $prefix . '[threshold]' => rand(1, 100),
     ];
     $this->drupalPostForm(NULL, $edit, 'Save changes');
-    $this->assertText('Stock settings saved.');
+    $assert->pageTextContains('Stock settings saved.');
     $this->assertTrue(uc_stock_is_active($sku));
     $this->assertEquals($stock, uc_stock_level($sku));
 
@@ -67,6 +71,9 @@ class StockTest extends UbercartBrowserTestBase {
    * Tests stock decrementing.
    */
   public function testStockDecrement() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $prefix = 'stock[' . $this->product->model->value . ']';
     $stock = rand(100, 1000);
     $edit = [
@@ -74,7 +81,7 @@ class StockTest extends UbercartBrowserTestBase {
       $prefix . '[stock]' => $stock,
     ];
     $this->drupalPostForm('node/' . $this->product->id() . '/edit/stock', $edit, 'Save changes');
-    $this->assertText('Stock settings saved.');
+    $assert->pageTextContains('Stock settings saved.');
 
     // Enable product quantity field.
     $edit = ['uc_product_add_to_cart_qty' => TRUE];
@@ -121,6 +128,9 @@ class StockTest extends UbercartBrowserTestBase {
    * Tests stock increment/decrement when admin edits order.
    */
   public function testStockChangeAfterEditingOrder() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // Set stock level.
     $prefix = 'stock[' . $this->product->model->value . ']';
     $stock = rand(100, 1000);

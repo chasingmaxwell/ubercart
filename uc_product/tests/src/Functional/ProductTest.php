@@ -26,17 +26,23 @@ class ProductTest extends UbercartBrowserTestBase {
    * Tests product administration view.
    */
   public function testProductAdmin() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalGet('admin/store/products/view');
-    $this->assertText('Title');
-    $this->assertText($this->product->getTitle());
-    $this->assertText('Price');
-    $this->assertText(uc_currency_format($this->product->price->value));
+    $assert->pageTextContains('Title');
+    $assert->pageTextContains($this->product->getTitle());
+    $assert->pageTextContains('Price');
+    $assert->pageTextContains(uc_currency_format($this->product->price->value));
   }
 
   /**
    * Tests product node form.
    */
   public function testProductNodeForm() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalGet('node/add/product');
 
     $fields = [
@@ -84,14 +90,21 @@ class ProductTest extends UbercartBrowserTestBase {
     ];
     $this->drupalPostForm('node/add/product', $edit, 'Save');
 
-    $this->assertText(t('Product @title has been created.', ['@title' => $edit[$title_key]]), 'Product created.');
-    $this->assertText($edit[$body_key], 'Product body found.');
-    $this->assertText($edit['model[0][value]'], 'Product model found.');
-    $this->assertNoUniqueText(uc_currency_format($edit['price[0][value]']), 'Product price found.');
-    $this->assertText(uc_weight_format($edit['weight[0][value]'], $edit['weight[0][units]']), 'Product weight found.');
-    $this->assertText(uc_length_format($edit['dimensions[0][length]'], $edit['dimensions[0][units]']), 'Product length found.');
-    $this->assertText(uc_length_format($edit['dimensions[0][width]'], $edit['dimensions[0][units]']), 'Product width found.');
-    $this->assertText(uc_length_format($edit['dimensions[0][height]'], $edit['dimensions[0][units]']), 'Product height found.');
+    // Check for product created message, and check for the expected product
+    // field values on the newly-created product page.
+    $assert->pageTextContains(format_string('Product @title has been created.', ['@title' => $edit[$title_key]]));
+    // Product body text.
+    $assert->pageTextContains($edit[$body_key]);
+    // Product model (SKU) text.
+    $assert->pageTextContains($edit['model[0][value]']);
+    // Product price text.
+    $this->assertNoUniqueText(uc_currency_format($edit['price[0][value]']));
+    // Formatted product weight text.
+    $assert->pageTextContains(uc_weight_format($edit['weight[0][value]'], $edit['weight[0][units]']));
+    // Formatted product dimensions text.
+    $assert->pageTextContains(uc_length_format($edit['dimensions[0][length]'], $edit['dimensions[0][units]']));
+    $assert->pageTextContains(uc_length_format($edit['dimensions[0][width]'], $edit['dimensions[0][units]']));
+    $assert->pageTextContains(uc_length_format($edit['dimensions[0][height]'], $edit['dimensions[0][units]']));
 
     $elements = $this->xpath('//body[contains(@class, "uc-product-node")]');
     $this->assertEquals(count($elements), 1, 'Product page contains body CSS class.');
@@ -123,24 +136,35 @@ class ProductTest extends UbercartBrowserTestBase {
     $this->clickLink('Edit');
     $this->drupalPostForm(NULL, $edit, 'Save');
 
-    $this->assertText(t('Product @title has been updated.', ['@title' => $edit[$title_key]]), 'Product updated.');
-    $this->assertText($edit[$body_key], 'Updated product body found.');
-    $this->assertText($edit['model[0][value]'], 'Updated product model found.');
-    $this->assertNoUniqueText(uc_currency_format($edit['price[0][value]']), 'Updated product price found.');
-    $this->assertText(uc_weight_format($edit['weight[0][value]'], $edit['weight[0][units]']), 'Product weight found.');
-    $this->assertText(uc_length_format($edit['dimensions[0][length]'], $edit['dimensions[0][units]']), 'Product length found.');
-    $this->assertText(uc_length_format($edit['dimensions[0][width]'], $edit['dimensions[0][units]']), 'Product width found.');
-    $this->assertText(uc_length_format($edit['dimensions[0][height]'], $edit['dimensions[0][units]']), 'Product height found.');
+    // Check for product updated message, and check for the expected product
+    // field values on the updated product page.
+    $assert->pageTextContains(format_string('Product @title has been updated.', ['@title' => $edit[$title_key]]));
+    // Product body text.
+    $assert->pageTextContains($edit[$body_key]);
+    // Product model (SKU) text.
+    $assert->pageTextContains($edit['model[0][value]']);
+    // Product price text.
+    $this->assertNoUniqueText(uc_currency_format($edit['price[0][value]']));
+    // Formatted product weight text.
+    $assert->pageTextContains(uc_weight_format($edit['weight[0][value]'], $edit['weight[0][units]']));
+    // Formatted product dimensions text.
+    $assert->pageTextContains(uc_length_format($edit['dimensions[0][length]'], $edit['dimensions[0][units]']));
+    $assert->pageTextContains(uc_length_format($edit['dimensions[0][width]'], $edit['dimensions[0][units]']));
+    $assert->pageTextContains(uc_length_format($edit['dimensions[0][height]'], $edit['dimensions[0][units]']));
 
     $this->clickLink('Delete');
     $this->drupalPostForm(NULL, [], 'Delete');
-    $this->assertText(t('Product @title has been deleted.', ['@title' => $edit[$title_key]]), 'Product deleted.');
+    // Check for product deleted message.
+    $assert->pageTextContains(format_string('Product @title has been deleted.', ['@title' => $edit[$title_key]]));
   }
 
   /**
    * Tests adding a product with weight = dimensions = 0.
    */
   public function testZeroProductWeightAndDimensions() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $edit = [
       'title[0][value]' => $this->randomMachineName(32),
       'model[0][value]' => $this->randomMachineName(8),
@@ -165,15 +189,21 @@ class ProductTest extends UbercartBrowserTestBase {
     ];
     $this->drupalPostForm('node/add/product', $edit, 'Save');
 
-    $this->assertText(t('Product @title has been created.', ['@title' => $edit['title[0][value]']]), 'Product created.');
-    $this->assertNoText('Weight', 'Zero weight not shown.');
-    $this->assertNoText('Dimensions', 'Zero dimensions not shown.');
+    // Check for product created message.
+    $assert->pageTextContains(format_string('Product @title has been created.', ['@title' => $edit['title[0][value]']]));
+    // Check that Weight and Dimensions are NOT shown on product page if
+    // they are set to zero.
+    $assert->pageTextNotContains('Weight');
+    $assert->pageTextNotContains('Dimensions');
   }
 
   /**
    * Tests making node types into products.
    */
   public function testProductClassForm() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     // Try making a new product class.
     $class = strtolower($this->randomMachineName(12));
     $edit = [
@@ -197,10 +227,14 @@ class ProductTest extends UbercartBrowserTestBase {
 
     // Check the product classes page.
     $this->drupalGet('admin/store/products/classes');
-    $this->assertText($type->getOriginalId(), 'Product class is listed.');
-    $this->assertText($type->getDescription(), 'Product class description is listed.');
-    $this->assertLinkByHref('admin/structure/types/manage/' . $type->getOriginalId(), 0, 'Product class edit link is shown.');
-    $this->assertLinkByHref('admin/structure/types/manage/' . $type->getOriginalId() . '/delete', 0, 'Product class delete link is shown.');
+    // Check the product class is listed.
+    $assert->pageTextContains($type->getOriginalId());
+    // Check the product class description is found in the list.
+    $assert->pageTextContains($type->getDescription());
+    // Check the product class edit link is shown.
+    $assert->linkByHrefExists('admin/structure/types/manage/' . $type->getOriginalId(), 0);
+    // Check the product class delete link is shown.
+    $assert->linkByHrefExists('admin/structure/types/manage/' . $type->getOriginalId() . '/delete', 0);
 
     // Remove the product class again.
     $edit = ['uc_product[product]' => FALSE];
@@ -212,27 +246,30 @@ class ProductTest extends UbercartBrowserTestBase {
    * Tests product add-to-cart quantity.
    */
   public function testProductQuantity() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $edit = ['uc_product_add_to_cart_qty' => TRUE];
     $this->drupalPostForm('admin/store/config/products', $edit, 'Save configuration');
 
     // Check zero quantity message.
     $this->addToCart($this->product, ['qty' => 0]);
-    $this->assertText('The quantity cannot be zero.');
+    $assert->pageTextContains('The quantity cannot be zero.');
 
     // Check invalid quantity messages.
     $this->addToCart($this->product, ['qty' => 'x']);
-    $this->assertText('The quantity must be an integer.');
+    $assert->pageTextContains('The quantity must be an integer.');
 
     $this->addToCart($this->product, ['qty' => '1a']);
-    $this->assertText('The quantity must be an integer.');
+    $assert->pageTextContains('The quantity must be an integer.');
 
     // Check cart add message.
     $this->addToCart($this->product, ['qty' => 1]);
-    $this->assertText($this->product->getTitle() . ' added to your shopping cart.');
+    $assert->pageTextContains($this->product->getTitle() . ' added to your shopping cart.');
 
     // Check cart update message.
     $this->addToCart($this->product, ['qty' => 1]);
-    $this->assertText('Your item(s) have been updated.');
+    $assert->pageTextContains('Your item(s) have been updated.');
   }
 
 }
