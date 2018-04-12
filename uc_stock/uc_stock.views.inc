@@ -12,7 +12,7 @@ function uc_stock_views_data() {
   $data['uc_product_stock']['table']['group'] = t('Stock');
 
   // Attach stock data to nodes.
-  $data['uc_product_stock']['table']['join']['node'] = [
+  $data['uc_product_stock']['table']['join']['node_field_data'] = [
     'left_field' => 'nid',
     'field' => 'nid',
   ];
@@ -21,6 +21,7 @@ function uc_stock_views_data() {
     'title' => t('SKU'),
     'help' => t('The model or SKU of the stock level.'),
     'field' => [
+      'id' => 'standard',
       'click sortable' => TRUE,
     ],
     'filter' => [
