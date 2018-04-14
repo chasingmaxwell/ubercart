@@ -55,7 +55,7 @@ class TaxRateUiTest extends TaxTestBase {
     $this->clickLink('Clone');
     $assert->addressEquals('admin/store/config/tax');
     $this->assertText(
-      t('Tax rate @rate was cloned.', ['@rate' => $tax_rate->label()]),
+      'Tax rate ' . $tax_rate->label() . ' was cloned.',
       'Tax was cloned successfully.'
     );
 
@@ -72,7 +72,7 @@ class TaxRateUiTest extends TaxTestBase {
     $this->clickLink('Delete');
     $assert->addressEquals('admin/store/config/tax/' . $tax_rate->id() . '_clone/delete');
     $this->assertText(
-      t('Are you sure you want to delete Copy of @label?', ['@label' => $tax_rate->label()]),
+      'Are you sure you want to delete Copy of ' . $tax_rate->label() . '?',
       'Delete confirmation form found.'
     );
     // @todo Commented out until core issue with the Cancel button
@@ -82,17 +82,18 @@ class TaxRateUiTest extends TaxTestBase {
     // Verify the 'Cancel' button works.
     $this->clickLink('Cancel');
     $assert->addressEquals('admin/store/config/tax');
-    $this->assertText(t('Copy of @label', ['@label' => $tax_rate->label()]), 'Tax rate not deleted.');
+    // Check that tax rate was not deleted.
+    $this->assertText('Copy of ' . $tax_rate->label());
     // // Now, actually delete the rate.
     $this->clickLink('Delete');
     $assert->addressEquals('admin/store/config/tax/' . $tax_rate->id() . '_clone/delete');
     */
     $this->drupalPostForm(NULL, [], 'Delete tax rate');
     $assert->addressEquals('admin/store/config/tax');
-    $this->assertText(t('Tax rate Copy of @label has been deleted.', ['@label' => $tax_rate->label()]), 'Delete message found.');
+    $this->assertText('Tax rate Copy of ' . $tax_rate->label() . ' has been deleted.', 'Delete message found.');
     // Go to next page to clear the drupal_set_message.
     $this->drupalGet('admin/store/config/tax');
-    $this->assertNoText(t('Copy of @label', ['@label' => $tax_rate->label()]), 'Tax rate deleted successfully.');
+    $this->assertNoText('Copy of ' . $tax_rate->label(), 'Tax rate deleted successfully.');
 
     // Test 'Disable' operation.
     $this->drupalGet('admin/store/config/tax');

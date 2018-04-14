@@ -49,7 +49,7 @@ class EncryptionTest extends BrowserTestBase {
       $this->pass('Tried to use invalid cypher.');
       $this->assertEquals(
         $errors[0],
-        t('@cypher is not a valid cypher', ['@cypher' => 'ubbi-dubbi']),
+        'ubbi-dubbi is not a valid cypher',
         'Invalid cypher error message found.'
       );
     }

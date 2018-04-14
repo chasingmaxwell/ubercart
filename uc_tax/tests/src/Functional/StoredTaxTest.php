@@ -40,7 +40,7 @@ class StoredTaxTest extends TaxTestBase {
     $this->assertText($rate->name, 'Tax was saved successfully.');
 
     // $this->drupalGet("admin/store/config/taxes/manage/uc_tax_$rate->id");
-    // $this->assertText(t('Conditions'), 'Rules configuration linked to tax.');
+    // $this->assertText('Conditions', 'Rules configuration linked to tax.');
 
     $this->addToCart($this->product);
 

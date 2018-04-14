@@ -40,7 +40,7 @@ class CountryTest extends BrowserTestBase {
 
       // Enable this country.
       $this->clickLinkInRow($countries[$country_id], 'Enable');
-      $assert->pageTextContains(t('The country @country has been enabled.', ['@country' => $countries[$country_id]]));
+      $assert->pageTextContains('The country ' . $countries[$country_id] . ' has been enabled.');
       $assert->linkByHrefExists(
         'admin/store/config/country/' . $country_id . '/disable',
         0,
@@ -57,7 +57,7 @@ class CountryTest extends BrowserTestBase {
     // Enable the last country.
     $this->drupalGet('admin/store/config/country');
     $this->clickLinkInRow($countries[$last_country], 'Enable');
-    $assert->pageTextContains(t('The country @country has been enabled.', ['@country' => $countries[$last_country]]));
+    $assert->pageTextContains('The country ' . $countries[$last_country] . ' has been enabled.');
     $assert->linkByHrefExists(
       'admin/store/config/country/' . $last_country . '/disable',
       0,
@@ -74,7 +74,7 @@ class CountryTest extends BrowserTestBase {
     $this->drupalGet('admin/store/config/country');
     // Click the 8th Disable link.
     $this->clickLink('Disable', 7);
-    $assert->pageTextContains(t('The country @country has been disabled.', ['@country' => $countries[$last_country]]));
+    $assert->pageTextContains('The country ' . $countries[$last_country] . ' has been disabled.');
     $assert->linkByHrefExists(
       'admin/store/config/country/' . $last_country . '/enable',
       0,
