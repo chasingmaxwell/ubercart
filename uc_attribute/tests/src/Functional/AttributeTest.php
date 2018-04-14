@@ -319,31 +319,35 @@ class AttributeTest extends UbercartBrowserTestBase {
    * Tests the "add attribute" user interface.
    */
   public function testAttributeUiAddAttribute() {
-    $this->drupalGet('admin/store/products/attributes/add');
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
 
-    $this->assertText('The name of the attribute used in administrative forms', 'Attribute add form working.');
+    $this->drupalGet('admin/store/products/attributes/add');
+    $assert->pageTextContains('The name of the attribute used in administrative forms');
 
     $edit = (array) $this->createAttribute([], FALSE);
 
     $this->drupalPostForm('admin/store/products/attributes/add', $edit, 'Submit');
     if ($edit['display'] != 0) {
       // We redirect to add options page ONLY for non-textfield attributes.
-      $this->assertText(t('Options for @name', ['@name' => $edit['name']]));
-      $this->assertText('No options for this attribute have been added yet.');
+      $assert->pageTextContains('Options for ' . $edit['name']);
+      $assert->pageTextContains('No options for this attribute have been added yet.');
     }
     else {
       // For textfield attributes we redirect to attribute list.
-      $this->assertText($edit['name'], 'Attribute name created');
-      $this->assertText($edit['label'], 'Attribute label created');
+      // Check that the created attribute name and label appear.
+      $assert->pageTextContains($edit['name']);
+      $assert->pageTextContains($edit['label']);
     }
 
     $this->drupalGet('admin/store/products/attributes');
-    $this->assertRaw('<td>' . $edit['name'] . '</td>', 'Verify name field.');
-    $this->assertRaw('<td>' . $edit['label'] . '</td>', 'Verify label field.');
-    $this->assertRaw('<td>' . ($edit['required'] ? 'Yes' : 'No') . '</td>', 'Verify required field.');
-    $this->assertRaw('<td>' . $edit['ordering'] . '</td>', 'Verify ordering field.');
+    // Verify name, label, 'required', ordering, and display fields.
+    $assert->responseContains('<td>' . $edit['name'] . '</td>');
+    $assert->responseContains('<td>' . $edit['label'] . '</td>');
+    $assert->responseContains('<td>' . ($edit['required'] ? 'Yes' : 'No') . '</td>');
+    $assert->responseContains('<td>' . $edit['ordering'] . '</td>');
     $types = _uc_attribute_display_types();
-    $this->assertRaw('<td>' . $types[$edit['display']] . '</td>', 'Verify display field.');
+    $assert->responseContains('<td>' . $types[$edit['display']] . '</td>');
 
     $aid = db_query('SELECT aid FROM {uc_attributes} WHERE name = :name', [':name' => $edit['name']])->fetchField();
     $this->assertTrue($aid, 'Attribute was created.');
@@ -366,6 +370,9 @@ class AttributeTest extends UbercartBrowserTestBase {
    * Tests the attribute settings page.
    */
   public function testAttributeUiSettings() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $product = $this->createProduct();
     $attribute = $this->createAttribute([
       'display' => 1,
@@ -398,7 +405,8 @@ class AttributeTest extends UbercartBrowserTestBase {
       $this->drupalPostForm('admin/store/config/products', $edit, 'Save configuration');
 
       $this->drupalGet('node/' . $product->id());
-      $this->assertRaw($raw[$type], 'Attribute option pricing is correct.');
+      // Verify attribute option pricing is correct.
+      $assert->responseContains($raw[$type]);
     }
   }
 
@@ -406,10 +414,13 @@ class AttributeTest extends UbercartBrowserTestBase {
    * Tests the "edit attribute" user interface.
    */
   public function testAttributeUiEditAttribute() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $attribute = $this->createAttribute();
 
     $this->drupalGet('admin/store/products/attributes/' . $attribute->aid . '/edit');
-    $this->assertText(t('Edit attribute: @name', ['@name' => $attribute->name]), 'Attribute edit form working.');
+    $assert->pageTextContains('Edit attribute: ' . $attribute->name);
 
     $edit = (array) $this->createAttribute([], FALSE);
     $this->drupalPostForm('admin/store/products/attributes/' . $attribute->aid . '/edit', $edit, 'Submit');
@@ -433,43 +444,48 @@ class AttributeTest extends UbercartBrowserTestBase {
    * Tests the "delete attribute" user interface.
    */
   public function testAttributeUiDeleteAttribute() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $attribute = $this->createAttribute();
 
     $this->drupalGet('admin/store/products/attributes/' . $attribute->aid . '/delete');
-
-    $this->assertText(t('Are you sure you want to delete the attribute @name?', ['@name' => $attribute->name]), 'Attribute delete form working.');
+    $assert->pageTextContains('Are you sure you want to delete the attribute ' . $attribute->name . '?');
 
     $edit = (array) $this->createAttribute();
     unset($edit['aid']);
 
     $this->drupalPostForm('admin/store/products/attributes/' . $attribute->aid . '/delete', [], 'Delete');
-
-    $this->assertText('Product attribute deleted.', 'Attribute deleted properly.');
+    $assert->pageTextContains('Product attribute deleted.');
   }
 
   /**
    * Tests the attribute options user interface.
    */
   public function testAttributeUiAttributeOptions() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $attribute = $this->createAttribute();
     $option = $this->createAttributeOption(['aid' => $attribute->aid]);
 
     uc_attribute_option_save($option);
 
     $this->drupalGet('admin/store/products/attributes/' . $attribute->aid . '/options');
-
-    $this->assertText(t('Options for @name', ['@name' => $attribute->name]), 'Attribute options form working.');
+    $assert->pageTextContains('Options for ' . $attribute->name);
   }
 
   /**
    * Tests the "add attribute option" user interface.
    */
   public function testAttributeUiAttributeOptionsAdd() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $attribute = $this->createAttribute();
 
     $this->drupalGet('admin/store/products/attributes/' . $attribute->aid . '/options/add');
-
-    $this->assertText(t('Options for @name', ['@name' => $attribute->name]), 'Attribute options add form working.');
+    $assert->pageTextContains('Options for ' . $attribute->name);
 
     $edit = (array) $this->createAttributeOption(['aid' => $attribute->aid], FALSE);
     unset($edit['aid']);
@@ -495,14 +511,16 @@ class AttributeTest extends UbercartBrowserTestBase {
    * Tests the "edit attribute options" user interface.
    */
   public function testAttributeUiAttributeOptionsEdit() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $attribute = $this->createAttribute();
     $option = $this->createAttributeOption(['aid' => $attribute->aid]);
 
     uc_attribute_option_save($option);
 
     $this->drupalGet('admin/store/products/attributes/' . $attribute->aid . '/options/' . $option->oid . '/edit');
-
-    $this->assertText(t('Edit option: @name', ['@name' => $option->name]), 'Attribute options edit form working.');
+    $assert->pageTextContains('Edit option: ' . $option->name);
 
     $edit = (array) $this->createAttributeOption(['aid' => $attribute->aid], FALSE);
     unset($edit['aid']);
@@ -527,14 +545,16 @@ class AttributeTest extends UbercartBrowserTestBase {
    * Tests the "delete attribute option" user interface.
    */
   public function testAttributeUiAttributeOptionsDelete() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $attribute = $this->createAttribute();
     $option = $this->createAttributeOption(['aid' => $attribute->aid]);
 
     uc_attribute_option_save($option);
 
     $this->drupalGet('admin/store/products/attributes/' . $attribute->aid . '/options/' . $option->oid . '/delete');
-
-    $this->assertText(t('Are you sure you want to delete the option @name?', ['@name' => $option->name]), 'Attribute options delete form working.');
+    $assert->pageTextContains('Are you sure you want to delete the option ' . $option->name . '?');
 
     $this->drupalPostForm('admin/store/products/attributes/' . $attribute->aid . '/options/' . $option->oid . '/delete', [], 'Delete');
 
@@ -547,18 +567,19 @@ class AttributeTest extends UbercartBrowserTestBase {
    * Tests the product class attribute user interface.
    */
   public function testAttributeUiClassAttributeOverview() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $class = $this->createProductClass();
     $attribute = $this->createAttribute();
 
     $this->drupalGet('admin/structure/types/manage/' . $class->id() . '/attributes');
-
-    $this->assertText('No attributes available.', 'Class attribute form working.');
+    $assert->pageTextContains('No attributes available.');
 
     uc_attribute_subject_save($attribute, 'class', $class->id());
 
     $this->drupalGet('admin/structure/types/manage/' . $class->id() . '/attributes');
-
-    $this->assertNoText('No attributes available.', 'Class attribute form working.');
+    $assert->pageTextNotContains('No attributes available.');
 
     $a = (array) $this->createAttribute([], FALSE);
     unset($a['name'], $a['description']);
@@ -585,32 +606,36 @@ class AttributeTest extends UbercartBrowserTestBase {
     $edit = [];
     $edit["attributes[{$attribute->aid}][remove]"] = TRUE;
     $this->drupalPostForm('admin/structure/types/manage/' . $class->id() . '/attributes', $edit, 'Save changes');
-
-    $this->assertText('No attributes available.', 'Class attribute form working.');
+    $assert->pageTextContains('No attributes available.');
   }
 
   /**
    * Tests the "add product class attribute option" user interface.
    */
   public function testAttributeUiClassAttributeAdd() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $class = $this->createProductClass();
     $attribute = $this->createAttribute();
 
     $this->drupalGet('admin/structure/types/manage/' . $class->id() . '/attributes/add');
-
-    $this->assertRaw(t('@attribute</label>', ['@attribute' => $attribute->name]), 'Class attribute add form working.');
+    // Verify class attribute add form is working.
+    $assert->responseContains($attribute->name . '</label>');
 
     $edit['add_attributes[' . $attribute->aid . ']'] = 1;
 
     $this->drupalPostForm('admin/structure/types/manage/' . $class->id() . '/attributes/add', $edit, 'Add attributes');
-
-    $this->assertNoText('No attributes available.', 'Class attribute form working.');
+    $assert->pageTextNotContains('No attributes available.');
   }
 
   /**
    * Tests the product class attribute option user interface.
    */
   public function testAttributeUiClassAttributeOptionOverview() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $class = $this->createProductClass();
     $attribute = $this->createAttribute();
     $option = $this->createAttributeOption(['aid' => $attribute->aid]);
@@ -618,8 +643,8 @@ class AttributeTest extends UbercartBrowserTestBase {
     uc_attribute_subject_save($attribute, 'class', $class->id());
 
     $this->drupalGet('admin/structure/types/manage/' . $class->id() . '/options');
-
-    $this->assertRaw(t('@option</label>', ['@option' => $option->name]), 'Class attribute option form working.');
+    // Verify class attribute option form is working.
+    $assert->responseContains($option->name . '</label>');
 
     $o = (array) $this->createAttributeOption(['aid' => $attribute->aid], FALSE);
     unset($o['name'], $o['aid']);
@@ -631,7 +656,7 @@ class AttributeTest extends UbercartBrowserTestBase {
     $edit["attributes[$attribute->aid][default]"] = $option->oid;
     $this->showVar($edit);
     $this->drupalPostForm('admin/structure/types/manage/' . $class->id() . '/options', $edit, 'Save changes');
-    $this->assertText('The changes have been saved.', 'Class attribute option saved.');
+    $assert->pageTextContains('The changes have been saved.');
     $this->showVar($option);
 
     $option = uc_attribute_subject_option_load($option->oid, 'class', $class->id());
@@ -652,37 +677,46 @@ class AttributeTest extends UbercartBrowserTestBase {
    * Tests the "product attributes" page.
    */
   public function testAttributeUiProductAttributes() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $product = $this->createProduct();
     $attribute = $this->createAttribute(['display' => 1]);
     $option = $this->createAttributeOption(['aid' => $attribute->aid]);
 
     $this->drupalGet('node/' . $product->id() . '/edit/attributes');
-    $this->assertText('No attributes available.');
+    $assert->pageTextContains('No attributes available.');
 
     $this->clickLink('Add existing attribute');
-    $this->assertText($attribute->name);
+    $assert->pageTextContains($attribute->name);
 
     $this->drupalPostForm(NULL, ['add_attributes[' . $attribute->aid . ']' => 1], 'Add attributes');
-    $this->assertText('1 attribute has been added.');
-    $this->assertText($attribute->name, 'Attribute name found');
+    $assert->pageTextContains('1 attribute has been added.');
+    // Check for attribute name.
+    $assert->pageTextContains($attribute->name);
     $this->assertFieldByName('attributes[' . $attribute->aid . '][label]', $attribute->label, 'Attribute label found');
-    $this->assertText($option->name, 'Default option name found');
-    $this->assertText(uc_currency_format($option->price), 'Default option price found');
+    // Check for default option name.
+    $assert->pageTextContains($option->name);
+    // Check for default option price.
+    $assert->pageTextContains(uc_currency_format($option->price));
     $this->assertFieldByName('attributes[' . $attribute->aid . '][display]', $attribute->display, 'Attribute display setting found');
 
     $this->drupalGet('node/' . $product->id() . '/edit/attributes/add');
-    $this->assertNoText($attribute->name);
-    $this->assertText('No attributes left to add.');
+    $assert->pageTextNotContains($attribute->name);
+    $assert->pageTextContains('No attributes left to add.');
 
     $edit = ['attributes[' . $attribute->aid . '][remove]' => 1];
     $this->drupalPostForm('node/' . $product->id() . '/edit/attributes', $edit, 'Save changes');
-    $this->assertText('No attributes available.');
+    $assert->pageTextContains('No attributes available.');
   }
 
   /**
    * Tests the "product options" page.
    */
   public function testAttributeUiProductOptions() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $product = $this->createProduct();
     $attribute = $this->createAttribute(['display' => 1]);
     for ($i = 0; $i < 3; $i++) {
@@ -692,9 +726,11 @@ class AttributeTest extends UbercartBrowserTestBase {
     uc_attribute_subject_save($attribute, 'product', $product->id(), TRUE);
 
     $this->drupalGet('node/' . $product->id() . '/edit/options');
-    $this->assertText($attribute->name, 'Attribute name found');
+    // Check for attribute name.
+    $assert->pageTextContains($attribute->name);
     foreach ($attribute->options as $option) {
-      $this->assertText($option->name, 'Option name found');
+      // Check for option name.
+      $assert->pageTextContains($option->name);
       $this->assertFieldByName('attributes[' . $attribute->aid . '][options][' . $option->oid . '][cost]', $option->cost, 'Option cost field found');
       $this->assertFieldByName('attributes[' . $attribute->aid . '][options][' . $option->oid . '][price]', $option->price, 'Option price field found');
       $this->assertFieldByName('attributes[' . $attribute->aid . '][options][' . $option->oid . '][weight]', $option->weight, 'Option weight field found');
@@ -705,6 +741,9 @@ class AttributeTest extends UbercartBrowserTestBase {
    * Tests the "product adjustments" page.
    */
   public function testAttributeUiProductAdjustments() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $product = $this->createProduct();
     $attribute = $this->createAttribute(['display' => 1]);
     for ($i = 0; $i < 3; $i++) {
@@ -716,11 +755,13 @@ class AttributeTest extends UbercartBrowserTestBase {
     uc_attribute_subject_save($attribute, 'product', $product->id(), TRUE);
 
     $this->drupalGet('node/' . $product->id() . '/edit/adjustments');
-    $this->assertText(t('Default product SKU: @sku', ['@sku' => $product->model->value]), 'Default product SKU found');
-    $this->assertRaw('<th>' . $attribute->name . '</th>', 'Attribute name found');
+    // Check for default product SKU.
+    $assert->pageTextContains('Default product SKU: ' . $product->model->value);
+    // Verify attribute name, option name(s), and option SKU(s) are found.
+    $assert->responseContains('<th>' . $attribute->name . '</th>');
     foreach ($attribute->options as $option) {
-      $this->assertRaw('<td>' . $option->name . '</td>', 'Option name found');
-      $this->assertRaw($option->model, 'Option SKU found');
+      $assert->responseContains('<td>' . $option->name . '</td>');
+      $assert->responseContains($option->model);
     }
   }
 
@@ -728,6 +769,9 @@ class AttributeTest extends UbercartBrowserTestBase {
    * Tests attributes applied to a product.
    */
   public function testProductAttribute() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $product = $this->createProduct();
     $attribute = $this->createAttribute(['display' => 2, 'required' => TRUE]);
     for ($i = 0; $i < 3; $i++) {
@@ -740,54 +784,63 @@ class AttributeTest extends UbercartBrowserTestBase {
 
     // Product node display.
     $this->drupalGet('node/' . $product->id());
-    $this->assertText($attribute->label, 'Attribute label found for product');
-    $this->assertText($attribute->description, 'Attribute description found for product');
+    // Check for attribute label and description.
+    $assert->pageTextContains($attribute->label);
+    $assert->pageTextContains($attribute->description);
     foreach ($attribute->options as $option) {
-      $this->assertText($option->name, 'Option name found for product');
-      $this->assertText(uc_currency_format($option->price), 'Option price adjustment found for product');
+      // Check for option name and price adjustment.
+      $assert->pageTextContains($option->name);
+      $assert->pageTextContains(uc_currency_format($option->price));
     }
 
     // Test required attribute.
     $this->addToCart($product);
-    $this->assertText(t('@label field is required', ['@label' => $attribute->label]), 'Required attribute message found.');
+    // Check for attribute required message.
+    $assert->pageTextContains($attribute->label . ' field is required');
 
     // Cart display.
     $price = uc_currency_format($product->price->value + $option->price);
     $this->addToCart($product, ['attributes[' . $attribute->aid . ']' => $option->oid]);
-    $this->assertText($attribute->label . ': ' . $option->name, 'Attribute and selected option found in cart');
-    $this->assertText($price, 'Adjusted price found in cart');
+    // Check for selected attribute, option, and adjusted price in the cart.
+    $assert->pageTextContains($attribute->label . ': ' . $option->name);
+    $assert->pageTextContains($price);
 
     // Checkout display.
     $this->drupalPostForm(NULL, [], 'Checkout');
-    $this->assertText($attribute->label . ': ' . $option->name, 'Attribute and selected option found at checkout');
-    $this->assertText($price, 'Adjusted price found at checkout');
+    // Check for selected attribute, option, and adjusted price at checkout.
+    $assert->pageTextContains($attribute->label . ': ' . $option->name);
+    $assert->pageTextContains($price);
     $this->checkout();
 
     // Admin order display.
     $cost = uc_currency_format($product->cost->value + $option->cost);
     $this->drupalGet('admin/store/orders/1');
-    $this->assertText($attribute->label . ': ' . $option->name, 'Attribute and selected option found in admin order display');
-    $this->assertText($option->model, 'Adjusted SKU found in admin order display');
-    $this->assertText($cost, 'Adjusted cost found in admin order display');
-    $this->assertText($price, 'Adjusted price found in admin order display');
+    // Check for selected attribute, option, adjusted price, adjusted cost and
+    // adjusted SKU on admin order page.
+    $assert->pageTextContains($attribute->label . ': ' . $option->name, '');
+    $assert->pageTextContains($cost);
+    $assert->pageTextContains($price);
+    $assert->pageTextContains($option->model);
 
     // Invoice display.
     $this->drupalGet('admin/store/orders/1/invoice');
-    $this->assertText($attribute->label . ': ' . $option->name, 'Attribute and selected option found on invoice');
-    $this->assertText(t('SKU: @sku', ['@sku' => $option->model]), 'Adjusted SKU found on invoice');
-    $this->assertText($price, 'Adjusted price found on invoice');
+    // Check for selected attribute, option, adjusted price, and adjusted SKU
+    // on order invoice.
+    $assert->pageTextContains($attribute->label . ': ' . $option->name);
+    $assert->pageTextContains($price);
+    $assert->pageTextContains('SKU: ' . $option->model);
   }
 
   /**
    * Tests that product in cart has the selected attribute option.
    */
   public function testAttributeAddToCart() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     for ($display = 0; $display <= 3; ++$display) {
       // Set up an attribute.
-      $data = [
-        'display' => $display,
-      ];
-      $attribute = $this->createAttribute($data);
+      $attribute = $this->createAttribute(['display' => $display]);
 
       if ($display) {
         // Give the attribute an option.
@@ -815,8 +868,10 @@ class AttributeTest extends UbercartBrowserTestBase {
       }
 
       $this->addToCart($product, $edit);
-      $this->assertText("$attribute->label: $option->name", 'Option selected on cart item.');
-      $this->assertText(uc_currency_format($product->price->value + $option->price), 'Product has adjusted price.');
+      // Check that option is listed on the cart item.
+      $assert->pageTextContains("$attribute->label: $option->name", 'Option selected on cart item.');
+      // Check that the price in the cart is correct for this option.
+      $assert->pageTextContains(uc_currency_format($product->price->value + $option->price));
     }
   }
 
