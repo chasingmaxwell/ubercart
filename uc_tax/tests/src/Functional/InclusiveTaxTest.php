@@ -24,6 +24,9 @@ class InclusiveTaxTest extends TaxTestBase {
    * Test inclusive taxes with product kit attributes.
    */
   public function testProductKitAttributes() {
+    /** @var \Drupal\Tests\WebAssert $assert */
+    $assert = $this->assertSession();
+
     $this->drupalLogin($this->adminUser);
     // Need a way to pay for the order that we're taxing...
     $this->createPaymentMethod('other');
@@ -91,35 +94,36 @@ class InclusiveTaxTest extends TaxTestBase {
     // Ensure the price is displayed tax-inclusively on the node form.
     // We expect to see $10.80 = $10.00 product - $1.00 kit discount + 20% tax.
     $this->drupalGet('node/' . $kit->id());
-    $this->assertText('$10.80' . $rate->inclusion_text, 'Tax inclusive price on node-view form is accurate.');
+    $assert->pageTextContains('$10.80' . $rate->inclusion_text);
     // We expect to see $6.00 = $5.00 option adjustment + 20% tax.
-    $this->assertRaw($option->name . ', +$6.00</option>', 'Tax inclusive option price on node view form is accurate.');
+    $assert->responseContains($option->name . ', +$6.00</option>');
 
     // Add the product kit to the cart, selecting the option.
     $attribute_key = 'products[' . $product->id() . '][attributes][' . $attribute->aid . ']';
     $this->addToCart($kit, [$attribute_key => $option->oid]);
 
-    // Check that the subtotal is $16.80.
+    // Check that the subtotal is $16.80 on the cart page.
     // ($10 base + $5 option - $1 discount, with 20% tax.)
     $this->drupalGet('cart');
-    $this->assertSession()->pageTextMatches('/Subtotal:\s*\$16.80/', 'Order subtotal is correct on cart page.');
+    $this->assertSession()->pageTextMatches('/Subtotal:\s*\$16.80/');
 
     // Make sure that the subtotal is also correct on the checkout page.
     $this->drupalPostForm('cart', [], 'Checkout');
     // @todo re-enable this test, see [#2306379]
-    // $this->assertSession()->pageTextMatches('/Subtotal:\s*\$16.80/', 'Order subtotal is correct on checkout page.');
+    // $assert->pageTextMatches('/Subtotal:\s*\$16.80/');
 
     // Manually proceed to checkout review.
     $edit = $this->populateCheckoutForm();
     $this->drupalPostForm('cart/checkout', $edit, 'Review order');
-    $this->assertRaw('Your order is almost complete.');
+    $assert->responseContains('Your order is almost complete.');
 
-    // Make sure the price is still listed tax-inclusively.
+    // Make sure the price is still listed tax-inclusively in cart pane on
+    // the checkout page.
     // @todo This could be handled more specifically with a regex.
     // @todo re-enable this test, see [#2306379]
-    // $this->assertText('$16.80' . $rate->inclusion_text, 'Tax inclusive price appears in cart pane on checkout review page');
+    // $assert->pageTextContains('$16.80' . $rate->inclusion_text);
 
-    // Ensure the tax-inclusive price is listed on the order admin page.
+    // Ensure the tax-inclusive price is listed on the order admin view page.
     $order_ids = \Drupal::entityQuery('uc_order')
       ->condition('delivery_first_name', $edit['panes[delivery][first_name]'])
       ->execute();
@@ -127,17 +131,17 @@ class InclusiveTaxTest extends TaxTestBase {
     $this->assertTrue($order_id, 'Order was created successfully');
     $this->drupalGet('admin/store/orders/' . $order_id);
     // @todo re-enable this test, see [#2306379]
-    // $this->assertText('$16.80' . $rate->inclusion_text, 'Tax inclusive price appears on the order view page.');
+    // $assert->pageTextContains('$16.80' . $rate->inclusion_text);
 
     // And on the invoice.
     $this->drupalGet('admin/store/orders/' . $order_id . '/invoice');
     // @todo re-enable this test, see [#2306379]
-    // $this->assertText('$16.80' . $rate->inclusion_text, 'Tax inclusive price appears on the invoice.');
+    // $assert->pageTextContains('$16.80' . $rate->inclusion_text);
 
     // And on the printable invoice.
     $this->drupalGet('admin/store/orders/' . $order_id . '/invoice');
     // @todo re-enable this test, see [#2306379]
-    // $this->assertText('$16.80' . $rate->inclusion_text, 'Tax inclusive price appears on the printable invoice.');
+    // $assert->pageTextContains('$16.80' . $rate->inclusion_text);
   }
 
 }
