@@ -7,7 +7,6 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\Url;
 use Drupal\uc_fulfillment\Plugin\FulfillmentMethodPluginManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,7 +15,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Defines a class to build a listing of fulfillment method entities.
  */
 class FulfillmentMethodListBuilder extends DraggableListBuilder {
-  use MessengerTrait;
 
   /**
    * The fulfillment method plugin manager.

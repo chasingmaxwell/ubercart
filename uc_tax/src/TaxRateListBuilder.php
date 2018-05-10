@@ -7,7 +7,6 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Messenger\MessengerTrait;
 use Drupal\Core\Url;
 use Drupal\uc_tax\Plugin\TaxRatePluginManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -16,7 +15,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  * Provides a listing of tax rate entities.
  */
 class TaxRateListBuilder extends DraggableListBuilder {
-  use MessengerTrait;
 
   /**
    * The tax rate plugin manager.
