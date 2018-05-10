@@ -3,7 +3,6 @@
 namespace Drupal\uc_file\Controller;
 
 use Drupal\Component\Utility\Tags;
-use Drupal\Component\Utility\Unicode;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -26,7 +25,7 @@ class FileAutocompleteController {
     // Get the typed string from the URL, if it exists.
     if ($input = $request->query->get('q')) {
       $typed_string = Tags::explode($input);
-      $typed_string = Unicode::strtolower(array_pop($typed_string));
+      $typed_string = mb_strtolower(array_pop($typed_string));
 
       $filenames = db_select('uc_files', 'f')
         ->fields('f', ['filename'])

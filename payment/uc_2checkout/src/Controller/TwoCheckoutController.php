@@ -3,7 +3,6 @@
 namespace Drupal\uc_2checkout\Controller;
 
 use Drupal\Component\Utility\SafeMarkup;
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\uc_cart\CartManagerInterface;
 use Drupal\uc_order\Entity\Order;
@@ -68,7 +67,7 @@ class TwoCheckoutController extends ControllerBase {
     $key = $request->request->get('key');
     $order_number = $configuration['demo'] ? 1 : $request->request->get('order_number');
     $valid = md5($configuration['secret_word'] . $request->request->get('sid') . $order_number . $request->request->get('total'));
-    if (Unicode::strtolower($key) != Unicode::strtolower($valid)) {
+    if (mb_strtolower($key) != mb_strtolower($valid)) {
       uc_order_comment_save($order->id(), 0, $this->t('Attempted unverified 2Checkout completion for this order.'), 'admin');
       throw new AccessDeniedHttpException();
     }
@@ -97,7 +96,7 @@ class TwoCheckoutController extends ControllerBase {
     $order->setAddress('billing', $address);
     $order->save();
 
-    if (Unicode::strtolower($request->request->get('email')) !== Unicode::strtolower($order->getEmail())) {
+    if (mb_strtolower($request->request->get('email')) !== mb_strtolower($order->getEmail())) {
       uc_order_comment_save($order->id(), 0, $this->t('Customer used a different e-mail address during payment: @email', ['@email' => $request->request->get('email')]), 'admin');
     }
 

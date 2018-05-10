@@ -3,7 +3,6 @@
 namespace Drupal\uc_store;
 
 use Drupal\Component\Utility\Html;
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 
 /**
@@ -102,7 +101,7 @@ class Address implements AddressInterface {
     $address = trim(preg_replace("/\n\s*\n/", "\n", $address));
 
     if (\Drupal::config('uc_store.settings')->get('capitalize_address')) {
-      $address = Unicode::strtoupper($address);
+      $address = mb_strtoupper($address);
     }
 
     // <br> instead of <br />, because Twig will change it to <br> anyway and

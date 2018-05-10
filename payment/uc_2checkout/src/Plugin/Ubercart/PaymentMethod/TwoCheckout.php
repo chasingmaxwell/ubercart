@@ -2,7 +2,6 @@
 
 namespace Drupal\uc_2checkout\Plugin\Ubercart\PaymentMethod;
 
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\uc_order\OrderInterface;
@@ -186,15 +185,15 @@ class TwoCheckout extends PaymentMethodPluginBase implements OffsitePaymentMetho
     $data = [
       'sid' => $this->configuration['sid'],
       'mode' => '2CO',
-      'card_holder_name' => Unicode::substr($address->getFirstName() . ' ' . $address->getLastName(), 0, 128),
-      'street_address' => Unicode::substr($address->getStreet1(), 0, 64),
-      'street_address2' => Unicode::substr($address->getStreet2(), 0, 64),
-      'city' => Unicode::substr($address->getCity(), 0, 64),
+      'card_holder_name' => mb_substr($address->getFirstName() . ' ' . $address->getLastName(), 0, 128),
+      'street_address' => mb_substr($address->getStreet1(), 0, 64),
+      'street_address2' => mb_substr($address->getStreet2(), 0, 64),
+      'city' => mb_substr($address->getCity(), 0, 64),
       'state' => $address->getZone(),
-      'zip' => Unicode::substr($address->getPostalCode(), 0, 16),
+      'zip' => mb_substr($address->getPostalCode(), 0, 16),
       'country' => $country,
-      'email' => Unicode::substr($order->getEmail(), 0, 64),
-      'phone' => Unicode::substr($address->getPhone(), 0, 16),
+      'email' => mb_substr($order->getEmail(), 0, 64),
+      'phone' => mb_substr($address->getPhone(), 0, 16),
       'purchase_step' => 'payment-method',
 
       'demo' => $this->configuration['demo'] ? 'Y' : 'N',

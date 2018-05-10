@@ -5,8 +5,6 @@
  * Views hooks for Ubercart shipping.
  */
 
-use Drupal\Component\Utility\Unicode;
-
 /**
  * Implements hook_views_data().
  */
@@ -240,7 +238,7 @@ function uc_fulfillment_views_data() {
       $data['uc_shipments'][$prefix . '_' . $field] = [
         'group' => $group,
         'title' => $label,
-        'help' => t('The @field of the @address of the shipment.', ['@field' => Unicode::strtolower($label), '@address' => Unicode::strtolower($address)]),
+        'help' => t('The @field of the @address of the shipment.', ['@field' => mb_strtolower($label), '@address' => mb_strtolower($address)]),
         'field' => [
           'id' => 'standard',
           'click sortable' => TRUE,
@@ -258,7 +256,7 @@ function uc_fulfillment_views_data() {
     $data['uc_shipments'][$prefix . '_full_name'] = [
       'group' => $group,
       'title' => t('Full name'),
-      'help' => t('The @field of the @address of the shipment.', ['@field' => t('full name'), '@address' => Unicode::strtolower($address)]),
+      'help' => t('The @field of the @address of the shipment.', ['@field' => t('full name'), '@address' => mb_strtolower($address)]),
       'field' => [
         'additional fields' => [
           $prefix . '_first_name',
@@ -277,7 +275,7 @@ function uc_fulfillment_views_data() {
     ];
     $data['uc_shipments_' . $prefix . '_countries']['country_id'] = [
       'title' => t('ISO country code (numeric)'),
-      'help' => t('The @field of the @address of the shipment.', ['@field' => t('numeric ISO country code'), '@address' => Unicode::strtolower($address)]),
+      'help' => t('The @field of the @address of the shipment.', ['@field' => t('numeric ISO country code'), '@address' => mb_strtolower($address)]),
       'argument' => [
         'id' => 'numeric',
         'name field' => 'country_iso_code_2',
@@ -290,7 +288,7 @@ function uc_fulfillment_views_data() {
     ];
     $data['uc_shipments_' . $prefix . '_countries']['country_name'] = [
       'title' => t('Country'),
-      'help' => t('The @field of the @address of the shipment.', ['@field' => t('country name'), '@address' => Unicode::strtolower($address)]),
+      'help' => t('The @field of the @address of the shipment.', ['@field' => t('country name'), '@address' => mb_strtolower($address)]),
       'field' => [
         'id' => 'standard',
         'click sortable' => TRUE,
@@ -304,7 +302,7 @@ function uc_fulfillment_views_data() {
     ];
     $data['uc_shipments_' . $prefix . '_countries']['country_iso_code_2'] = [
       'title' => t('ISO country code (2 characters)'),
-      'help' => t('The @field of the @address of the shipment.', ['@field' => t('ISO country code'), '@address' => Unicode::strtolower($address)]),
+      'help' => t('The @field of the @address of the shipment.', ['@field' => t('ISO country code'), '@address' => mb_strtolower($address)]),
       'field' => [
         'id' => 'standard',
         'click sortable' => TRUE,
@@ -318,7 +316,7 @@ function uc_fulfillment_views_data() {
     ];
     $data['uc_shipments_' . $prefix . '_countries']['country_iso_code_3'] = [
       'title' => t('ISO country code (3 characters)'),
-      'help' => t('The @field of the @address of the shipment.', ['@field' => t('ISO country code'), '@address' => Unicode::strtolower($address)]),
+      'help' => t('The @field of the @address of the shipment.', ['@field' => t('ISO country code'), '@address' => mb_strtolower($address)]),
       'field' => [
         'id' => 'standard',
         'click sortable' => TRUE,
@@ -339,7 +337,7 @@ function uc_fulfillment_views_data() {
     ];
     $data['uc_shipments_' . $prefix . '_zones']['zone_name'] = [
       'title' => t('State/Province'),
-      'help' => t('The @field of the @address of the shipment.', ['@field' => t('state or province'), '@address' => Unicode::strtolower($address)]),
+      'help' => t('The @field of the @address of the shipment.', ['@field' => t('state or province'), '@address' => mb_strtolower($address)]),
       'field' => [
         'id' => 'standard',
         'click sortable' => TRUE,
@@ -353,7 +351,7 @@ function uc_fulfillment_views_data() {
     ];
     $data['uc_shipments_' . $prefix . '_zones']['zone_code'] = [
       'title' => t('State/Province code'),
-      'help' => t('The @field of the @address of the shipment.', ['@field' => t('state or province code'), '@address' => Unicode::strtolower($address)]),
+      'help' => t('The @field of the @address of the shipment.', ['@field' => t('state or province code'), '@address' => mb_strtolower($address)]),
       'field' => [
         'id' => 'standard',
         'click sortable' => TRUE,

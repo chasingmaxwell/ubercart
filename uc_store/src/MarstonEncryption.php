@@ -2,7 +2,6 @@
 
 namespace Drupal\uc_store;
 
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Url;
 
 /**
@@ -59,8 +58,8 @@ class MarstonEncryption implements EncryptionInterface {
     $target = NULL;
     $factor2 = 0;
 
-    for ($i = 0; $i < Unicode::strlen($plaintext); $i++) {
-      $char1 = Unicode::substr($plaintext, $i, 1);
+    for ($i = 0; $i < mb_strlen($plaintext); $i++) {
+      $char1 = mb_substr($plaintext, $i, 1);
 
       $num1 = strpos(self::$scramble1, $char1);
       if ($num1 === FALSE) {

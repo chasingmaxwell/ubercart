@@ -3,7 +3,6 @@
 namespace Drupal\uc_paypal\Controller;
 
 use Drupal\Component\Datetime\TimeInterface;
-use Drupal\Component\Utility\Unicode;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Link;
@@ -124,7 +123,7 @@ class PayPalController extends ControllerBase implements ContainerInjectionInter
 
     // Express Checkout IPNs may not have the WPS email stored. But if it is,
     // make sure that the right account is being paid.
-    if (!empty($config['wps_email']) && Unicode::strtolower($email) != Unicode::strtolower($config['wps_email'])) {
+    if (!empty($config['wps_email']) && mb_strtolower($email) != mb_strtolower($config['wps_email'])) {
       $this->getLogger('uc_paypal')->error('IPN for a different PayPal account attempted.');
       return;
     }

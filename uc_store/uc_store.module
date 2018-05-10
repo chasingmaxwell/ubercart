@@ -682,19 +682,19 @@ function uc_store_rfc2822_display_name($name) {
  */
 function uc_store_email_to_username($email) {
   // Default to the first part of the e-mail address.
-  $name = Unicode::substr($email, 0, Unicode::strpos($email, '@'));
+  $name = mb_substr($email, 0, mb_strpos($email, '@'));
 
   // Remove possible illegal characters.
   $name = preg_replace('/[^A-Za-z0-9_.-]/', '', $name);
 
   // Trim that value for spaces and length.
-  $name = trim(Unicode::substr($name, 0, UserInterface::USERNAME_MAX_LENGTH - 4));
+  $name = trim(mb_substr($name, 0, UserInterface::USERNAME_MAX_LENGTH - 4));
 
   // Make sure we don't hand out a duplicate username.
   while (user_load_by_name($name)) {
     // If the username got too long, trim it back down.
-    if (Unicode::strlen($name) == UserInterface::USERNAME_MAX_LENGTH) {
-      $name = Unicode::substr($name, 0, UserInterface::USERNAME_MAX_LENGTH - 4);
+    if (mb_strlen($name) == UserInterface::USERNAME_MAX_LENGTH) {
+      $name = mb_substr($name, 0, UserInterface::USERNAME_MAX_LENGTH - 4);
     }
 
     // Append a random integer to the name.

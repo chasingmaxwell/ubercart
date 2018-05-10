@@ -2,8 +2,6 @@
 
 namespace Drupal\uc_store;
 
-use Drupal\Component\Utility\Unicode;
-
 /**
  * Defines a trait implementing \Drupal\uc_store\AddressInterface.
  */
@@ -306,7 +304,7 @@ trait AddressTrait {
     // Remove all whitespace.
     $string = preg_replace('/\s+/', '', $string);
     // Make all characters upper case.
-    $string = Unicode::strtoupper($string);
+    $string = mb_strtoupper($string);
 
     return $string;
   }
