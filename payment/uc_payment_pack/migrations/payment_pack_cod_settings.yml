@@ -3,6 +3,7 @@ label: Payment Pack COD configuration settings
 migration_tags:
   - Drupal 6
   - Drupal 7
+  - Configuration
 
 source:
   plugin: variable

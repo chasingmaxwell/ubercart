@@ -2,6 +2,7 @@ id: d6_2checkout_settings
 label: 2Checkout configuration settings
 migration_tags:
   - Drupal 6
+  - Configuration
 
 source:
   plugin: variable

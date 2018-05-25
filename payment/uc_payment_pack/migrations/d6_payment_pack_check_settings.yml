@@ -2,6 +2,7 @@ id: d6_payment_pack_check_settings
 label: Payment Pack check configuration settings
 migration_tags:
   - Drupal 6
+  - Configuration
 
 source:
   plugin: variable
