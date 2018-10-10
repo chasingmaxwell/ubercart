@@ -41,6 +41,7 @@ class TaxRateFormBase extends EntityForm {
       '#type' => 'machine_name',
       '#title' => $this->t('Machine name'),
       '#default_value' => $rate->id(),
+      '#maxlength' => 32,
       '#machine_name' => [
         'exists' => [$this, 'exists'],
         'replace_pattern' => '([^a-z0-9_]+)|(^custom$)',

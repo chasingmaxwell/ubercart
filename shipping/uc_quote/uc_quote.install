@@ -142,7 +142,7 @@ function uc_quote_schema() {
       'method' => [
         'description' => 'The quoted shipping method.',
         'type' => 'varchar',
-        'length' => 25,
+        'length' => 32,
         'not null' => TRUE,
         'default' => '',
       ],

@@ -56,6 +56,7 @@ class PaymentMethodForm extends EntityForm {
     $form['id'] = [
       '#type' => 'machine_name',
       '#default_value' => $this->entity->id(),
+      '#maxlength' => 32,
       '#machine_name' => [
         'exists' => '\Drupal\uc_payment\Entity\PaymentMethod::load',
       ],
