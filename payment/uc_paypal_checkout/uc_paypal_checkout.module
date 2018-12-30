@@ -1,0 +1,381 @@
+<?php
+
+/**
+ * @file
+ * Integrates with PayPal Checkout.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function uc_paypal_checkout_menu() {
+  $items = array();
+
+  $items['uc_paypal_checkout/payment-create'] = array(
+    'title' => 'Create PayPal payment',
+    'description' => 'Creates a PayPal payment with the PayPal Checkout API.',
+    'page callback' => 'uc_paypal_checkout_create_payment',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'uc_paypal_checkout.pages.inc',
+  );
+
+  $items['uc_paypal_checkout/payment-execute'] = array(
+    'title' => 'Execute a PayPal payment',
+    'description' => 'Executes a PayPal payment with the PayPal Checkout API.',
+    'page callback' => 'uc_paypal_checkout_execute_payment',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'uc_paypal_checkout.pages.inc',
+  );
+
+  $items['uc_paypal_checkout/payment-failed'] = array(
+    'title' => 'Handle a failed payment',
+    'page callback' => 'uc_paypal_checkout_payment_failed',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+    'file' => 'uc_paypal_checkout.pages.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_uc_payment_method().
+ */
+function uc_paypal_checkout_uc_payment_method() {
+  $methods = array();
+
+  $methods[] = array(
+    'id' => 'paypal_checkout',
+    'name' => t('PayPal Checkout'),
+    'title' => t('PayPal Checkout'),
+    'review' => t('PayPal Checkout'),
+    'desc' => t('Complete orders through PayPal Checkout.'),
+    'callback' => 'uc_paypal_checkout_payment_method',
+    'weight' => 1,
+    'checkout' => FALSE,
+    'no_gateway' => TRUE,
+  );
+
+  return $methods;
+}
+
+/**
+ * Handles the PayPal Checkout payment method.
+ */
+function uc_paypal_checkout_payment_method($op, &$order) {
+  switch ($op) {
+    case 'settings':
+      $form['api'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('PayPal Checkout REST API settings'),
+      );
+      $form['api']['uc_paypal_checkout_api_url'] = array(
+        '#type' => 'textfield',
+        '#title' => t('PayPal Checkout API URL'),
+        '#required' => TRUE,
+        '#description' => t('The URL to the PayPal Checkout REST API including version number (example: https://api.sandbox.paypal.com/v1).'),
+        '#default_value' => variable_get('uc_paypal_checkout_api_url', ''),
+      );
+      $form['api']['uc_paypal_checkout_api_env'] = array(
+        '#type' => 'radios',
+        '#options' => array(
+          'sandbox' => 'sandbox',
+          'production' => 'production',
+        ),
+        '#title' => t('Environment'),
+        '#default_value' => variable_get('uc_paypal_checkout_api_env', 'sandbox'),
+      );
+      $form['api']['uc_paypal_checkout_api_client'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Client ID'),
+        '#required' => TRUE,
+        '#default_value' => variable_get('uc_paypal_checkout_api_client', ''),
+      );
+      $form['api']['uc_paypal_checkout_api_secret'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Secret'),
+        '#required' => TRUE,
+        '#default_value' => variable_get('uc_paypal_checkout_api_secret', ''),
+      );
+      $form['button'] = array(
+        '#type' => 'fieldset',
+        '#title' => t('PayPal Checkout button configuration'),
+        '#description' => t('See the !link for more information', array('!link' => l(t('button styles documentation'), 'https://developer.paypal.com/docs/checkout/how-to/customize-button/#button-styles'))),
+      );
+      $form['button']['uc_paypal_checkout_button_locale'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Locale'),
+        '#description' => t('The locale code of the country and language to display on the button.'),
+        '#default_value' => variable_get('uc_paypal_checkout_button_locale', 'en_US'),
+      );
+      $form['button']['uc_paypal_checkout_button_size'] = array(
+        '#type' => 'radios',
+        '#title' => t('Size'),
+        '#options' => array(
+          'small' => 'small',
+          'medium' => 'medium',
+          'large' => 'large',
+          'responsive' => 'responsive',
+        ),
+        '#default_value' => variable_get('uc_paypal_checkout_button_size', 'small'),
+      );
+      $form['button']['uc_paypal_checkout_button_color'] = array(
+        '#type' => 'radios',
+        '#title' => t('Color'),
+        '#options' => array(
+          'gold' => 'gold',
+          'blue' => 'blue',
+          'silver' => 'silver',
+          'white' => 'white',
+          'black' => 'black',
+        ),
+        '#default_value' => variable_get('uc_paypal_checkout_button_color', 'gold'),
+      );
+      $form['button']['uc_paypal_checkout_button_shape'] = array(
+        '#type' => 'radios',
+        '#title' => t('Shape'),
+        '#options' => array(
+          'pill' => 'pill',
+          'rect' => 'rect',
+        ),
+        '#default_value' => variable_get('uc_paypal_checkout_button_shape', 'pill'),
+      );
+      $form['button']['uc_paypal_checkout_button_label'] = array(
+        '#type' => 'radios',
+        '#title' => t('Label'),
+        '#options' => array(
+          'checkout' => 'checkout',
+          'credit' => 'credit',
+          'pay' => 'pay',
+          'buynow' => 'buynow',
+          'paypal' => 'paypal',
+        ),
+        '#default_value' => variable_get('uc_paypal_checkout_button_shape', 'checkout'),
+      );
+      $form['button']['uc_paypal_checkout_button_tagline'] = array(
+        '#type' => 'radios',
+        '#title' => t('Tagline'),
+        '#options' => array(
+          'true' => 'true',
+          'false' => 'false',
+        ),
+        '#default_value' => variable_get('uc_paypal_checkout_button_shape', 'true'),
+      );
+      return $form;
+  }
+}
+
+/**
+ * Generates PayPal Checkout button settings from configuration.
+ */
+function uc_paypal_checkout_get_settings() {
+  return array(
+    'env' => variable_get('uc_paypal_checkout_api_env', 'sandbox'),
+    'button' => array(
+      'locale' => variable_get('uc_paypal_checkout_button_locale', 'en_US'),
+      'size' => variable_get('uc_paypal_checkout_button_size', 'small'),
+      'color' => variable_get('uc_paypal_checkout_button_color', 'gold'),
+      'shape' => variable_get('uc_paypal_checkout_button_shape', 'pill'),
+      'label' => variable_get('uc_paypal_checkout_button_label', 'checkout'),
+      'tagline' => variable_get('uc_paypal_checkout_button_tagline', 'true'),
+    ),
+    'urls' => array(
+      'error' => url('uc_paypal_checkout/payment-failed'),
+      'cart' => url('cart'),
+      'checkoutComplete' => url('cart/checkout/complete'),
+      'paymentCreate' => url('uc_paypal_checkout/payment-create'),
+      'paymentExecute' => url('uc_paypal_checkout/payment-execute'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for uc_cart_view_form().
+ */
+function uc_paypal_checkout_form_uc_cart_view_form_alter(&$form, &$form_state, $form_id) {
+  if (variable_get('uc_checkout_enabled', TRUE)) {
+    $form['actions']['paypal_checkout'] = array(
+      '#type' => 'submit',
+      '#value' => 'PayPalCheckout',
+      '#attributes' => array('class' => array('element-hidden')),
+      '#submit' => array('uc_cart_view_form_submit', 'uc_paypal_checkout_go_to_checkout'),
+      '#suffix' => '<div id="paypal-button"></div>',
+      '#attached' => array(
+        'js' => array(
+          array(
+            'data' => array(
+              'ucPaypalCheckout' => uc_paypal_checkout_get_settings(),
+            ),
+            'type' => 'setting',
+          ),
+          array(
+            'data' => 'https://www.paypalobjects.com/api/checkout.js',
+            'type' => 'external',
+          ),
+          array(
+            'data' => drupal_get_path('module', 'uc_paypal_checkout') . '/js/paypal-button.js',
+            'type' => 'file',
+          ),
+        ),
+      ),
+    );
+  }
+  return $form;
+}
+
+/**
+ * Redirects a request to the payment creation endpoint.
+ *
+ * This is used as a form submission handler on the cart page.
+ *
+ * @see uc_paypal_checkout_form_uc_cart_view_form_alter()
+ */
+function uc_paypal_checkout_go_to_checkout() {
+  drupal_goto('uc_paypal_checkout/payment-create');
+}
+
+/**
+ * Implements hook_uc_cart_checkout_start().
+ *
+ * Stores the order in a session variable so we can retrieve it on custom
+ * payment endpoints where it wouldn't otherwise be available.
+ *
+ * @see uc_paypal_checkout_create_payment()
+ */
+function uc_paypal_checkout_uc_cart_checkout_start($order) {
+  $_SESSION['uc_paypal_checkout_order'] = $order;
+}
+
+/**
+ * Implements hook_uc_payment_method_checkout_alter().
+ *
+ * The paypal_checkout payment method is meant to replace the regular checkout
+ * flow. This ensures it is not an available payment option if a user opts to
+ * use the regular checkout flow.
+ */
+function uc_paypal_checkout_uc_payment_method_checkout_alter(&$options, &$order) {
+  if (isset($options['paypal_checkout'])) {
+    unset($options['paypal_checkout']);
+  }
+}
+
+/**
+ * Makes a request to the PayPal REST API during the PayPal Checkout flow.
+ *
+ * @param string $path
+ *   The URL path for the request excluding the API version (example:
+ *   "/payments/payment").
+ * @param string $method
+ *   The HTTP method of the request.
+ * @param array|object $body
+ *   The body to send with the request.
+ *
+ * @return object
+ *   The API response from the PayPal REST API.
+ */
+function uc_paypal_checkout_api_request($path, $method, $body) {
+  $curl = curl_init();
+
+  $options = array(
+    CURLOPT_URL => variable_get('uc_paypal_checkout_api_url') . $path,
+    CURLOPT_RETURNTRANSFER => TRUE,
+    CURLOPT_ENCODING => "",
+    CURLOPT_MAXREDIRS => 10,
+    CURLOPT_TIMEOUT => 30,
+    CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+    CURLOPT_CUSTOMREQUEST => $method,
+    CURLOPT_USERPWD => variable_get('uc_paypal_checkout_api_client') . ':' . variable_get('uc_paypal_checkout_api_secret'),
+    CURLOPT_HTTPHEADER => array(
+      "Cache-Control: no-cache",
+      "Content-Type: application/json",
+    ),
+  );
+
+  if (isset($body) && !empty($body)) {
+    $options[CURLOPT_POSTFIELDS] = json_encode($body);
+  }
+
+  curl_setopt_array($curl, $options);
+
+  $response = curl_exec($curl);
+  if ($error = curl_error($curl)) {
+    watchdog('uc_paypal_checkout', '!error', array('!error' => $error), WATCHDOG_ERROR);
+    drupal_goto('uc_paypal_checkout/payment-failed');
+  }
+
+  curl_close($curl);
+
+  return $response;
+}
+
+/**
+ * Updates an order with payment information from the PayPal payment.
+ *
+ * @param object $order
+ *   The order to update.
+ * @param object $paypal_payment
+ *   The object representing a successfully executed PayPal payment.
+ */
+function _uc_paypal_checkout_save_order($order, $paypal_payment) {
+  // Following the pattern of uc_paypal and setting billing_street1 to the
+  // user's email address.
+  $order->primary_email = $order->billing_street1 = check_plain($paypal_payment->payer->payer_info->email);
+  $order->delivery_first_name = $order->billing_first_name = check_plain($paypal_payment->payer->payer_info->first_name);
+  $order->delivery_last_name = $order->billing_last_name = check_plain($paypal_payment->payer->payer_info->last_name);
+  $order->delivery_street1 = check_plain($paypal_payment->payer->payer_info->shipping_address->line1);
+  if (isset($paypal_payment->payer->payer_info->shipping_address->line2)) {
+    $order->delivery_street2 = check_plain($paypal_payment->payer->payer_info->shipping_address->line2);
+  }
+  $order->delivery_city = check_plain($paypal_payment->payer->payer_info->shipping_address->city);
+  $order->delivery_postal_code = check_plain($paypal_payment->payer->payer_info->shipping_address->postal_code);
+  $order->delivery_country = db_query("SELECT country_id FROM {uc_countries} WHERE country_iso_code_2 = :code", array(':code' => $paypal_payment->payer->payer_info->shipping_address->country_code))->fetchField();
+  $zone_id = 0;
+  if (
+    !empty($order->delivery_country)
+    && isset($paypal_payment->payer->payer_info->shipping_address->state)
+  ) {
+    $zone = $paypal_payment->payer->payer_info->shipping_address->state;
+    $zone_id = db_query(
+      "SELECT zone_id FROM {uc_zones} WHERE zone_country_id = :id AND (zone_code = :code OR zone_name = :name)",
+      array(
+        ':id' => $order->delivery_country,
+        ':code' => $zone,
+        ':name' => $zone,
+      )
+    )->fetchField();
+  }
+  $order->delivery_zone = $zone_id;
+  $order->payment_method = 'paypal_checkout';
+
+  uc_order_save($order);
+  $comment = t(
+    'PayPal payment ID: @payment_id',
+    array(
+      '@payment_id' => $paypal_payment->id,
+    )
+  );
+  uc_payment_enter(
+    $order->order_id,
+    'paypal_checkout',
+    $paypal_payment->transactions[0]->amount->total, $order->uid,
+    array('paymentID' => $paypal_payment->id),
+    $comment
+  );
+  uc_cart_complete_sale($order);
+  uc_order_comment_save(
+    $order->order_id,
+    0,
+    t(
+      'PayPal Checkout API reported a payment of @amount @currency.',
+      array(
+        '@amount' => uc_currency_format(
+          $paypal_payment->transactions[0]->amount->total,
+          FALSE
+        ),
+        '@currency' => $paypal_payment->transactions[0]->amount->currency,
+      )
+    )
+  );
+}
