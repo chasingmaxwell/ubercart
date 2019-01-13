@@ -168,7 +168,7 @@ function uc_paypal_checkout_form_uc_cart_view_form_alter(&$form, &$form_state, $
     $form['actions']['paypal_checkout'] = array(
       '#type' => 'submit',
       '#value' => 'PayPalCheckout',
-      '#attributes' => array('class' => array('element-hidden')),
+      '#attributes' => array('style' => array('display: none')),
       '#submit' => array('uc_cart_view_form_submit', 'uc_paypal_checkout_go_to_checkout'),
       '#suffix' => '<div id="paypal-button"></div>',
       '#attached' => array(
