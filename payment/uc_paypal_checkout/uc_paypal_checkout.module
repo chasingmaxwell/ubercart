@@ -164,7 +164,7 @@ function uc_paypal_checkout_get_settings() {
  * Implements hook_form_FORM_ID_alter() for uc_cart_view_form().
  */
 function uc_paypal_checkout_form_uc_cart_view_form_alter(&$form, &$form_state, $form_id) {
-  if (variable_get('uc_checkout_enabled', TRUE)) {
+  if (uc_paypal_checkout_method_is_enabled() && variable_get('uc_checkout_enabled', TRUE)) {
     $form['actions']['paypal_checkout'] = array(
       '#type' => 'submit',
       '#value' => 'PayPalCheckout',
@@ -190,6 +190,7 @@ function uc_paypal_checkout_form_uc_cart_view_form_alter(&$form, &$form_state, $
         ),
       ),
     );
+
   }
   return $form;
 }
@@ -214,7 +215,9 @@ function uc_paypal_checkout_go_to_checkout() {
  * @see uc_paypal_checkout_create_payment()
  */
 function uc_paypal_checkout_uc_cart_checkout_start($order) {
-  $_SESSION['uc_paypal_checkout_order'] = $order;
+  if (uc_paypal_checkout_method_is_enabled()) {
+    $_SESSION['uc_paypal_checkout_order'] = $order;
+  }
 }
 
 /**
@@ -347,4 +350,14 @@ function _uc_paypal_checkout_save_order($order, $paypal_payment) {
       )
     )
   );
+}
+
+/**
+ * Determines whether the uc_paypal_checkout method is enabled.
+ *
+ * @return boolean
+ *   TRUE if the uc_paypal_checkout method is enabled. Otherwise, FALSE.
+ */
+function uc_paypal_checkout_method_is_enabled() {
+  return variable_get('uc_payment_method_paypal_checkout_checkout', FALSE);
 }
