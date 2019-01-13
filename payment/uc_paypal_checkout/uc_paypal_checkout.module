@@ -152,7 +152,7 @@ function uc_paypal_checkout_payment_method($op, &$order) {
           'buynow' => 'buynow',
           'paypal' => 'paypal',
         ),
-        '#default_value' => variable_get('uc_paypal_checkout_button_shape', 'checkout'),
+        '#default_value' => variable_get('uc_paypal_checkout_button_label', 'checkout'),
       );
       $form['button']['uc_paypal_checkout_button_tagline'] = array(
         '#type' => 'radios',
@@ -161,7 +161,7 @@ function uc_paypal_checkout_payment_method($op, &$order) {
           'true' => 'true',
           'false' => 'false',
         ),
-        '#default_value' => variable_get('uc_paypal_checkout_button_shape', 'true'),
+        '#default_value' => variable_get('uc_paypal_checkout_button_tagline', 'true'),
       );
       return $form;
   }
