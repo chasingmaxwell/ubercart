@@ -11,14 +11,8 @@
         {
           // Configuration
           env: settings.ucPaypalCheckout.env,
-          locale: settings.ucPaypalCheckout.button.locale,
-          style: {
-            size: settings.ucPaypalCheckout.button.size,
-            color: settings.ucPaypalCheckout.button.color,
-            shape: settings.ucPaypalCheckout.button.shape,
-            label: settings.ucPaypalCheckout.button.label,
-            tagline: settings.ucPaypalCheckout.button.tagline
-          },
+          locale: settings.ucPaypalCheckout.locale,
+          style: settings.ucPaypalCheckout.buttonStyle,
           commit: true,
 
           // Set up a payment

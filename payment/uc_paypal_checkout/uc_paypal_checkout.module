@@ -5,6 +5,15 @@
  * Integrates with PayPal Checkout.
  */
 
+define('UC_PAYPAL_CHECKOUT_DEFAULT_BUTTON_CONFIGURATION',
+<<<EOD
+{
+  "layout": "horizontal",
+  "fundingicons": true
+}
+EOD
+);
+
 /**
  * Implements hook_menu().
  */
@@ -99,71 +108,37 @@ function uc_paypal_checkout_payment_method($op, &$order) {
         '#required' => TRUE,
         '#default_value' => variable_get('uc_paypal_checkout_api_secret', ''),
       );
-      $form['button'] = array(
-        '#type' => 'fieldset',
-        '#title' => t('PayPal Checkout button configuration'),
-        '#description' => t('See the !link for more information', array('!link' => l(t('button styles documentation'), 'https://developer.paypal.com/docs/checkout/how-to/customize-button/#button-styles'))),
-      );
-      $form['button']['uc_paypal_checkout_button_locale'] = array(
+      $form['uc_paypal_checkout_locale'] = array(
         '#type' => 'textfield',
         '#title' => t('Locale'),
-        '#description' => t('The locale code of the country and language to display on the button.'),
+        '#description' => t('The locale code of the country and language to use when displaying the button.'),
         '#default_value' => variable_get('uc_paypal_checkout_button_locale', 'en_US'),
       );
-      $form['button']['uc_paypal_checkout_button_size'] = array(
-        '#type' => 'radios',
-        '#title' => t('Size'),
-        '#options' => array(
-          'small' => 'small',
-          'medium' => 'medium',
-          'large' => 'large',
-          'responsive' => 'responsive',
+      $form['uc_paypal_checkout_button_style'] = array(
+        '#type' => 'textarea',
+        '#title' => t('Button Style'),
+        '#default_value' => variable_get('uc_paypal_checkout_button_style', UC_PAYPAL_CHECKOUT_DEFAULT_BUTTON_CONFIGURATION),
+        '#description' => t(
+          'Enter valid JSON containing button style configuration properties. See the !link for documentation concerning supported configuration properties. %warning',
+          array(
+            '!link' => l(t('button styles documentation'), 'https://developer.paypal.com/docs/checkout/how-to/customize-button/#button-styles'),
+            '%warning' => 'NOTE: some configuration options are not compatible. If the PayPal Checkout button disappears after a style configuration change, this is likely the reason.',
+          )
         ),
-        '#default_value' => variable_get('uc_paypal_checkout_button_size', 'small'),
       );
-      $form['button']['uc_paypal_checkout_button_color'] = array(
-        '#type' => 'radios',
-        '#title' => t('Color'),
-        '#options' => array(
-          'gold' => 'gold',
-          'blue' => 'blue',
-          'silver' => 'silver',
-          'white' => 'white',
-          'black' => 'black',
-        ),
-        '#default_value' => variable_get('uc_paypal_checkout_button_color', 'gold'),
-      );
-      $form['button']['uc_paypal_checkout_button_shape'] = array(
-        '#type' => 'radios',
-        '#title' => t('Shape'),
-        '#options' => array(
-          'pill' => 'pill',
-          'rect' => 'rect',
-        ),
-        '#default_value' => variable_get('uc_paypal_checkout_button_shape', 'pill'),
-      );
-      $form['button']['uc_paypal_checkout_button_label'] = array(
-        '#type' => 'radios',
-        '#title' => t('Label'),
-        '#options' => array(
-          'checkout' => 'checkout',
-          'credit' => 'credit',
-          'pay' => 'pay',
-          'buynow' => 'buynow',
-          'paypal' => 'paypal',
-        ),
-        '#default_value' => variable_get('uc_paypal_checkout_button_label', 'checkout'),
-      );
-      $form['button']['uc_paypal_checkout_button_tagline'] = array(
-        '#type' => 'radios',
-        '#title' => t('Tagline'),
-        '#options' => array(
-          'true' => 'true',
-          'false' => 'false',
-        ),
-        '#default_value' => variable_get('uc_paypal_checkout_button_tagline', 'true'),
-      );
+
+      $form['#validate'][] = 'uc_paypal_checkout_payment_method_settings_validate';
+
       return $form;
+  }
+}
+
+/**
+ * Form validation for the Paypal Checkout method settings form.
+ */
+function uc_paypal_checkout_payment_method_settings_validate($form, &$form_state) {
+  if (is_null(json_decode($form_state['values']['uc_paypal_checkout_button_style']))) {
+    form_set_error('uc_paypal_checkout_button_style', t('You must enter valid JSON'));
   }
 }
 
@@ -173,14 +148,8 @@ function uc_paypal_checkout_payment_method($op, &$order) {
 function uc_paypal_checkout_get_settings() {
   return array(
     'env' => variable_get('uc_paypal_checkout_api_env', 'sandbox'),
-    'button' => array(
-      'locale' => variable_get('uc_paypal_checkout_button_locale', 'en_US'),
-      'size' => variable_get('uc_paypal_checkout_button_size', 'small'),
-      'color' => variable_get('uc_paypal_checkout_button_color', 'gold'),
-      'shape' => variable_get('uc_paypal_checkout_button_shape', 'pill'),
-      'label' => variable_get('uc_paypal_checkout_button_label', 'checkout'),
-      'tagline' => variable_get('uc_paypal_checkout_button_tagline', 'true'),
-    ),
+    'locale' => variable_get('uc_paypal_checkout_locale', 'en_US'),
+    'buttonStyle' => json_decode(variable_get('uc_paypal_checkout_button_configuration', UC_PAYPAL_CHECKOUT_DEFAULT_BUTTON_CONFIGURATION)),
     'urls' => array(
       'error' => url('uc_paypal_checkout/payment-failed'),
       'cart' => url('cart'),
