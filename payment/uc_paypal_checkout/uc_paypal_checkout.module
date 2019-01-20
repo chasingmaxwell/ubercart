@@ -355,7 +355,7 @@ function _uc_paypal_checkout_save_order($order, $paypal_payment) {
 /**
  * Determines whether the uc_paypal_checkout method is enabled.
  *
- * @return boolean
+ * @return bool
  *   TRUE if the uc_paypal_checkout method is enabled. Otherwise, FALSE.
  */
 function uc_paypal_checkout_method_is_enabled() {
