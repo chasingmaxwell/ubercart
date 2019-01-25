@@ -30,7 +30,7 @@
                 return JSON.parse(res).id;
               })
               .catch(function () {
-                window.location.href = setting.ucPaypalCheckout.urls.error;
+                window.location.href = settings.ucPaypalCheckout.urls.error;
               });
           },
 
@@ -46,11 +46,11 @@
                   settings.ucPaypalCheckout.urls.checkoutComplete;
               })
               .catch(function () {
-                window.location.href = setting.ucPaypalCheckout.urls.error;
+                window.location.href = settings.ucPaypalCheckout.urls.error;
               });
           },
           onError: function (error) {
-            window.location.href = setting.ucPaypalCheckout.urls.error;
+            window.location.href = settings.ucPaypalCheckout.urls.error;
           }
         },
         '#paypal-button'
