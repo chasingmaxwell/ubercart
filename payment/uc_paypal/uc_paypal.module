@@ -129,7 +129,7 @@ function uc_paypal_uc_payment_method() {
 
   $methods[] = array(
     'id' => 'paypal_wps',
-    'name' => t('PayPal Website Payments Standard'),
+    'name' => t('PayPal Website Payments Standard — DEPRECATED please use PayPal Checkout.'),
     'title' => $title1 . $title2,
     'review' => t('PayPal'),
     'desc' => t('Redirect users to submit payments through PayPal.'),
@@ -142,7 +142,7 @@ function uc_paypal_uc_payment_method() {
 
   $methods[] = array(
     'id' => 'paypal_ec',
-    'name' => t('PayPal Express Checkout'),
+    'name' => t('PayPal Express Checkout — DEPRECATED please use PayPal Checkout.'),
     'title' => $title1,
     'review' => t('PayPal'),
     'desc' => t('Complete orders through PayPal Express Checkout.'),

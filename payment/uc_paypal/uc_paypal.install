@@ -26,6 +26,12 @@ function uc_paypal_requirements($phase) {
     }
   }
 
+  $requirements['deprecated_methods'] = array(
+    'title' => $t('Deprecated PayPal payment methods'),
+    'description' => $t('The PayPal Website Payments Standard and Express Checkout payment methods are no longer supported by PayPal. Please disable the PayPal module and utilize the PayPal Checkout module and payment method instead'),
+    'severity' => REQUIREMENT_WARNING,
+  );
+
   return $requirements;
 }
 
