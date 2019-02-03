@@ -25,7 +25,7 @@
               }, {});
             formData.op = 'PayPalCheckout';
             return actions.request
-              .post(settings.ucPaypalCheckout.urls.cart, formData)
+              .get(settings.ucPaypalCheckout.urls.paymentCreate)
               .then(function (res) {
                 return JSON.parse(res).id;
               })
