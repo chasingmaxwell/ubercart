@@ -163,14 +163,14 @@ function uc_paypal_checkout_get_settings() {
 /**
  * Implements hook_form_FORM_ID_alter() for uc_cart_view_form().
  */
-function uc_paypal_checkout_form_uc_cart_view_form_alter(&$form, &$form_state, $form_id) {
-  if (uc_paypal_checkout_method_is_enabled() && variable_get('uc_checkout_enabled', TRUE)) {
+function uc_paypal_checkout_form_uc_cart_checkout_review_form_alter(&$form, &$form_state, $form_id) {
+  $order = uc_order_load(intval($_SESSION['cart_order']));
+
+  if ($order->payment_method === 'paypal_checkout') {
+    $form['actions']['submit']['#access'] = FALSE;
     $form['actions']['paypal_checkout'] = array(
-      '#type' => 'submit',
-      '#value' => 'PayPalCheckout',
-      '#attributes' => array('style' => array('display: none')),
-      '#submit' => array('uc_cart_view_form_submit', 'uc_paypal_checkout_go_to_checkout'),
-      '#suffix' => '<div id="paypal-button"></div>',
+      '#weight' => 999,
+      '#markup' => '<div id="paypal-button"></div>',
       '#attached' => array(
         'js' => array(
           array(
@@ -190,47 +190,9 @@ function uc_paypal_checkout_form_uc_cart_view_form_alter(&$form, &$form_state, $
         ),
       ),
     );
-
   }
+
   return $form;
-}
-
-/**
- * Redirects a request to the payment creation endpoint.
- *
- * This is used as a form submission handler on the cart page.
- *
- * @see uc_paypal_checkout_form_uc_cart_view_form_alter()
- */
-function uc_paypal_checkout_go_to_checkout() {
-  drupal_goto('uc_paypal_checkout/payment-create');
-}
-
-/**
- * Implements hook_uc_cart_checkout_start().
- *
- * Stores the order in a session variable so we can retrieve it on custom
- * payment endpoints where it wouldn't otherwise be available.
- *
- * @see uc_paypal_checkout_create_payment()
- */
-function uc_paypal_checkout_uc_cart_checkout_start($order) {
-  if (uc_paypal_checkout_method_is_enabled()) {
-    $_SESSION['uc_paypal_checkout_order'] = $order;
-  }
-}
-
-/**
- * Implements hook_uc_payment_method_checkout_alter().
- *
- * The paypal_checkout payment method is meant to replace the regular checkout
- * flow. This ensures it is not an available payment option if a user opts to
- * use the regular checkout flow.
- */
-function uc_paypal_checkout_uc_payment_method_checkout_alter(&$options, &$order) {
-  if (isset($options['paypal_checkout'])) {
-    unset($options['paypal_checkout']);
-  }
 }
 
 /**
@@ -280,84 +242,4 @@ function uc_paypal_checkout_api_request($path, $method, $body) {
   curl_close($curl);
 
   return $response;
-}
-
-/**
- * Updates an order with payment information from the PayPal payment.
- *
- * @param object $order
- *   The order to update.
- * @param object $paypal_payment
- *   The object representing a successfully executed PayPal payment.
- */
-function _uc_paypal_checkout_save_order($order, $paypal_payment) {
-  // Following the pattern of uc_paypal and setting billing_street1 to the
-  // user's email address.
-  $order->primary_email = $order->billing_street1 = check_plain($paypal_payment->payer->payer_info->email);
-  $order->delivery_first_name = $order->billing_first_name = check_plain($paypal_payment->payer->payer_info->first_name);
-  $order->delivery_last_name = $order->billing_last_name = check_plain($paypal_payment->payer->payer_info->last_name);
-  $order->delivery_street1 = check_plain($paypal_payment->payer->payer_info->shipping_address->line1);
-  if (isset($paypal_payment->payer->payer_info->shipping_address->line2)) {
-    $order->delivery_street2 = check_plain($paypal_payment->payer->payer_info->shipping_address->line2);
-  }
-  $order->delivery_city = check_plain($paypal_payment->payer->payer_info->shipping_address->city);
-  $order->delivery_postal_code = check_plain($paypal_payment->payer->payer_info->shipping_address->postal_code);
-  $order->delivery_country = db_query("SELECT country_id FROM {uc_countries} WHERE country_iso_code_2 = :code", array(':code' => $paypal_payment->payer->payer_info->shipping_address->country_code))->fetchField();
-  $zone_id = 0;
-  if (
-    !empty($order->delivery_country)
-    && isset($paypal_payment->payer->payer_info->shipping_address->state)
-  ) {
-    $zone = $paypal_payment->payer->payer_info->shipping_address->state;
-    $zone_id = db_query(
-      "SELECT zone_id FROM {uc_zones} WHERE zone_country_id = :id AND (zone_code = :code OR zone_name = :name)",
-      array(
-        ':id' => $order->delivery_country,
-        ':code' => $zone,
-        ':name' => $zone,
-      )
-    )->fetchField();
-  }
-  $order->delivery_zone = $zone_id;
-  $order->payment_method = 'paypal_checkout';
-
-  uc_order_save($order);
-  $comment = t(
-    'PayPal payment ID: @payment_id',
-    array(
-      '@payment_id' => $paypal_payment->id,
-    )
-  );
-  uc_payment_enter(
-    $order->order_id,
-    'paypal_checkout',
-    $paypal_payment->transactions[0]->amount->total, $order->uid,
-    array('paymentID' => $paypal_payment->id),
-    $comment
-  );
-  uc_cart_complete_sale($order);
-  uc_order_comment_save(
-    $order->order_id,
-    0,
-    t(
-      'PayPal Checkout API reported a payment of @amount @currency.',
-      array(
-        '@amount' => uc_currency_format(
-          $paypal_payment->transactions[0]->amount->total,
-          FALSE
-        ),
-        '@currency' => $paypal_payment->transactions[0]->amount->currency,
-      )
-    )
-  );
-}
-
-/**
- * Determines whether the uc_paypal_checkout method is enabled.
- *
- * @return bool
- *   TRUE if the uc_paypal_checkout method is enabled. Otherwise, FALSE.
- */
-function uc_paypal_checkout_method_is_enabled() {
-  return variable_get('uc_payment_method_paypal_checkout_checkout', FALSE);
 }
