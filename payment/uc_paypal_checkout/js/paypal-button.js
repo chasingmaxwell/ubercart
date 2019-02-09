@@ -7,54 +7,50 @@
 
   Drupal.behaviors.ucPaypalCheckout = {
     attach: function (context, settings) {
-      paypal.Button.render(
-        {
-          // Configuration
-          env: settings.ucPaypalCheckout.env,
-          locale: settings.ucPaypalCheckout.locale,
-          style: settings.ucPaypalCheckout.buttonStyle,
-          commit: true,
+      var config = settings.ucPaypalCheckout.overrideConfig || {};
 
-          // Set up a payment
-          payment: function (data, actions) {
-            const formData = $('#uc-cart-view-form')
-              .serializeArray()
-              .reduce(function (values, current) {
-                values[current.name] = current.value;
-                return values;
-              }, {});
-            formData.op = 'PayPalCheckout';
-            return actions.request
-              .get(settings.ucPaypalCheckout.urls.paymentCreate)
-              .then(function (res) {
-                return JSON.parse(res).id;
-              })
-              .catch(function () {
-                window.location.href = settings.ucPaypalCheckout.urls.error;
-              });
-          },
+      // Configuration
+      config.env = config.env || settings.ucPaypalCheckout.env;
+      config.locale = config.locale || settings.ucPaypalCheckout.locale;
+      config.style = config.style || settings.ucPaypalCheckout.buttonStyle;
+      config.commit = config.commit || true;
+      config.funding = config.funding || {};
+      config.funding.allowed = config.funding.allowed || settings.ucPaypalCheckout.allowedFunding.map(function (source) { return paypal.FUNDING[source]; });
 
-          // Execute the payment
-          onAuthorize: function (data, actions) {
-            return actions.request
-              .post(settings.ucPaypalCheckout.urls.paymentExecute, {
-                paymentID: data.paymentID,
-                payerID: data.payerID
-              })
-              .then(function (res) {
-                window.location.href =
-                  settings.ucPaypalCheckout.urls.checkoutComplete;
-              })
-              .catch(function () {
-                window.location.href = settings.ucPaypalCheckout.urls.error;
-              });
-          },
-          onError: function (error) {
+      // Set up a payment
+      config.payment = function (data, actions) {
+        return actions.request
+          .get(settings.ucPaypalCheckout.urls.paymentCreate)
+          .then(function (res) {
+            return JSON.parse(res).id;
+          })
+          .catch(function () {
             window.location.href = settings.ucPaypalCheckout.urls.error;
-          }
-        },
-        '#paypal-button'
-      );
+          });
+      };
+
+      // Execute the payment
+      config.onAuthorize = function (data, actions) {
+        return actions.request
+          .post(settings.ucPaypalCheckout.urls.paymentExecute, {
+            paymentID: data.paymentID,
+            payerID: data.payerID
+          })
+          .then(function (res) {
+            window.location.href =
+              settings.ucPaypalCheckout.urls.checkoutComplete;
+          })
+          .catch(function () {
+            window.location.href = settings.ucPaypalCheckout.urls.error;
+          });
+      };
+
+      // Handle errors
+      config.onError = function (error) {
+        window.location.href = settings.ucPaypalCheckout.urls.error;
+      };
+
+      paypal.Button.render(config, '#paypal-button');
     }
   };
 })(jQuery);
