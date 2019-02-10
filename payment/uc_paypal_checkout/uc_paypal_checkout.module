@@ -148,6 +148,12 @@ function uc_paypal_checkout_payment_method($op, &$order) {
         '#title' => t('Allowed funding sources'),
         '#default_value' => variable_get('uc_paypal_checkout_allowed_funding', UC_PAYPAL_CHECKOUT_ALLOWED_FUNDING),
       );
+      $form['uc_paypal_checkout_use_paypal_billing_address'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Use PayPal shipping address as billing address'),
+        '#description' => t('When checked, the billing information will be populated from the user\'s PayPal account and the billing pane on the checkout page will be disabled.'),
+        '#default_value' => variable_get('uc_paypal_checkout_use_paypal_billing_address', 0),
+      );
       $form['uc_paypal_checkout_button_style'] = array(
         '#type' => 'textarea',
         '#title' => t('Button Style'),
@@ -223,6 +229,15 @@ function uc_paypal_checkout_get_settings() {
       'paymentExecute' => url('uc_paypal_checkout/payment-execute'),
     ),
   );
+}
+
+/**
+ * Implements hook_uc_checkout_pane_alter().
+ */
+function uc_paypal_checkout_uc_checkout_pane_alter(&$panes) {
+  if (variable_get('uc_paypal_checkout_use_paypal_billing_address', 0)) {
+    $panes['billing']['enabled'] = FALSE;
+  }
 }
 
 /**

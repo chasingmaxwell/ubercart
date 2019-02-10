@@ -52,12 +52,41 @@ function uc_paypal_checkout_execute_payment() {
     'payer_id' => $_POST['payerID'],
   ];
 
-  // Create the PayPal payment.
+  // Execute the PayPal payment.
   $response = uc_paypal_checkout_api_request('/payments/payment/' . $_POST['paymentID'] . '/execute', 'POST', $body);
 
   $order = uc_order_load(intval($_SESSION['cart_order']));
 
   $paypal_payment = json_decode($response);
+
+  if (variable_get('uc_paypal_checkout_use_paypal_billing_address', 0)) {
+    // Update the order billing address with the PayPal shipping address.
+    $order->billing_first_name = check_plain($paypal_payment->payer->payer_info->first_name);
+    $order->billing_last_name = check_plain($paypal_payment->payer->payer_info->last_name);
+    $order->billing_street1 = check_plain($paypal_payment->payer->payer_info->shipping_address->line1);
+    if (isset($paypal_payment->payer->payer_info->shipping_address->line2)) {
+      $order->billing_street2 = check_plain($paypal_payment->payer->payer_info->shipping_address->line2);
+    }
+    $order->billing_city = check_plain($paypal_payment->payer->payer_info->shipping_address->city);
+    $order->billing_postal_code = check_plain($paypal_payment->payer->payer_info->shipping_address->postal_code);
+    $order->billing_country = db_query("SELECT country_id FROM {uc_countries} WHERE country_iso_code_2 = :code", array(':code' => $paypal_payment->payer->payer_info->shipping_address->country_code))->fetchField();
+    $zone_id = 0;
+    if (
+      !empty($order->billing_country)
+      && isset($paypal_payment->payer->payer_info->shipping_address->state)
+    ) {
+      $zone = $paypal_payment->payer->payer_info->shipping_address->state;
+      $zone_id = db_query(
+        "SELECT zone_id FROM {uc_zones} WHERE zone_country_id = :id AND (zone_code = :code OR zone_name = :name)",
+        array(
+          ':id' => $order->billing_country,
+          ':code' => $zone,
+          ':name' => $zone,
+        )
+      )->fetchField();
+    }
+    $order->billing_zone = $zone_id;
+  }
 
   uc_order_save($order);
   $comment = t(
