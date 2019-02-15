@@ -16,7 +16,8 @@ use GuzzleHttp\Exception\TransferException;
  *
  * @UbercartPaymentMethod(
  *   id = "paypal_ec",
- *   name = @Translation("PayPal Express Checkout")
+ *   name = @Translation("PayPal Express Checkout — DEPRECATED please use PayPal
+ *   Checkout")
  * )
  */
 class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements ExpressPaymentMethodPluginInterface, OffsitePaymentMethodPluginInterface {

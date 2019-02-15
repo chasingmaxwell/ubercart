@@ -15,7 +15,8 @@ use GuzzleHttp\Exception\TransferException;
  *
  * @UbercartPaymentMethod(
  *   id = "paypal_wpp",
- *   name = @Translation("PayPal Website Payments Pro"),
+ *   name = @Translation("PayPal Website Payments Pro — DEPRECATED please use
+ *   PayPal Checkout"),
  * )
  */
 class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {

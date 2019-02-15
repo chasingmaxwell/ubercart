@@ -12,7 +12,8 @@ use Drupal\uc_payment\OffsitePaymentMethodPluginInterface;
  *
  * @UbercartPaymentMethod(
  *   id = "paypal_wps",
- *   name = @Translation("PayPal Payments Standard")
+ *   name = @Translation("PayPal Payments Standard — DEPRECATED please use
+ *   PayPal Checkout")
  * )
  */
 class PayPalPaymentsStandard extends PayPalPaymentMethodPluginBase implements OffsitePaymentMethodPluginInterface {
