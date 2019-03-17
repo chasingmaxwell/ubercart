@@ -5,7 +5,7 @@
  * Integrates with PayPal Checkout.
  */
 
-define('UC_PAYPAL_CHECKOUT_DEFAULT_BUTTON_CONFIGURATION',
+define('UC_PAYPAL_CHECKOUT_DEFAULT_BUTTON_STYLE',
 <<<EOD
 {
   "layout": "horizontal",
@@ -158,7 +158,7 @@ function uc_paypal_checkout_payment_method($op, &$order) {
         '#type' => 'textarea',
         '#title' => t('Button Style'),
         '#element_validate' => array('uc_paypal_checkout_validate_json'),
-        '#default_value' => variable_get('uc_paypal_checkout_button_style', UC_PAYPAL_CHECKOUT_DEFAULT_BUTTON_CONFIGURATION),
+        '#default_value' => variable_get('uc_paypal_checkout_button_style', UC_PAYPAL_CHECKOUT_DEFAULT_BUTTON_STYLE),
         '#description' => t(
           'Enter valid JSON containing button style configuration properties. See the !link for documentation concerning supported configuration properties. %warning',
           array(
@@ -219,7 +219,7 @@ function uc_paypal_checkout_get_settings() {
     'overrideConfig' => json_decode(variable_get('uc_paypal_checkout_override_config', '{}')),
     'env' => variable_get('uc_paypal_checkout_api_env', 'sandbox'),
     'locale' => variable_get('uc_paypal_checkout_locale', 'en_US'),
-    'buttonStyle' => json_decode(variable_get('uc_paypal_checkout_button_configuration', UC_PAYPAL_CHECKOUT_DEFAULT_BUTTON_CONFIGURATION)),
+    'buttonStyle' => json_decode(variable_get('uc_paypal_checkout_button_style', UC_PAYPAL_CHECKOUT_DEFAULT_BUTTON_STYLE)),
     'allowedFunding' => uc_paypal_checkout_get_allowed_funding(),
     'urls' => array(
       'error' => url('uc_paypal_checkout/payment-failed'),
