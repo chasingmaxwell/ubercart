@@ -232,16 +232,68 @@ function uc_paypal_checkout_get_settings() {
 }
 
 /**
- * Implements hook_uc_checkout_pane_alter().
+ * Implements hook_form_FORM_ID_alter() for uc_cart_checkout_form().
  */
-function uc_paypal_checkout_uc_checkout_pane_alter(&$panes) {
-  if (variable_get('uc_paypal_checkout_use_paypal_billing_address', 0)) {
-    $panes['billing']['enabled'] = FALSE;
+function uc_paypal_checkout_form_uc_cart_checkout_form_alter(&$form, &$form_state) {
+  if (variable_get('uc_paypal_checkout_use_paypal_billing_address', 1)) {
+    array_unshift($form['#validate'], 'uc_paypal_checkout_uc_cart_checkout_form_validate');
+    if (
+      (isset($form_state['values']['panes']['payment']['payment_method']) && $form_state['values']['panes']['payment']['payment_method'] === 'paypal_checkout')
+      || $form['panes']['payment']['payment_method']['#default_value'] === 'paypal_checkout') {
+      // Hide the billing pane fields which are not relevant if we're populating
+      // the billing information from PayPal.
+      $form['panes']['billing']['copy_address']['#access'] = FALSE;
+      $form['panes']['billing']['select_address']['#access'] = FALSE;
+      $form['panes']['billing']['address']['#access'] = FALSE;
+      $form['panes']['billing']['#description'] = t('Billing address will be automatically obtained from PayPal.');
+    }
+
+    // Override the payment method radio selection ajax call to re-write all the
+    // panes. This way we can make necessary adjustments on the billing pane.
+    $form['panes']['#prefix'] = '<div id="checkout-panes">';
+    $form['panes']['#suffix'] = '</div>';
+    $form['panes']['payment']['payment_method']['#ajax']['callback'] = 'uc_paypal_checkout_payment_details';
+    $form['panes']['payment']['payment_method']['#ajax']['wrapper'] = 'checkout-panes';
   }
 }
 
 /**
- * Implements hook_form_FORM_ID_alter() for uc_cart_view_form().
+ * Validation callback for uc_cart_checkout_form().
+ */
+function uc_paypal_checkout_uc_cart_checkout_form_validate($form, &$form_state) {
+  if (
+    (isset($form_state['values']['panes']['payment']['payment_method']) && $form_state['values']['panes']['payment']['payment_method'] === 'paypal_checkout')) {
+    if (isset($form_state['values']['panes']['billing'])) {
+      // Remove any form values/input having to do with the billing pane if
+      // we're populating from PayPal.
+      unset($form_state['values']['panes']['billing']);
+      unset($form_state['input']['panes']['billing']);
+    }
+  }
+}
+
+/**
+ * Ajax submission callback for the payment_method element on the uc_cart_checkout_form().
+ */
+function uc_paypal_checkout_payment_details(&$form, &$form_state) {
+  // Return all of the panes.
+  return $form['panes'];
+}
+
+/**
+ * Implements hook_preprocess_uc_cart_checkout_review().
+ */
+function uc_paypal_checkout_preprocess_uc_cart_checkout_review(&$variables) {
+  $order = uc_order_load(intval($_SESSION['cart_order']));
+  if ($order->payment_method === 'paypal_checkout' && variable_get('uc_paypal_checkout_use_paypal_billing_address', 0)) {
+    // Hide billing pane if we are obtaining the billing address from PayPal.
+    $billing_pane = _uc_checkout_pane_list()['billing'];
+    unset($variables['panes'][$billing_pane['title']]);
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter() for uc_cart_checkout_review_form().
  */
 function uc_paypal_checkout_form_uc_cart_checkout_review_form_alter(&$form, &$form_state, $form_id) {
   $order = uc_order_load(intval($_SESSION['cart_order']));
