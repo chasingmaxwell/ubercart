@@ -1,0 +1,10 @@
+paypal-button:
+  version: 1.x
+  js:
+    js/paypal-button.js: {}
+    https://www.paypalobjects.com/api/checkout.js:
+      type: external
+  dependencies:
+    - core/drupalSettings
+    - core/jquery
+    - core/jquery.once

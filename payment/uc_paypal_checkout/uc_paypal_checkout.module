@@ -1,0 +1,125 @@
+<?php
+
+/**
+ * @file
+ * Provides custom functionality for the PayPal Checkout payment method.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
+use Drupal\uc_order\Entity\Order;
+use Drupal\uc_payment\Entity\PaymentMethod;
+use Drupal\uc_paypal_checkout\plugin\Ubercart\PaymentMethod\PayPalCheckout;
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function uc_paypal_checkout_form_uc_cart_checkout_review_form_alter(&$form, FormStateInterface $form_state) {
+  $session = \Drupal::service('session');
+  $order = Order::load(intval($session->get('cart_order')));
+  $plugin = \Drupal::service('plugin.manager.uc_payment.method')->createFromOrder($order);
+
+  if ($plugin->getPluginId() === 'paypal_checkout') {
+    $configuration = $plugin->getConfiguration();
+    $form['actions']['submit']['#access'] = FALSE;
+    $form['actions']['paypal_checkout'] = [
+      '#weight' => 999,
+      '#markup' => '<div id="paypal-button"></div>',
+      '#attached' => [
+        'library' => [
+          'uc_paypal_checkout/paypal-button',
+        ],
+        'drupalSettings' => [
+          'ucPaypalCheckout' => [
+            'overrideConfig' => json_decode($configuration['override_config']),
+            'env' => $configuration['api']['env'],
+            'locale' => $configuration['button_locale'],
+            'buttonStyle' => json_decode($configuration['button_style']),
+            'allowedFunding' => array_reduce($configuration['allowed_funding'], function ($acc, $value) {
+              return array_merge($acc, $value !== 0 ? [$value] : []);
+            }, []),
+            'urls' => [
+              'error' => Url::fromRoute('uc_paypal_checkout.payment_failed')->toString(),
+              'paymentCreate' => Url::fromRoute('uc_paypal_checkout.payment_create')->toString(),
+              'paymentExecute' => Url::fromRoute('uc_paypal_checkout.payment_execute')->toString(),
+              'cart' => Url::fromRoute('uc_cart.cart')->toString(),
+              'checkoutComplete' => Url::fromRoute('uc_cart.checkout_complete')->toString(),
+            ]
+          ],
+        ]
+      ],
+    ];
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function uc_paypal_checkout_form_uc_cart_checkout_form_alter(&$form, FormStateInterface $form_state) {
+  $plugins = array_reduce(array_keys($form['panes']['payment']['payment_method']['#options']), function ($acc, $method) {
+    $plugin = PaymentMethod::load($method)->getPlugin();
+    if ($plugin->getPluginId() === 'paypal_checkout') {
+      $config = $plugin->getConfiguration();
+      if ($config['use_paypal_billing_address']) {
+        $acc[] = $method;
+      }
+    }
+    return $acc;
+  }, []);
+
+  if (!empty($plugins)) {
+    $selected_plugin = $form_state->getValue(
+      ['panes', 'payment', 'payment_method']
+    );
+    $default_plugin = $form['panes']['payment']['payment_method']['#default_value'];
+    foreach ($plugins as $plugin) {
+      if (
+        // The payment method is in form state and equals paypal_checkout.
+         ($selected_plugin && in_array($selected_plugin, $plugins))
+        // The default value is paypal_checkout.
+        || in_array($default_plugin, $plugins)
+      ) {
+        // Hide the billing pane fields which are not relevant if we're populating
+        // the billing information from PayPal.
+        $form['panes']['billing']['copy_address']['#access'] = FALSE;
+        $form['panes']['billing']['select_address']['#access'] = FALSE;
+        $form['panes']['billing']['address']['#access'] = FALSE;
+        $form['panes']['billing']['#description'] = t('Billing address will be automatically obtained from PayPal.');
+      }
+    }
+
+    // Override the payment method radio selection ajax call to re-write all the
+    // panes. This way we can make necessary adjustments on the billing pane.
+    $form['panes']['#prefix'] = '<div id="checkout-panes">';
+    $form['panes']['#suffix'] = '</div>';
+    $form['panes']['payment']['payment_method']['#ajax']['callback'] = 'uc_paypal_checkout_payment_details';
+    $form['panes']['payment']['payment_method']['#ajax']['wrapper'] = 'checkout-panes';
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_preprocess_uc_cart_checkout_review().
+ */
+function uc_paypal_checkout_preprocess_uc_cart_checkout_review(&$variables) {
+  $session = \Drupal::service('session');
+  $order = Order::load(intval($session->get('cart_order')));
+  $plugin = \Drupal::service('plugin.manager.uc_payment.method')->createFromOrder($order);
+
+  $billing_pane = \Drupal::service('plugin.manager.uc_cart.checkout_pane')->getDefinition('billing');
+
+  if ($plugin->getPluginId() === 'paypal_checkout' && $plugin->getConfiguration()['use_paypal_billing_address']) {
+    // Hide billing pane if we are obtaining the billing address from PayPal.
+    unset($variables['panes'][(string) $billing_pane['title']]);
+  }
+}
+
+/**
+ * Ajax submission callback for the payment_method element on the uc_cart_checkout_form().
+ */
+function uc_paypal_checkout_payment_details($form) {
+  return $form['panes'];
+}

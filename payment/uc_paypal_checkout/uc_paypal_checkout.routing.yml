@@ -1,0 +1,22 @@
+# Callback functions for PayPal Checkout.
+uc_paypal_checkout.payment_create:
+  path: 'uc_paypal_checkout/payment-create'
+  defaults:
+    _controller: '\Drupal\uc_paypal_checkout\Controller\PayPalCheckoutController::paymentCreate'
+    _title: 'Create PayPal payment'
+  requirements:
+    _permission: 'access content'
+uc_paypal_checkout.payment_execute:
+  path: 'uc_paypal_checkout/payment-execute'
+  defaults:
+    _controller: '\Drupal\uc_paypal_checkout\Controller\PayPalCheckoutController::paymentExecute'
+    _title: 'Execute a PayPal payment'
+  requirements:
+    _permission: 'access content'
+uc_paypal_checkout.payment_failed:
+  path: 'uc_paypal_checkout/payment-failed'
+  defaults:
+    _controller: '\Drupal\uc_paypal_checkout\Controller\PayPalCheckoutController::paymentFailed'
+    _title: 'Handle a failed payment'
+  requirements:
+    _permission: 'access content'

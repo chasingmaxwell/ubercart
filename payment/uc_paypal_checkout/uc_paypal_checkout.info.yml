@@ -1,0 +1,7 @@
+name: PayPal Checkout
+type: module
+description: 'Facilitates payment and checkout using PayPal Checkout.'
+package: Ubercart - payment
+core: 8.x
+dependencies:
+  - ubercart:uc_payment
