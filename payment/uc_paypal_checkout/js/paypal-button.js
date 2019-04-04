@@ -7,15 +7,18 @@
 
   Drupal.behaviors.ucPaypalCheckout = {
     attach: function (context, settings) {
-      var config = settings.ucPaypalCheckout.overrideConfig || {};
+      var config = {};
 
       // Configuration
-      config.env = config.env || settings.ucPaypalCheckout.env;
-      config.locale = config.locale || settings.ucPaypalCheckout.locale;
-      config.style = config.style || settings.ucPaypalCheckout.buttonStyle;
-      config.commit = config.commit || true;
-      config.funding = config.funding || {};
-      config.funding.allowed = config.funding.allowed || settings.ucPaypalCheckout.allowedFunding.map(function (source) { return paypal.FUNDING[source]; });
+      config.env = settings.ucPaypalCheckout.env;
+      config.locale = settings.ucPaypalCheckout.locale;
+      config.style = settings.ucPaypalCheckout.buttonStyle;
+      config.commit = true;
+      config.funding = {};
+      config.funding.allowed = settings.ucPaypalCheckout.allowedFunding.map(function (source) { return paypal.FUNDING[source]; });
+
+      // Merge config with override
+      config = $.extend(true, config, settings.ucPaypalCheckout.overrideConfig || {});
 
       // Set up a payment
       config.payment = function (data, actions) {
