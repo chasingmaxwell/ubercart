@@ -20,6 +20,10 @@ function uc_paypal_checkout_form_uc_cart_checkout_review_form_alter(&$form, Form
   $plugin = \Drupal::service('plugin.manager.uc_payment.method')->createFromOrder($order);
 
   if ($plugin->getPluginId() === 'paypal_checkout') {
+    $nonEmptyOrDefault = function ($value, $default) {
+      return empty(trim($value)) ? $default : $value;
+    };
+    $defaults = $plugin->defaultConfiguration();
     $configuration = $plugin->getConfiguration();
     $form['actions']['submit']['#access'] = FALSE;
     $form['actions']['paypal_checkout'] = [
@@ -31,10 +35,20 @@ function uc_paypal_checkout_form_uc_cart_checkout_review_form_alter(&$form, Form
         ],
         'drupalSettings' => [
           'ucPaypalCheckout' => [
-            'overrideConfig' => json_decode($configuration['override_config']),
+            'overrideConfig' => json_decode(
+              $nonEmptyOrDefault(
+                $configuration['override_config'],
+                $defaults['override_config']
+              )
+            ),
             'env' => $configuration['api']['env'],
             'locale' => $configuration['button_locale'],
-            'buttonStyle' => json_decode($configuration['button_style']),
+            'buttonStyle' => json_decode(
+              $nonEmptyOrDefault(
+                $configuration['button_style'],
+                $defaults['button_style']
+              )
+            ),
             'allowedFunding' => array_reduce($configuration['allowed_funding'], function ($acc, $value) {
               return array_merge($acc, $value !== 0 ? [$value] : []);
             }, []),
