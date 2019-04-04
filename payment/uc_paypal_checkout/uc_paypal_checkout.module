@@ -215,11 +215,15 @@ function uc_paypal_checkout_get_allowed_funding() {
  * Generates PayPal Checkout button settings from configuration.
  */
 function uc_paypal_checkout_get_settings() {
+  $nonEmptyOrDefault = function ($name, $default) {
+    $value = trim(variable_get($name, $default));
+    return empty($value) ? $default : $value;
+  };
   return array(
-    'overrideConfig' => json_decode(variable_get('uc_paypal_checkout_override_config', '{}')),
+    'overrideConfig' => json_decode($nonEmptyOrDefault('uc_paypal_checkout_override_config', '{}')),
     'env' => variable_get('uc_paypal_checkout_api_env', 'sandbox'),
     'locale' => variable_get('uc_paypal_checkout_locale', 'en_US'),
-    'buttonStyle' => json_decode(variable_get('uc_paypal_checkout_button_style', UC_PAYPAL_CHECKOUT_DEFAULT_BUTTON_STYLE)),
+    'buttonStyle' => json_decode($nonEmptyOrDefault('uc_paypal_checkout_button_style', UC_PAYPAL_CHECKOUT_DEFAULT_BUTTON_STYLE)),
     'allowedFunding' => uc_paypal_checkout_get_allowed_funding(),
     'urls' => array(
       'error' => url('uc_paypal_checkout/payment-failed'),
