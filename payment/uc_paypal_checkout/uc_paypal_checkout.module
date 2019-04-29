@@ -52,6 +52,9 @@ function uc_paypal_checkout_form_uc_cart_checkout_review_form_alter(&$form, Form
             'allowedFunding' => array_reduce($configuration['allowed_funding'], function ($acc, $value) {
               return array_merge($acc, $value !== 0 ? [$value] : []);
             }, []),
+            'disallowedFunding' => array_reduce($configuration['allowed_funding'], function ($acc, $value) {
+              return array_merge($acc, $value === 0 ? [$value] : []);
+            }, []),
             'urls' => [
               'error' => Url::fromRoute('uc_paypal_checkout.payment_failed')->toString(),
               'paymentCreate' => Url::fromRoute('uc_paypal_checkout.payment_create')->toString(),

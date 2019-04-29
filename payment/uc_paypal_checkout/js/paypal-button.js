@@ -17,6 +17,7 @@
         config.commit = true;
         config.funding = {};
         config.funding.allowed = settings.ucPaypalCheckout.allowedFunding.map(function (source) { return paypal.FUNDING[source]; });
+        config.funding.disallowed = settings.ucPaypalCheckout.disallowedFunding.map(function (source) { return paypal.FUNDING[source]; });
 
         // Merge with config override
         config = $.extend(true, config, settings.ucPaypalCheckout.overrideConfig || {});
