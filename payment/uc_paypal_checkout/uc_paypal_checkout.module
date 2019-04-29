@@ -212,6 +212,23 @@ function uc_paypal_checkout_get_allowed_funding() {
 }
 
 /**
+ * Gets the list of disallowed funding methods for the PayPal Checkout button.
+ */
+function uc_paypal_checkout_get_disallowed_funding() {
+  $allowed = variable_get('uc_paypal_checkout_allowed_funding', UC_PAYPAL_CHECKOUT_ALLOWED_FUNDING);
+  return array_reduce(
+    array_keys($allowed),
+    function ($acc, $value) use ($allowed) {
+      if ($allowed[$value] === 0) {
+        $acc[] = $value;
+      }
+      return $acc;
+    },
+    []
+  );
+}
+
+/**
  * Generates PayPal Checkout button settings from configuration.
  */
 function uc_paypal_checkout_get_settings() {
@@ -225,6 +242,7 @@ function uc_paypal_checkout_get_settings() {
     'locale' => variable_get('uc_paypal_checkout_locale', 'en_US'),
     'buttonStyle' => json_decode($nonEmptyOrDefault('uc_paypal_checkout_button_style', UC_PAYPAL_CHECKOUT_DEFAULT_BUTTON_STYLE)),
     'allowedFunding' => uc_paypal_checkout_get_allowed_funding(),
+    'disallowedFunding' => uc_paypal_checkout_get_disallowed_funding(),
     'urls' => array(
       'error' => url('uc_paypal_checkout/payment-failed'),
       'cart' => url('cart'),
