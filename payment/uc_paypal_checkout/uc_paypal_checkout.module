@@ -396,6 +396,7 @@ function uc_paypal_checkout_api_request($path, $method, $body) {
     CURLOPT_HTTPHEADER => array(
       "Cache-Control: no-cache",
       "Content-Type: application/json",
+      "PayPal-Partner-Attribution-Id: Ubercart_PayFlowPro_EC_US",
     ),
   );
 
