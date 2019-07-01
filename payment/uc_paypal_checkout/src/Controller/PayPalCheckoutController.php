@@ -187,9 +187,9 @@ class PayPalCheckoutController extends ControllerBase {
       fclose($out);
       $debug = ob_get_clean();
       \Drupal::logger('uc_paypal_checkout')->debug('Paypal API Request:<br>@debug<br><br>Paypal API Response:<br>@response', [
-          '@debug' => $debug,
-          '@response' => $response,
-        ]);
+        '@debug' => $debug,
+        '@response' => $response,
+      ]);
     }
 
     if ($error = curl_error($curl)) {
