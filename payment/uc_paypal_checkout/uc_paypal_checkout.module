@@ -123,6 +123,11 @@ function uc_paypal_checkout_payment_method($op, &$order) {
         '#required' => TRUE,
         '#default_value' => variable_get('uc_paypal_checkout_api_secret', ''),
       );
+      $form['api']['uc_paypal_checkout_api_log_requests'] = array(
+        '#type' => 'checkbox',
+        '#title' => t('Log API requests for debugging'),
+        '#default_value' => variable_get('uc_paypal_checkout_api_log_requests', 0),
+      );
       $form['uc_paypal_checkout_locale'] = array(
         '#type' => 'textfield',
         '#title' => t('Locale'),
@@ -364,7 +369,19 @@ function uc_paypal_checkout_form_uc_cart_checkout_review_form_alter(&$form, &$fo
  *   The API response from the PayPal REST API.
  */
 function uc_paypal_checkout_api_request($path, $method, $body) {
+  $log_requests = variable_get('uc_paypal_checkout_api_log_requests', 0);
+
+  if ($log_requests) {
+    ob_start();
+    $out = fopen('php://output', 'w');
+  }
+
   $curl = curl_init();
+
+  if ($log_requests) {
+    curl_setopt($curl, CURLOPT_VERBOSE, TRUE);
+    curl_setopt($curl, CURLOPT_STDERR, $out);
+  }
 
   $options = array(
     CURLOPT_URL => variable_get('uc_paypal_checkout_api_url') . $path,
@@ -372,6 +389,7 @@ function uc_paypal_checkout_api_request($path, $method, $body) {
     CURLOPT_ENCODING => "",
     CURLOPT_MAXREDIRS => 10,
     CURLOPT_TIMEOUT => 30,
+    CURLOPT_HEADER => 1,
     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
     CURLOPT_CUSTOMREQUEST => $method,
     CURLOPT_USERPWD => variable_get('uc_paypal_checkout_api_client') . ':' . variable_get('uc_paypal_checkout_api_secret'),
@@ -388,6 +406,24 @@ function uc_paypal_checkout_api_request($path, $method, $body) {
   curl_setopt_array($curl, $options);
 
   $response = curl_exec($curl);
+
+  $header_len = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+  $body = substr($response, $header_len);
+
+  if ($log_requests) {
+    fclose($out);
+    $debug = ob_get_clean();
+    watchdog(
+      'uc_paypal_checkout',
+      "Paypal API Request:<br>!debug<br><br>Paypal API Response:<br>!response",
+      array(
+        '!debug' => $debug,
+        '!response' => $response
+      ),
+      WATCHDOG_DEBUG
+    );
+  }
+
   if ($error = curl_error($curl)) {
     watchdog('uc_paypal_checkout', '!error', array('!error' => $error), WATCHDOG_ERROR);
     drupal_goto('uc_paypal_checkout/payment-failed');
@@ -395,5 +431,5 @@ function uc_paypal_checkout_api_request($path, $method, $body) {
 
   curl_close($curl);
 
-  return $response;
+  return $body;
 }
