@@ -43,6 +43,7 @@ class PayPalCheckout extends PaymentMethodPluginBase {
         'env' => 'sandbox',
         'client' => '',
         'secret' => '',
+        'log_requests' => 0,
       ],
       'button_locale' => 'en_US',
       'allowed_funding' => [
@@ -104,6 +105,11 @@ class PayPalCheckout extends PaymentMethodPluginBase {
       '#title' => $this->t('Secret'),
       '#required' => TRUE,
       '#default_value' => $this->configuration['api']['secret'],
+    ];
+    $form['api']['log_requests'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Log API requests for debugging'),
+      '#default_value' => $this->configuration['api']['log_requests'],
     ];
     $form['button_locale'] = [
       '#type' => 'textfield',
@@ -187,6 +193,8 @@ class PayPalCheckout extends PaymentMethodPluginBase {
       $form_state->getValue(['settings', 'api', 'client']);
     $this->configuration['api']['secret'] =
       $form_state->getValue(['settings', 'api', 'secret']);
+    $this->configuration['api']['log_requests'] =
+      $form_state->getValue(['settings', 'api', 'log_requests']);
     $this->configuration['button_locale'] =
       $form_state->getValue(['settings', 'button_locale']);
     $this->configuration['allowed_funding'] =

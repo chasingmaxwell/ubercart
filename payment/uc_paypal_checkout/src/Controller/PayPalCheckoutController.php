@@ -141,8 +141,19 @@ class PayPalCheckoutController extends ControllerBase {
    * Makes a request to the PayPal REST API during the PayPal Checkout flow.
    */
   private function apiRequest($path, $method, $body) {
-    $curl = curl_init();
     $configuration = $this->getConfiguration();
+
+    if ($configuration['api']['log_requests']) {
+      ob_start();
+      $out = fopen('php://output', 'w');
+    }
+
+    $curl = curl_init();
+
+    if ($configuration['api']['log_requests']) {
+      curl_setopt($curl, CURLOPT_VERBOSE, TRUE);
+      curl_setopt($curl, CURLOPT_STDERR, $out);
+    }
 
     $options = [
       CURLOPT_URL => $configuration['api']['url'] . $path,
@@ -153,6 +164,7 @@ class PayPalCheckoutController extends ControllerBase {
       CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
       CURLOPT_CUSTOMREQUEST => $method,
       CURLOPT_USERPWD => $configuration['api']['client'] . ':' . $configuration['api']['secret'],
+      CURLOPT_HEADER => 1,
       CURLOPT_HTTPHEADER => [
         "Cache-Control: no-cache",
         "Content-Type: application/json",
@@ -166,6 +178,19 @@ class PayPalCheckoutController extends ControllerBase {
     curl_setopt_array($curl, $options);
 
     $response = curl_exec($curl);
+
+    $header_len = curl_getinfo($curl, CURLINFO_HEADER_SIZE);
+    $body = substr($response, $header_len);
+
+    if ($configuration['api']['log_requests']) {
+      fclose($out);
+      $debug = ob_get_clean();
+      \Drupal::logger('uc_paypal_checkout')->debug('Paypal API Request:<br>@debug<br><br>Paypal API Response:<br>@response', [
+          '@debug' => $debug,
+          '@response' => $response,
+        ]);
+    }
+
     if ($error = curl_error($curl)) {
       \Drupal::logger('uc_paypal_checkout')->error('@error', ['@error' => $error]);
       $this->redirect('uc_paypal_checkout.payment-failed');
@@ -173,7 +198,7 @@ class PayPalCheckoutController extends ControllerBase {
 
     curl_close($curl);
 
-    return $response;
+    return $body;
   }
 
 }
