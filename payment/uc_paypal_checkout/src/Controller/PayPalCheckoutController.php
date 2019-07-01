@@ -168,6 +168,7 @@ class PayPalCheckoutController extends ControllerBase {
       CURLOPT_HTTPHEADER => [
         "Cache-Control: no-cache",
         "Content-Type: application/json",
+        "PayPal-Partner-Attribution-Id: Ubercart_PayFlowPro_EC_US"
       ],
     ];
 
