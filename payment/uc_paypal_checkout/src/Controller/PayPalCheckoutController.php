@@ -4,9 +4,7 @@ namespace Drupal\uc_paypal_checkout\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\uc_order\Entity\Order;
-use Drupal\uc_cart\Event\CheckoutReviewOrderEvent;
 use Drupal\Core\Url;
-use Drupal\Component\Utility\Html;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -116,7 +114,7 @@ class PayPalCheckoutController extends ControllerBase {
   }
 
   /**
-   * Page callback for handling a failed payment during the PayPal Checkout flow.
+   * Page callback for handling failed payments during the PayPal Checkout flow.
    */
   public function paymentFailed() {
     drupal_set_message(t('There was an error completing the PayPal payment.'), 'error');
@@ -168,7 +166,7 @@ class PayPalCheckoutController extends ControllerBase {
       CURLOPT_HTTPHEADER => [
         "Cache-Control: no-cache",
         "Content-Type: application/json",
-        "PayPal-Partner-Attribution-Id: Ubercart_PayFlowPro_EC_US"
+        "PayPal-Partner-Attribution-Id: Ubercart_PayFlowPro_EC_US",
       ],
     ];
 

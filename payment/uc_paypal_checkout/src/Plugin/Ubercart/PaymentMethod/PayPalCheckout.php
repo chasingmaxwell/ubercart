@@ -3,8 +3,6 @@
 namespace Drupal\uc_paypal_checkout\Plugin\Ubercart\PaymentMethod;
 
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\uc_order\OrderInterface;
-use Drupal\Component\Render\FormattableMarkup;
 use Drupal\uc_payment\PaymentMethodPluginBase;
 
 define('UC_PAYPAL_CHECKOUT_DEFAULT_BUTTON_CONFIGURATION',
@@ -120,7 +118,7 @@ class PayPalCheckout extends PaymentMethodPluginBase {
     $form['use_paypal_billing_address'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Use PayPal shipping address as billing address'),
-      '#description' => $this->t('When checked, the billing information will be populated from the user\'s PayPal account and the billing pane on the checkout page will be disabled.'),
+      '#description' => $this->t("When checked, the billing information will be populated from the user's PayPal account and the billing pane on the checkout page will be disabled."),
       '#default_value' => $this->configuration['use_paypal_billing_address'],
     ];
     $form['allowed_funding'] = [
@@ -173,7 +171,7 @@ class PayPalCheckout extends PaymentMethodPluginBase {
   }
 
   /**
-   * Form element validation which ensures the element's value is a valid JSON string.
+   * Form element validation which ensures the element's value is valid JSON.
    */
   public function validateJson($element, FormStateInterface $form_state) {
     if (!empty($element['#value']) && is_null(json_decode($element['#value']))) {

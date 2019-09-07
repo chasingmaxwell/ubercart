@@ -9,7 +9,6 @@ use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 use Drupal\uc_order\Entity\Order;
 use Drupal\uc_payment\Entity\PaymentMethod;
-use Drupal\uc_paypal_checkout\plugin\Ubercart\PaymentMethod\PayPalCheckout;
 
 /**
  * Implements hook_form_FORM_ID_alter().
@@ -61,9 +60,9 @@ function uc_paypal_checkout_form_uc_cart_checkout_review_form_alter(&$form, Form
               'paymentExecute' => Url::fromRoute('uc_paypal_checkout.payment_execute')->toString(),
               'cart' => Url::fromRoute('uc_cart.cart')->toString(),
               'checkoutComplete' => Url::fromRoute('uc_cart.checkout_complete')->toString(),
-            ]
+            ],
           ],
-        ]
+        ],
       ],
     ];
   }
@@ -98,8 +97,8 @@ function uc_paypal_checkout_form_uc_cart_checkout_form_alter(&$form, FormStateIn
         // The default value is paypal_checkout.
         || in_array($default_plugin, $plugins)
       ) {
-        // Hide the billing pane fields which are not relevant if we're populating
-        // the billing information from PayPal.
+        // Hide the billing pane fields which are not relevant if we're
+        // populating the billing information from PayPal.
         $form['panes']['billing']['copy_address']['#access'] = FALSE;
         $form['panes']['billing']['select_address']['#access'] = FALSE;
         $form['panes']['billing']['address']['#access'] = FALSE;
@@ -135,7 +134,9 @@ function uc_paypal_checkout_preprocess_uc_cart_checkout_review(&$variables) {
 }
 
 /**
- * Ajax submission callback for the payment_method element on the uc_cart_checkout_form().
+ * Ajax submission callback for the payment_method element.
+ *
+ * Element appears on the uc_cart_checkout_form() form.
  */
 function uc_paypal_checkout_payment_details($form) {
   return $form['panes'];
