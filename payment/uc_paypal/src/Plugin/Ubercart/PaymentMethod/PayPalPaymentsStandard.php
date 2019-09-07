@@ -13,10 +13,25 @@ use Drupal\uc_payment\OffsitePaymentMethodPluginInterface;
  * @UbercartPaymentMethod(
  *   id = "paypal_wps",
  *   name = @Translation("PayPal Payments Standard — DEPRECATED please use
- *   PayPal Checkout")
+ *   PayPal Checkout"),
+ *   no_ui = true
  * )
+ *
+ * @deprecated Use
+ *   \Drupal\uc_paypal_checkout\Plugin\Ubercart\PaymentMethod\PayPalCheckout
+ *   instead.
+ *
+ * @see https://www.drupal.org/project/ubercart/issues/3072742
  */
 class PayPalPaymentsStandard extends PayPalPaymentMethodPluginBase implements OffsitePaymentMethodPluginInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
+    @trigger_error('\Drupal\uc_paypal\Plugin\Ubercart\PaymentMethod\PayPalPaymentsStandard is deprecated. Use \Drupal\uc_paypal_checkout\Plugin\Ubercart\PaymentMethod\PayPalCheckout instead. See https://www.drupal.org/project/ubercart/issues/3072742', E_USER_DEPRECATED);
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+  }
 
   /**
    * Returns the set of card types which are used by this payment method.

@@ -17,9 +17,24 @@ use GuzzleHttp\Exception\TransferException;
  *   id = "paypal_wpp",
  *   name = @Translation("PayPal Website Payments Pro — DEPRECATED please use
  *   PayPal Checkout"),
+ *   no_ui = true
  * )
+ *
+ * @deprecated Use
+ *   \Drupal\uc_paypal_checkout\Plugin\Ubercart\PaymentMethod\PayPalCheckout
+ *   instead.
+ *
+ * @see https://www.drupal.org/project/ubercart/issues/3072742
  */
 class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
+    @trigger_error('\Drupal\uc_paypal\Plugin\Ubercart\PaymentMethod\PayPalWebsitePaymentsPro is deprecated. Use \Drupal\uc_paypal_checkout\Plugin\Ubercart\PaymentMethod\PayPalCheckout instead. See https://www.drupal.org/project/ubercart/issues/3072742', E_USER_DEPRECATED);
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+  }
 
   /**
    * {@inheritdoc}

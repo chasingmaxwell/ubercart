@@ -17,10 +17,25 @@ use GuzzleHttp\Exception\TransferException;
  * @UbercartPaymentMethod(
  *   id = "paypal_ec",
  *   name = @Translation("PayPal Express Checkout — DEPRECATED please use PayPal
- *   Checkout")
+ *   Checkout"),
+ *   no_ui = true
  * )
+ *
+ * @deprecated Use
+ *   \Drupal\uc_paypal_checkout\Plugin\Ubercart\PaymentMethod\PayPalCheckout
+ *   instead.
+ *
+ * @see https://www.drupal.org/project/ubercart/issues/3072742
  */
 class PayPalExpressCheckout extends PayPalPaymentMethodPluginBase implements ExpressPaymentMethodPluginInterface, OffsitePaymentMethodPluginInterface {
+
+  /**
+   * {@inheritdoc}
+   */
+  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
+    @trigger_error('\Drupal\uc_paypal\Plugin\Ubercart\PaymentMethod\PayPalExpressCheckout is deprecated. Use \Drupal\uc_paypal_checkout\Plugin\Ubercart\PaymentMethod\PayPalCheckout instead. See https://www.drupal.org/project/ubercart/issues/3072742', E_USER_DEPRECATED);
+    parent::__construct($configuration, $plugin_id, $plugin_definition);
+  }
 
   /**
    * The payment method entity ID that is using this plugin.
