@@ -17,22 +17,22 @@ function uc_paypal_checkout_create_payment() {
 
   $review_url = url('cart/checkout/review', array('absolute' => TRUE));
 
-  $body = [
+  $body = array(
     'intent' => 'sale',
-    'payer' => ['payment_method' => 'paypal'],
-    'redirect_urls' => [
+    'payer' => array('payment_method' => 'paypal'),
+    'redirect_urls' => array(
       'return_url' => $review_url,
       'cancel_url' => $review_url,
-    ],
+    ),
     'transactions' => array(
-      [
-        'amount' => [
+      array(
+        'amount' => array(
           'total' => $order->order_total,
           'currency' => $order->currency,
-        ],
-      ],
+        ),
+      ),
     ),
-  ];
+  );
 
   foreach ($order->line_items as $item) {
     $body['transactions'][0]['amount']['details'][$item['type']] = floatval($item['amount']);
@@ -48,9 +48,9 @@ function uc_paypal_checkout_create_payment() {
  * Page callback for executing a payment during the PayPal Checkout flow.
  */
 function uc_paypal_checkout_execute_payment() {
-  $body = [
+  $body = array(
     'payer_id' => $_POST['payerID'],
-  ];
+  );
 
   // Execute the PayPal payment.
   $response = uc_paypal_checkout_api_request('/payments/payment/' . $_POST['paymentID'] . '/execute', 'POST', $body);

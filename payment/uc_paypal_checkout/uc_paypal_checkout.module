@@ -212,7 +212,7 @@ function uc_paypal_checkout_get_allowed_funding() {
       }
       return $acc;
     },
-    []
+    array()
   );
 }
 
@@ -229,7 +229,7 @@ function uc_paypal_checkout_get_disallowed_funding() {
       }
       return $acc;
     },
-    []
+    array()
   );
 }
 
