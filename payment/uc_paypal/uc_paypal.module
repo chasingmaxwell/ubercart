@@ -2,8 +2,7 @@
 
 /**
  * @file
- * Integrates various PayPal payment services and Instant Payment Notifications
- * (IPN) with Ubercart!
+ * Integrates various PayPal payment services and IPNs with Ubercart!
  *
  * You should turn on Instant Payment Notifications in your PayPal profile and
  * set the IPN URL to http://{yoursite.com}/uc_paypal/ipn. See
@@ -98,7 +97,11 @@ function uc_paypal_uc_payment_gateway() {
     'description' => t('Process credit card payments using Website Payments Pro.'),
     'settings' => 'uc_paypal_wpp_settings_form',
     'credit' => 'uc_paypal_wpp_charge',
-    'credit_txn_types' => array(UC_CREDIT_AUTH_ONLY, UC_CREDIT_PRIOR_AUTH_CAPTURE, UC_CREDIT_AUTH_CAPTURE),
+    'credit_txn_types' => array(
+      UC_CREDIT_AUTH_ONLY,
+      UC_CREDIT_PRIOR_AUTH_CAPTURE,
+      UC_CREDIT_AUTH_CAPTURE,
+    ),
   );
 
   return $gateways;
@@ -297,7 +300,11 @@ function uc_paypal_wpp_charge($order_id, $amount, $data) {
       );
       // Fall through.
     case 'Success':
-      $message = t('<b>@type</b><br /><b>Success: </b>@amount @currency', array('@type' => $types[$data['txn_type']], '@amount' => uc_currency_format($nvp_response['AMT'], FALSE), '@currency' => $nvp_response['CURRENCYCODE']));
+      $message = t('<b>@type</b><br /><b>Success: </b>@amount @currency', array(
+        '@type' => $types[$data['txn_type']],
+        '@amount' => uc_currency_format($nvp_response['AMT'], FALSE),
+        '@currency' => $nvp_response['CURRENCYCODE'],
+      ));
       if ($data['txn_type'] != UC_CREDIT_PRIOR_AUTH_CAPTURE) {
         $message .= '<br />' . t('<b>Address:</b> @avscode', array('@avscode' => _uc_paypal_avscode_message($nvp_response['AVSCODE'])));
         if (variable_get('uc_credit_cvv_enabled', TRUE)) {
@@ -411,7 +418,15 @@ function uc_payment_method_paypal_wps($op, &$order) {
       $form['uc_paypal_wps_language'] = array(
         '#type' => 'select',
         '#title' => t('PayPal login page language'),
-        '#options' => drupal_map_assoc(array('AU', 'DE', 'FR', 'IT', 'GB', 'ES', 'US')),
+        '#options' => drupal_map_assoc(array(
+          'AU',
+          'DE',
+          'FR',
+          'IT',
+          'GB',
+          'ES',
+          'US',
+        )),
         '#default_value' => variable_get('uc_paypal_wps_language', 'US'),
       );
       $form['uc_paypal_wps_server'] = array(
@@ -598,9 +613,9 @@ function uc_payment_method_paypal_ec($op, &$order) {
   }
 }
 
-/*******************************************************************************
- * Module and Helper Functions
- ******************************************************************************/
+/*
+ * Module and Helper Functions.
+ */
 
 /**
  * Redirects if a customer selects PayPal Express Checkout as a payment method.
@@ -833,15 +848,13 @@ function uc_paypal_wps_form($form, &$form_state, $order) {
     }
   }
 
-  /**
-   * night_phone_a: The area code for U.S. phone numbers, or the country code
-   *                for phone numbers outside the U.S.
-   * night_phone_b: The three-digit prefix for U.S. phone numbers, or the
-   *                entire phone number for phone numbers outside the U.S.,
-   *                excluding country code.
-   * night_phone_c: The four-digit phone number for U.S. phone numbers.
-   *                (Not Used for UK numbers)
-   */
+  // - night_phone_a: The area code for U.S. phone numbers, or the country code
+  //   for phone numbers outside the U.S.
+  // - night_phone_b: The three-digit prefix for U.S. phone numbers, or the
+  //   entire phone number for phone numbers outside the U.S.,
+  //   excluding country code.
+  // - night_phone_c: The four-digit phone number for U.S. phone numbers.
+  //   (Not Used for UK numbers)
   if ($country[0]['country_iso_code_2'] == 'US' || $country[0]['country_iso_code_2'] == 'CA') {
     $phone = substr($phone, -10);
     $phone_a = substr($phone, 0, 3);
@@ -1241,5 +1254,29 @@ function _uc_paypal_reversal_message($reason) {
  * Returns an array of possible currency codes.
  */
 function _uc_paypal_currency_array() {
-  return drupal_map_assoc(array('AUD', 'BRL', 'CAD', 'CHF', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD', 'HUF', 'ILS', 'JPY', 'MXN', 'MYR', 'NOK', 'NZD', 'PHP', 'PLN', 'SEK', 'SGD', 'THB', 'TWD', 'USD'));
+  return drupal_map_assoc(array(
+    'AUD',
+    'BRL',
+    'CAD',
+    'CHF',
+    'CZK',
+    'DKK',
+    'EUR',
+    'GBP',
+    'HKD',
+    'HUF',
+    'ILS',
+    'JPY',
+    'MXN',
+    'MYR',
+    'NOK',
+    'NZD',
+    'PHP',
+    'PLN',
+    'SEK',
+    'SGD',
+    'THB',
+    'TWD',
+    'USD',
+  ));
 }

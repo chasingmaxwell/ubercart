@@ -156,7 +156,7 @@ function uc_paypal_checkout_payment_method($op, &$order) {
       $form['uc_paypal_checkout_use_paypal_billing_address'] = array(
         '#type' => 'checkbox',
         '#title' => t('Use PayPal shipping address as billing address'),
-        '#description' => t('When checked, the billing information will be populated from the user\'s PayPal account and the billing pane on the checkout page will be disabled.'),
+        '#description' => t("When checked, the billing information will be populated from the user's PayPal account and the billing pane on the checkout page will be disabled."),
         '#default_value' => variable_get('uc_paypal_checkout_use_paypal_billing_address', 0),
       );
       $form['uc_paypal_checkout_button_style'] = array(
@@ -191,7 +191,7 @@ function uc_paypal_checkout_payment_method($op, &$order) {
 }
 
 /**
- * Form element validation which ensures the element's value is a valid JSON string.
+ * Form element validation ensures the element's value is a valid JSON string.
  */
 function uc_paypal_checkout_validate_json($element) {
   if (!empty($element['#value']) && is_null(json_decode($element['#value']))) {
@@ -300,7 +300,9 @@ function uc_paypal_checkout_uc_cart_checkout_form_validate($form, &$form_state) 
 }
 
 /**
- * Ajax submission callback for the payment_method element on the uc_cart_checkout_form().
+ * Ajax submission callback for the payment_method element.
+ *
+ * For uc_cart_checkout_form().
  */
 function uc_paypal_checkout_payment_details(&$form, &$form_state) {
   // Return all of the panes.
@@ -419,7 +421,7 @@ function uc_paypal_checkout_api_request($path, $method, $body) {
       "Paypal API Request:<br>!debug<br><br>Paypal API Response:<br>!response",
       array(
         '!debug' => $debug,
-        '!response' => $response
+        '!response' => $response,
       ),
       WATCHDOG_DEBUG
     );
