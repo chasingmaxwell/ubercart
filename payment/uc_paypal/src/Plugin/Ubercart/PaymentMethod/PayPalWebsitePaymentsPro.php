@@ -105,9 +105,21 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
     parent::submitConfigurationForm($form, $form_state);
     $this->configuration['wps_email'] = trim($form_state->getValue('wps_email'));
     $this->configuration['wpp_server'] = $form_state->getValue('wpp_server');
-    $this->configuration['api']['api_username'] = $form_state->getValue(['settings', 'api', 'api_username']);
-    $this->configuration['api']['api_password'] = $form_state->getValue(['settings', 'api', 'api_password']);
-    $this->configuration['api']['api_signature'] = $form_state->getValue(['settings', 'api', 'api_signature']);
+    $this->configuration['api']['api_username'] = $form_state->getValue([
+      'settings',
+      'api',
+      'api_username',
+    ]);
+    $this->configuration['api']['api_password'] = $form_state->getValue([
+      'settings',
+      'api',
+      'api_password',
+    ]);
+    $this->configuration['api']['api_signature'] = $form_state->getValue([
+      'settings',
+      'api',
+      'api_signature',
+    ]);
   }
 
   /**
@@ -218,9 +230,13 @@ class PayPalWebsitePaymentsPro extends CreditCardPaymentMethodBase {
             'link' => $order->toLink($this->t('view order'))->toString(),
           ]
         );
-      // Fall through.
+        // Fall through.
       case 'Success':
-        $message = $this->t('<b>@type</b><br /><b>Success: </b>@amount @currency', ['@type' => $types[$txn_type], '@amount' => uc_currency_format($nvp_response['AMT'], FALSE), '@currency' => $nvp_response['CURRENCYCODE']]);
+        $message = $this->t('<b>@type</b><br /><b>Success: </b>@amount @currency', [
+          '@type' => $types[$txn_type],
+          '@amount' => uc_currency_format($nvp_response['AMT'], FALSE),
+          '@currency' => $nvp_response['CURRENCYCODE'],
+        ]);
         if ($txn_type != UC_CREDIT_PRIOR_AUTH_CAPTURE) {
           $message .= '<br />' . $this->t('<b>Address:</b> @avscode', ['@avscode' => $this->avscodeMessage($nvp_response['AVSCODE'])]);
           $message .= '<br />' . $this->t('<b>CVV2:</b> @cvvmatch', ['@cvvmatch' => $this->cvvmatchMessage($nvp_response['CVV2MATCH'])]);
